@@ -1,0 +1,72 @@
+(function(){
+$(document).ready(function(){
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','gao');
+  gao('create', 'UA-45972273-1', {alwaysSendReferrer: true, anonymizeIp: true, forceSSL: true});
+  var match = new RegExp('[?]kec=([^&]*)').exec(window.location.search);
+  var kec = match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+  if (typeof kec === 'string' && kec.length === 14) {
+    gao('set', 'campaignName', kec.substr(0, 4));
+    gao('set', 'campaignSource', kec.substr(4, 7));
+    gao('set', 'campaignMedium', 'email');
+  }
+  var queryParamBlacklist = [
+    'key'
+  ];
+  if (document.referrer && document.referrer.indexOf('?') > 0) {
+    var referrer = document.referrer.split('?');
+    var params = new URLSearchParams(referrer[1]);
+    queryParamBlacklist.forEach(function (param) {
+      if (params.has(param)) params.delete(param);
+    });
+    if (Array.from(params.values()).length > 0) {
+      gao('set', 'referrer', referrer[0] + '?' + params); 
+    } else {
+      gao('set', 'referrer', referrer[0]); 
+    }
+  }
+  gao('send', 'pageview');
+});
+
+$(document).ready(function() {
+  !(function(w, d) {
+    if (!w.rdt) {
+      var p = (w.rdt = function() {
+        p.sendEvent
+          ? p.sendEvent.apply(p, arguments)
+          : p.callQueue.push(arguments);
+      });
+      p.callQueue = [];
+      var t = d.createElement("script");
+      (t.src = "https://www.redditstatic.com/ads/pixel.js"), (t.async = !0);
+      var s = d.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(t, s);
+    }
+  })(window, document);
+  rdt("init", "t2_37mznje6");
+  rdt("track", "PageVisit");
+});
+
+$(document).ready(function() {
+  (function(w, d, t, r, u) {
+    var f, n, i;
+    (w[u] = w[u] || []),
+      (f = function() {
+        var o = { ti: "26040223" };
+        (o.q = w[u]), (w[u] = new UET(o)), w[u].push("pageLoad");
+      }),
+      (n = d.createElement(t)),
+      (n.src = r),
+      (n.async = 1),
+      (n.onload = n.onreadystatechange = function() {
+        var s = this.readyState;
+        (s && s !== "loaded" && s !== "complete") ||
+          (f(), (n.onload = n.onreadystatechange = null));
+      }),
+      (i = d.getElementsByTagName(t)[0]),
+      i.parentNode.insertBefore(n, i);
+  })(window, document, "script", "https://bat.bing.com/bat.js", "uetq");
+});
+})();

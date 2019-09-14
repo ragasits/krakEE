@@ -24,6 +24,6 @@ public class TimerEjb {
     public void printSchedule() {
         LOGGER.info("TimerEjb Schedule Fired .... ");
         
-        trade.getKrakenTrade().toString();
+        trade.callKrakenTrade();
     }
 }

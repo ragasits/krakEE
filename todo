@@ -1,0 +1,15 @@
++ Get data from Kraken
++ Convert Unix time to Date
+
+- Put Data to mongodb
+- Incremental Rest quering (from the last downloaded)
+- Create candle in 30min
+- Implement RSI
+- Implement Bollinger band
+- Set the learning data
+- Self learning with Neural networks
+- Simulate trade 
+
+- EJB inject configuration - turn in/out proxy
+- Put Kraken cert into the WAR
+- Test app with praya micro
