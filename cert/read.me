@@ -1,0 +1,16 @@
+Create cert:
+------------
+java -jar InstallCert.jar api.kraken.com
+"c:\Program Files\Java\jdk1.8.0_181\bin\keytool.exe" -exportcert -alias api.kraken.com-1 -keystore jssecacerts -storepass changeit -file api.kraken.com.cer
+"c:\Program Files\Java\jdk1.8.0_181\bin\keytool.exe" -importcert -alias api.kraken.com-1 -keystore cacerts.jks -storepass changeit -file api.kraken.com.cer
+
+Check it:
+---------
+"c:\Program Files\Java\jdk1.8.0_181\bin\keytool.exe" -list  -keystore cacerts.jks -storepass changeit
+
+Copy jks to:
+------------
+c:\0dev\glassfish5\glassfish\domains\domain1\config\
+
+
+
