@@ -1,5 +1,10 @@
 package krakee.get;
 
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -9,7 +14,6 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,24 +31,51 @@ import javax.json.JsonValue;
 @Stateless
 public class TradeEJB {
 
-    static final Logger LOGGER = Logger.getLogger(TradeEJB.class.getCanonicalName());
-    static final String KARENURL = "https://api.kraken.com/0/public/Trades?pair=XBTEUR";
+    private static final Logger LOGGER = Logger.getLogger(TradeEJB.class.getCanonicalName());
+    private static final String KARENURL = "https://api.kraken.com/0/public/Trades?pair=XBTEUR";
 
     JsonObject tradeJson;
     List<TradePairDTO> pairList;
 
+    /**
+     * Get, convert, store trades from Kraken
+     */
     public void callKrakenTrade() {
         tradeJson = this.getRestTrade();
         pairList = this.convertToDTO(tradeJson);
+        insertToMongo();
 
+        /*
         for (TradePairDTO tradePairDTO : pairList) {
             System.out.println(tradePairDTO.toString());
         }
+        */
     }
 
+    /**
+     * Insert TradePairs to Mongo
+     */
+    private void insertToMongo() {
+        MongoClient client = new MongoClient();
+        DB  database = client.getDB("krakEE");
+        DBCollection  collection = database.getCollection("tradepair");
+        
+        for (TradePairDTO dto : pairList) {
+            collection.insert(dto.getTradepair());
+        }
+        
+        client.close();
+    }
+
+    /**
+     * Convert JSON to DTO
+     *
+     * @param ob
+     * @return
+     */
     private List<TradePairDTO> convertToDTO(JsonObject ob) {
         String last = ob.asJsonObject().getJsonObject("result").getString("last");
-        
+
         JsonArray errors = ob.asJsonObject().getJsonArray("error");
         StringBuilder sb = new StringBuilder();
         for (JsonValue e : errors) {
@@ -68,6 +99,11 @@ public class TradeEJB {
         return tradePairList;
     }
 
+    /**
+     * REST client, get data from Kraken
+     *
+     * @return
+     */
     private JsonObject getRestTrade() {
         JsonObject tradeO;
 

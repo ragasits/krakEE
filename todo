@@ -1,14 +1,21 @@
-+ Get data from Kraken
-+ Convert Unix time to Date
++ Put Data to mongodb
 
-- Put Data to mongodb
+- Prevent duplication
+- BUG: client.getDB deprecated
 - Incremental Rest quering (from the last downloaded)
+- Dynamic scheduling (Depends from the trade number)
+
+Futrure:
+--------
 - Create candle in 30min
 - Implement RSI
 - Implement Bollinger band
 - Set the learning data
 - Self learning with Neural networks
 - Simulate trade 
+
+Optional:
+---------
 
 - EJB inject configuration - turn in/out proxy
 - Put Kraken cert into the WAR

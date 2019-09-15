@@ -1,9 +1,15 @@
 package krakee.get;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import java.math.BigDecimal;
 import java.util.Date;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
+ * DTO for Kraken trade pairs
  *
  * @author rgt
  */
@@ -46,7 +52,8 @@ public class TradePairDTO {
 
     /**
      * Convert Last value to Date
-     * @return 
+     *
+     * @return
      */
     public Date getLast() {
         Date date = new Date();
@@ -54,11 +61,27 @@ public class TradePairDTO {
         return date;
     }
 
+    /**
+     * Create Mongo document
+     * @return 
+     */
+    public DBObject getTradepair(){
+        return new BasicDBObject("time", this.time)
+        .append("pair", this.pair)
+        .append("timeDate", this.getTime().toString())
+        .append("price", this.price)
+        .append("volume", this.volume)
+        .append("buySel", this.buySel)
+        .append("marketLimit", this.marketLimit)
+        .append("miscellaneous", this.miscellaneous)
+        .append("error", this.error)
+        .append("last", this.last)
+        .append("lastDate", this.getLast().toString());
+    }
+
     @Override
     public String toString() {
         return "TradePairDTO{" + "price=" + price + ", volume=" + volume + ", time=" + this.getTime() + ", last=" + this.getLast() + '}';
     }
-
-
 
 }
