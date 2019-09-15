@@ -1,17 +1,16 @@
 package krakee.get;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.UpdateOptions;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +22,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
+import org.bson.Document;
 
 /**
  *
@@ -34,36 +34,36 @@ public class TradeEJB {
     private static final Logger LOGGER = Logger.getLogger(TradeEJB.class.getCanonicalName());
     private static final String KARENURL = "https://api.kraken.com/0/public/Trades?pair=XBTEUR";
 
-    JsonObject tradeJson;
-    List<TradePairDTO> pairList;
-
     /**
      * Get, convert, store trades from Kraken
+     * @return 
      */
-    public void callKrakenTrade() {
-        tradeJson = this.getRestTrade();
-        pairList = this.convertToDTO(tradeJson);
-        insertToMongo();
+    public int callKrakenTrade() {
+        JsonObject tradeJson = this.getRestTrade();
+        List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
+        insertToMongo(pairList);
 
-        /*
-        for (TradePairDTO tradePairDTO : pairList) {
-            System.out.println(tradePairDTO.toString());
-        }
-        */
+        return pairList.size();
+
     }
 
     /**
      * Insert TradePairs to Mongo
      */
-    private void insertToMongo() {
-        MongoClient client = new MongoClient();
-        DB  database = client.getDB("krakEE");
-        DBCollection  collection = database.getCollection("tradepair");
-        
+    private void insertToMongo(List<TradePairDTO> pairList) {
+        MongoClient client = MongoClients.create();
+        MongoDatabase database = client.getDatabase("krakEE");
+        MongoCollection<Document> collection = database.getCollection("tradepair");
+
         for (TradePairDTO dto : pairList) {
-            collection.insert(dto.getTradepair());
+            //collection.insertOne(dto.getTradepair());
+            collection.updateOne(
+                    eq("time",dto.getTimeDate()),
+                    dto.getTradepair(),
+                    new UpdateOptions().upsert(true).bypassDocumentValidation(true)
+            );
         }
-        
+
         client.close();
     }
 

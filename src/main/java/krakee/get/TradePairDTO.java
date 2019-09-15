@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import org.bson.Document;
 
 /**
  * DTO for Kraken trade pairs
@@ -43,7 +44,7 @@ public class TradePairDTO {
      *
      * @return
      */
-    public Date getTime() {
+    public Date getTimeDate() {
         Date date = new Date();
         long milis = time.multiply(BigDecimal.valueOf(1000)).longValue();
         date.setTime(milis);
@@ -55,7 +56,7 @@ public class TradePairDTO {
      *
      * @return
      */
-    public Date getLast() {
+    public Date getLastDate() {
         Date date = new Date();
         date.setTime(Long.valueOf(this.last.substring(0, 13)));
         return date;
@@ -65,10 +66,10 @@ public class TradePairDTO {
      * Create Mongo document
      * @return 
      */
-    public DBObject getTradepair(){
-        return new BasicDBObject("time", this.time)
+    public Document  getTradepair(){
+        return new Document ("time", this.time)
         .append("pair", this.pair)
-        .append("timeDate", this.getTime().toString())
+        .append("timeDate", this.getTimeDate())
         .append("price", this.price)
         .append("volume", this.volume)
         .append("buySel", this.buySel)
@@ -76,12 +77,13 @@ public class TradePairDTO {
         .append("miscellaneous", this.miscellaneous)
         .append("error", this.error)
         .append("last", this.last)
-        .append("lastDate", this.getLast().toString());
+        .append("lastDate", this.getLastDate());
     }
 
-    @Override
-    public String toString() {
-        return "TradePairDTO{" + "price=" + price + ", volume=" + volume + ", time=" + this.getTime() + ", last=" + this.getLast() + '}';
+    public BigDecimal getTime() {
+        return time;
     }
+
+
 
 }

@@ -1,7 +1,9 @@
 + Put Data to mongodb
++ BUG: client.getDB deprecated (+add latest client)
 
-- Prevent duplication
-- BUG: client.getDB deprecated
+- BUG: IllegalArgumentException: Invalid BSON field name time
+- Prevent duplication (upset)
+- Agregates: Last max
 - Incremental Rest quering (from the last downloaded)
 - Dynamic scheduling (Depends from the trade number)
 
@@ -16,7 +18,7 @@ Futrure:
 
 Optional:
 ---------
-
 - EJB inject configuration - turn in/out proxy
 - Put Kraken cert into the WAR
 - Test app with praya micro
+- Create Mongo DB, collection from the app
