@@ -1,12 +1,7 @@
 package krakee.get;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import org.bson.Document;
 
 /**
@@ -83,7 +78,4 @@ public class TradePairDTO {
     public BigDecimal getTime() {
         return time;
     }
-
-
-
 }

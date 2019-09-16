@@ -1,6 +1,7 @@
-+ Put Data to mongodb
-+ BUG: client.getDB deprecated (+add latest client)
++ Create ConfigEJB for the global settings
++ Start Mongo connection when the app starts. Close, when the apps is closing
 
+- Chk primary key "time" unique?
 - BUG: IllegalArgumentException: Invalid BSON field name time
 - Prevent duplication (upset)
 - Agregates: Last max
@@ -21,4 +22,5 @@ Optional:
 - EJB inject configuration - turn in/out proxy
 - Put Kraken cert into the WAR
 - Test app with praya micro
-- Create Mongo DB, collection from the app
+- Create MongoDB objects from the app
+- Use POJO with Mongodb

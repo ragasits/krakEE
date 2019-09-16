@@ -1,11 +1,6 @@
 package krakee.get;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import static com.mongodb.client.model.Filters.eq;
-import com.mongodb.client.model.UpdateOptions;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -16,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -31,8 +27,8 @@ import org.bson.Document;
 @Stateless
 public class TradeEJB {
 
-    private static final Logger LOGGER = Logger.getLogger(TradeEJB.class.getCanonicalName());
-    private static final String KARENURL = "https://api.kraken.com/0/public/Trades?pair=XBTEUR";
+    @EJB
+    ConfigEJB configEJB;
 
     /**
      * Get, convert, store trades from Kraken
@@ -44,27 +40,24 @@ public class TradeEJB {
         insertToMongo(pairList);
 
         return pairList.size();
-
     }
 
     /**
      * Insert TradePairs to Mongo
      */
     private void insertToMongo(List<TradePairDTO> pairList) {
-        MongoClient client = MongoClients.create();
-        MongoDatabase database = client.getDatabase("krakEE");
-        MongoCollection<Document> collection = database.getCollection("tradepair");
-
+        MongoCollection<Document> collection = configEJB.getCollection();
+        
         for (TradePairDTO dto : pairList) {
-            //collection.insertOne(dto.getTradepair());
-            collection.updateOne(
+            collection.insertOne(dto.getTradepair());
+            /*
+            collection.replaceOne(
                     eq("time",dto.getTimeDate()),
                     dto.getTradepair(),
                     new UpdateOptions().upsert(true).bypassDocumentValidation(true)
             );
+            */
         }
-
-        client.close();
     }
 
     /**
@@ -108,7 +101,7 @@ public class TradeEJB {
         JsonObject tradeO;
 
         try {
-            URL url = new URL(KARENURL);
+            URL url = new URL(configEJB.getKrakenURL());
             //Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("pac.mytrium.com", 8080));
             //HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
