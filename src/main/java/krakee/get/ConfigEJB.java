@@ -19,6 +19,7 @@ import org.bson.Document;
 public class ConfigEJB {
     
     private final String krakenURL = "https://api.kraken.com/0/public/Trades?pair=XBTEUR";
+    //https://api.kraken.com/0/public/Trades?pair=XBTEUR&since=1383839436659595694
 
     private MongoClient client;
     private MongoDatabase database;

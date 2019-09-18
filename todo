@@ -1,14 +1,11 @@
-+ Create ConfigEJB for the global settings
-+ Start Mongo connection when the app starts. Close, when the apps is closing
++ Get latest Last max
++ Incremental Rest quering (from the last downloaded)
 
-- Chk primary key "time" unique?
-- BUG: IllegalArgumentException: Invalid BSON field name time
-- Prevent duplication (upset)
-- Agregates: Last max
-- Incremental Rest quering (from the last downloaded)
+- BUG: The latest max not retrieve the latst value
+- BUG: Manage rest errors
 - Dynamic scheduling (Depends from the trade number)
 
-Futrure:
+Future:
 --------
 - Create candle in 30min
 - Implement RSI
@@ -24,3 +21,4 @@ Optional:
 - Test app with praya micro
 - Create MongoDB objects from the app
 - Use POJO with Mongodb
+

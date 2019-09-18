@@ -1,6 +1,9 @@
 package krakee.get;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Sorts;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -32,10 +35,21 @@ public class TradeEJB {
 
     /**
      * Get, convert, store trades from Kraken
-     * @return 
+     *
+     * @return
      */
     public int callKrakenTrade() {
-        JsonObject tradeJson = this.getRestTrade();
+
+        //Get last value from Mongo
+        String last = "0";
+        Document document = configEJB.getCollection().find()
+                .sort(Sorts.ascending("last"))
+                .limit(1).first();
+        if (document != null) {
+            last = new TradePairDTO(document).getLast();
+        }
+
+        JsonObject tradeJson = this.getRestTrade(last);
         List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
         insertToMongo(pairList);
 
@@ -46,17 +60,16 @@ public class TradeEJB {
      * Insert TradePairs to Mongo
      */
     private void insertToMongo(List<TradePairDTO> pairList) {
-        MongoCollection<Document> collection = configEJB.getCollection();
-        
+
         for (TradePairDTO dto : pairList) {
-            collection.insertOne(dto.getTradepair());
+            configEJB.getCollection().insertOne(dto.getTradepair());
             /*
             collection.replaceOne(
                     eq("time",dto.getTimeDate()),
                     dto.getTradepair(),
                     new UpdateOptions().upsert(true).bypassDocumentValidation(true)
             );
-            */
+             */
         }
     }
 
@@ -74,19 +87,22 @@ public class TradeEJB {
         for (JsonValue e : errors) {
             sb = sb.append(" ").append(e.toString());
         }
-        String error = sb.toString();
+        String error = sb.toString().trim();
         String pair = "XXBTZEUR";
 
         List<TradePairDTO> tradePairList = new ArrayList<>();
         JsonArray jsonPairs = ob.asJsonObject().getJsonObject("result").getJsonArray(pair);
         for (JsonValue p : jsonPairs) {
-            tradePairList.add(new TradePairDTO(new BigDecimal(p.asJsonArray().getString(0)),
-                    new BigDecimal(p.asJsonArray().getString(1)),
-                    p.asJsonArray().getJsonNumber(2).bigDecimalValue(),
-                    p.asJsonArray().getString(3),
-                    p.asJsonArray().getString(4),
-                    p.asJsonArray().getString(5),
-                    error, last, pair));
+            tradePairList.add(
+                    new TradePairDTO(
+                            new BigDecimal(p.asJsonArray().getString(0)),
+                            new BigDecimal(p.asJsonArray().getString(1)),
+                            p.asJsonArray().getJsonNumber(2).bigDecimalValue(),
+                            p.asJsonArray().getString(3),
+                            p.asJsonArray().getString(4),
+                            p.asJsonArray().getString(5),
+                            error, last, pair)
+            );
         }
 
         return tradePairList;
@@ -97,11 +113,11 @@ public class TradeEJB {
      *
      * @return
      */
-    private JsonObject getRestTrade() {
+    private JsonObject getRestTrade(String last) {
         JsonObject tradeO;
 
         try {
-            URL url = new URL(configEJB.getKrakenURL());
+            URL url = new URL(configEJB.getKrakenURL() + "&since=" + last);
             //Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("pac.mytrium.com", 8080));
             //HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -122,10 +138,12 @@ public class TradeEJB {
 
             conn.disconnect();
         } catch (MalformedURLException ex) {
-            Logger.getLogger(TimerEjb.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TimerEjb.class
+                    .getName()).log(Level.SEVERE, null, ex);
             return null;
         } catch (IOException ex) {
-            Logger.getLogger(TimerEjb.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TimerEjb.class
+                    .getName()).log(Level.SEVERE, null, ex);
             return null;
         }
 

@@ -3,6 +3,7 @@ package krakee.get;
 import java.math.BigDecimal;
 import java.util.Date;
 import org.bson.Document;
+import org.bson.types.Decimal128;
 
 /**
  * DTO for Kraken trade pairs
@@ -35,6 +36,28 @@ public class TradePairDTO {
     }
 
     /**
+     * Create object from Mongo Document
+     * @param doc 
+     */
+    public TradePairDTO(Document doc) {
+        /*
+        this.price = new BigDecimal(doc.getString("price"));
+        this.volume = new BigDecimal(doc.getString("volume"));
+        this.time = new BigDecimal(doc.getString("time"));
+        */
+        this.price = ((Decimal128)doc.get("price")).bigDecimalValue();
+        this.volume = ((Decimal128)doc.get("volume")).bigDecimalValue();
+        this.time = ((Decimal128)doc.get("time")).bigDecimalValue();
+
+        this.buySel = doc.getString("buySel");
+        this.marketLimit = doc.getString("marketLimit");
+        this.miscellaneous = doc.getString("miscellaneous");
+        this.error = doc.getString("error");
+        this.last = doc.getString("last");
+        this.pair = doc.getString("pair");
+    }
+
+    /**
      * Convert Time value to Date
      *
      * @return
@@ -59,23 +82,30 @@ public class TradePairDTO {
 
     /**
      * Create Mongo document
-     * @return 
+     *
+     * @return
      */
-    public Document  getTradepair(){
-        return new Document ("time", this.time)
-        .append("pair", this.pair)
-        .append("timeDate", this.getTimeDate())
-        .append("price", this.price)
-        .append("volume", this.volume)
-        .append("buySel", this.buySel)
-        .append("marketLimit", this.marketLimit)
-        .append("miscellaneous", this.miscellaneous)
-        .append("error", this.error)
-        .append("last", this.last)
-        .append("lastDate", this.getLastDate());
+    public Document getTradepair() {
+        return new Document("time", this.time)
+                .append("pair", this.pair)
+                .append("timeDate", this.getTimeDate())
+                .append("price", this.price)
+                .append("volume", this.volume)
+                .append("buySel", this.buySel)
+                .append("marketLimit", this.marketLimit)
+                .append("miscellaneous", this.miscellaneous)
+                .append("error", this.error)
+                .append("last", this.last)
+                .append("lastDate", this.getLastDate());
     }
 
     public BigDecimal getTime() {
         return time;
     }
+
+    public String getLast() {
+        return last;
+    }
+    
+    
 }
