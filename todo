@@ -1,7 +1,5 @@
-+ Get latest Last max
-+ Incremental Rest quering (from the last downloaded)
++ BUG: The latest max not retrieve the latst value
 
-- BUG: The latest max not retrieve the latst value
 - BUG: Manage rest errors
 - Dynamic scheduling (Depends from the trade number)
 

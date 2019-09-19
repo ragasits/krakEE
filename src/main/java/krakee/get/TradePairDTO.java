@@ -40,11 +40,6 @@ public class TradePairDTO {
      * @param doc 
      */
     public TradePairDTO(Document doc) {
-        /*
-        this.price = new BigDecimal(doc.getString("price"));
-        this.volume = new BigDecimal(doc.getString("volume"));
-        this.time = new BigDecimal(doc.getString("time"));
-        */
         this.price = ((Decimal128)doc.get("price")).bigDecimalValue();
         this.volume = ((Decimal128)doc.get("volume")).bigDecimalValue();
         this.time = ((Decimal128)doc.get("time")).bigDecimalValue();

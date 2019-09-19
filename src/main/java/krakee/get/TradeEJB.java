@@ -1,8 +1,5 @@
 package krakee.get;
 
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Sorts;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,30 +27,33 @@ import org.bson.Document;
 @Stateless
 public class TradeEJB {
 
+    static final Logger LOGGER = Logger.getLogger(TimerEjb.class.getCanonicalName());
+
     @EJB
     ConfigEJB configEJB;
 
     /**
      * Get, convert, store trades from Kraken
      *
-     * @return
      */
-    public int callKrakenTrade() {
+    public void callKrakenTrade() {
 
         //Get last value from Mongo
         String last = "0";
         Document document = configEJB.getCollection().find()
-                .sort(Sorts.ascending("last"))
-                .limit(1).first();
+                .sort(Sorts.descending("last"))
+                .first();
         if (document != null) {
             last = new TradePairDTO(document).getLast();
         }
+        System.out.println("Last: " + last);
 
         JsonObject tradeJson = this.getRestTrade(last);
         List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
         insertToMongo(pairList);
 
-        return pairList.size();
+        LOGGER.log(Level.INFO, "TimerEjb Schedule Fired .... {0} ...", pairList.size());
+        LOGGER.log(Level.INFO, "MongoLast:{0} Rest: {1}", new Object[]{last, pairList.get(0).getLast()});
     }
 
     /**
@@ -117,7 +117,7 @@ public class TradeEJB {
         JsonObject tradeO;
 
         try {
-            URL url = new URL(configEJB.getKrakenURL() + "&since=" + last);
+            URL url = new URL(configEJB.getKrakenURL() + last);
             //Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("pac.mytrium.com", 8080));
             //HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
