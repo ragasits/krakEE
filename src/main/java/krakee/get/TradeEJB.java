@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,7 @@ public class TradeEJB {
 
         //Get last value from Mongo
         String last = "0";
-        Document document = configEJB.getCollection().find()
+        Document document = configEJB.getTradePairColl().find()
                 .sort(Sorts.descending("last"))
                 .first();
         if (document != null) {
@@ -52,8 +54,7 @@ public class TradeEJB {
         List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
         insertToMongo(pairList);
 
-        LOGGER.log(Level.INFO, "TimerEjb Schedule Fired .... {0} ...", pairList.size());
-        LOGGER.log(Level.INFO, "MongoLast:{0} Rest: {1}", new Object[]{last, pairList.get(0).getLast()});
+        LOGGER.log(Level.INFO, "TimerEjb Schedule Fired .... " + pairList.size() + " " + pairList.get(0).getLastDate());
     }
 
     /**
@@ -62,14 +63,7 @@ public class TradeEJB {
     private void insertToMongo(List<TradePairDTO> pairList) {
 
         for (TradePairDTO dto : pairList) {
-            configEJB.getCollection().insertOne(dto.getTradepair());
-            /*
-            collection.replaceOne(
-                    eq("time",dto.getTimeDate()),
-                    dto.getTradepair(),
-                    new UpdateOptions().upsert(true).bypassDocumentValidation(true)
-            );
-             */
+            configEJB.getTradePairColl().insertOne(dto.getTradepair());
         }
     }
 
@@ -115,12 +109,16 @@ public class TradeEJB {
      */
     private JsonObject getRestTrade(String last) {
         JsonObject tradeO;
+        HttpURLConnection conn;
 
         try {
             URL url = new URL(configEJB.getKrakenURL() + last);
-            //Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("pac.mytrium.com", 8080));
-            //HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            if (configEJB.isProxyEnabled()) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("pac.mytrium.com", 8080));
+                conn = (HttpURLConnection) url.openConnection(proxy);
+            } else {
+                conn = (HttpURLConnection) url.openConnection();
+            }
 
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");

@@ -1,11 +1,12 @@
-+ BUG: The latest max not retrieve the latst value
++ Test app with praya micro
++ Move parameters to the ConfigEJB
 
 - BUG: Manage rest errors
 - Dynamic scheduling (Depends from the trade number)
+- Create candle in 30min
 
 Future:
 --------
-- Create candle in 30min
 - Implement RSI
 - Implement Bollinger band
 - Set the learning data
@@ -14,9 +15,11 @@ Future:
 
 Optional:
 ---------
-- EJB inject configuration - turn in/out proxy
+- EJB + outer configuration file
 - Put Kraken cert into the WAR
-- Test app with praya micro
-- Create MongoDB objects from the app
+- Create MongoDB database, collectiom, index,...from the app (if it missing)
 - Use POJO with Mongodb
+- Payara micro: Create outer log file
+- Payara micro: use outer config file
+
 
