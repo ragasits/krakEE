@@ -1,9 +1,13 @@
-+ Test app with praya micro
-+ Move parameters to the ConfigEJB
++ Payara micro: Create outer log file
++ Generate candle30 dates
 
+- BUG: duplicate first row (candle30 dates)
+- BUG: incremental date generation (candle30 dates)
+- Organise source dirs
 - BUG: Manage rest errors
-- Dynamic scheduling (Depends from the trade number)
-- Create candle in 30min
+- Dynamic scheduling (Depends from the trade number: min 10 sec, 1000>= sec/2, 1000< sec*2 )
+- Stop the ParayaMicro safety
+- Create candle values in 30min
 
 Future:
 --------
@@ -16,10 +20,9 @@ Future:
 Optional:
 ---------
 - EJB + outer configuration file
-- Put Kraken cert into the WAR
+- Put Kraken cert into the WAR (or outer parameter)
 - Create MongoDB database, collectiom, index,...from the app (if it missing)
 - Use POJO with Mongodb
-- Payara micro: Create outer log file
 - Payara micro: use outer config file
 
 

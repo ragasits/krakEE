@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.json.Json;
@@ -29,42 +30,38 @@ import org.bson.Document;
 @Stateless
 public class TradeEJB {
 
-    static final Logger LOGGER = Logger.getLogger(TimerEjb.class.getCanonicalName());
+    static final Logger LOGGER = Logger.getLogger(TradeEJB.class.getCanonicalName());
 
     @EJB
-    ConfigEJB configEJB;
+    ConfigEJB config;
 
     /**
      * Get, convert, store trades from Kraken
      *
      */
+    @Asynchronous
     public void callKrakenTrade() {
+        config.setRunTrade(false);
 
         //Get last value from Mongo
         String last = "0";
-        Document document = configEJB.getTradePairColl().find()
+        Document document = config.getTradePairColl().find()
                 .sort(Sorts.descending("last"))
                 .first();
         if (document != null) {
             last = new TradePairDTO(document).getLast();
         }
-        System.out.println("Last: " + last);
 
         JsonObject tradeJson = this.getRestTrade(last);
         List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
-        insertToMongo(pairList);
-
-        LOGGER.log(Level.INFO, "TimerEjb Schedule Fired .... " + pairList.size() + " " + pairList.get(0).getLastDate());
-    }
-
-    /**
-     * Insert TradePairs to Mongo
-     */
-    private void insertToMongo(List<TradePairDTO> pairList) {
-
+        
+        //Insert TradePairs to Mongo
         for (TradePairDTO dto : pairList) {
-            configEJB.getTradePairColl().insertOne(dto.getTradepair());
-        }
+            config.getTradePairColl().insertOne(dto.getTradepair());
+        }        
+        
+        LOGGER.log(Level.INFO, "TimerEjb Schedule Fired .... " + pairList.size() + " " + pairList.get(0).getLastDate());
+        config.setRunTrade(true);
     }
 
     /**
@@ -112,9 +109,9 @@ public class TradeEJB {
         HttpURLConnection conn;
 
         try {
-            URL url = new URL(configEJB.getKrakenURL() + last);
-            if (configEJB.isProxyEnabled()) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("pac.mytrium.com", 8080));
+            URL url = new URL(config.getKrakenURL() + last);
+            if (config.isProxyEnabled()) {
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(config.getKrakenURL(), config.getProxyPort()));
                 conn = (HttpURLConnection) url.openConnection(proxy);
             } else {
                 conn = (HttpURLConnection) url.openConnection();

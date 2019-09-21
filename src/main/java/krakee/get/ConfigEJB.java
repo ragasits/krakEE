@@ -21,19 +21,22 @@ public class ConfigEJB {
     private final String krakenURL = "https://api.kraken.com/0/public/Trades?pair=XBTEUR&since=";
     private final boolean proxyEnabled = false;
     private final String proxyHostname = "pac.mytrium.com";
-    private final String proxyPort = "8080";
-    private final boolean runTrade = false;
-
+    private final Integer proxyPort = 8080;
+    private boolean runTrade = false;
+    private boolean runCandle = true;
+    
     private MongoClient client;
     private MongoDatabase database;
     private MongoCollection<Document> tradePairColl;
-    
+    private MongoCollection<Document> candleColl;
+    ;
 
     @PostConstruct
     public void init() {
         this.client = MongoClients.create();
         this.database = this.client.getDatabase("krakEE");
         this.tradePairColl = this.database.getCollection("tradepair");
+        this.candleColl = this.database.getCollection("candle");
     }
     
     @PreDestroy
@@ -45,6 +48,10 @@ public class ConfigEJB {
         return tradePairColl;
     }
 
+    public MongoCollection<Document> getCandleColl() {
+        return candleColl;
+    }
+    
     public String getKrakenURL() {
         return krakenURL;
     }
@@ -57,16 +64,27 @@ public class ConfigEJB {
         return proxyHostname;
     }
 
-    public String getProxyPort() {
+    public Integer getProxyPort() {
         return proxyPort;
     }
 
     public boolean isRunTrade() {
         return runTrade;
     }
-    
-    
-    
-    
 
+    public void setRunTrade(boolean runTrade) {
+        this.runTrade = runTrade;
+    }
+
+    public boolean isRunCandle() {
+        return runCandle;
+    }
+
+    public void setRunCandle(boolean runCandle) {
+        this.runCandle = runCandle;
+    }
+    
+    
+    
+    
 }
