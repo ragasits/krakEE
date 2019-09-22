@@ -1,9 +1,12 @@
-package krakee.get;
+package krakee;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
@@ -17,30 +20,50 @@ import org.bson.Document;
 @Singleton
 @Startup
 public class ConfigEJB {
-    
+
     private final String krakenURL = "https://api.kraken.com/0/public/Trades?pair=XBTEUR&since=";
     private final boolean proxyEnabled = false;
     private final String proxyHostname = "pac.mytrium.com";
     private final Integer proxyPort = 8080;
     private boolean runTrade = false;
     private boolean runCandle = true;
-    
+
     private MongoClient client;
     private MongoDatabase database;
     private MongoCollection<Document> tradePairColl;
     private MongoCollection<Document> candleColl;
-    ;
 
     @PostConstruct
     public void init() {
         this.client = MongoClients.create();
         this.database = this.client.getDatabase("krakEE");
         this.tradePairColl = this.database.getCollection("tradepair");
+
         this.candleColl = this.database.getCollection("candle");
+        if (!this.isIndex(candleColl, "candleDate_idx")){
+            this.candleColl.createIndex(Indexes.ascending("candleDate_idx"), new IndexOptions().unique(true));
+        }
     }
-    
+
+    /**
+     * Is the index exists?
+     * @param collection
+     * @param indexName
+     * @return 
+     */
+    private boolean isIndex(MongoCollection<Document> collection, String indexName) {
+        MongoCursor<Document> indexes = collection.listIndexes().iterator();
+        while (indexes.hasNext()) {
+            Document index = indexes.next();
+            if ("candleDate_idx".equals(index.getString("name"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @PreDestroy
-    public void close(){
+    public void close() {
         this.client.close();
     }
 
@@ -51,7 +74,7 @@ public class ConfigEJB {
     public MongoCollection<Document> getCandleColl() {
         return candleColl;
     }
-    
+
     public String getKrakenURL() {
         return krakenURL;
     }
@@ -83,8 +106,5 @@ public class ConfigEJB {
     public void setRunCandle(boolean runCandle) {
         this.runCandle = runCandle;
     }
-    
-    
-    
-    
+
 }

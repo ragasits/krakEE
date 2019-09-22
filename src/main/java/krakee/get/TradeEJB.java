@@ -21,6 +21,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
+import krakee.ConfigEJB;
 import org.bson.Document;
 
 /**
@@ -54,13 +55,13 @@ public class TradeEJB {
 
         JsonObject tradeJson = this.getRestTrade(last);
         List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
-        
+
         //Insert TradePairs to Mongo
         for (TradePairDTO dto : pairList) {
             config.getTradePairColl().insertOne(dto.getTradepair());
-        }        
-        
-        LOGGER.log(Level.INFO, "TimerEjb Schedule Fired .... " + pairList.size() + " " + pairList.get(0).getLastDate());
+        }
+
+        LOGGER.log(Level.INFO, "Trade Fired .... " + pairList.size() + " " + pairList.get(0).getLastDate());
         config.setRunTrade(true);
     }
 
@@ -133,11 +134,11 @@ public class TradeEJB {
 
             conn.disconnect();
         } catch (MalformedURLException ex) {
-            Logger.getLogger(TimerEjb.class
+            Logger.getLogger(TradeEJB.class
                     .getName()).log(Level.SEVERE, null, ex);
             return null;
         } catch (IOException ex) {
-            Logger.getLogger(TimerEjb.class
+            Logger.getLogger(TradeEJB.class
                     .getName()).log(Level.SEVERE, null, ex);
             return null;
         }

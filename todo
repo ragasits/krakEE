@@ -1,13 +1,10 @@
-+ Payara micro: Create outer log file
-+ Generate candle30 dates
++ Create MongoDB database, collectiom, index,...from the app (if it missing)
 
-- BUG: duplicate first row (candle30 dates)
-- BUG: incremental date generation (candle30 dates)
-- Organise source dirs
+- BUG: calcDateList: Insert duplicate dates
+- BUG: Candle basic list is wrong (missing first eleements)
+- Create candle values in 30min
 - BUG: Manage rest errors
 - Dynamic scheduling (Depends from the trade number: min 10 sec, 1000>= sec/2, 1000< sec*2 )
-- Stop the ParayaMicro safety
-- Create candle values in 30min
 
 Future:
 --------
@@ -21,7 +18,6 @@ Optional:
 ---------
 - EJB + outer configuration file
 - Put Kraken cert into the WAR (or outer parameter)
-- Create MongoDB database, collectiom, index,...from the app (if it missing)
 - Use POJO with Mongodb
 - Payara micro: use outer config file
 

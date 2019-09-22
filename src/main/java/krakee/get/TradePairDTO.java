@@ -101,6 +101,12 @@ public class TradePairDTO {
     public String getLast() {
         return last;
     }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+    
+    
     
     
 }

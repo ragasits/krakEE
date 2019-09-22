@@ -1,4 +1,4 @@
-package krakee.get;
+package krakee;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -6,7 +6,8 @@ import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Stateless;
-import static krakee.get.TradeEJB.LOGGER;
+import krakee.calc.CandleEJB;
+import krakee.get.TradeEJB;
 
 /**
  * Scheduling services
