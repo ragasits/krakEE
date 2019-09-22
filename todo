@@ -1,4 +1,5 @@
-+ Create MongoDB database, collectiom, index,...from the app (if it missing)
++ Create missing indexes
++ Rename fields in the candleDTO (create shorter)
 
 - BUG: calcDateList: Insert duplicate dates
 - BUG: Candle basic list is wrong (missing first eleements)

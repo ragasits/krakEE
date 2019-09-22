@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 import org.bson.Document;
 import org.bson.types.Decimal128;
-import org.bson.types.ObjectId;
 
 /**
  * DTO for the Candle data
@@ -13,42 +12,42 @@ import org.bson.types.ObjectId;
  * @author rgt
  */
 public class CandleDTO {
-    private final Date candleDate;
-    private final Integer candleCount;
-    private final BigDecimal candleOpen;
-    private final BigDecimal candleLow;
-    private final BigDecimal candleHigh;
-    private final BigDecimal candleClose;
-    private final BigDecimal candleTotal;
+    private final Date startDate;
+    private final Integer count;
+    private final BigDecimal open;
+    private final BigDecimal low;
+    private final BigDecimal high;
+    private final BigDecimal close;
+    private final BigDecimal total;
 
     public CandleDTO(Date candleDate) {
-        this.candleDate = candleDate;
-        this.candleCount = 0;
-        this.candleOpen = BigDecimal.ZERO;
-        this.candleLow = BigDecimal.ZERO;
-        this.candleHigh = BigDecimal.ZERO;
-        this.candleClose = BigDecimal.ZERO;
-        this.candleTotal = BigDecimal.ZERO;
+        this.startDate = candleDate;
+        this.count = 0;
+        this.open = BigDecimal.ZERO;
+        this.low = BigDecimal.ZERO;
+        this.high = BigDecimal.ZERO;
+        this.close = BigDecimal.ZERO;
+        this.total = BigDecimal.ZERO;
     }
 
     public CandleDTO(Document doc) {
-        this.candleDate = doc.getDate("candleDate");
-        this.candleCount = doc.getInteger("candleCount");
-        this.candleOpen = ((Decimal128) doc.get("candleOpen")).bigDecimalValue();;
-        this.candleLow = ((Decimal128) doc.get("candleLow")).bigDecimalValue();;
-        this.candleHigh = ((Decimal128) doc.get("candleHigh")).bigDecimalValue();;
-        this.candleClose = ((Decimal128) doc.get("candleClose")).bigDecimalValue();;
-        this.candleTotal = ((Decimal128) doc.get("candleTotal")).bigDecimalValue();;
+        this.startDate = doc.getDate("date");
+        this.count = doc.getInteger("count");
+        this.open = ((Decimal128) doc.get("open")).bigDecimalValue();;
+        this.low = ((Decimal128) doc.get("low")).bigDecimalValue();;
+        this.high = ((Decimal128) doc.get("high")).bigDecimalValue();;
+        this.close = ((Decimal128) doc.get("close")).bigDecimalValue();;
+        this.total = ((Decimal128) doc.get("total")).bigDecimalValue();;
     }
 
     public Document getCandle() {
-        return new Document("candleDate", this.candleDate)
-                .append("candleCount", this.candleCount)
-                .append("candleOpen", this.candleOpen)
-                .append("candleLow", this.candleLow)
-                .append("candleHigh", this.candleHigh)
-                .append("candleClose", this.candleClose)
-                .append("candleTotal", this.candleTotal);
+        return new Document("date", this.startDate)
+                .append("count", this.count)
+                .append("open", this.open)
+                .append("low", this.low)
+                .append("high", this.high)
+                .append("close", this.close)
+                .append("total", this.total);
     }
 
     /**
@@ -56,39 +55,39 @@ public class CandleDTO {
      *
      * @return
      */
-    public Date getCandleStopDate() {
+    public Date getStopDate() {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(this.candleDate);
+        cal.setTime(this.startDate);
         cal.add(Calendar.MINUTE, 30);
         return cal.getTime();
     }
 
-    public Date getCandleDate() {
-        return candleDate;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public Integer getCandleCount() {
-        return candleCount;
+    public Integer getCount() {
+        return count;
     }
 
-    public BigDecimal getCandleOpen() {
-        return candleOpen;
+    public BigDecimal getOpen() {
+        return open;
     }
 
-    public BigDecimal getCandleLow() {
-        return candleLow;
+    public BigDecimal getLow() {
+        return low;
     }
 
-    public BigDecimal getCandleHigh() {
-        return candleHigh;
+    public BigDecimal getHigh() {
+        return high;
     }
 
-    public BigDecimal getCandleClose() {
-        return candleClose;
+    public BigDecimal getClose() {
+        return close;
     }
 
-    public BigDecimal getCandleTotal() {
-        return candleTotal;
+    public BigDecimal getTotal() {
+        return total;
     }
 
 }

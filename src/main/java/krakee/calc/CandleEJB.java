@@ -38,7 +38,7 @@ public class CandleEJB {
     public void callCandle() {
         config.setRunCandle(false);
         this.calcDateList();
-        this.calcCandle();
+        //this.calcCandle();
         config.setRunCandle(true);
     }
 
@@ -49,14 +49,14 @@ public class CandleEJB {
         CandleDTO dto;
 
         FindIterable<Document> result = config.getCandleColl()
-                .find(eq("candleCount", 0L))
-                .sort(Sorts.ascending("candleDate"))
+                .find(eq("count", 0L))
+                .sort(Sorts.ascending("startDate"))
                 .limit(10);
         MongoCursor<Document> cursor = result.iterator();
         while (cursor.hasNext()) {
             dto = new CandleDTO(cursor.next());
 
-            LOGGER.log(Level.INFO, "calcCandleItem: " + dto.getCandleDate() + "-" + dto.getCandleStopDate());
+            LOGGER.log(Level.INFO, "startDate: " + dto.getStartDate() + "-" + dto.getStopDate());
 
             //this.calcCandleItem(dto);
         }
@@ -66,14 +66,13 @@ public class CandleEJB {
     private void calcCandleItem(CandleDTO dto) {
 
         FindIterable<Document> result = config.getTradePairColl()
-                .find(and(gte("timeDate", dto.getCandleDate()), lt("timeDate", dto.getCandleStopDate())))
+                .find(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate())))
                 .sort(Sorts.ascending("timeDate"));
-
         MongoCursor<Document> cursor = result.iterator();
         
         while (cursor.hasNext()) {
             TradePairDTO trade = new TradePairDTO(cursor.next());
-            LOGGER.log(Level.INFO, "calcCandleItem: " + trade.getTimeDate() + "-" + trade.getPrice());
+            //LOGGER.log(Level.INFO, "calcCandleItem: " + trade.getTimeDate() + "-" + trade.getPrice());
         }
     }
 
@@ -101,7 +100,6 @@ public class CandleEJB {
             cal.add(Calendar.MINUTE, 30);
             startDate = cal.getTime();
         }
-
     }
 
     /**
@@ -117,9 +115,9 @@ public class CandleEJB {
 
         if (config.getCandleColl().countDocuments() > 0) {
             startDate = config.getCandleColl().find()
-                    .sort(Sorts.descending("candleDate"))
+                    .sort(Sorts.descending("startDate"))
                     .first()
-                    .get("candleDate", Date.class);
+                    .get("startDate", Date.class);
 
             cal = Calendar.getInstance();
             cal.setTime(startDate);
