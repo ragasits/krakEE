@@ -31,7 +31,7 @@ public class CandleDTO {
     }
 
     public CandleDTO(Document doc) {
-        this.startDate = doc.getDate("date");
+        this.startDate = doc.getDate("startDate");
         this.count = doc.getInteger("count");
         this.open = ((Decimal128) doc.get("open")).bigDecimalValue();;
         this.low = ((Decimal128) doc.get("low")).bigDecimalValue();;
@@ -41,7 +41,7 @@ public class CandleDTO {
     }
 
     public Document getCandle() {
-        return new Document("date", this.startDate)
+        return new Document("startDate", this.startDate)
                 .append("count", this.count)
                 .append("open", this.open)
                 .append("low", this.low)

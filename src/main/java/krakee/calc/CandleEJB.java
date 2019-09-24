@@ -9,6 +9,7 @@ import static com.mongodb.client.model.Filters.lt;
 import com.mongodb.client.model.Sorts;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Asynchronous;
@@ -81,7 +82,7 @@ public class CandleEJB {
      */
     private void calcDateList() {
 
-        Calendar cal;
+        Calendar cal = Calendar.getInstance();
         Date startDate = this.getStartDate();
 
         //Stopdate
@@ -91,11 +92,10 @@ public class CandleEJB {
 
         //Store dates
         while (startDate.before(stopDate)) {
-            LOGGER.log(Level.INFO, "calcDateList " + startDate + "--" + stopDate);            
+            LOGGER.log(Level.INFO, "calcDateList " + startDate + "-" + stopDate);            
             
             CandleDTO dto = new CandleDTO(startDate);
             config.getCandleColl().insertOne(dto.getCandle());
-            cal = Calendar.getInstance();
             cal.setTime(startDate);
             cal.add(Calendar.MINUTE, 30);
             startDate = cal.getTime();
@@ -117,7 +117,7 @@ public class CandleEJB {
             startDate = config.getCandleColl().find()
                     .sort(Sorts.descending("startDate"))
                     .first()
-                    .get("startDate", Date.class);
+                    .getDate("startDate");
 
             cal = Calendar.getInstance();
             cal.setTime(startDate);
@@ -126,7 +126,7 @@ public class CandleEJB {
             startDate = config.getTradePairColl().find()
                     .sort(Sorts.ascending("timeDate"))
                     .first()
-                    .get("timeDate", Date.class);
+                    .getDate("timeDate");
 
             cal = Calendar.getInstance();
             cal.setTime(startDate);

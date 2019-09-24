@@ -38,6 +38,5 @@ public class TimerEjb {
         }
         
         LOGGER.log(Level.INFO, "Schedule Fired .... " + config.isRunTrade()+ " "+config.isRunCandle());
-
     }
 }

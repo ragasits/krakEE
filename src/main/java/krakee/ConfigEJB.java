@@ -34,33 +34,33 @@ public class ConfigEJB {
     private MongoCollection<Document> candleColl;
 
     /**
-     * Initiate MongoDB 
-     * Create collections and missing indexes
+     * Initiate MongoDB Create collections and missing indexes
      */
     @PostConstruct
     public void init() {
         this.client = MongoClients.create();
         this.database = this.client.getDatabase("krakEE");
-        
+
         this.tradePairColl = this.database.getCollection("tradepair");
-        if (!this.isIndex(tradePairColl, "last_-1")){
+        if (!this.isIndex(tradePairColl, "last_-1")) {
             this.tradePairColl.createIndex(Indexes.descending("last"));
         }
-        if (!this.isIndex(tradePairColl, "timeDate_1")){
+        if (!this.isIndex(tradePairColl, "timeDate_1")) {
             this.tradePairColl.createIndex(Indexes.ascending("timeDate"));
-        }        
+        }
 
         this.candleColl = this.database.getCollection("candle");
-        if (!this.isIndex(candleColl, "startDate_1")){
+        if (!this.isIndex(candleColl, "startDate_1")) {
             this.candleColl.createIndex(Indexes.ascending("startDate"), new IndexOptions().unique(true));
         }
     }
 
     /**
      * Is the index exists?
+     *
      * @param collection
      * @param indexName
-     * @return 
+     * @return
      */
     private boolean isIndex(MongoCollection<Document> collection, String indexName) {
         MongoCursor<Document> indexes = collection.listIndexes().iterator();

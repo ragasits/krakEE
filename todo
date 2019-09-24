@@ -1,8 +1,7 @@
-+ Create missing indexes
-+ Rename fields in the candleDTO (create shorter)
++ BUG: Convert timestamp to UTC - Not bug: Mongo show UTC, Date() show UTC+2 timezone.
++ BUG: Candle basic list is wrong (missing first eleements) - Timezone differences
++ BUG: calcDateList: Insert duplicate dates
 
-- BUG: calcDateList: Insert duplicate dates
-- BUG: Candle basic list is wrong (missing first eleements)
 - Create candle values in 30min
 - BUG: Manage rest errors
 - Dynamic scheduling (Depends from the trade number: min 10 sec, 1000>= sec/2, 1000< sec*2 )
