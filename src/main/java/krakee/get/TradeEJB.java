@@ -112,7 +112,7 @@ public class TradeEJB {
         try {
             URL url = new URL(config.getKrakenURL() + last);
             if (config.isProxyEnabled()) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(config.getKrakenURL(), config.getProxyPort()));
+                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(config.getProxyHostname(), config.getProxyPort()));
                 conn = (HttpURLConnection) url.openConnection(proxy);
             } else {
                 conn = (HttpURLConnection) url.openConnection();

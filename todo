@@ -1,6 +1,4 @@
-+ BUG: Convert timestamp to UTC - Not bug: Mongo show UTC, Date() show UTC+2 timezone.
-+ BUG: Candle basic list is wrong (missing first eleements) - Timezone differences
-+ BUG: calcDateList: Insert duplicate dates
++ BUG: Rest error with proxy
 
 - Create candle values in 30min
 - BUG: Manage rest errors
