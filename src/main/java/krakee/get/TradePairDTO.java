@@ -105,6 +105,12 @@ public class TradePairDTO {
     public BigDecimal getPrice() {
         return price;
     }
+
+    public String getBuySel() {
+        return buySel;
+    }
+    
+    
     
     
     

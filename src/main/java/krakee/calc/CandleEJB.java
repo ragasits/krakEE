@@ -9,8 +9,6 @@ import static com.mongodb.client.model.Filters.lt;
 import com.mongodb.client.model.Sorts;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
@@ -38,8 +36,8 @@ public class CandleEJB {
     @Asynchronous
     public void callCandle() {
         config.setRunCandle(false);
-        this.calcDateList();
-        //this.calcCandle();
+        //this.calcDateList();
+        this.calcCandle();
         config.setRunCandle(true);
     }
 
@@ -51,17 +49,14 @@ public class CandleEJB {
 
         FindIterable<Document> result = config.getCandleColl()
                 .find(eq("count", 0L))
-                .sort(Sorts.ascending("startDate"))
-                .limit(10);
-        MongoCursor<Document> cursor = result.iterator();
-        while (cursor.hasNext()) {
-            dto = new CandleDTO(cursor.next());
+                .sort(Sorts.ascending("startDate"));
 
-            LOGGER.log(Level.INFO, "startDate: " + dto.getStartDate() + "-" + dto.getStopDate());
-
-            //this.calcCandleItem(dto);
+        try (MongoCursor<Document> cursor = result.iterator()) {
+            while (cursor.hasNext()) {
+                dto = new CandleDTO(cursor.next());
+                this.calcCandleItem(dto);
+            }
         }
-        cursor.close();
     }
 
     private void calcCandleItem(CandleDTO dto) {
@@ -70,11 +65,27 @@ public class CandleEJB {
                 .find(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate())))
                 .sort(Sorts.ascending("timeDate"));
         MongoCursor<Document> cursor = result.iterator();
-        
+
+        Integer count = 0;
+        Integer countBuy = 0;
+        Integer countSell = 0;
+
         while (cursor.hasNext()) {
             TradePairDTO trade = new TradePairDTO(cursor.next());
-            //LOGGER.log(Level.INFO, "calcCandleItem: " + trade.getTimeDate() + "-" + trade.getPrice());
+            count++;
+
+            if (trade.getBuySel().equals("b")){
+                countBuy++;
+            } else if (trade.getBuySel().equals("s")){
+                countSell++;
+            }
         }
+        dto.setCount(count);
+        dto.setCountBuy(countBuy);
+        dto.setCountSell(countSell);
+        config.getCandleColl().replaceOne(
+                eq("_id", dto.getId()),               
+                dto.getCandle());
     }
 
     /**
@@ -92,8 +103,8 @@ public class CandleEJB {
 
         //Store dates
         while (startDate.before(stopDate)) {
-            LOGGER.log(Level.INFO, "calcDateList " + startDate + "-" + stopDate);            
-            
+            //LOGGER.log(Level.INFO, "calcDateList " + startDate + "-" + stopDate);            
+
             CandleDTO dto = new CandleDTO(startDate);
             config.getCandleColl().insertOne(dto.getCandle());
             cal.setTime(startDate);

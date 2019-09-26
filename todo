@@ -1,4 +1,5 @@
-+ BUG: Rest error with proxy
++ New fields to candle
++ Calculate counts (buy, sell, sum)
 
 - Create candle values in 30min
 - BUG: Manage rest errors
