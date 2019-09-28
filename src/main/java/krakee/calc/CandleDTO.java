@@ -26,6 +26,7 @@ public class CandleDTO {
     private BigDecimal total;
     private BigDecimal totalBuy;
     private BigDecimal totalSell;
+    private boolean calcCandle;
 
     public CandleDTO(Date candleDate) {
         this.id = null;
@@ -40,6 +41,7 @@ public class CandleDTO {
         this.total = BigDecimal.ZERO;
         this.totalBuy = BigDecimal.ZERO;
         this.totalSell = BigDecimal.ZERO;
+        this.calcCandle = false;
     }
 
     public CandleDTO(Document doc) {
@@ -55,6 +57,7 @@ public class CandleDTO {
         this.total = ((Decimal128) doc.get("total")).bigDecimalValue();
         this.totalBuy = ((Decimal128) doc.get("totalBuy")).bigDecimalValue();
         this.totalSell = ((Decimal128) doc.get("totalSell")).bigDecimalValue();
+        this.calcCandle = doc.getBoolean("calcCandle");
     }
 
     public Document getCandle() {
@@ -68,7 +71,8 @@ public class CandleDTO {
                 .append("close", this.close)
                 .append("total", this.total)
                 .append("totalBuy", this.totalBuy)
-                .append("totalSell", this.totalSell);
+                .append("totalSell", this.totalSell)
+                .append("calcCandle", this.calcCandle);
     }
 
     /**
@@ -169,6 +173,14 @@ public class CandleDTO {
 
     public ObjectId getId() {
         return id;
+    }
+
+    public boolean isCalcCandle() {
+        return calcCandle;
+    }
+
+    public void setCalcCandle(boolean calcCandle) {
+        this.calcCandle = calcCandle;
     }
     
     

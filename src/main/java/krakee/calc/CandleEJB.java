@@ -7,8 +7,10 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
 import static com.mongodb.client.model.Filters.lt;
 import com.mongodb.client.model.Sorts;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
@@ -16,6 +18,7 @@ import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.get.TradePairDTO;
 import org.bson.Document;
+import org.bson.types.Decimal128;
 
 /**
  * Calculate and store candle elements
@@ -36,30 +39,41 @@ public class CandleEJB {
     @Asynchronous
     public void callCandle() {
         config.setRunCandle(false);
-        //this.calcDateList();
+        this.calcDateList();
         this.calcCandle();
         config.setRunCandle(true);
     }
 
     /**
-     * Calculate candle values
+     * Calculate candle values Max 10K rows (Prevent the timeout?)
      */
     private void calcCandle() {
         CandleDTO dto;
+        int i = 0;
 
         FindIterable<Document> result = config.getCandleColl()
-                .find(eq("count", 0L))
-                .sort(Sorts.ascending("startDate"));
+                .find(eq("calcCandle", false))
+                .sort(Sorts.ascending("startDate"))
+                .limit(10000);
 
         try (MongoCursor<Document> cursor = result.iterator()) {
             while (cursor.hasNext()) {
                 dto = new CandleDTO(cursor.next());
                 this.calcCandleItem(dto);
+                i++;
             }
         }
+
+        LOGGER.log(Level.INFO, "calcCandle:" + i);
     }
 
+    /**
+     * Calculate CandelItem values
+     *
+     * @param dto
+     */
     private void calcCandleItem(CandleDTO dto) {
+        Document doc;
 
         FindIterable<Document> result = config.getTradePairColl()
                 .find(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate())))
@@ -69,22 +83,53 @@ public class CandleEJB {
         Integer count = 0;
         Integer countBuy = 0;
         Integer countSell = 0;
+        BigDecimal total = BigDecimal.ZERO;
+        BigDecimal totalBuy = BigDecimal.ZERO;
+        BigDecimal totalSell = BigDecimal.ZERO;
+
+        doc = result.sort(Sorts.ascending("timeDate")).first();
+        if (doc != null) {
+            dto.setOpen(((Decimal128) doc.get("price")).bigDecimalValue());
+        }
+
+        doc = result.sort(Sorts.descending("timeDate")).first();
+        if (doc != null) {
+            dto.setClose(((Decimal128) doc.get("price")).bigDecimalValue());
+        }
+
+        doc = result.sort(Sorts.ascending("price")).first();
+        if (doc != null) {
+            dto.setLow(((Decimal128) doc.get("price")).bigDecimalValue());
+        }
+
+        doc = result.sort(Sorts.descending("price")).first();
+        if (doc != null) {
+            dto.setHigh(((Decimal128) doc.get("price")).bigDecimalValue());
+        }
 
         while (cursor.hasNext()) {
             TradePairDTO trade = new TradePairDTO(cursor.next());
             count++;
+            total = total.add(trade.getTotal());
 
-            if (trade.getBuySel().equals("b")){
+            if (trade.getBuySel().equals("b")) {
                 countBuy++;
-            } else if (trade.getBuySel().equals("s")){
+                totalBuy = totalBuy.add(trade.getTotal());
+            } else if (trade.getBuySel().equals("s")) {
                 countSell++;
+                totalSell = totalSell.add(trade.getTotal());
             }
         }
         dto.setCount(count);
         dto.setCountBuy(countBuy);
         dto.setCountSell(countSell);
+        dto.setTotal(total);
+        dto.setTotalBuy(totalBuy);
+        dto.setTotalSell(totalSell);
+        dto.setCalcCandle(true);
+
         config.getCandleColl().replaceOne(
-                eq("_id", dto.getId()),               
+                eq("_id", dto.getId()),
                 dto.getCandle());
     }
 
@@ -103,7 +148,7 @@ public class CandleEJB {
 
         //Store dates
         while (startDate.before(stopDate)) {
-            //LOGGER.log(Level.INFO, "calcDateList " + startDate + "-" + stopDate);            
+            LOGGER.log(Level.INFO, "calcDateList " + startDate + "-" + stopDate);
 
             CandleDTO dto = new CandleDTO(startDate);
             config.getCandleColl().insertOne(dto.getCandle());

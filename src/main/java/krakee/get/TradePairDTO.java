@@ -93,6 +93,14 @@ public class TradePairDTO {
                 .append("last", this.last)
                 .append("lastDate", this.getLastDate());
     }
+    
+    /**
+     * calculate total value
+     * @return 
+     */
+    public BigDecimal getTotal(){
+        return this.price.multiply(this.volume);
+    }
 
     public BigDecimal getTime() {
         return time;
