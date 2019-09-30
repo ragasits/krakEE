@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>KrakEE</title>
+    </h:head>
+
+    <h:body>
+        <p:panel>
+            <p:panelGrid columns="8">
+                <p:outputLabel value="Run trade:"/>
+                <p:selectBooleanCheckbox value="#{indexBean.runTrade}" disabled="true"/>
+                <p:outputLabel value="Run candle:"/>
+                <p:selectBooleanCheckbox value="#{indexBean.runCandle}" disabled="true"/>
+                
+                <p:outputLabel value="Start:"/>
+                <p:calendar value="#{indexBean.startDate}"/>
+                
+                <p:outputLabel value="Stop:"/>
+                <p:calendar value="#{indexBean.stopDate}"/>
+                
+            </p:panelGrid>
+        </p:panel>
+        <p:panel>
+
+        </p:panel>
+
+    </h:body>
+</html>
+

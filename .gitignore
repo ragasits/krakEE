@@ -1,3 +1,5 @@
 /target
 /micro/dump
 /micro/payara-micro-5.193.jar
+/micro/*.war
+/micro/log

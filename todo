@@ -1,11 +1,10 @@
-+ Create candle values in 30min
-+ Add candle.calcCandle flag
++ Add WEB interface (JSF, Primeface)
++ Show runFlags + Candel filter dates
 
-- BUG: javax.ejb.TransactionRolledbackLocalException: Client's transaction aborted - after 2minutes
 - BUG: Manage rest errors
 - Dynamic scheduling (Depends from the trade number: min 10 sec, 1000>= sec/2, 1000< sec*2 )
-- Incremental candel calculation
-- WEB interface + Primefaces Candle diagram
+- Incremental candel calculation (last one is wrong)
+- Primefaces Candle diagram
 
 Future:
 --------

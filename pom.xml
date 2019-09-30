@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rgt</groupId>
     <artifactId>krakEE</artifactId>
-    <version>15</version>
+    <version>17</version>
     <packaging>war</packaging>
     <name>krakEE</name>
-    
+
     <dependencies>
         <dependency>
             <groupId>jakarta.platform</groupId>
@@ -21,11 +21,18 @@
             <version>3.11.0</version>
             <type>jar</type>
         </dependency>
+        
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>7.0</version>
+        </dependency>
+
     </dependencies>
 	
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <failOnMissingWebXml>true</failOnMissingWebXml>
     </properties>
 </project>

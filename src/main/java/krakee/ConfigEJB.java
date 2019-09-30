@@ -26,7 +26,7 @@ public class ConfigEJB {
     private final String proxyHostname = "pac.mytrium.com";
     private final Integer proxyPort = 8080;
     private boolean runTrade = false;
-    private boolean runCandle = true;
+    private boolean runCandle = false;
 
     private MongoClient client;
     private MongoDatabase database;
