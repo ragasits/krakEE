@@ -1,5 +1,4 @@
-+ Add WEB interface (JSF, Primeface)
-+ Show runFlags + Candel filter dates
++ BUG: startDate NullPointerException  - Missing candle collection
 
 - BUG: Manage rest errors
 - Dynamic scheduling (Depends from the trade number: min 10 sec, 1000>= sec/2, 1000< sec*2 )

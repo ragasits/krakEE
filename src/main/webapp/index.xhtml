@@ -17,17 +17,17 @@
                 <p:selectBooleanCheckbox value="#{indexBean.runTrade}" disabled="true"/>
                 <p:outputLabel value="Run candle:"/>
                 <p:selectBooleanCheckbox value="#{indexBean.runCandle}" disabled="true"/>
-                
+
                 <p:outputLabel value="Start:"/>
                 <p:calendar value="#{indexBean.startDate}"/>
-                
+
                 <p:outputLabel value="Stop:"/>
                 <p:calendar value="#{indexBean.stopDate}"/>
-                
+
             </p:panelGrid>
         </p:panel>
         <p:panel>
-
+            <p:chart type="ohlc" model="#{indexBean.ohlcModel}" style="width:400px;height:300px"/>
         </p:panel>
 
     </h:body>
