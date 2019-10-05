@@ -51,7 +51,7 @@ public class MongoEJB {
     public List<CandleDTO> getCandleChartFromCandle(Date startDate, Date stopDate) {
         MongoCursor<Document> cursor = config.getCandleColl()
                 .find(and(gte("startDate", startDate), lte("startDate", stopDate)))
-                .sort(Sorts.ascending("startDate"))
+                .sort(Sorts.descending("startDate"))
                 .iterator();
         
         List<CandleDTO> list = new ArrayList<>();

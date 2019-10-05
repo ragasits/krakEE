@@ -1,9 +1,13 @@
-+ BUG: startDate NullPointerException  - Missing candle collection
++ Primefaces Candle diagram
 
+- Candle chart: show dates (X)
+- Candle chart: show candle values
+- chart: show counts
+- chart: show sums
 - BUG: Manage rest errors
 - Dynamic scheduling (Depends from the trade number: min 10 sec, 1000>= sec/2, 1000< sec*2 )
 - Incremental candel calculation (last one is wrong)
-- Primefaces Candle diagram
+
 
 Future:
 --------

@@ -53,10 +53,15 @@ public class indexBean {
         ohlcModel.setTitle("Candle");
         ohlcModel.getAxis(AxisType.X).setLabel("Trades");
         ohlcModel.getAxis(AxisType.Y).setLabel("Candle");
+        ohlcModel.setCandleStick(true);
+        ohlcModel.setAnimate(true);
+        ohlcModel.setZoom(true);
         
         List<CandleDTO> CandleList = mongo.getCandleChartFromCandle(startDate, stopDate);
+
+        int i=0;
         for (CandleDTO dto : CandleList) {
-            OhlcChartSeries series = new OhlcChartSeries(dto.getId(), 
+            OhlcChartSeries series = new OhlcChartSeries(i++, 
                     dto.getOpen().doubleValue(),
                     dto.getHigh().doubleValue(),
                     dto.getLow().doubleValue(),
