@@ -22,6 +22,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 import krakee.ConfigEJB;
+import krakee.MyException;
 import org.bson.Document;
 
 /**
@@ -42,6 +43,7 @@ public class TradeEJB {
      */
     @Asynchronous
     public void callKrakenTrade() {
+
         config.setRunTrade(false);
 
         //Get last value from Mongo
@@ -53,16 +55,20 @@ public class TradeEJB {
             last = new TradePairDTO(document).getLast();
         }
 
-        JsonObject tradeJson = this.getRestTrade(last);
-        List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
+        try {
+            JsonObject tradeJson = this.getRestTrade(last);
+            List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
 
-        //Insert TradePairs to Mongo
-        for (TradePairDTO dto : pairList) {
-            config.getTradePairColl().insertOne(dto.getTradepair());
+            //Insert TradePairs to Mongo
+            for (TradePairDTO dto : pairList) {
+                config.getTradePairColl().insertOne(dto.getTradepair());
+            }
+
+            LOGGER.log(Level.INFO, "Trade Fired .... " + pairList.size() + " " + pairList.get(0).getLastDate());
+            config.setRunTrade(true);
+        } catch (MyException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
-
-        LOGGER.log(Level.INFO, "Trade Fired .... " + pairList.size() + " " + pairList.get(0).getLastDate());
-        config.setRunTrade(true);
     }
 
     /**
@@ -105,7 +111,7 @@ public class TradeEJB {
      *
      * @return
      */
-    private JsonObject getRestTrade(String last) {
+    private JsonObject getRestTrade(String last) throws MyException {
         JsonObject tradeO;
         HttpURLConnection conn;
 
@@ -123,8 +129,7 @@ public class TradeEJB {
 
             if (conn.getResponseCode() != 200) {
                 if (conn.getResponseCode() != 200) {
-                    throw new RuntimeException("Failed : HTTP error code : "
-                            + conn.getResponseCode());
+                    throw new MyException("getRestTrade: Failed : HTTP error code : " + conn.getResponseCode());
                 }
             }
 
@@ -134,13 +139,9 @@ public class TradeEJB {
 
             conn.disconnect();
         } catch (MalformedURLException ex) {
-            Logger.getLogger(TradeEJB.class
-                    .getName()).log(Level.SEVERE, null, ex);
-            return null;
+            throw new MyException("getRestTrade: " + ex.getMessage());
         } catch (IOException ex) {
-            Logger.getLogger(TradeEJB.class
-                    .getName()).log(Level.SEVERE, null, ex);
-            return null;
+            throw new MyException("getRestTrade: " + ex.getClass().toString()+": "+ex.getMessage());
         }
 
         return tradeO;

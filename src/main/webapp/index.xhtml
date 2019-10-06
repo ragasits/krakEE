@@ -19,10 +19,10 @@
                 <p:selectBooleanCheckbox value="#{indexBean.runCandle}" disabled="true"/>
 
                 <p:outputLabel value="Start:"/>
-                <p:calendar value="#{indexBean.startDate}"/>
+                <p:calendar value="#{indexBean.startDate}" showHour="true" showMinute="true"/>
 
                 <p:outputLabel value="Stop:"/>
-                <p:calendar value="#{indexBean.stopDate}"/>
+                <p:calendar value="#{indexBean.stopDate}" showHour="true" showMinute="true"/>
 
             </p:panelGrid>
         </p:panel>

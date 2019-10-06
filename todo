@@ -1,13 +1,13 @@
-+ Primefaces Candle diagram
++ BUG: Manage rest errors (Manage exception)
 
 - Candle chart: show dates (X)
 - Candle chart: show candle values
 - chart: show counts
 - chart: show sums
-- BUG: Manage rest errors
 - Dynamic scheduling (Depends from the trade number: min 10 sec, 1000>= sec/2, 1000< sec*2 )
-- Incremental candel calculation (last one is wrong)
-
+- Incremental candle calculation (last one is wrong)
+- Check: Are there missing candles?
+- Check: candle values
 
 Future:
 --------
@@ -19,9 +19,10 @@ Future:
 
 Optional:
 ---------
-- EJB + outer configuration file
+- EJB + outer configuration file (Exclipse microprofile?)
 - Put Kraken cert into the WAR (or outer parameter)
-- Use POJO with Mongodb
+- Use POJO with Mongodb (Next JakartaEE? )
 - Payara micro: use outer config file
+- Code review findbugs or sonar
 
 
