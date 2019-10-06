@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import krakee.ConfigEJB;
+import krakee.TimerEjb;
 import krakee.calc.CandleDTO;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.OhlcChartModel;
@@ -28,6 +29,8 @@ public class indexBean {
     ConfigEJB config;
     @EJB
     MongoEJB mongo;
+    @EJB
+    TimerEjb timer;
 
     private Date startDate;
     private Date stopDate;
@@ -100,5 +103,8 @@ public class indexBean {
     }
     
     
+    public long getTimerDuration(){
+        return timer.getDuration();
+    }
 
 }

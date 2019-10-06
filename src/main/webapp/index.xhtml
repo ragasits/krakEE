@@ -12,11 +12,14 @@
 
     <h:body>
         <p:panel>
-            <p:panelGrid columns="8">
+            <p:panelGrid columns="10">
                 <p:outputLabel value="Run trade:"/>
                 <p:selectBooleanCheckbox value="#{indexBean.runTrade}" disabled="true"/>
                 <p:outputLabel value="Run candle:"/>
                 <p:selectBooleanCheckbox value="#{indexBean.runCandle}" disabled="true"/>
+                
+                <p:outputLabel value="Timer duration:"/>
+                <p:outputLabel value="#{indexBean.timerDuration}"/>
 
                 <p:outputLabel value="Start:"/>
                 <p:calendar value="#{indexBean.startDate}" showHour="true" showMinute="true"/>

@@ -36,6 +36,8 @@ public class TradeEJB {
 
     @EJB
     ConfigEJB config;
+    
+    private int pairTradeSize=0;
 
     /**
      * Get, convert, store trades from Kraken
@@ -58,13 +60,14 @@ public class TradeEJB {
         try {
             JsonObject tradeJson = this.getRestTrade(last);
             List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
+            this.pairTradeSize = pairList.size();
 
             //Insert TradePairs to Mongo
             for (TradePairDTO dto : pairList) {
                 config.getTradePairColl().insertOne(dto.getTradepair());
             }
 
-            LOGGER.log(Level.INFO, "Trade Fired .... " + pairList.size() + " " + pairList.get(0).getLastDate());
+            LOGGER.log(Level.INFO, "Trade Fired .... " + this.pairTradeSize + " " + pairList.get(0).getLastDate());
             config.setRunTrade(true);
         } catch (MyException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
@@ -147,4 +150,10 @@ public class TradeEJB {
         return tradeO;
 
     }
+
+    public int getPairTradeSize() {
+        return pairTradeSize;
+    }
+    
+    
 }

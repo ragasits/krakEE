@@ -2,10 +2,13 @@ package krakee;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.Schedule;
 import javax.ejb.Singleton;
-import javax.ejb.Stateless;
+import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.TimerService;
 import krakee.calc.CandleEJB;
 import krakee.get.TradeEJB;
 
@@ -14,8 +17,8 @@ import krakee.get.TradeEJB;
  *
  * @author rgt
  */
-@Stateless
 @Singleton
+@Startup
 public class TimerEjb {
 
     static final Logger LOGGER = Logger.getLogger(TradeEJB.class.getCanonicalName());
@@ -27,8 +30,30 @@ public class TimerEjb {
     @EJB
     CandleEJB candle;
 
-    @Schedule(hour = "*", minute = "*", second = "*/10", info = "Every 10 second timer", timezone = "UTC", persistent = false)
-    public void printSchedule() {
+    @Resource
+    TimerService timerService;
+
+    private long duration;
+
+    /**
+     * Start default Timer
+     */
+    @PostConstruct
+    public void init() {
+        //If enabled the running
+        if (config.isRunTrade() || config.isRunCandle()) {
+            this.duration = config.getDefaultTimerDuration();
+            timerService.createTimer(this.duration, null);
+        }
+    }
+
+    /**
+     * Scheduled task, rescheduling
+     */
+    @Timeout
+    public void timeOut() {
+
+        //Run task
         if (config.isRunTrade()) {
             trade.callKrakenTrade();
         }
@@ -36,7 +61,23 @@ public class TimerEjb {
         if (config.isRunCandle()) {
             candle.callCandle();
         }
-        
-        LOGGER.log(Level.INFO, "Schedule Fired .... " + config.isRunTrade()+ " "+config.isRunCandle());
+
+        //Set next running
+        if (trade.getPairTradeSize() == 1000) {
+            this.duration = config.getDefaultTimerDuration();
+        } else {
+            this.duration = this.duration * 2;
+        }
+        timerService.createTimer(this.duration, null);
+
+        LOGGER.log(Level.INFO, "Schedule Fired .... "
+                + config.isRunTrade() + " "
+                + config.isRunCandle() + " "
+                + this.duration);
     }
+
+    public long getDuration() {
+        return duration;
+    }
+
 }

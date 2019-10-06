@@ -1,10 +1,9 @@
-+ BUG: Manage rest errors (Manage exception)
++ Dynamic scheduling (Depends from the trade number: min 10 sec)
 
 - Candle chart: show dates (X)
 - Candle chart: show candle values
 - chart: show counts
 - chart: show sums
-- Dynamic scheduling (Depends from the trade number: min 10 sec, 1000>= sec/2, 1000< sec*2 )
 - Incremental candle calculation (last one is wrong)
 - Check: Are there missing candles?
 - Check: candle values

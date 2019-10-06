@@ -25,6 +25,8 @@ public class ConfigEJB {
     private final boolean proxyEnabled = false;
     private final String proxyHostname = "pac.mytrium.com";
     private final Integer proxyPort = 8080;
+    private final long defaultTimerDuration = 10000L;    
+    
     private boolean runTrade = true;
     private boolean runCandle = false;
 
@@ -118,4 +120,7 @@ public class ConfigEJB {
         this.runCandle = runCandle;
     }
 
+    public long getDefaultTimerDuration() {
+        return defaultTimerDuration;
+    }
 }
