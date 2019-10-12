@@ -33,7 +33,7 @@ public class TimerEjb {
     @Resource
     TimerService timerService;
 
-    private long duration;
+    private int duration;
 
     /**
      * Start default Timer
@@ -43,7 +43,7 @@ public class TimerEjb {
         //If enabled the running
         if (config.isRunTrade() || config.isRunCandle()) {
             this.duration = config.getDefaultTimerDuration();
-            timerService.createTimer(this.duration, null);
+            timerService.createTimer(this.duration*1000, null);
         }
     }
 
@@ -63,12 +63,14 @@ public class TimerEjb {
         }
 
         //Set next running
-        if (trade.getPairTradeSize() == 1000) {
-            this.duration = config.getDefaultTimerDuration();
-        } else {
-            this.duration = this.duration * 2;
+        if (config.isRunTrade() || config.isRunCandle()) {
+            if ((trade.getPairTradeSize() == 1000) || (candle.getCandleSize() > 0)) {
+                this.duration = config.getDefaultTimerDuration();
+            } else {
+                this.duration = this.duration * 2;
+            }
         }
-        timerService.createTimer(this.duration, null);
+        timerService.createTimer(this.duration*1000, null);
 
         LOGGER.log(Level.INFO, "Schedule Fired .... "
                 + config.isRunTrade() + " "

@@ -34,44 +34,9 @@ public class indexBean {
 
     private Date startDate;
     private Date stopDate;
-    private OhlcChartModel ohlcModel;
 
-    public indexBean() {
-    }
-
-    @PostConstruct
-    public void init() {
-        this.stopDate = mongo.getLatesDateFromCandle();
-        if (this.stopDate != null) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(this.stopDate);
-            cal.add(Calendar.DATE, -3);
-            this.startDate = cal.getTime();
-        }
-        this.createOhlcModel();
-    }
     
-    private void createOhlcModel(){
-        ohlcModel = new OhlcChartModel();
-        ohlcModel.setTitle("Candle");
-        ohlcModel.getAxis(AxisType.X).setLabel("Trades");
-        ohlcModel.getAxis(AxisType.Y).setLabel("Candle");
-        ohlcModel.setCandleStick(true);
-        ohlcModel.setAnimate(true);
-        ohlcModel.setZoom(true);
-        
-        List<CandleDTO> CandleList = mongo.getCandleChartFromCandle(startDate, stopDate);
-
-        int i=0;
-        for (CandleDTO dto : CandleList) {
-            OhlcChartSeries series = new OhlcChartSeries(i++, 
-                    dto.getOpen().doubleValue(),
-                    dto.getHigh().doubleValue(),
-                    dto.getLow().doubleValue(),
-                    dto.getClose().doubleValue()
-            );
-            ohlcModel.add(series);
-        }
+    public indexBean() {
     }
 
     public boolean isRunTrade() {
@@ -98,13 +63,10 @@ public class indexBean {
         this.stopDate = stopDate;
     }
 
-    public OhlcChartModel getOhlcModel() {
-        return ohlcModel;
-    }
+
     
     
     public long getTimerDuration(){
         return timer.getDuration();
     }
-
 }

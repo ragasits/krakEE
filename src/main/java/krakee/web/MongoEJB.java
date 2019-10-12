@@ -23,6 +23,30 @@ public class MongoEJB {
 
     @EJB
     ConfigEJB config;
+    
+    
+    /**
+     * get last "limit" size candles
+     * @param limit
+     * @return 
+     */
+    public List<CandleDTO> getLastCandles(int limit) {
+        MongoCursor<Document> cursor = config.getCandleColl()
+                .find()
+                .sort(Sorts.descending("startDate"))
+                .limit(limit)
+                .iterator();
+        
+        List<CandleDTO> list = new ArrayList<>();
+         while (cursor.hasNext()) {
+             CandleDTO dto = new CandleDTO(cursor.next());
+             list.add(dto);
+         }
+        
+        return list;
+    }    
+    
+    
 
     /**
      * Get latest date value from Candle collection

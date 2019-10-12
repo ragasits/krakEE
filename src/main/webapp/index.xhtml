@@ -4,35 +4,40 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
     <h:head>
         <title>KrakEE</title>
     </h:head>
 
     <h:body>
-        <p:panel>
-            <p:panelGrid columns="10">
-                <p:outputLabel value="Run trade:"/>
-                <p:selectBooleanCheckbox value="#{indexBean.runTrade}" disabled="true"/>
-                <p:outputLabel value="Run candle:"/>
-                <p:selectBooleanCheckbox value="#{indexBean.runCandle}" disabled="true"/>
-                
-                <p:outputLabel value="Timer duration:"/>
-                <p:outputLabel value="#{indexBean.timerDuration}"/>
+        <f:view>
+            <h:form>
+                <ez:globalMenu/>
 
-                <p:outputLabel value="Start:"/>
-                <p:calendar value="#{indexBean.startDate}" showHour="true" showMinute="true"/>
+                <p:panel>
+                    <p:panelGrid columns="10">
+                        <p:outputLabel value="Run trade:"/>
+                        <p:selectBooleanCheckbox value="#{indexBean.runTrade}" disabled="true"/>
+                        <p:outputLabel value="Run candle:"/>
+                        <p:selectBooleanCheckbox value="#{indexBean.runCandle}" disabled="true"/>
 
-                <p:outputLabel value="Stop:"/>
-                <p:calendar value="#{indexBean.stopDate}" showHour="true" showMinute="true"/>
+                        <p:outputLabel value="Timer duration:"/>
+                        <p:outputLabel value="#{indexBean.timerDuration}"/>
 
-            </p:panelGrid>
-        </p:panel>
-        <p:panel>
-            <p:chart type="ohlc" model="#{indexBean.ohlcModel}"/>
-        </p:panel>
+                        <p:outputLabel value="Start:"/>
+                        <p:calendar value="#{indexBean.startDate}" showHour="true" showMinute="true"/>
 
+                        <p:outputLabel value="Stop:"/>
+                        <p:calendar value="#{indexBean.stopDate}" showHour="true" showMinute="true"/>
+
+                    </p:panelGrid>
+                </p:panel>
+
+
+            </h:form>
+        </f:view>
     </h:body>
 </html>
 

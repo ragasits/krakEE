@@ -25,9 +25,9 @@ public class ConfigEJB {
     private final boolean proxyEnabled = false;
     private final String proxyHostname = "pac.mytrium.com";
     private final Integer proxyPort = 8080;
-    private final long defaultTimerDuration = 10000L;    
-    
-    private boolean runTrade = true;
+    private final int defaultTimerDuration = 10; //in sec
+
+    private boolean runTrade = false;
     private boolean runCandle = false;
 
     private MongoClient client;
@@ -55,6 +55,10 @@ public class ConfigEJB {
         if (!this.isIndex(candleColl, "startDate_1")) {
             this.candleColl.createIndex(Indexes.ascending("startDate"), new IndexOptions().unique(true));
         }
+        if (!this.isIndex(candleColl, "calcCandle_1")) {
+            this.candleColl.createIndex(Indexes.ascending("calcCandle"));
+        }
+
     }
 
     /**
@@ -120,7 +124,11 @@ public class ConfigEJB {
         this.runCandle = runCandle;
     }
 
-    public long getDefaultTimerDuration() {
+    /**
+     * Timer duration in sec!
+     * @return 
+     */
+    public int getDefaultTimerDuration() {
         return defaultTimerDuration;
     }
 }

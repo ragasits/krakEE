@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <h:head>
+        <title>KrakEE</title>
+    </h:head>
+
+    <h:body>
+        <f:view>
+            <h:form>
+                <ez:globalMenu/>
+            </h:form>
+            
+            <h:form id="form1">
+                <p:panel>
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="Query" action="#{candleBean.onCandleQuery()}" update="tbl" id="btn" />
+                        <p:outputLabel value="Limit:"/>
+                        <p:spinner value="#{candleBean.queryLimit}"/>
+                    </h:panelGrid>
+                </p:panel>
+
+                <p:blockUI block="form1" trigger="btn">
+                    <p:graphicImage value="/resources/ajax-loader.gif" />
+                </p:blockUI>                 
+
+                <p:panel>
+                    <p:dataTable value="#{candleBean.candleList}" var="item" tableStyle="width:auto" id="tbl">
+                        <p:column headerText="calc">
+                            <p:selectBooleanCheckbox value="#{item.calcCandle}" disabled="true"/>
+                        </p:column>                        
+
+                        <p:column headerText="startDate">
+                            <p:outputLabel value="#{item.startDate}"/>
+                        </p:column>
+
+                        <p:column headerText="count">
+                            <p:outputLabel value="#{item.count}"/>
+                        </p:column>                        
+
+                        <p:column headerText="total">
+                            <p:outputLabel value="#{item.formatTotal}"/>
+                        </p:column>                                                
+
+                        <p:column headerText="open">
+                            <p:outputLabel value="#{item.open}"/>
+                        </p:column>                            
+
+                        <p:column headerText="close">
+                            <p:outputLabel value="#{item.close}"/>
+                        </p:column>                                                    
+
+                        <p:column headerText="high">
+                            <p:outputLabel value="#{item.high}"/>
+                        </p:column>                                
+
+                        <p:column headerText="low">
+                            <p:outputLabel value="#{item.low}"/>
+                        </p:column>                                                        
+
+                    </p:dataTable>
+                </p:panel>
+
+                <p:panel>
+                    <p:chart type="ohlc" model="#{candleBean.ohlcModel}" rendered="false"/>
+                </p:panel>                
+            </h:form>
+        </f:view>                
+    </h:body>
+</html>
+

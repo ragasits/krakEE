@@ -1,5 +1,8 @@
-+ Dynamic scheduling (Depends from the trade number: min 10 sec)
++ Finetunig scheduling
++ Show duration in sec
++ Show last calculated candle's datas
 
+- BUG: Candle query do not refresh the grid
 - Candle chart: show dates (X)
 - Candle chart: show candle values
 - chart: show counts
@@ -19,9 +22,10 @@ Future:
 Optional:
 ---------
 - EJB + outer configuration file (Exclipse microprofile?)
+- Payara micro: use outer config file
 - Put Kraken cert into the WAR (or outer parameter)
 - Use POJO with Mongodb (Next JakartaEE? )
-- Payara micro: use outer config file
 - Code review findbugs or sonar
+- EJB timeout exception - Move to Bath processing?
 
 

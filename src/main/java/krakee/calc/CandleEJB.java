@@ -33,6 +33,8 @@ public class CandleEJB {
     @EJB
     ConfigEJB config;
 
+    private int candleSize = 5000;
+
     /**
      * Call candle generation methods
      */
@@ -53,8 +55,8 @@ public class CandleEJB {
 
         FindIterable<Document> result = config.getCandleColl()
                 .find(eq("calcCandle", false))
-                .sort(Sorts.ascending("startDate"))
-                .limit(10000);
+                //.sort(Sorts.ascending("startDate"))
+                .limit(5000);
 
         try (MongoCursor<Document> cursor = result.iterator()) {
             while (cursor.hasNext()) {
@@ -63,7 +65,7 @@ public class CandleEJB {
                 i++;
             }
         }
-
+        this.candleSize = i;
         LOGGER.log(Level.INFO, "calcCandle:" + i);
     }
 
@@ -199,6 +201,10 @@ public class CandleEJB {
             cal.set(Calendar.MILLISECOND, 0);
         }
         return cal.getTime();
+    }
+
+    public int getCandleSize() {
+        return candleSize;
     }
 
 }

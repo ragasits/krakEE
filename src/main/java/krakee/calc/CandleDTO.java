@@ -1,6 +1,7 @@
 package krakee.calc;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import org.bson.Document;
@@ -86,6 +87,11 @@ public class CandleDTO {
         cal.add(Calendar.MINUTE, 30);
         return cal.getTime();
     }
+    
+    public BigDecimal getFormatTotal(){
+        return this.total.setScale(0, RoundingMode.HALF_UP);
+    }
+    
 
     public Date getStartDate() {
         return startDate;
