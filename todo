@@ -1,6 +1,4 @@
-+ Finetunig scheduling
-+ Show duration in sec
-+ Show last calculated candle's datas
++ BUG (ParayaMicro): CreateException: Persistent timers are not supported in this setup
 
 - BUG: Candle query do not refresh the grid
 - Candle chart: show dates (X)

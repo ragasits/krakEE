@@ -8,6 +8,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
+import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import krakee.calc.CandleEJB;
 import krakee.get.TradeEJB;
@@ -43,7 +44,9 @@ public class TimerEjb {
         //If enabled the running
         if (config.isRunTrade() || config.isRunCandle()) {
             this.duration = config.getDefaultTimerDuration();
-            timerService.createTimer(this.duration*1000, null);
+            
+            //timerService.createTimer(this.duration*1000, null);
+            timerService.createSingleActionTimer(this.duration*1000, new TimerConfig(null, false));
         }
     }
 
@@ -70,7 +73,8 @@ public class TimerEjb {
                 this.duration = this.duration * 2;
             }
         }
-        timerService.createTimer(this.duration*1000, null);
+        //timerService.createTimer(this.duration*1000, null);
+         timerService.createSingleActionTimer(this.duration*1000, new TimerConfig(null, false));
 
         LOGGER.log(Level.INFO, "Schedule Fired .... "
                 + config.isRunTrade() + " "

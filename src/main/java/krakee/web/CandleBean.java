@@ -53,6 +53,10 @@ public class CandleBean {
     }
 
     public List<CandleDTO> getCandleList() {
+        if (this.candleList != null) {
+            System.out.println("aaaaa:"+this.getCandleList().size());
+        }
+        
         return this.candleList;
     }
 

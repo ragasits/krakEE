@@ -20,7 +20,9 @@
             <h:form id="form1">
                 <p:panel>
                     <h:panelGrid columns="3">
-                        <p:commandButton value="Query" action="#{candleBean.onCandleQuery()}" update="tbl" id="btn" />
+                        <p:commandButton value="Query"  id="btn" 
+                                         action="#{candleBean.onCandleQuery()}" 
+                                         update="tbl" />
                         <p:outputLabel value="Limit:"/>
                         <p:spinner value="#{candleBean.queryLimit}"/>
                     </h:panelGrid>
@@ -30,7 +32,7 @@
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>                 
 
-                <p:panel>
+                <p:panel id="panel1">
                     <p:dataTable value="#{candleBean.candleList}" var="item" tableStyle="width:auto" id="tbl">
                         <p:column headerText="calc">
                             <p:selectBooleanCheckbox value="#{item.calcCandle}" disabled="true"/>
