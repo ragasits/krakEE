@@ -1,6 +1,5 @@
-+ BUG (ParayaMicro): CreateException: Persistent timers are not supported in this setup
++ BUG: Candle query do not refresh the grid
 
-- BUG: Candle query do not refresh the grid
 - Candle chart: show dates (X)
 - Candle chart: show candle values
 - chart: show counts

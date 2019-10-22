@@ -1,7 +1,9 @@
 package krakee.web;
 
+import java.io.Serializable;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import krakee.calc.CandleDTO;
 import org.primefaces.model.chart.AxisType;
@@ -12,13 +14,15 @@ import org.primefaces.model.chart.OhlcChartSeries;
  *
  * @author rgt
  */
+@SessionScoped
 @Named(value = "candleBean")
-public class CandleBean {
+public class CandleBean implements Serializable {
+
 
     @EJB
     MongoEJB mongo;
 
-    private List<CandleDTO> candleList = null;
+    private List<CandleDTO> candleList;
     private int queryLimit = 100;
     private OhlcChartModel ohlcModel;
 
@@ -53,10 +57,10 @@ public class CandleBean {
     }
 
     public List<CandleDTO> getCandleList() {
-        if (this.candleList != null) {
-            System.out.println("aaaaa:"+this.getCandleList().size());
+        System.out.println("update fired");
+        if (this.candleList!=null){
+           System.out.println("Fired:"+this.candleList.size()); 
         }
-        
         return this.candleList;
     }
 
