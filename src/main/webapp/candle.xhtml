@@ -16,13 +16,14 @@
             <h:form>
                 <ez:globalMenu/>
             </h:form>
-            
+
             <h:form id="form1">
                 <p:panel>
                     <h:panelGrid columns="3">
                         <p:commandButton value="Query"  id="btn" 
                                          action="#{candleBean.onCandleQuery()}" 
-                                         update="tbl" />
+                                         update="tbl,ohlc"  >
+                        </p:commandButton>
                         <p:outputLabel value="Limit:"/>
                         <p:spinner value="#{candleBean.queryLimit}"/>
                     </h:panelGrid>
@@ -70,7 +71,7 @@
                 </p:panel>
 
                 <p:panel>
-                    <p:chart type="ohlc" model="#{candleBean.ohlcModel}" rendered="false"/>
+                    <p:chart type="ohlc" model="#{candleBean.ohlcModel}" id="ohlc" />
                 </p:panel>                
             </h:form>
         </f:view>                

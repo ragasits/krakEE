@@ -1,6 +1,8 @@
-+ BUG: Candle query do not refresh the grid
-
-- Candle chart: show dates (X)
++ Candle chart: show dates (X)
++ Candle chart: Show empty chart
+ 
+- BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
+- Trade: Show, query records
 - Candle chart: show candle values
 - chart: show counts
 - chart: show sums
