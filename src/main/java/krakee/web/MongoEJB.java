@@ -12,6 +12,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.calc.CandleDTO;
+import krakee.get.TradePairDTO;
 import org.bson.Document;
 
 /**
@@ -23,6 +24,29 @@ public class MongoEJB {
 
     @EJB
     ConfigEJB config;
+
+    /**
+     * get Last limit size trade pairs
+     * @param limit
+     * @return 
+     */
+    public List<TradePairDTO> getLastTrades(int limit) {
+        MongoCursor<Document> cursor = config.getTradePairColl()
+                .find()
+                .sort(Sorts.descending("timeDate"))
+                .limit(limit)
+                .iterator();
+        
+        List<TradePairDTO> list = new ArrayList<>();
+         while (cursor.hasNext()) {
+             TradePairDTO dto = new TradePairDTO(cursor.next());
+             list.add(dto);
+         }
+        
+        return list;
+    }    
+    
+    
     
     
     /**

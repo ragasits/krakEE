@@ -22,7 +22,7 @@
                     <h:panelGrid columns="3">
                         <p:commandButton value="Query"  id="btn" 
                                          action="#{candleBean.onCandleQuery()}" 
-                                         update="tbl,ohlc"  >
+                                         update="tbl,ohlc" >
                         </p:commandButton>
                         <p:outputLabel value="Limit:"/>
                         <p:spinner value="#{candleBean.queryLimit}"/>
@@ -31,48 +31,51 @@
 
                 <p:blockUI block="form1" trigger="btn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
-                </p:blockUI>                 
+                </p:blockUI>    
 
-                <p:panel id="panel1">
-                    <p:dataTable value="#{candleBean.candleList}" var="item" tableStyle="width:auto" id="tbl">
-                        <p:column headerText="calc">
-                            <p:selectBooleanCheckbox value="#{item.calcCandle}" disabled="true"/>
-                        </p:column>                        
+                <p:accordionPanel multiple="true">
+                    <p:tab title="Chart">
+                        <p:chart type="ohlc" model="#{candleBean.ohlcModel}" id="ohlc" />
+                    </p:tab>
 
-                        <p:column headerText="startDate">
-                            <p:outputLabel value="#{item.startDate}"/>
-                        </p:column>
+                    <p:tab title="Data">
+                        <p:dataTable value="#{candleBean.candleList}" var="item" tableStyle="width:auto" id="tbl">
+                            <p:column headerText="calc">
+                                <p:selectBooleanCheckbox value="#{item.calcCandle}" disabled="true"/>
+                            </p:column>                        
 
-                        <p:column headerText="count">
-                            <p:outputLabel value="#{item.count}"/>
-                        </p:column>                        
+                            <p:column headerText="startDate">
+                                <p:outputLabel value="#{item.startDate}"/>
+                            </p:column>
 
-                        <p:column headerText="total">
-                            <p:outputLabel value="#{item.formatTotal}"/>
-                        </p:column>                                                
+                            <p:column headerText="count">
+                                <p:outputLabel value="#{item.count}"/>
+                            </p:column>                        
 
-                        <p:column headerText="open">
-                            <p:outputLabel value="#{item.open}"/>
-                        </p:column>                            
+                            <p:column headerText="total">
+                                <p:outputLabel value="#{item.formatTotal}"/>
+                            </p:column>                                                
 
-                        <p:column headerText="close">
-                            <p:outputLabel value="#{item.close}"/>
-                        </p:column>                                                    
+                            <p:column headerText="open">
+                                <p:outputLabel value="#{item.open}"/>
+                            </p:column>                            
 
-                        <p:column headerText="high">
-                            <p:outputLabel value="#{item.high}"/>
-                        </p:column>                                
+                            <p:column headerText="close">
+                                <p:outputLabel value="#{item.close}"/>
+                            </p:column>                                                    
 
-                        <p:column headerText="low">
-                            <p:outputLabel value="#{item.low}"/>
-                        </p:column>                                                        
+                            <p:column headerText="high">
+                                <p:outputLabel value="#{item.high}"/>
+                            </p:column>                                
 
-                    </p:dataTable>
-                </p:panel>
+                            <p:column headerText="low">
+                                <p:outputLabel value="#{item.low}"/>
+                            </p:column>                                                        
 
-                <p:panel>
-                    <p:chart type="ohlc" model="#{candleBean.ohlcModel}" id="ohlc" />
-                </p:panel>                
+                        </p:dataTable>
+
+                    </p:tab>
+                </p:accordionPanel>
             </h:form>
         </f:view>                
     </h:body>

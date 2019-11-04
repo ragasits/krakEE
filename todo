@@ -1,14 +1,16 @@
-+ Candle chart: show dates (X)
-+ Candle chart: Show empty chart
- 
++ Trade: Show, query records
++ Candle: Add accordionPanel
+
+- BUG Candle: Cannot find component for expression "tbl" referenced from "form1:btn".
+- change tradepairDTO.total to tradepairDTO.volume (Kraken name)
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
-- Trade: Show, query records
 - Candle chart: show candle values
 - chart: show counts
 - chart: show sums
 - Incremental candle calculation (last one is wrong)
 - Check: Are there missing candles?
 - Check: candle values
+- Check trade values: Aggregation LastDate equal max(timeDate) 
 
 Future:
 --------
