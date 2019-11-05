@@ -117,6 +117,10 @@ public class TradePairDTO {
     public String getBuySel() {
         return buySel;
     }
+
+    public BigDecimal getVolume() {
+        return volume;
+    }
     
     
     

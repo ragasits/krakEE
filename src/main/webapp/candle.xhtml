@@ -53,7 +53,9 @@
                             </p:column>                        
 
                             <p:column headerText="total">
-                                <p:outputLabel value="#{item.formatTotal}"/>
+                                <p:outputLabel value="#{item.total}">
+                                    <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                                </p:outputLabel>
                             </p:column>                                                
 
                             <p:column headerText="open">
@@ -70,10 +72,32 @@
 
                             <p:column headerText="low">
                                 <p:outputLabel value="#{item.low}"/>
-                            </p:column>                                                        
+                            </p:column>   
 
+                            <p:column style="width:16px">
+                                <p:rowToggler />
+                            </p:column>                            
+
+                            <p:rowExpansion>
+                                <p:panelGrid columns="3">
+                                    <p:outputLabel value=""/>
+                                    <p:outputLabel value="Buy" style="font-weight: bold"/>
+                                    <p:outputLabel value="Sell" style="font-weight: bold"/>
+
+                                    <p:outputLabel value="Count" style="font-weight: bold"/>
+                                    <p:outputLabel value="#{item.countBuy}"/>
+                                    <p:outputLabel value="#{item.countSell}"/>                                    
+
+                                    <p:outputLabel value="Total" style="font-weight: bold"/>
+                                    <p:outputLabel value="#{item.totalBuy}">
+                                        <f:convertNumber maxFractionDigits="0" />
+                                    </p:outputLabel>
+                                    <p:outputLabel value="#{item.totalSell}">
+                                        <f:convertNumber maxFractionDigits="0" />
+                                    </p:outputLabel>
+                                </p:panelGrid> 
+                            </p:rowExpansion>
                         </p:dataTable>
-
                     </p:tab>
                 </p:accordionPanel>
             </h:form>

@@ -1,6 +1,7 @@
-+ BUG Candle: Cannot find component for expression "tbl" referenced from "form1:btn".
++ Show tradePairDTO.volume
++ Show: candle counts, totals
 
-- change tradepairDTO.total to tradepairDTO.volume (Kraken name)
+
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 - Candle chart: show candle values
 - chart: show counts
