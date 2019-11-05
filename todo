@@ -1,7 +1,5 @@
-+ Trade: Show, query records
-+ Candle: Add accordionPanel
++ BUG Candle: Cannot find component for expression "tbl" referenced from "form1:btn".
 
-- BUG Candle: Cannot find component for expression "tbl" referenced from "form1:btn".
 - change tradepairDTO.total to tradepairDTO.volume (Kraken name)
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 - Candle chart: show candle values

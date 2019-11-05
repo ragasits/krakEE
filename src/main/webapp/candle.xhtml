@@ -22,7 +22,7 @@
                     <h:panelGrid columns="3">
                         <p:commandButton value="Query"  id="btn" 
                                          action="#{candleBean.onCandleQuery()}" 
-                                         update="tbl,ohlc" >
+                                         update=":form1:panel1:tbl,:form1:panel1:ohlc" >
                         </p:commandButton>
                         <p:outputLabel value="Limit:"/>
                         <p:spinner value="#{candleBean.queryLimit}"/>
@@ -33,7 +33,7 @@
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
 
-                <p:accordionPanel multiple="true">
+                <p:accordionPanel id="panel1" >
                     <p:tab title="Chart">
                         <p:chart type="ohlc" model="#{candleBean.ohlcModel}" id="ohlc" />
                     </p:tab>
