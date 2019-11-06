@@ -1,7 +1,6 @@
 package krakee.calc;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.Date;
 import org.bson.Document;
@@ -27,6 +26,9 @@ public class CandleDTO {
     private BigDecimal total;
     private BigDecimal totalBuy;
     private BigDecimal totalSell;
+    private BigDecimal volume;
+    private BigDecimal volumeBuy;
+    private BigDecimal volumeSell;
     private boolean calcCandle;
 
     public CandleDTO(Date candleDate) {
@@ -42,6 +44,9 @@ public class CandleDTO {
         this.total = BigDecimal.ZERO;
         this.totalBuy = BigDecimal.ZERO;
         this.totalSell = BigDecimal.ZERO;
+        this.volume = BigDecimal.ZERO;
+        this.volumeBuy = BigDecimal.ZERO;
+        this.volumeSell = BigDecimal.ZERO;
         this.calcCandle = false;
     }
 
@@ -58,6 +63,9 @@ public class CandleDTO {
         this.total = ((Decimal128) doc.get("total")).bigDecimalValue();
         this.totalBuy = ((Decimal128) doc.get("totalBuy")).bigDecimalValue();
         this.totalSell = ((Decimal128) doc.get("totalSell")).bigDecimalValue();
+        this.volume = ((Decimal128) doc.get("volume")).bigDecimalValue();
+        this.volumeBuy = ((Decimal128) doc.get("volumeBuy")).bigDecimalValue();
+        this.volumeSell = ((Decimal128) doc.get("volumeSell")).bigDecimalValue();        
         this.calcCandle = doc.getBoolean("calcCandle");
     }
 
@@ -73,6 +81,9 @@ public class CandleDTO {
                 .append("total", this.total)
                 .append("totalBuy", this.totalBuy)
                 .append("totalSell", this.totalSell)
+                .append("volume", this.volume)
+                .append("volumeBuy", this.volumeBuy)
+                .append("volumeSell", this.volumeSell)                
                 .append("calcCandle", this.calcCandle);
     }
 
@@ -88,11 +99,6 @@ public class CandleDTO {
         return cal.getTime();
     }
     
-    public BigDecimal getFormatTotal(){
-        return this.total.setScale(0, RoundingMode.HALF_UP);
-    }
-    
-
     public Date getStartDate() {
         return startDate;
     }
@@ -187,6 +193,30 @@ public class CandleDTO {
 
     public void setCalcCandle(boolean calcCandle) {
         this.calcCandle = calcCandle;
+    }
+
+    public BigDecimal getVolume() {
+        return volume;
+    }
+
+    public void setVolume(BigDecimal volume) {
+        this.volume = volume;
+    }
+
+    public BigDecimal getVolumeBuy() {
+        return volumeBuy;
+    }
+
+    public void setVolumeBuy(BigDecimal volumeBuy) {
+        this.volumeBuy = volumeBuy;
+    }
+
+    public BigDecimal getVolumeSell() {
+        return volumeSell;
+    }
+
+    public void setVolumeSell(BigDecimal volumeSell) {
+        this.volumeSell = volumeSell;
     }
     
     

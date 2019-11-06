@@ -28,7 +28,7 @@ public class ConfigEJB {
     private final int defaultTimerDuration = 10; //in sec
 
     private boolean runTrade = false;
-    private boolean runCandle = false;
+    private boolean runCandle = true;
 
     private MongoClient client;
     private MongoDatabase database;

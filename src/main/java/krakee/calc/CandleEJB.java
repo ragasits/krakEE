@@ -88,6 +88,9 @@ public class CandleEJB {
         BigDecimal total = BigDecimal.ZERO;
         BigDecimal totalBuy = BigDecimal.ZERO;
         BigDecimal totalSell = BigDecimal.ZERO;
+        BigDecimal volume = BigDecimal.ZERO;
+        BigDecimal volumeBuy = BigDecimal.ZERO;
+        BigDecimal volumeSell = BigDecimal.ZERO;
 
         doc = result.sort(Sorts.ascending("timeDate")).first();
         if (doc != null) {
@@ -113,13 +116,16 @@ public class CandleEJB {
             TradePairDTO trade = new TradePairDTO(cursor.next());
             count++;
             total = total.add(trade.getTotal());
+            volume = volume.add(trade.getVolume());
 
             if (trade.getBuySel().equals("b")) {
                 countBuy++;
                 totalBuy = totalBuy.add(trade.getTotal());
+                volumeBuy = volumeBuy.add(trade.getVolume());
             } else if (trade.getBuySel().equals("s")) {
                 countSell++;
                 totalSell = totalSell.add(trade.getTotal());
+                volumeSell = volumeBuy.add(trade.getVolume());
             }
         }
         dto.setCount(count);
@@ -128,6 +134,9 @@ public class CandleEJB {
         dto.setTotal(total);
         dto.setTotalBuy(totalBuy);
         dto.setTotalSell(totalSell);
+        dto.setVolume(volume);
+        dto.setVolumeBuy(volumeBuy);
+        dto.setVolumeSell(volumeSell);
         dto.setCalcCandle(true);
 
         config.getCandleColl().replaceOne(

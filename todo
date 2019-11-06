@@ -1,6 +1,4 @@
-+ Show tradePairDTO.volume
-+ Show: candle counts, totals
-
++ Add candle.volume fields
 
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 - Candle chart: show candle values
