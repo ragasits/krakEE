@@ -99,6 +99,10 @@ public class CandleDTO {
         return cal.getTime();
     }
     
+    public String getOHLCtMsg(){
+        return "O:"+this.open+" H:"+this.high+" L:"+this.low+" C:"+this.close;
+    }
+    
     public Date getStartDate() {
         return startDate;
     }

@@ -1,7 +1,6 @@
-+ Add candle.volume fields
++ Candle chart: show candle values
 
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
-- Candle chart: show candle values
 - chart: show counts
 - chart: show sums
 - Incremental candle calculation (last one is wrong)

@@ -18,6 +18,8 @@
             </h:form>
 
             <h:form id="form1">
+                <p:growl id="growl" showDetail="true" />
+                
                 <p:panel>
                     <h:panelGrid columns="3">
                         <p:commandButton value="Query"  id="btn" 
@@ -32,10 +34,12 @@
                 <p:blockUI block="form1" trigger="btn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
-
-                <p:accordionPanel id="panel1" >
+                
+                <p:accordionPanel id="panel1" multiple="true">
                     <p:tab title="Chart">
-                        <p:chart type="ohlc" model="#{candleBean.ohlcModel}" id="ohlc" />
+                        <p:chart type="ohlc" model="#{candleBean.ohlcModel}" id="ohlc" >
+                            <p:ajax event="itemSelect" listener="#{candleBean.candleSelect}" update=":form1:growl" />
+                        </p:chart>
                     </p:tab>
 
                     <p:tab title="Data">
@@ -61,11 +65,7 @@
                             <p:column headerText="open">
                                 <p:outputLabel value="#{item.open}"/>
                             </p:column>                            
-
-                            <p:column headerText="close">
-                                <p:outputLabel value="#{item.close}"/>
-                            </p:column>                                                    
-
+                            
                             <p:column headerText="high">
                                 <p:outputLabel value="#{item.high}"/>
                             </p:column>                                
@@ -73,6 +73,10 @@
                             <p:column headerText="low">
                                 <p:outputLabel value="#{item.low}"/>
                             </p:column>   
+
+                            <p:column headerText="close">
+                                <p:outputLabel value="#{item.close}"/>
+                            </p:column>                                                    
 
                             <p:column style="width:16px">
                                 <p:rowToggler />
@@ -87,7 +91,7 @@
                                     <p:outputLabel value="Count" style="font-weight: bold"/>
                                     <p:outputLabel value="#{item.countBuy}"/>
                                     <p:outputLabel value="#{item.countSell}"/>                                    
-                                    
+
                                     <p:outputLabel value="Volume" style="font-weight: bold"/>
                                     <p:outputLabel value="#{item.volumeBuy}"/>
                                     <p:outputLabel value="#{item.volumeSell}"/>                                    

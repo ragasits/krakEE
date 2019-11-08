@@ -5,8 +5,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import krakee.calc.CandleDTO;
+import org.primefaces.event.ItemSelectEvent;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.DateAxis;
 import org.primefaces.model.chart.OhlcChartModel;
@@ -29,7 +32,7 @@ public class CandleBean implements Serializable {
 
     @PostConstruct
     public void init() {
-       this.createOhlcModel();
+        this.createOhlcModel();
     }
 
     public void onCandleQuery() {
@@ -41,13 +44,11 @@ public class CandleBean implements Serializable {
 
         ohlcModel = new OhlcChartModel();
         ohlcModel.setTitle("Candle");
-        //ohlcModel.getAxis(AxisType.X).setLabel("Trades");
         ohlcModel.getAxis(AxisType.Y).setLabel("Candle");
 
         ohlcModel.getAxes().put(AxisType.X, new DateAxis("Trades"));
-        //ohlcModel.getAxes().put(AxisType.Y, new Axis("Candle"));
         ohlcModel.setCandleStick(true);
-        ohlcModel.setAnimate(true);
+        //ohlcModel.setAnimate(true);
         ohlcModel.setZoom(true);
 
         ohlcModel.clear();
@@ -66,6 +67,18 @@ public class CandleBean implements Serializable {
                 ohlcModel.add(series);
             }
         }
+    }
+
+    /**
+     * Show selected candle element
+     * @param event 
+     */
+    public void candleSelect(ItemSelectEvent event) {
+        int id = this.candleList.size()-event.getItemIndex()-1;
+        CandleDTO dto = this.candleList.get(id);
+        
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", dto.getOHLCtMsg());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     public List<CandleDTO> getCandleList() {
