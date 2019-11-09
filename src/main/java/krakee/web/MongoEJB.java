@@ -1,11 +1,16 @@
 package krakee.web;
 
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.gte;
 import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.client.model.Sorts;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -14,6 +19,7 @@ import krakee.ConfigEJB;
 import krakee.calc.CandleDTO;
 import krakee.get.TradePairDTO;
 import org.bson.Document;
+import org.bson.types.Decimal128;
 
 /**
  *
@@ -26,9 +32,37 @@ public class MongoEJB {
     ConfigEJB config;
 
     /**
+     * Check Trade consistency
+     *
+     * @return
+     */
+    public List<String> chkTradePair() {
+        //Chk last<>max(time)
+        MongoCursor<Document> cursor = config.getTradePairColl().aggregate(
+                Arrays.asList(
+                        Aggregates.group("$last", Accumulators.max("max", "$time"))
+                )
+        ).cursor();
+
+        List<String> list = new ArrayList();
+
+        while (cursor.hasNext()) {
+            Document doc = cursor.next();
+            String id = doc.getString("_id").substring(0,14);
+            String max = ((Decimal128)doc.get("max")).bigDecimalValue().toString().replace(".", "");
+            
+            if (!id.equals(max)){
+                list.add("last:" + id + " max($time):" + max);
+            }
+        }
+        return list;
+    }
+
+    /**
      * get Last limit size trade pairs
+     *
      * @param limit
-     * @return 
+     * @return
      */
     public List<TradePairDTO> getLastTrades(int limit) {
         MongoCursor<Document> cursor = config.getTradePairColl()
@@ -36,23 +70,21 @@ public class MongoEJB {
                 .sort(Sorts.descending("timeDate"))
                 .limit(limit)
                 .iterator();
-        
+
         List<TradePairDTO> list = new ArrayList<>();
-         while (cursor.hasNext()) {
-             TradePairDTO dto = new TradePairDTO(cursor.next());
-             list.add(dto);
-         }
-        
+        while (cursor.hasNext()) {
+            TradePairDTO dto = new TradePairDTO(cursor.next());
+            list.add(dto);
+        }
+
         return list;
-    }    
-    
-    
-    
-    
+    }
+
     /**
      * get last "limit" size candles
+     *
      * @param limit
-     * @return 
+     * @return
      */
     public List<CandleDTO> getLastCandles(int limit) {
         MongoCursor<Document> cursor = config.getCandleColl()
@@ -60,17 +92,15 @@ public class MongoEJB {
                 .sort(Sorts.descending("startDate"))
                 .limit(limit)
                 .iterator();
-        
+
         List<CandleDTO> list = new ArrayList<>();
-         while (cursor.hasNext()) {
-             CandleDTO dto = new CandleDTO(cursor.next());
-             list.add(dto);
-         }
-        
+        while (cursor.hasNext()) {
+            CandleDTO dto = new CandleDTO(cursor.next());
+            list.add(dto);
+        }
+
         return list;
-    }    
-    
-    
+    }
 
     /**
      * Get latest date value from Candle collection
@@ -101,13 +131,13 @@ public class MongoEJB {
                 .find(and(gte("startDate", startDate), lte("startDate", stopDate)))
                 .sort(Sorts.descending("startDate"))
                 .iterator();
-        
+
         List<CandleDTO> list = new ArrayList<>();
-         while (cursor.hasNext()) {
-             CandleDTO dto = new CandleDTO(cursor.next());
-             list.add(dto);
-         }
-        
+        while (cursor.hasNext()) {
+            CandleDTO dto = new CandleDTO(cursor.next());
+            list.add(dto);
+        }
+
         return list;
     }
 }

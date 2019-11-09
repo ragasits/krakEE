@@ -18,19 +18,24 @@
             </h:form>
 
             <h:form id="form1">
+                <p:growl id="growl" showDetail="true" />
+
                 <p:panel>
-                    <h:panelGrid columns="3">
+                    <h:panelGrid columns="4">
                         <p:commandButton value="Query"  id="btn" update="tbl"  
                                          action="#{tradeBean.onTradeQuery()}">
                         </p:commandButton>
                         <p:outputLabel value="Limit:"/>
                         <p:spinner value="#{tradeBean.queryLimit}"/>
+
+                        <p:commandButton value="Consistency check" action="#{tradeBean.onTradeChk()}" 
+                                         id="chkBtn" update="growl"/>
                     </h:panelGrid>
                 </p:panel>
 
-                <p:blockUI block="form1" trigger="btn">
+                <p:blockUI block="form1" trigger="btn, chkBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
-                </p:blockUI>                 
+                </p:blockUI>       
 
                 <p:panel id="panel1">
                     <p:dataTable value="#{tradeBean.tradeList}" var="item" tableStyle="width:auto" id="tbl">
@@ -42,15 +47,15 @@
                         <p:column headerText="time">
                             <p:outputLabel value="#{item.time}"/>
                         </p:column>                        
-                        
+
                         <p:column headerText="price">
                             <p:outputLabel value="#{item.price}"/>
                         </p:column>                        
-                        
+
                         <p:column headerText="volume">
                             <p:outputLabel value="#{item.volume}"/>
                         </p:column>                                                
-                        
+
                         <p:column headerText="buySel">
                             <p:outputLabel value="#{item.buySel}"/>
                         </p:column>                                                                        

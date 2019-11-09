@@ -1,12 +1,9 @@
-+ Candle chart: show candle values
++ Check trade values consistency:  Aggregation LastDate equal max(timeDate) 
 
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
-- chart: show counts
-- chart: show sums
 - Incremental candle calculation (last one is wrong)
 - Check: Are there missing candles?
 - Check: candle values
-- Check trade values: Aggregation LastDate equal max(timeDate) 
 
 Future:
 --------
@@ -24,5 +21,7 @@ Optional:
 - Use POJO with Mongodb (Next JakartaEE? )
 - Code review findbugs or sonar
 - EJB timeout exception - Move to Bath processing?
+- Candle chart: show counts
+- Candle chart: show volumes
 
 

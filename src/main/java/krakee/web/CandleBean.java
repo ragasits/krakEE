@@ -48,7 +48,6 @@ public class CandleBean implements Serializable {
 
         ohlcModel.getAxes().put(AxisType.X, new DateAxis("Trades"));
         ohlcModel.setCandleStick(true);
-        //ohlcModel.setAnimate(true);
         ohlcModel.setZoom(true);
 
         ohlcModel.clear();
