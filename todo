@@ -1,7 +1,6 @@
-+ Check trade values consistency:  Aggregation LastDate equal max(timeDate) 
++ Incremental candle calculation (last one is wrong -> Recalculation)
 
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
-- Incremental candle calculation (last one is wrong)
 - Check: Are there missing candles?
 - Check: candle values
 

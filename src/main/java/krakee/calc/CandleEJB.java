@@ -41,9 +41,28 @@ public class CandleEJB {
     @Asynchronous
     public void callCandle() {
         config.setRunCandle(false);
+        this.setLastCandleCalcToFalse();
         this.calcDateList();
         this.calcCandle();
         config.setRunCandle(true);
+    }
+    
+    /**
+     * Set the last Candle calcCandle value to false
+     * (Incremental running)
+     */
+    private void setLastCandleCalcToFalse(){
+        //Get the last Candle
+        Document doc = config.getCandleColl()
+                .find()
+                .sort(Sorts.descending("startDate"))
+                .first();
+        CandleDTO dto = new CandleDTO(doc);
+        dto.setCalcCandle(false);
+        
+        //Update last Candle
+        config.getCandleColl().replaceOne(
+                eq("_id", dto.getId()), dto.getCandle());
     }
 
     /**
@@ -55,7 +74,6 @@ public class CandleEJB {
 
         FindIterable<Document> result = config.getCandleColl()
                 .find(eq("calcCandle", false))
-                //.sort(Sorts.ascending("startDate"))
                 .limit(5000);
 
         try (MongoCursor<Document> cursor = result.iterator()) {
