@@ -1,6 +1,7 @@
 package krakee.web;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -33,6 +34,21 @@ public class CandleBean implements Serializable {
     @PostConstruct
     public void init() {
         this.createOhlcModel();
+    }
+
+    /**
+     * Check Candle date consistency
+     */
+    public void onDateChk() {
+        FacesMessage msg;
+        
+        List<Date> list = mongo.chkCandleDates();
+        if (list.isEmpty()){
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Date check: OK");
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Date check: Errors("+list.size()+")");
+        }
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     public void onCandleQuery() {
@@ -70,12 +86,13 @@ public class CandleBean implements Serializable {
 
     /**
      * Show selected candle element
-     * @param event 
+     *
+     * @param event
      */
     public void candleSelect(ItemSelectEvent event) {
-        int id = this.candleList.size()-event.getItemIndex()-1;
+        int id = this.candleList.size() - event.getItemIndex() - 1;
         CandleDTO dto = this.candleList.get(id);
-        
+
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", dto.getOHLCtMsg());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }

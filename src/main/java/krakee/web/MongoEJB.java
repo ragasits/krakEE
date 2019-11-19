@@ -1,22 +1,23 @@
 package krakee.web;
 
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
 import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.client.model.Sorts;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.calc.CandleDTO;
+import krakee.calc.CandleEJB;
 import krakee.get.TradePairDTO;
 import org.bson.Document;
 import org.bson.types.Decimal128;
@@ -30,6 +31,51 @@ public class MongoEJB {
 
     @EJB
     ConfigEJB config;
+    @EJB
+    CandleEJB candle;
+
+    /**
+     * Check Candle consistency I. Seek missing dates
+     *
+     * @return
+     */
+    public List<Date> chkCandleDates() {
+        Calendar cal = Calendar.getInstance();
+        List<Date> list = new ArrayList<>();
+
+        //get first trade date
+        Date firstDate = config.getTradePairColl()
+                .find()
+                .sort(Sorts.ascending("timeDate"))
+                .first().get("timeDate", Date.class);
+        firstDate = candle.calcCandel30Min(firstDate);
+
+        //Get last trade date
+        Date lastDate = config.getTradePairColl()
+                .find()
+                .sort(Sorts.descending("timeDate"))
+                .first().get("timeDate", Date.class);
+
+        int i = 0;
+        while (firstDate.before(lastDate)) {
+            i++;
+            //Seek date
+            Document doc = config.getCandleColl()
+                    .find(eq("startDate", firstDate))
+                    .first();
+            if (doc==null){
+                list.add(firstDate);
+            }
+
+            //calc next value
+            cal.setTime(firstDate);
+            cal.add(Calendar.MINUTE, 30);
+            firstDate = cal.getTime();
+        }
+
+        System.out.println("chkCandleDates: "+i);
+        return list;
+    }
 
     /**
      * Check Trade consistency
@@ -48,10 +94,10 @@ public class MongoEJB {
 
         while (cursor.hasNext()) {
             Document doc = cursor.next();
-            String id = doc.getString("_id").substring(0,14);
-            String max = ((Decimal128)doc.get("max")).bigDecimalValue().toString().replace(".", "");
-            
-            if (!id.equals(max)){
+            String id = doc.getString("_id").substring(0, 14);
+            String max = ((Decimal128) doc.get("max")).bigDecimalValue().toString().replace(".", "");
+
+            if (!id.equals(max)) {
                 list.add("last:" + id + " max($time):" + max);
             }
         }

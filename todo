@@ -1,4 +1,4 @@
-+ Incremental candle calculation (last one is wrong -> Recalculation)
++ Check: Are there missing candle dates?
 
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 - Check: Are there missing candles?

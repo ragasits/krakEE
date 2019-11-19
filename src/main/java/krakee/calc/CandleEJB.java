@@ -46,12 +46,11 @@ public class CandleEJB {
         this.calcCandle();
         config.setRunCandle(true);
     }
-    
+
     /**
-     * Set the last Candle calcCandle value to false
-     * (Incremental running)
+     * Set the last Candle calcCandle value to false (Incremental running)
      */
-    private void setLastCandleCalcToFalse(){
+    private void setLastCandleCalcToFalse() {
         //Get the last Candle
         Document doc = config.getCandleColl()
                 .find()
@@ -59,7 +58,7 @@ public class CandleEJB {
                 .first();
         CandleDTO dto = new CandleDTO(doc);
         dto.setCalcCandle(false);
-        
+
         //Update last Candle
         config.getCandleColl().replaceOne(
                 eq("_id", dto.getId()), dto.getCandle());
@@ -203,30 +202,35 @@ public class CandleEJB {
                     .sort(Sorts.descending("startDate"))
                     .first()
                     .getDate("startDate");
-
-            cal = Calendar.getInstance();
-            cal.setTime(startDate);
-            cal.add(Calendar.MINUTE, 30);
         } else {
             startDate = config.getTradePairColl().find()
                     .sort(Sorts.ascending("timeDate"))
                     .first()
                     .getDate("timeDate");
-
-            cal = Calendar.getInstance();
-            cal.setTime(startDate);
-            int minute = cal.get(Calendar.MINUTE);
-
-            // Set 30 minutes candle
-            if (minute < 30) {
-                cal.set(Calendar.MINUTE, 0);
-            } else {
-                cal.set(Calendar.MINUTE, 30);
-            }
-
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
         }
+        return calcCandel30Min(startDate);
+    }
+
+    /**
+     * Calculate 30min dates
+     *
+     * @param date
+     * @return
+     */
+    public Date calcCandel30Min(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int minute = cal.get(Calendar.MINUTE);
+
+        // Set 30 minutes candle
+        if (minute < 30) {
+            cal.set(Calendar.MINUTE, 0);
+        } else {
+            cal.set(Calendar.MINUTE, 30);
+        }
+
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
     }
 
