@@ -6,6 +6,7 @@ import com.mongodb.client.model.Aggregates;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
+import static com.mongodb.client.model.Filters.lt;
 import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
@@ -33,6 +34,44 @@ public class MongoEJB {
     ConfigEJB config;
     @EJB
     CandleEJB candle;
+
+    /**
+     * Check Candle consistency II. Count trades
+     *
+     * @return
+     */
+    public List<String> chkCandleTradeCount() {
+        List<String> list = new ArrayList<>();
+        //Get candles
+        MongoCursor<Document> candles = config.getCandleColl()
+                .find()
+                .iterator();
+
+        while (candles.hasNext()) {
+            CandleDTO dto = new CandleDTO(candles.next());
+
+            //Count trades    
+            Document trade = config.getTradePairColl().aggregate(
+                    Arrays.asList(
+                            Aggregates.match(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate()))),
+                            Aggregates.group("pair", Accumulators.sum("count", 1))
+                    )
+            ).first();
+
+            //Check
+            if (trade == null) {
+                if (dto.getCount() != 0) {
+                    list.add(dto.getStartDate().toString() + " 0, " + dto.getCount());
+                }
+            } else {
+                Integer cnt = trade.getInteger("count");
+                if (cnt == null || !cnt.equals(dto.getCount())) {
+                    list.add(dto.getStartDate().toString() + " " + cnt + "," + dto.getCount());
+                }
+            }
+        }
+        return list;
+    }
 
     /**
      * Check Candle consistency I. Seek missing dates
@@ -63,7 +102,7 @@ public class MongoEJB {
             Document doc = config.getCandleColl()
                     .find(eq("startDate", firstDate))
                     .first();
-            if (doc==null){
+            if (doc == null) {
                 list.add(firstDate);
             }
 
@@ -73,7 +112,7 @@ public class MongoEJB {
             firstDate = cal.getTime();
         }
 
-        System.out.println("chkCandleDates: "+i);
+        System.out.println("chkCandleDates: " + i);
         return list;
     }
 

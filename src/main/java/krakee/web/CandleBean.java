@@ -37,16 +37,31 @@ public class CandleBean implements Serializable {
     }
 
     /**
+     * Check Candle count consistency
+     */
+    public void onCandleTradeCountChk() {
+        FacesMessage msg;
+
+        List<String> list = mongo.chkCandleTradeCount();
+        if (list.isEmpty()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "TradeCnt check: OK");
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "TradeCnt check: Errors(" + list.size() + ")");
+        }
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    /**
      * Check Candle date consistency
      */
     public void onDateChk() {
         FacesMessage msg;
-        
+
         List<Date> list = mongo.chkCandleDates();
-        if (list.isEmpty()){
+        if (list.isEmpty()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Date check: OK");
         } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Date check: Errors("+list.size()+")");
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Date check: Errors(" + list.size() + ")");
         }
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }

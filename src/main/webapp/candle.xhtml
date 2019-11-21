@@ -29,14 +29,14 @@
                         <p:outputLabel value="Limit:"/>
                         <p:spinner value="#{candleBean.queryLimit}"/>
                         
-                        <p:splitButton value="Consistency check" id="chkBtn">
+                        <p:splitButton value="Check" id="chkBtn">
                             <p:menuitem value="Date check" action="#{candleBean.onDateChk()}" update="growl" id="chkBtn1"/>
-                            <p:menuitem value="Candle check"/>
+                            <p:menuitem value="Trade check" action="#{candleBean.onCandleTradeCountChk()}" update="growl" id="chkBtn2"/>
                         </p:splitButton>
                     </h:panelGrid>
                 </p:panel>
 
-                <p:blockUI block="form1" trigger="btn, chkBtn1">
+                <p:blockUI block="form1" trigger="btn, chkBtn1, chkBtn2">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
                 
