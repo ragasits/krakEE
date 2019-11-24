@@ -84,6 +84,11 @@ public class ConfigEJB {
         this.client.close();
     }
 
+    @Override
+    public String toString() {
+        return "ConfigEJB{" + "krakenURL=" + krakenURL + ", proxyEnabled=" + proxyEnabled + ", proxyHostname=" + proxyHostname + ", proxyPort=" + proxyPort + ", defaultTimerDuration=" + defaultTimerDuration + ", runTrade=" + runTrade + ", runCandle=" + runCandle + '}';
+    }
+    
     public MongoCollection<Document> getTradePairColl() {
         return tradePairColl;
     }

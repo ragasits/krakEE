@@ -13,7 +13,9 @@ import krakee.TimerEjb;
  */
 @SessionScoped
 @Named(value = "indexBean")
-public class indexBean implements Serializable {
+public class IndexBean implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     @EJB
     ConfigEJB config;
@@ -23,7 +25,7 @@ public class indexBean implements Serializable {
     TimerEjb timer;
 
     
-    public indexBean() {
+    public IndexBean() {
     }
 
     public boolean isRunTrade() {

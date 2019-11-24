@@ -144,7 +144,7 @@ public class TradeEJB {
         } catch (MalformedURLException ex) {
             throw new MyException("getRestTrade: " + ex.getMessage());
         } catch (IOException ex) {
-            throw new MyException("getRestTrade: " + ex.getClass().toString()+": "+ex.getMessage());
+            throw new MyException("getRestTrade: " + ex.getClass()+": "+ex.getMessage());
         }
 
         return tradeO;
@@ -153,6 +153,11 @@ public class TradeEJB {
 
     public int getPairTradeSize() {
         return pairTradeSize;
+    }
+
+    @Override
+    public String toString() {
+        return "TradeEJB{" + "config=" + config + ", pairTradeSize=" + pairTradeSize + '}';
     }
     
     

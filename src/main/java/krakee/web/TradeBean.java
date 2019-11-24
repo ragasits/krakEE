@@ -16,6 +16,8 @@ import krakee.get.TradePairDTO;
 @SessionScoped
 @Named(value = "tradeBean")
 public class TradeBean implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     @EJB
     MongoEJB mongo;
@@ -50,5 +52,12 @@ public class TradeBean implements Serializable {
     public void setQueryLimit(int queryLimit) {
         this.queryLimit = queryLimit;
     }
+
+    @Override
+    public String toString() {
+        return "TradeBean{" + "mongo=" + mongo + ", tradeList=" + tradeList + ", queryLimit=" + queryLimit + '}';
+    }
+    
+    
 
 }

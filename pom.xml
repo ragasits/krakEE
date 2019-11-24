@@ -27,12 +27,28 @@
             <artifactId>primefaces</artifactId>
             <version>7.0</version>
         </dependency>
-
     </dependencies>
-	
+    
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
     </properties>
+    
+    <reporting>
+        <plugins>
+            <plugin>
+                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:3.1.12.2:spotbugs -->
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>3.1.12.2</version>
+                <configuration>
+                    <xmlOutput>true</xmlOutput>
+                    <xmlOutputDirectory>target/site</xmlOutputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>    
 </project>
+
+  

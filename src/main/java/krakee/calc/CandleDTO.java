@@ -33,7 +33,7 @@ public class CandleDTO {
 
     public CandleDTO(Date candleDate) {
         this.id = null;
-        this.startDate = candleDate;
+        this.startDate = (Date)candleDate.clone();
         this.count = 0;
         this.countBuy = 0;
         this.countSell = 0;
@@ -104,7 +104,8 @@ public class CandleDTO {
     }
     
     public Date getStartDate() {
-        return startDate;
+        //return startDate;
+        return (Date)startDate.clone();
     }
 
     public Integer getCount() {
@@ -221,6 +222,11 @@ public class CandleDTO {
 
     public void setVolumeSell(BigDecimal volumeSell) {
         this.volumeSell = volumeSell;
+    }
+
+    @Override
+    public String toString() {
+        return "CandleDTO{" + "id=" + id + ", startDate=" + startDate + ", count=" + count + ", countBuy=" + countBuy + ", countSell=" + countSell + ", open=" + open + ", low=" + low + ", high=" + high + ", close=" + close + ", total=" + total + ", totalBuy=" + totalBuy + ", totalSell=" + totalSell + ", volume=" + volume + ", volumeBuy=" + volumeBuy + ", volumeSell=" + volumeSell + ", calcCandle=" + calcCandle + '}';
     }
     
     

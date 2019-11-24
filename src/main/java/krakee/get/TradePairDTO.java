@@ -71,7 +71,7 @@ public class TradePairDTO {
      */
     public Date getLastDate() {
         Date date = new Date();
-        date.setTime(Long.valueOf(this.last.substring(0, 13)));
+        date.setTime(Long.parseLong(this.last.substring(0, 13)));
         return date;
     }
 
@@ -120,6 +120,11 @@ public class TradePairDTO {
 
     public BigDecimal getVolume() {
         return volume;
+    }
+
+    @Override
+    public String toString() {
+        return "TradePairDTO{" + "price=" + price + ", volume=" + volume + ", time=" + time + ", buySel=" + buySel + ", marketLimit=" + marketLimit + ", miscellaneous=" + miscellaneous + ", error=" + error + ", last=" + last + ", pair=" + pair + '}';
     }
     
     

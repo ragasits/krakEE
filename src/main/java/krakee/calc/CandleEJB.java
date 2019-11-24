@@ -135,11 +135,11 @@ public class CandleEJB {
             total = total.add(trade.getTotal());
             volume = volume.add(trade.getVolume());
 
-            if (trade.getBuySel().equals("b")) {
+            if (String.valueOf("b").equals(trade.getBuySel())) {
                 countBuy++;
                 totalBuy = totalBuy.add(trade.getTotal());
                 volumeBuy = volumeBuy.add(trade.getVolume());
-            } else if (trade.getBuySel().equals("s")) {
+            } else if (String.valueOf("s").equals(trade.getBuySel())) {
                 countSell++;
                 totalSell = totalSell.add(trade.getTotal());
                 volumeSell = volumeBuy.add(trade.getVolume());
@@ -238,4 +238,11 @@ public class CandleEJB {
         return candleSize;
     }
 
+    @Override
+    public String toString() {
+        return "CandleEJB{" + "config=" + config + ", candleSize=" + candleSize + '}';
+    }
+
+    
+    
 }

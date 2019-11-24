@@ -1,4 +1,4 @@
-+ Candle Check: Are there missing Trades?
++ Findbugs (spotbugs) 
 
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 - Check: Are there missing candles?
