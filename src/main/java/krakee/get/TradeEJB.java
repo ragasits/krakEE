@@ -1,14 +1,12 @@
 package krakee.get;
 
 import com.mongodb.client.model.Sorts;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,6 +19,15 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Configuration;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import krakee.ConfigEJB;
 import krakee.MyException;
 import org.bson.Document;
@@ -36,8 +43,8 @@ public class TradeEJB {
 
     @EJB
     ConfigEJB config;
-    
-    private int pairTradeSize=0;
+
+    private int pairTradeSize = 0;
 
     /**
      * Get, convert, store trades from Kraken
@@ -105,50 +112,7 @@ public class TradeEJB {
                             error, last, pair)
             );
         }
-
         return tradePairList;
-    }
-
-    /**
-     * REST client, get data from Kraken
-     *
-     * @return
-     */
-    private JsonObject getRestTrade(String last) throws MyException {
-        JsonObject tradeO;
-        HttpURLConnection conn;
-
-        try {
-            URL url = new URL(config.getKrakenURL() + last);
-            if (config.isProxyEnabled()) {
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(config.getProxyHostname(), config.getProxyPort()));
-                conn = (HttpURLConnection) url.openConnection(proxy);
-            } else {
-                conn = (HttpURLConnection) url.openConnection();
-            }
-
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
-
-            if (conn.getResponseCode() != 200) {
-                if (conn.getResponseCode() != 200) {
-                    throw new MyException("getRestTrade: Failed : HTTP error code : " + conn.getResponseCode());
-                }
-            }
-
-            InputStreamReader in = new InputStreamReader(conn.getInputStream());
-            JsonReader reader = Json.createReader(in);
-            tradeO = reader.readObject();
-
-            conn.disconnect();
-        } catch (MalformedURLException ex) {
-            throw new MyException("getRestTrade: " + ex.getMessage());
-        } catch (IOException ex) {
-            throw new MyException("getRestTrade: " + ex.getClass()+": "+ex.getMessage());
-        }
-
-        return tradeO;
-
     }
 
     public int getPairTradeSize() {
@@ -159,6 +123,68 @@ public class TradeEJB {
     public String toString() {
         return "TradeEJB{" + "config=" + config + ", pairTradeSize=" + pairTradeSize + '}';
     }
-    
-    
+
+    /**
+     * REST client, get data from Kraken
+     * Get https cert on the fly
+     *
+     * @return
+     */    
+    private JsonObject getRestTrade(String last) throws MyException {
+        SSLContext sc;
+        Response response;
+        Client sslClient;
+        
+        TrustManager[] noopTrustManager = new TrustManager[]{
+            new X509TrustManager() {
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                @Override
+                public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+                }
+
+                @Override
+                public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+                }
+            }
+        };
+
+        try {
+            sc = SSLContext.getInstance("ssl");
+            sc.init(null, noopTrustManager, null);
+            
+            sslClient = ClientBuilder.newBuilder()
+                    .sslContext(sc)
+                    .build();
+
+            //"https://api.kraken.com/0/public/Trades?pair=XBTEUR&since=";
+            response = sslClient.target(config.getKrakenURL())
+                    .path("Trades")
+                    .queryParam("pair", "XBTEUR")
+                    .queryParam("since", last)
+                    .request(MediaType.APPLICATION_JSON)
+                    .get();
+
+        } catch (NoSuchAlgorithmException | KeyManagementException | ProcessingException ex) {
+            throw new MyException("getRestTrade: " + ex.getMessage());
+        }
+
+        if (response == null){
+            throw new MyException("getRestTrade: Failed : No response");
+        }
+        
+        if (response.getStatus() == 200) {
+            InputStream inputStream = response.readEntity(InputStream.class);
+            InputStreamReader in = new InputStreamReader(inputStream);
+            JsonReader reader = Json.createReader(in);
+            return reader.readObject();
+        } else {
+            throw new MyException("getRestTrade: Failed : HTTP error code :" + response.getStatus());
+        }
+
+    }
 }

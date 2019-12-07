@@ -1,5 +1,6 @@
-+ Findbugs (spotbugs) 
++ BUG: Use kraken https certs without keystore  
 
+- BUG: use Rest client with proxy 
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 - Check: Are there missing candles?
 - Check: candle values

@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ws.rs.client.WebTarget;
 import org.bson.Document;
 
 /**
@@ -21,25 +22,27 @@ import org.bson.Document;
 @Startup
 public class ConfigEJB {
 
-    private final String krakenURL = "https://api.kraken.com/0/public/Trades?pair=XBTEUR&since=";
+    private final String krakenURL = "https://api.kraken.com/0/public";
     private final boolean proxyEnabled = false;
     private final String proxyHostname = "pac.mytrium.com";
     private final Integer proxyPort = 8080;
     private final int defaultTimerDuration = 10; //in sec
 
-    private boolean runTrade = false;
+    private boolean runTrade = true;
     private boolean runCandle = false;
 
     private MongoClient client;
     private MongoDatabase database;
     private MongoCollection<Document> tradePairColl;
     private MongoCollection<Document> candleColl;
+    private WebTarget webTarget = null;
 
     /**
      * Initiate MongoDB Create collections and missing indexes
      */
     @PostConstruct
     public void init() {
+        //Set Mongodb 
         this.client = MongoClients.create();
         this.database = this.client.getDatabase("krakEE");
 
@@ -58,7 +61,6 @@ public class ConfigEJB {
         if (!this.isIndex(candleColl, "calcCandle_1")) {
             this.candleColl.createIndex(Indexes.ascending("calcCandle"));
         }
-
     }
 
     /**
@@ -88,7 +90,7 @@ public class ConfigEJB {
     public String toString() {
         return "ConfigEJB{" + "krakenURL=" + krakenURL + ", proxyEnabled=" + proxyEnabled + ", proxyHostname=" + proxyHostname + ", proxyPort=" + proxyPort + ", defaultTimerDuration=" + defaultTimerDuration + ", runTrade=" + runTrade + ", runCandle=" + runCandle + '}';
     }
-    
+
     public MongoCollection<Document> getTradePairColl() {
         return tradePairColl;
     }
@@ -131,7 +133,8 @@ public class ConfigEJB {
 
     /**
      * Timer duration in sec!
-     * @return 
+     *
+     * @return
      */
     public int getDefaultTimerDuration() {
         return defaultTimerDuration;
