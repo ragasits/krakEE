@@ -4,6 +4,8 @@ import com.mongodb.client.model.Sorts;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -23,14 +25,11 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import krakee.ConfigEJB;
 import krakee.MyException;
 import org.bson.Document;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 /**
  *
@@ -125,16 +124,15 @@ public class TradeEJB {
     }
 
     /**
-     * REST client, get data from Kraken
-     * Get https cert on the fly
+     * REST client, get data from Kraken Get https cert on the fly
      *
      * @return
-     */    
+     */
     private JsonObject getRestTrade(String last) throws MyException {
         SSLContext sc;
-        Response response;
-        Client sslClient;
-        
+        Response response = null;
+        //Client sslClient;
+
         TrustManager[] noopTrustManager = new TrustManager[]{
             new X509TrustManager() {
 
@@ -156,27 +154,26 @@ public class TradeEJB {
         try {
             sc = SSLContext.getInstance("ssl");
             sc.init(null, noopTrustManager, null);
-            
-            sslClient = ClientBuilder.newBuilder()
-                    .sslContext(sc)
-                    .build();
-
+         
             //"https://api.kraken.com/0/public/Trades?pair=XBTEUR&since=";
-            response = sslClient.target(config.getKrakenURL())
-                    .path("Trades")
-                    .queryParam("pair", "XBTEUR")
-                    .queryParam("since", last)
-                    .request(MediaType.APPLICATION_JSON)
-                    .get();
+            URI apiUri = new URI("https://api.kraken.com/0/public");
 
+            KrakenClient krakenClient = RestClientBuilder.newBuilder()
+                    .baseUri(apiUri)
+                    .sslContext(sc)
+                    .build(KrakenClient.class);
+
+            response = krakenClient.getTrade("XBTEUR", last);
         } catch (NoSuchAlgorithmException | KeyManagementException | ProcessingException ex) {
             throw new MyException("getRestTrade: " + ex.getMessage());
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(TradeEJB.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if (response == null){
+        if (response == null) {
             throw new MyException("getRestTrade: Failed : No response");
         }
-        
+
         if (response.getStatus() == 200) {
             InputStream inputStream = response.readEntity(InputStream.class);
             InputStreamReader in = new InputStreamReader(inputStream);

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rgt</groupId>
     <artifactId>krakEE</artifactId>
-    <version>35</version>
+    <version>40</version>
     <packaging>war</packaging>
     <name>krakEE</name>
 
@@ -34,13 +34,14 @@
             <version>3.2</version>
             <type>pom</type>
             <scope>provided</scope>
-        </dependency>        
+        </dependency>
     </dependencies>
     
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
+        <version.payara>5.194</version.payara>
     </properties>
     
     <reporting>
@@ -57,6 +58,30 @@
             </plugin>
         </plugins>
     </reporting>    
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>fish.payara.maven.plugins</groupId>
+                <artifactId>payara-micro-maven-plugin</artifactId>
+                <version>1.0.6</version>
+                <configuration>
+                    <payaraVersion>${version.payara}</payaraVersion>
+                    <deployWar>false</deployWar>
+                    <commandLineOptions>
+                        <option>
+                            <key>--autoBindHttp</key>
+                        </option>
+                        <option>
+                            <key>--deploy</key>
+                            <value>${project.build.directory}/${project.build.finalName}</value>
+                        </option>
+                    </commandLineOptions>
+                    <contextRoot>/</contextRoot>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>    
 </project>
 
   

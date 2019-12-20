@@ -1,4 +1,5 @@
-+ BUG: Use kraken https certs without keystore  
++ Use Micro profile - Rest client
++ Use Paraya Micro
 
 - BUG: use Rest client with proxy 
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
