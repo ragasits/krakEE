@@ -11,8 +11,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.inject.Inject;
 import javax.ws.rs.client.WebTarget;
 import org.bson.Document;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  *
@@ -22,14 +24,40 @@ import org.bson.Document;
 @Startup
 public class ConfigEJB {
 
-    private final String krakenURL = "https://api.kraken.com/0/public";
-    private final boolean proxyEnabled = false;
-    private final String proxyHostname = "pac.mytrium.com";
-    private final Integer proxyPort = 8080;
-    private final int defaultTimerDuration = 10; //in sec
+    //private final String krakenURL = "https://api.kraken.com/0/public";
+    @Inject
+    @ConfigProperty(name = "krakEE.krakenURL", defaultValue = "")
+    private String krakenURL;
 
-    private boolean runTrade = true;
-    private boolean runCandle = false;
+    //private final boolean proxyEnabled = false;
+    @Inject
+    @ConfigProperty(name = "krakEE.proxyEnabled", defaultValue = "false")
+    private boolean proxyEnabled;
+
+    //private final String proxyHostname = "pac.mytrium.com";
+    @Inject
+    @ConfigProperty(name = "krakEE.proxyHostname", defaultValue = "")
+    private String proxyHostname;
+
+    //private final Integer proxyPort = 8080;
+    @Inject
+    @ConfigProperty(name = "krakEE.proxyPort", defaultValue = "")
+    private Integer proxyPort;
+
+    //private final int defaultTimerDuration = 10; //in sec
+    @Inject
+    @ConfigProperty(name = "krakEE.defaultTimerDuration", defaultValue = "")
+    private int defaultTimerDuration;
+
+    //private boolean runTrade = true;
+    @Inject
+    @ConfigProperty(name = "krakEE.runTrade", defaultValue = "false")
+    private boolean runTrade;
+
+    //private boolean runCandle = false;
+    @Inject
+    @ConfigProperty(name = "krakEE.runCandle", defaultValue = "false")
+    private boolean runCandle;
 
     private MongoClient client;
     private MongoDatabase database;

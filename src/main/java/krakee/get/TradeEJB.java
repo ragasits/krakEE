@@ -156,7 +156,7 @@ public class TradeEJB {
             sc.init(null, noopTrustManager, null);
          
             //"https://api.kraken.com/0/public/Trades?pair=XBTEUR&since=";
-            URI apiUri = new URI("https://api.kraken.com/0/public");
+            URI apiUri = new URI(config.getKrakenURL());
 
             KrakenClient krakenClient = RestClientBuilder.newBuilder()
                     .baseUri(apiUri)
