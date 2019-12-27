@@ -1,8 +1,6 @@
-+ EJB + outer configuration file (Exclipse microprofile)
-+ Payara micro: use outer config file
++ BUG: use Rest client with proxy (System properties)
 
-
-- BUG: use Rest client with proxy 
+- TEST: Rest client with proxy 
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 - Check: Are there missing candles?
 - Check: candle values
@@ -17,7 +15,6 @@ Future:
 
 Optional:
 ---------
-- Put Kraken cert into the WAR (or outer parameter)
 - Use POJO with Mongodb (Next JakartaEE? )
 - Code review findbugs or sonar
 - EJB timeout exception - Move to Bath processing?

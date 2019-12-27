@@ -42,7 +42,7 @@ public class ConfigEJB {
     //private final Integer proxyPort = 8080;
     @Inject
     @ConfigProperty(name = "krakEE.proxyPort", defaultValue = "")
-    private Integer proxyPort;
+    private String proxyPort;
 
     //private final int defaultTimerDuration = 10; //in sec
     @Inject
@@ -63,13 +63,20 @@ public class ConfigEJB {
     private MongoDatabase database;
     private MongoCollection<Document> tradePairColl;
     private MongoCollection<Document> candleColl;
-    private WebTarget webTarget = null;
 
     /**
-     * Initiate MongoDB Create collections and missing indexes
+     * Initiate:
+     * - Set proxy
+     * - MongoDB Create collections and missing indexes
      */
     @PostConstruct
     public void init() {
+        //Set proxy
+        if (this.proxyEnabled) {
+            System.setProperty("https.proxyHost", this.proxyHostname);
+            System.setProperty("https.proxyPort", this.proxyPort);
+        }
+
         //Set Mongodb 
         this.client = MongoClients.create();
         this.database = this.client.getDatabase("krakEE");
@@ -129,18 +136,6 @@ public class ConfigEJB {
 
     public String getKrakenURL() {
         return krakenURL;
-    }
-
-    public boolean isProxyEnabled() {
-        return proxyEnabled;
-    }
-
-    public String getProxyHostname() {
-        return proxyHostname;
-    }
-
-    public Integer getProxyPort() {
-        return proxyPort;
     }
 
     public boolean isRunTrade() {
