@@ -1,8 +1,7 @@
-+ TEST: Rest client with proxy - OK
-+ Add: BollingerDTO
-+ BUG: MongoWriteException: E11000 duplicate key error collection: krakEE.candle index: startDate_1 dup key: { startDate: new Date(1577856600000) }
++ Add, Calc: DeltaDTO - Changes from the prev. Candle
 
-
+- Calc: DeltaDTO - Add up/down trends
+- GUI: DeltaDTO 
 - Check: candles - Missing hourglass
 - Check: Trade - Missing hourglass
 - Add, Calc: DeltaDTO - Changes from the prev. Candle

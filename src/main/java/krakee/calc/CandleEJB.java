@@ -32,6 +32,8 @@ public class CandleEJB {
 
     @EJB
     ConfigEJB config;
+    @EJB
+    DeltaEJB delta;
 
     private int candleSize = 5000;
 
@@ -44,6 +46,7 @@ public class CandleEJB {
         this.setLastCandleCalcToFalse();
         this.calcDateList();
         this.calcCandle();
+        delta.calculateDelta(candleSize);
         config.setRunCandle(true);
     }
 

@@ -30,6 +30,8 @@ public class CandleDTO {
     private BigDecimal volumeBuy;
     private BigDecimal volumeSell;
     private boolean calcCandle;
+    
+    private DeltaDTO delta;
     private BollingerDTO bollinger;
 
     public CandleDTO(Date candleDate) {
@@ -49,6 +51,8 @@ public class CandleDTO {
         this.volumeBuy = BigDecimal.ZERO;
         this.volumeSell = BigDecimal.ZERO;
         this.calcCandle = false;
+        
+        this.delta = new DeltaDTO();
         this.bollinger=new BollingerDTO();
     }
 
@@ -69,6 +73,8 @@ public class CandleDTO {
         this.volumeBuy = ((Decimal128) doc.get("volumeBuy")).bigDecimalValue();
         this.volumeSell = ((Decimal128) doc.get("volumeSell")).bigDecimalValue();        
         this.calcCandle = doc.getBoolean("calcCandle");
+        
+        this.delta = new DeltaDTO((Document) doc.get("delta"));
         this.bollinger = new BollingerDTO((Document) doc.get("bollinger"));
     }
 
@@ -88,6 +94,8 @@ public class CandleDTO {
                 .append("volumeBuy", this.volumeBuy)
                 .append("volumeSell", this.volumeSell)                
                 .append("calcCandle", this.calcCandle)
+                
+                .append("delta", this.delta.getDelta())
                 .append("bollinger", this.bollinger.getBollinger());
     }
 
@@ -232,6 +240,16 @@ public class CandleDTO {
     public String toString() {
         return "CandleDTO{" + "id=" + id + ", startDate=" + startDate + ", count=" + count + ", countBuy=" + countBuy + ", countSell=" + countSell + ", open=" + open + ", low=" + low + ", high=" + high + ", close=" + close + ", total=" + total + ", totalBuy=" + totalBuy + ", totalSell=" + totalSell + ", volume=" + volume + ", volumeBuy=" + volumeBuy + ", volumeSell=" + volumeSell + ", calcCandle=" + calcCandle + '}';
     }
+
+    public DeltaDTO getDelta() {
+        return delta;
+    }
+
+    public void setDelta(DeltaDTO delta) {
+        this.delta = delta;
+    }
+
+
     
     
 
