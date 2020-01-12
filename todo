@@ -1,6 +1,12 @@
-+ BUG: use Rest client with proxy (System properties)
++ TEST: Rest client with proxy - OK
++ Add: BollingerDTO
++ BUG: MongoWriteException: E11000 duplicate key error collection: krakEE.candle index: startDate_1 dup key: { startDate: new Date(1577856600000) }
 
-- TEST: Rest client with proxy 
+
+- Check: candles - Missing hourglass
+- Check: Trade - Missing hourglass
+- Add, Calc: DeltaDTO - Changes from the prev. Candle
+- Calc: Bollinger
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 - Check: Are there missing candles?
 - Check: candle values

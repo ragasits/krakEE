@@ -30,6 +30,7 @@ public class CandleDTO {
     private BigDecimal volumeBuy;
     private BigDecimal volumeSell;
     private boolean calcCandle;
+    private BollingerDTO bollinger;
 
     public CandleDTO(Date candleDate) {
         this.id = null;
@@ -48,6 +49,7 @@ public class CandleDTO {
         this.volumeBuy = BigDecimal.ZERO;
         this.volumeSell = BigDecimal.ZERO;
         this.calcCandle = false;
+        this.bollinger=new BollingerDTO();
     }
 
     public CandleDTO(Document doc) {
@@ -67,6 +69,7 @@ public class CandleDTO {
         this.volumeBuy = ((Decimal128) doc.get("volumeBuy")).bigDecimalValue();
         this.volumeSell = ((Decimal128) doc.get("volumeSell")).bigDecimalValue();        
         this.calcCandle = doc.getBoolean("calcCandle");
+        this.bollinger = new BollingerDTO((Document) doc.get("bollinger"));
     }
 
     public Document getCandle() {
@@ -84,7 +87,8 @@ public class CandleDTO {
                 .append("volume", this.volume)
                 .append("volumeBuy", this.volumeBuy)
                 .append("volumeSell", this.volumeSell)                
-                .append("calcCandle", this.calcCandle);
+                .append("calcCandle", this.calcCandle)
+                .append("bollinger", this.bollinger.getBollinger());
     }
 
     /**

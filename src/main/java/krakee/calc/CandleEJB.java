@@ -56,12 +56,14 @@ public class CandleEJB {
                 .find()
                 .sort(Sorts.descending("startDate"))
                 .first();
-        CandleDTO dto = new CandleDTO(doc);
-        dto.setCalcCandle(false);
+        if (doc != null) {
+            CandleDTO dto = new CandleDTO(doc);
+            dto.setCalcCandle(false);
 
-        //Update last Candle
-        config.getCandleColl().replaceOne(
-                eq("_id", dto.getId()), dto.getCandle());
+            //Update last Candle
+            config.getCandleColl().replaceOne(
+                    eq("_id", dto.getId()), dto.getCandle());
+        }
     }
 
     /**
@@ -195,13 +197,18 @@ public class CandleEJB {
      */
     private Date getStartDate() {
         Date startDate;
-        Calendar cal;
+        
 
         if (config.getCandleColl().countDocuments() > 0) {
             startDate = config.getCandleColl().find()
                     .sort(Sorts.descending("startDate"))
                     .first()
                     .getDate("startDate");
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(startDate);
+            cal.add(Calendar.MINUTE, 30);
+            startDate = cal.getTime();
+            
         } else {
             startDate = config.getTradePairColl().find()
                     .sort(Sorts.ascending("timeDate"))
@@ -243,6 +250,4 @@ public class CandleEJB {
         return "CandleEJB{" + "config=" + config + ", candleSize=" + candleSize + '}';
     }
 
-    
-    
 }

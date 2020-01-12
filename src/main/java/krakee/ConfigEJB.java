@@ -12,7 +12,6 @@ import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
-import javax.ws.rs.client.WebTarget;
 import org.bson.Document;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -46,7 +45,7 @@ public class ConfigEJB {
 
     //private final int defaultTimerDuration = 10; //in sec
     @Inject
-    @ConfigProperty(name = "krakEE.defaultTimerDuration", defaultValue = "")
+    @ConfigProperty(name = "krakEE.defaultTimerDuration", defaultValue = "10")
     private int defaultTimerDuration;
 
     //private boolean runTrade = true;
