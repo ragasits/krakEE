@@ -40,8 +40,7 @@ public class DeltaEJB {
 
         //Get the candles
         FindIterable<Document> result = config.getCandleColl()
-                .find(and(eq("calcCandle", true), eq("delta.calcDelta", false)))
-                .limit(5000);
+                .find(and(eq("calcCandle", true), eq("delta.calcDelta", false)));
 
         try (MongoCursor<Document> cursor = result.iterator()) {
             while (cursor.hasNext()) {

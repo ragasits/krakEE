@@ -30,6 +30,15 @@ public class DeltaDTO {
     private final BigDecimal deltaVolume;
     private final BigDecimal deltaVolumeBuy;
     private final BigDecimal deltaVolumeSell;
+    //Trends
+    private final Integer deltaOpenUp;
+    private final Integer deltaOpenDown;
+    private final Integer deltaHighUp;
+    private final Integer deltaHighDown;
+    private final Integer deltaLowUp;
+    private final Integer deltaLowDown;
+    private final Integer deltaCloseUp;
+    private final Integer deltaCloseDown;
 
     public DeltaDTO() {
         this.calcDelta = false;
@@ -46,6 +55,15 @@ public class DeltaDTO {
         this.deltaVolume = BigDecimal.ZERO;
         this.deltaVolumeBuy = BigDecimal.ZERO;
         this.deltaVolumeSell = BigDecimal.ZERO;
+
+        this.deltaOpenUp = 0;
+        this.deltaOpenDown = 0;
+        this.deltaHighUp = 0;
+        this.deltaHighDown = 0;
+        this.deltaLowUp = 0;
+        this.deltaLowDown = 0;
+        this.deltaCloseUp = 0;
+        this.deltaCloseDown = 0;
     }
 
     public DeltaDTO(Document doc) {
@@ -63,6 +81,15 @@ public class DeltaDTO {
         this.deltaVolume = ((Decimal128) doc.get("deltaVolume")).bigDecimalValue();
         this.deltaVolumeBuy = ((Decimal128) doc.get("deltaVolumeBuy")).bigDecimalValue();
         this.deltaVolumeSell = ((Decimal128) doc.get("deltaVolumeSell")).bigDecimalValue();
+
+        this.deltaOpenUp = doc.getInteger("deltaOpenUp");
+        this.deltaOpenDown = doc.getInteger("deltaOpenDown");
+        this.deltaHighUp = doc.getInteger("deltaHighUp");
+        this.deltaHighDown = doc.getInteger("deltaHighDown");
+        this.deltaLowUp = doc.getInteger("deltaLowUp");
+        this.deltaLowDown = doc.getInteger("deltaLowDown");
+        this.deltaCloseUp = doc.getInteger("deltaCloseUp");
+        this.deltaCloseDown = doc.getInteger("deltaCloseDown");
     }
 
     /**
@@ -86,6 +113,54 @@ public class DeltaDTO {
         this.deltaVolume = last.getVolume().subtract(last.getVolume());
         this.deltaVolumeBuy = last.getVolumeBuy().subtract(prev.getTotalBuy());
         this.deltaVolumeSell = last.getVolumeSell().subtract(prev.getVolumeSell());
+
+        this.deltaOpenUp = this.calcTrendUp(last.getOpen(), prev.getOpen(), prev.getDelta().deltaOpenUp);
+        this.deltaOpenDown = this.calcTrendDown(last.getOpen(), prev.getOpen(), prev.getDelta().deltaOpenDown);
+        this.deltaHighUp = this.calcTrendUp(last.getHigh(), prev.getHigh(), prev.getDelta().deltaHighUp);
+        this.deltaHighDown = this.calcTrendDown(last.getHigh(), prev.getHigh(), prev.getDelta().deltaHighDown);
+        this.deltaLowUp = this.calcTrendUp(last.getLow(), prev.getLow(), prev.getDelta().deltaLowUp);
+        this.deltaLowDown = this.calcTrendDown(last.getLow(), prev.getLow(), prev.getDelta().deltaLowDown);      
+        this.deltaCloseUp = this.calcTrendUp(last.getClose(), prev.getClose(), prev.getDelta().deltaCloseUp);
+        this.deltaCloseDown = this.calcTrendDown(last.getClose(), prev.getClose(), prev.getDelta().deltaCloseDown);
+    }
+
+    /**
+     * Calculate Trend up value
+     *
+     * @param last
+     * @param prev
+     * @param prevUp
+     * @return
+     */
+    private Integer calcTrendUp(BigDecimal last, BigDecimal prev, Integer prevUp) {
+        switch (last.compareTo(prev)) {
+            case 1:
+                return prevUp + 1;
+            case 0:
+                return prevUp;
+            case -1:
+                return 0;
+        }
+        return null;
+    }
+
+    /**
+     * Calculate Trend down value
+     * @param last
+     * @param prev
+     * @param prevDown
+     * @return 
+     */
+    private Integer calcTrendDown(BigDecimal last, BigDecimal prev, Integer prevDown) {
+        switch (last.compareTo(prev)) {
+            case 1:
+                return 0;
+            case 0:
+                return prevDown;
+            case -1:
+                return prevDown + 1;
+        }
+        return null;
     }
 
     public Document getDelta() {
@@ -102,7 +177,14 @@ public class DeltaDTO {
                 .append("deltaTotalSell", this.deltaTotalSell)
                 .append("deltaVolume", this.deltaVolume)
                 .append("deltaVolumeBuy", this.deltaVolumeBuy)
-                .append("deltaVolumeSell", this.deltaVolumeSell);
+                .append("deltaVolumeSell", this.deltaVolumeSell)
+                .append("deltaOpenUp", this.deltaOpenUp)
+                .append("deltaOpenDown", this.deltaOpenDown)
+                .append("deltaLowUp", this.deltaLowUp)
+                .append("deltaLowDown", this.deltaLowDown)
+                .append("deltaHighUp", this.deltaHighUp)
+                .append("deltaHighDown", this.deltaHighDown)
+                .append("deltaCloseUp", this.deltaCloseUp)
+                .append("deltaCloseDown", this.deltaCloseDown);
     }
-
 }

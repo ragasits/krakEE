@@ -1,6 +1,6 @@
-+ Add, Calc: DeltaDTO - Changes from the prev. Candle
++ Calc: DeltaDTO - Add up/down trends
 
-- Calc: DeltaDTO - Add up/down trends
+- BUG: The first Candle.delta.calcdelta always false
 - GUI: DeltaDTO 
 - Check: candles - Missing hourglass
 - Check: Trade - Missing hourglass
