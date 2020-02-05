@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <h:head>
+        <title>KrakEE</title>
+    </h:head>
+
+    <h:body>
+        <f:view>
+            <h:form>
+                <ez:globalMenu/>
+            </h:form>
+
+            <h:form id="form1">
+                <p:panel>
+                    <p:panelGrid columns="4">
+                        <p:outputLabel value="StartDate:"/>
+                        <p:calendar value="#{candleDetailBean.selectedDate}" mindate="#{candleDetailBean.minDate}" 
+                                    maxdate="#{candleDetailBean.maxDate}" pages="3"  >
+                            <p:ajax event="dateSelect"  update="timeList"/>
+                        </p:calendar>
+
+                        <p:outputLabel value="Time:"/>     
+                        <p:selectOneMenu value="#{candleDetailBean.selectedIdHexa}" id="timeList">
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{candleDetailBean.candleList}" var="candle" 
+                                           itemLabel="#{candle.startDate}" itemValue="#{candle.idHexa}" />
+                            <p:ajax event="itemSelect"  update="detailPanel"/>
+                        </p:selectOneMenu>
+
+                    </p:panelGrid>
+
+                </p:panel>         
+
+
+                <p:panel id="detailPanel">                
+                    <p:panelGrid columns="4">
+                        <p:outputLabel value="StartDate"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.startDate}"/>
+
+                        <p:outputLabel value="CalcCandle"/>
+                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.calcCandle}"/>
+                    </p:panelGrid>
+
+
+                    <p:panelGrid columns="11">
+
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value="Open" style="font-weight: bold"/>
+                        <p:outputLabel value="Low" style="font-weight: bold"/>                    
+                        <p:outputLabel value="High" style="font-weight: bold"/>                    
+                        <p:outputLabel value="Close" style="font-weight: bold"/>
+                        <p:outputLabel value="Count" style="font-weight: bold"/>
+                        <p:outputLabel value="CountBuy" style="font-weight: bold"/>
+                        <p:outputLabel value="CountSell" style="font-weight: bold"/>
+                        <p:outputLabel value="Volume" style="font-weight: bold"/>
+                        <p:outputLabel value="VolumeBuy" style="font-weight: bold"/>
+                        <p:outputLabel value="VolumeSell" style="font-weight: bold"/>
+
+                        <p:outputLabel value="Trade" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.open}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.low}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.high}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.close}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.count}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.countBuy}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.countSell}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.volume}">
+                            <f:convertNumber maxFractionDigits="0" />
+                        </p:outputLabel>
+                        <p:outputLabel value="#{candleDetailBean.detail.volumeBuy}">
+                            <f:convertNumber maxFractionDigits="0" />
+                        </p:outputLabel>
+                        <p:outputLabel value="#{candleDetailBean.detail.volumeSell}">
+                            <f:convertNumber maxFractionDigits="0" />
+                        </p:outputLabel>
+
+                        <p:outputLabel value="Delta" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpen}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLow}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHigh}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaClose}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCount}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.delta.deltaCountBuy}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCountSell}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolume}">
+                            <f:convertNumber maxFractionDigits="0" />
+                        </p:outputLabel>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeBuy}">
+                            <f:convertNumber maxFractionDigits="0" />
+                        </p:outputLabel>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeSell}">
+                            <f:convertNumber maxFractionDigits="0" />
+                        </p:outputLabel>   
+
+                        <p:outputLabel value="Delta Up" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpenUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLowUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHighUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCloseUp}"/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+
+                        <p:outputLabel value="Delta Down" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpenDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLowDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHighDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCloseDown}"/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>                     
+
+                    </p:panelGrid>
+                </p:panel>                    
+            </h:form>
+        </f:view>                
+    </h:body>
+</html>
+
+

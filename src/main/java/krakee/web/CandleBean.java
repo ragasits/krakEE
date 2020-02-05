@@ -113,7 +113,7 @@ public class CandleBean implements Serializable {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", dto.getOHLCtMsg());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-
+    
     public List<CandleDTO> getCandleList() {
         return this.candleList;
     }
@@ -138,7 +138,4 @@ public class CandleBean implements Serializable {
     public String toString() {
         return "CandleBean{" + "mongo=" + mongo + ", candleList=" + candleList + ", queryLimit=" + queryLimit + ", ohlcModel=" + ohlcModel + '}';
     }
-    
-    
-
 }

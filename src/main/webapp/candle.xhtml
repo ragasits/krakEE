@@ -54,7 +54,7 @@
                             </p:column>                        
 
                             <p:column headerText="startDate">
-                                <p:outputLabel value="#{item.startDate}"/>
+                                <h:commandLink value="#{item.startDate}" action="#{candleBean.showDetail(item)}"/>
                             </p:column>
 
                             <p:column headerText="count">

@@ -187,4 +187,94 @@ public class DeltaDTO {
                 .append("deltaCloseUp", this.deltaCloseUp)
                 .append("deltaCloseDown", this.deltaCloseDown);
     }
+
+    public boolean isCalcDelta() {
+        return calcDelta;
+    }
+
+    public Integer getDeltaCount() {
+        return deltaCount;
+    }
+
+    public Integer getDeltaCountBuy() {
+        return deltaCountBuy;
+    }
+
+    public Integer getDeltaCountSell() {
+        return deltaCountSell;
+    }
+
+    public BigDecimal getDeltaOpen() {
+        return deltaOpen;
+    }
+
+    public BigDecimal getDeltaLow() {
+        return deltaLow;
+    }
+
+    public BigDecimal getDeltaHigh() {
+        return deltaHigh;
+    }
+
+    public BigDecimal getDeltaClose() {
+        return deltaClose;
+    }
+
+    public BigDecimal getDeltaTotal() {
+        return deltaTotal;
+    }
+
+    public BigDecimal getDeltaTotalBuy() {
+        return deltaTotalBuy;
+    }
+
+    public BigDecimal getDeltaTotalSell() {
+        return deltaTotalSell;
+    }
+
+    public BigDecimal getDeltaVolume() {
+        return deltaVolume;
+    }
+
+    public BigDecimal getDeltaVolumeBuy() {
+        return deltaVolumeBuy;
+    }
+
+    public BigDecimal getDeltaVolumeSell() {
+        return deltaVolumeSell;
+    }
+
+    public Integer getDeltaOpenUp() {
+        return deltaOpenUp;
+    }
+
+    public Integer getDeltaOpenDown() {
+        return deltaOpenDown;
+    }
+
+    public Integer getDeltaHighUp() {
+        return deltaHighUp;
+    }
+
+    public Integer getDeltaHighDown() {
+        return deltaHighDown;
+    }
+
+    public Integer getDeltaLowUp() {
+        return deltaLowUp;
+    }
+
+    public Integer getDeltaLowDown() {
+        return deltaLowDown;
+    }
+
+    public Integer getDeltaCloseUp() {
+        return deltaCloseUp;
+    }
+
+    public Integer getDeltaCloseDown() {
+        return deltaCloseDown;
+    }
+    
+    
 }

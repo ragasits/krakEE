@@ -30,13 +30,13 @@ public class CandleDTO {
     private BigDecimal volumeBuy;
     private BigDecimal volumeSell;
     private boolean calcCandle;
-    
+
     private DeltaDTO delta;
     private BollingerDTO bollinger;
 
     public CandleDTO(Date candleDate) {
         this.id = null;
-        this.startDate = (Date)candleDate.clone();
+        this.startDate = (Date) candleDate.clone();
         this.count = 0;
         this.countBuy = 0;
         this.countSell = 0;
@@ -51,9 +51,9 @@ public class CandleDTO {
         this.volumeBuy = BigDecimal.ZERO;
         this.volumeSell = BigDecimal.ZERO;
         this.calcCandle = false;
-        
+
         this.delta = new DeltaDTO();
-        this.bollinger=new BollingerDTO();
+        this.bollinger = new BollingerDTO();
     }
 
     public CandleDTO(Document doc) {
@@ -71,9 +71,9 @@ public class CandleDTO {
         this.totalSell = ((Decimal128) doc.get("totalSell")).bigDecimalValue();
         this.volume = ((Decimal128) doc.get("volume")).bigDecimalValue();
         this.volumeBuy = ((Decimal128) doc.get("volumeBuy")).bigDecimalValue();
-        this.volumeSell = ((Decimal128) doc.get("volumeSell")).bigDecimalValue();        
+        this.volumeSell = ((Decimal128) doc.get("volumeSell")).bigDecimalValue();
         this.calcCandle = doc.getBoolean("calcCandle");
-        
+
         this.delta = new DeltaDTO((Document) doc.get("delta"));
         this.bollinger = new BollingerDTO((Document) doc.get("bollinger"));
     }
@@ -92,9 +92,8 @@ public class CandleDTO {
                 .append("totalSell", this.totalSell)
                 .append("volume", this.volume)
                 .append("volumeBuy", this.volumeBuy)
-                .append("volumeSell", this.volumeSell)                
+                .append("volumeSell", this.volumeSell)
                 .append("calcCandle", this.calcCandle)
-                
                 .append("delta", this.delta.getDelta())
                 .append("bollinger", this.bollinger.getBollinger());
     }
@@ -110,14 +109,18 @@ public class CandleDTO {
         cal.add(Calendar.MINUTE, 30);
         return cal.getTime();
     }
-    
-    public String getOHLCtMsg(){
-        return "O:"+this.open+" H:"+this.high+" L:"+this.low+" C:"+this.close;
+
+    public String getOHLCtMsg() {
+        return "O:" + this.open + " H:" + this.high + " L:" + this.low + " C:" + this.close;
     }
-    
+
+    public String getIdHexa() {
+        return this.id.toHexString();
+    }
+
     public Date getStartDate() {
         //return startDate;
-        return (Date)startDate.clone();
+        return (Date) startDate.clone();
     }
 
     public Integer getCount() {
@@ -248,9 +251,5 @@ public class CandleDTO {
     public void setDelta(DeltaDTO delta) {
         this.delta = delta;
     }
-
-
-    
-    
 
 }
