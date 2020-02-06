@@ -223,30 +223,6 @@ public class MongoEJB {
     }
 
     /**
-     * Get a day's candle dates
-     *
-     * @param startDate
-     * @return
-     */
-    public List<Date> getCandleOneDayCandleDates(Date startDate) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startDate);
-        cal.add(Calendar.DAY_OF_YEAR, 1);
-        Date stopDate = cal.getTime();
-
-        MongoCursor<Document> cursor = config.getCandleColl()
-                .find(and(gte("startDate", startDate), lt("startDate", stopDate)))
-                .sort(Sorts.ascending("startDate"))
-                .iterator();
-
-        List<Date> list = new ArrayList<>();
-        while (cursor.hasNext()) {
-            list.add(cursor.next().getDate("startDate"));
-        }
-        return list;
-    }
-
-    /**
      * Get one day's all Candles
      *
      * @param startDate
@@ -265,7 +241,8 @@ public class MongoEJB {
 
         List<CandleDTO> list = new ArrayList<>();
         while (cursor.hasNext()) {
-            list.add(new CandleDTO(cursor.next()));
+            CandleDTO dto = new CandleDTO(cursor.next());
+            list.add(dto);
         }
         return list;
     }

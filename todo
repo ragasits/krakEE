@@ -1,5 +1,4 @@
-+ GUI: DeltaDTO (CandleDetail)
-+ Add, Calc: DeltaDTO - Changes from the prev. Candle
++ BUG: CandleDetail - NullPointerException
 
 - CandleDetail: Show Totals
 - BUG: The first Candle.delta.calcdelta always false

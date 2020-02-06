@@ -60,13 +60,6 @@ public class CandleDetailBean implements Serializable {
         return mongo.getLatesDateFromCandle();
     }
 
-    public List<Date> getCandleDateList() {
-        if (this.selectedDate != null) {
-            return mongo.getCandleOneDayCandleDates(selectedDate);
-        }
-        return null;
-    }
-
     public String getSelectedIdHexa() {
         return selectedIdHexa;
     }
