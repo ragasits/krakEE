@@ -49,80 +49,116 @@
                     </p:panelGrid>
 
 
-                    <p:panelGrid columns="11">
-
+                    <p:panelGrid columns="5">
                         <p:outputLabel value=""/>
-                        <p:outputLabel value="Open" style="font-weight: bold"/>
-                        <p:outputLabel value="Low" style="font-weight: bold"/>                    
-                        <p:outputLabel value="High" style="font-weight: bold"/>                    
-                        <p:outputLabel value="Close" style="font-weight: bold"/>
-                        <p:outputLabel value="Count" style="font-weight: bold"/>
-                        <p:outputLabel value="CountBuy" style="font-weight: bold"/>
-                        <p:outputLabel value="CountSell" style="font-weight: bold"/>
-                        <p:outputLabel value="Volume" style="font-weight: bold"/>
-                        <p:outputLabel value="VolumeBuy" style="font-weight: bold"/>
-                        <p:outputLabel value="VolumeSell" style="font-weight: bold"/>
-
                         <p:outputLabel value="Trade" style="font-weight: bold"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.open}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.low}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.high}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.close}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.count}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.countBuy}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.countSell}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.volume}">
-                            <f:convertNumber maxFractionDigits="0" />
-                        </p:outputLabel>
-                        <p:outputLabel value="#{candleDetailBean.detail.volumeBuy}">
-                            <f:convertNumber maxFractionDigits="0" />
-                        </p:outputLabel>
-                        <p:outputLabel value="#{candleDetailBean.detail.volumeSell}">
-                            <f:convertNumber maxFractionDigits="0" />
-                        </p:outputLabel>
-
                         <p:outputLabel value="Delta" style="font-weight: bold"/>
+                        <p:outputLabel value="Delta Up" style="font-weight: bold"/>
+                        <p:outputLabel value="Delta Down" style="font-weight: bold"/>
+
+                        <p:outputLabel value="Open" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.open}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpen}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpenUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpenDown}"/>
+
+                        <p:outputLabel value="Low" style="font-weight: bold"/>                    
+                        <p:outputLabel value="#{candleDetailBean.detail.low}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLow}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLowUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLowDown}"/>
+
+                        <p:outputLabel value="High" style="font-weight: bold"/>                    
+                        <p:outputLabel value="#{candleDetailBean.detail.high}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHigh}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaClose}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHighUp}"/>                        
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHighDown}"/>
+
+                        <p:outputLabel value="Close" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.close}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaClose}"/>                        
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCloseUp}"/>                        
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCloseDown}"/>                        
+
+                        <p:outputLabel value="Count" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.count}"/>                        
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCount}"/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+
+                        <p:outputLabel value="CountBuy" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.countBuy}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.delta.deltaCountBuy}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCountSell}"/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+
+                        <p:outputLabel value="CountSell" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.countSell}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCountSell}"/>                        
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+
+                        <p:outputLabel value="Volume" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.volume}">
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                        </p:outputLabel>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolume}">
-                            <f:convertNumber maxFractionDigits="0" />
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                        </p:outputLabel>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+
+                        <p:outputLabel value="VolumeBuy" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.volumeBuy}">
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
                         </p:outputLabel>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeBuy}">
-                            <f:convertNumber maxFractionDigits="0" />
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                        </p:outputLabel>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+
+
+                        <p:outputLabel value="VolumeSell" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.volumeSell}">
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
                         </p:outputLabel>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeSell}">
-                            <f:convertNumber maxFractionDigits="0" />
-                        </p:outputLabel>   
-
-                        <p:outputLabel value="Delta Up" style="font-weight: bold"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpenUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLowUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHighUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCloseUp}"/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                        </p:outputLabel>
                         <p:outputLabel value=""/>
                         <p:outputLabel value=""/>
 
-                        <p:outputLabel value="Delta Down" style="font-weight: bold"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpenDown}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLowDown}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHighDown}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCloseDown}"/>
+                        <p:outputLabel value="Total" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.total}">
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                        </p:outputLabel>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotal}">
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                        </p:outputLabel>
                         <p:outputLabel value=""/>
                         <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>                     
 
+                        <p:outputLabel value="TotalBuy" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.totalBuy}">
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                        </p:outputLabel>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotalBuy}">
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                        </p:outputLabel>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+
+
+                        <p:outputLabel value="TotalSell" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.totalSell}">
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                        </p:outputLabel>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotalSell}">
+                            <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+                        </p:outputLabel>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
                     </p:panelGrid>
                 </p:panel>                    
             </h:form>

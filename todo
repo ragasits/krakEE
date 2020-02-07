@@ -1,6 +1,6 @@
-+ BUG: CandleDetail - NullPointerException
++ CandleDetail: Show Totals
 
-- CandleDetail: Show Totals
+- Calc more Deltas (+up +down)
 - BUG: The first Candle.delta.calcdelta always false
 - Check: candles - Missing hourglass
 - Check: Trade - Missing hourglass
