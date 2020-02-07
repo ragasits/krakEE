@@ -1,13 +1,11 @@
-+ CandleDetail: Show Totals
++ Check: Compare candles with TradingView 
++ Calc: more Deltas (+up +down)
 
-- Calc more Deltas (+up +down)
+- Calc: SMA
 - BUG: The first Candle.delta.calcdelta always false
-- Check: candles - Missing hourglass
-- Check: Trade - Missing hourglass
 - Calc: Bollinger
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
-- Check: Are there missing candles?
-- Check: candle values
+
 
 Future:
 --------
