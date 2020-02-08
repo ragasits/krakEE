@@ -1,4 +1,4 @@
-+ BUG: The first Candle.delta.calcdelta always false
++ Rename DeltaUp/Down to TrendUp/Down
 
 - BUG:  calcCandle:1 (scheduling)
 - Calc: SMA

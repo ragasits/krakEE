@@ -53,51 +53,51 @@
                         <p:outputLabel value=""/>
                         <p:outputLabel value="Trade" style="font-weight: bold"/>
                         <p:outputLabel value="Delta" style="font-weight: bold"/>
-                        <p:outputLabel value="Delta Up" style="font-weight: bold"/>
-                        <p:outputLabel value="Delta Down" style="font-weight: bold"/>
+                        <p:outputLabel value="Trend Up" style="font-weight: bold"/>
+                        <p:outputLabel value="Trend Down" style="font-weight: bold"/>
 
                         <p:outputLabel value="Open" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.open}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpen}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpenUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaOpenDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendOpenUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendOpenDown}"/>
 
                         <p:outputLabel value="Low" style="font-weight: bold"/>                    
                         <p:outputLabel value="#{candleDetailBean.detail.low}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLow}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLowUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaLowDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendLowUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendLowDown}"/>
 
                         <p:outputLabel value="High" style="font-weight: bold"/>                    
                         <p:outputLabel value="#{candleDetailBean.detail.high}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHigh}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHighUp}"/>                        
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaHighDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendHighUp}"/>                        
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendHighDown}"/>
 
                         <p:outputLabel value="Close" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.close}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaClose}"/>                        
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCloseUp}"/>                        
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCloseDown}"/>                        
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendCloseUp}"/>                        
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendCloseDown}"/>                        
 
                         <p:outputLabel value="Count" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.count}"/>                        
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCount}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCountUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCountDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendCountUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendCountDown}"/>
 
 
                         <p:outputLabel value="CountBuy" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.countBuy}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.delta.deltaCountBuy}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.delta.deltaCountBuyUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.delta.deltaCountBuyDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCountBuy}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendCountBuyUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendCountBuyDown}"/>
 
                         <p:outputLabel value="CountSell" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.countSell}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCountSell}"/>                        
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCountSellUp}"/>                        
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaCountSellDown}"/>                                                
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendCountSellUp}"/>                        
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendCountSellDown}"/>                                                
                         
 
                         <p:outputLabel value="Volume" style="font-weight: bold"/>
@@ -107,8 +107,8 @@
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolume}">
                              <f:convertNumber maxFractionDigits="4" groupingUsed="false" />
                         </p:outputLabel>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendVolumeUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendVolumeDown}"/>
 
                         <p:outputLabel value="VolumeBuy" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.volumeBuy}">
@@ -117,8 +117,8 @@
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeBuy}">
                             <f:convertNumber maxFractionDigits="4" groupingUsed="false" />
                         </p:outputLabel>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeBuyUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeBuyDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendVolumeBuyUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendVolumeBuyDown}"/>
 
 
                         <p:outputLabel value="VolumeSell" style="font-weight: bold"/>
@@ -128,8 +128,8 @@
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeSell}">
                             <f:convertNumber maxFractionDigits="4" groupingUsed="false" />
                         </p:outputLabel>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeSellUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaVolumeSellDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendVolumeSellUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendVolumeSellDown}"/>
 
                         <p:outputLabel value="Total" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.total}">
@@ -138,8 +138,8 @@
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotal}">
                             <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
                         </p:outputLabel>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotalUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotalDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendTotalUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendTotalDown}"/>
 
                         <p:outputLabel value="TotalBuy" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.totalBuy}">
@@ -148,8 +148,8 @@
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotalBuy}">
                             <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
                         </p:outputLabel>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotalBuyUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotalBuyDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendTotalBuyUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendTotalBuyDown}"/>
 
 
                         <p:outputLabel value="TotalSell" style="font-weight: bold"/>
@@ -159,8 +159,8 @@
                         <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotalSell}">
                             <f:convertNumber maxFractionDigits="0" groupingUsed="false" />
                         </p:outputLabel>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotalSellUp}"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.delta.deltaTotalSellDown}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendTotalSellUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.delta.trendTotalSellDown}"/>
                     </p:panelGrid>
                 </p:panel>                    
             </h:form>
