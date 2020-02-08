@@ -1,5 +1,4 @@
-+ Check: Compare candles with TradingView 
-+ Calc: more Deltas (+up +down)
++ BUG: Delta calculation
 
 - Calc: SMA
 - BUG: The first Candle.delta.calcdelta always false
