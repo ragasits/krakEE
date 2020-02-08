@@ -1,7 +1,7 @@
-+ BUG: Delta calculation
++ BUG: The first Candle.delta.calcdelta always false
 
+- BUG:  calcCandle:1 (scheduling)
 - Calc: SMA
-- BUG: The first Candle.delta.calcdelta always false
 - Calc: Bollinger
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 
@@ -9,7 +9,6 @@
 Future:
 --------
 - Implement RSI
-- Implement Bollinger band
 - Set the learning data
 - Self learning with Neural networks
 - Simulate trade 

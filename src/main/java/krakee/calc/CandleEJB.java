@@ -46,7 +46,7 @@ public class CandleEJB {
         this.setLastCandleCalcToFalse();
         this.calcDateList();
         this.calcCandle();
-        delta.calculateDelta(candleSize);
+        delta.calculateDelta();
         config.setRunCandle(true);
     }
 

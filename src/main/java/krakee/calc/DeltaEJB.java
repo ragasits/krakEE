@@ -31,9 +31,9 @@ public class DeltaEJB {
 
     /**
      * Calculate delta values
-     * @param candleSize - Size of calculated rows
+     *
      */
-    public void calculateDelta(int candleSize) {
+    public void calculateDelta() {
         CandleDTO candle;
         CandleDTO prev;
         DeltaDTO delta;
@@ -59,10 +59,14 @@ public class DeltaEJB {
                     delta = new DeltaDTO(candle, prev);
                     candle.setDelta(delta);
 
-                    //Save candle
-                    config.getCandleColl()
-                            .replaceOne(eq("_id", candle.getId()), candle.getCandle());
+                } else {
+                    //First row
+                    candle.getDelta().setCalcDelta(true);
                 }
+
+                //Save candle
+                config.getCandleColl()
+                        .replaceOne(eq("_id", candle.getId()), candle.getCandle());
 
             }
         }

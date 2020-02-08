@@ -15,7 +15,7 @@ import org.bson.types.Decimal128;
  */
 public class DeltaDTO {
 
-    private final boolean calcDelta;
+    private boolean calcDelta;
 
     private final Integer deltaCount;
     private final Integer deltaCountBuy;
@@ -326,6 +326,10 @@ public class DeltaDTO {
         return calcDelta;
     }
 
+    public void setCalcDelta(boolean calcDelta) {
+        this.calcDelta = calcDelta;
+    }
+    
     public Integer getDeltaCount() {
         return deltaCount;
     }
