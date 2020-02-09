@@ -34,6 +34,8 @@ public class CandleEJB {
     ConfigEJB config;
     @EJB
     DeltaEJB delta;
+    @EJB
+    BollingerEJB bollinger;
 
     private int candleSize = 5000;
 
@@ -47,6 +49,7 @@ public class CandleEJB {
         this.calcDateList();
         this.calcCandle();
         delta.calculateDelta();
+        bollinger.calculateBollinger();
         config.setRunCandle(true);
     }
 
@@ -62,6 +65,8 @@ public class CandleEJB {
         if (doc != null) {
             CandleDTO dto = new CandleDTO(doc);
             dto.setCalcCandle(false);
+            dto.getDelta().setCalcDelta(false);
+            dto.getBollinger().setCalcBollinger(false);
 
             //Update last Candle
             config.getCandleColl().replaceOne(

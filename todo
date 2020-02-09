@@ -1,7 +1,8 @@
-+ Rename DeltaUp/Down to TrendUp/Down
++ Calc: SMA20
 
+- Chk: SMA
+- Calc: SMA Delta, Trends
 - BUG:  calcCandle:1 (scheduling)
-- Calc: SMA
 - Calc: Bollinger
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 

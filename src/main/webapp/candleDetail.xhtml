@@ -40,12 +40,18 @@
 
 
                 <p:panel id="detailPanel">                
-                    <p:panelGrid columns="4">
+                    <p:panelGrid columns="8">
                         <p:outputLabel value="StartDate"/>
                         <p:outputLabel value="#{candleDetailBean.detail.startDate}"/>
 
                         <p:outputLabel value="CalcCandle"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.calcCandle}"/>
+                        
+                        <p:outputLabel value="CalcDelta"/>
+                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.delta.calcDelta}"/>                        
+                        
+                        <p:outputLabel value="CalcBollinger"/>
+                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollinger.calcBollinger}"/>                                                
                     </p:panelGrid>
 
 
@@ -161,6 +167,9 @@
                         </p:outputLabel>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.trendTotalSellUp}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.delta.trendTotalSellDown}"/>
+                        
+                        <p:outputLabel value="Simple Moving Average (Close20)" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.sma}"/>
                     </p:panelGrid>
                 </p:panel>                    
             </h:form>

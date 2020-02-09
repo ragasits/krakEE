@@ -252,4 +252,14 @@ public class CandleDTO {
         this.delta = delta;
     }
 
+    public BollingerDTO getBollinger() {
+        return bollinger;
+    }
+
+    public void setBollinger(BollingerDTO bollinger) {
+        this.bollinger = bollinger;
+    }
+
+    
+    
 }

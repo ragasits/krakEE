@@ -33,6 +33,22 @@ public class BollingerDTO {
         return new Document("calcBollinger", this.calcBollinger)
                 .append("sma", this.sma);
     }
+
+    public boolean isCalcBollinger() {
+        return calcBollinger;
+    }
+
+    public void setCalcBollinger(boolean calcBollinger) {
+        this.calcBollinger = calcBollinger;
+    }
+
+    public BigDecimal getSma() {
+        return sma;
+    }
+
+    public void setSma(BigDecimal sma) {
+        this.sma = sma;
+    }
             
             
     
