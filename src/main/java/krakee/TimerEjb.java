@@ -67,7 +67,7 @@ public class TimerEjb {
 
         //Set next running
         if (config.isRunTrade() || config.isRunCandle()) {
-            if ((trade.getPairTradeSize() == 1000) || (candle.getCandleSize() > 0)) {
+            if ((trade.getPairTradeSize() == 1000) || (candle.getCandleSize() > 1)) {
                 this.duration = config.getDefaultTimerDuration();
             } else {
                 this.duration = this.duration * 2;

@@ -57,20 +57,35 @@ public class CandleEJB {
      * Set the last Candle calcCandle value to false (Incremental running)
      */
     private void setLastCandleCalcToFalse() {
-        //Get the last Candle
+        //Get last startDate from Candle
         Document doc = config.getCandleColl()
                 .find()
                 .sort(Sorts.descending("startDate"))
                 .first();
-        if (doc != null) {
-            CandleDTO dto = new CandleDTO(doc);
-            dto.setCalcCandle(false);
-            dto.getDelta().setCalcDelta(false);
-            dto.getBollinger().setCalcBollinger(false);
+        if (doc == null) {
+            return;
+        }
+        CandleDTO candle = new CandleDTO(doc);
+
+        //Get last date from TradePair
+        doc = config.getTradePairColl()
+                .find()
+                .sort(Sorts.descending("timeDate"))
+                .first();
+        if (doc == null) {
+            return;
+        }
+        TradePairDTO trade = new TradePairDTO(doc);
+
+        //If the tradePair is newer then Candle - Reset
+        if (trade.getTimeDate().after(candle.getStartDate())) {
+            candle.setCalcCandle(false);
+            candle.getDelta().setCalcDelta(false);
+            candle.getBollinger().setCalcBollinger(false);
 
             //Update last Candle
             config.getCandleColl().replaceOne(
-                    eq("_id", dto.getId()), dto.getCandle());
+                    eq("_id", candle.getId()), candle.getCandle());
         }
     }
 
@@ -205,7 +220,6 @@ public class CandleEJB {
      */
     private Date getStartDate() {
         Date startDate;
-        
 
         if (config.getCandleColl().countDocuments() > 0) {
             startDate = config.getCandleColl().find()
@@ -216,7 +230,7 @@ public class CandleEJB {
             cal.setTime(startDate);
             cal.add(Calendar.MINUTE, 30);
             startDate = cal.getTime();
-            
+
         } else {
             startDate = config.getTradePairColl().find()
                     .sort(Sorts.ascending("timeDate"))
