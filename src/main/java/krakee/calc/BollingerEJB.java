@@ -5,7 +5,6 @@
  */
 package krakee.calc;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
@@ -13,7 +12,6 @@ import static com.mongodb.client.model.Filters.lt;
 import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.client.model.Sorts;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -39,6 +37,7 @@ public class BollingerEJB {
      */
     public void calculateBollinger() {
         CandleDTO candle;
+        CandleDTO prev;
         BollingerDTO bollinger;
 
         //Get the candles
@@ -51,9 +50,21 @@ public class BollingerEJB {
             bollinger = candle.getBollinger();
             bollinger.setCalcBollinger(true);
             bollinger.setSma(this.calcSMA(candle));
-            candle.setBollinger(bollinger);
+
+            //Get the prev candle
+            Document doc = config.getCandleColl()
+                    .find(lt("startDate", candle.getStartDate()))
+                    .sort(Sorts.descending("startDate"))
+                    .first();
+
+            //Calc Delta
+            if (doc != null) {
+                prev = new CandleDTO(doc);
+                bollinger.calcDelta(prev.getBollinger());
+            }
 
             //Save candle
+            candle.setBollinger(bollinger);
             config.getCandleColl()
                     .replaceOne(eq("_id", candle.getId()), candle.getCandle());
 

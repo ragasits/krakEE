@@ -1,7 +1,7 @@
-+ BUG:  calcCandle:1 (scheduling) - Not incrementing scheduling
++ Calc SMA Delta
 
 - Chk: SMA
-- Calc: SMA Delta, Trends
+- Calc: SMA Trends
 - Calc: Bollinger
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 
