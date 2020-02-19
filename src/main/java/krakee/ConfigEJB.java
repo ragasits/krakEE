@@ -92,6 +92,9 @@ public class ConfigEJB {
         if (!this.isIndex(candleColl, "startDate_1")) {
             this.candleColl.createIndex(Indexes.ascending("startDate"), new IndexOptions().unique(true));
         }
+        if (!this.isIndex(candleColl, "startDate_-1")) {
+            this.candleColl.createIndex(Indexes.descending("startDate"), new IndexOptions().unique(true));
+        }        
         if (!this.isIndex(candleColl, "calcCandle_1")) {
             this.candleColl.createIndex(Indexes.ascending("calcCandle"));
         }

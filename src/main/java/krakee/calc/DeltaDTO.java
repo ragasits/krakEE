@@ -235,7 +235,7 @@ public class DeltaDTO {
      * @return 
      */
     private Integer calcTrendDown(Integer last, Integer prev, Integer prevUp) {
-        return this.calcTrendUp(BigDecimal.valueOf(last), BigDecimal.valueOf(prev), prevUp);
+        return this.calcTrendDown(BigDecimal.valueOf(last), BigDecimal.valueOf(prev), prevUp);
     }
 
     /**
