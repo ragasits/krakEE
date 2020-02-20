@@ -1,4 +1,4 @@
-+ BUG: CountTrend* - Wrong Down value
++ Add bollinger Fields
 
 - Chk: SMA
 - Calc: SMA Trends

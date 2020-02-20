@@ -71,6 +71,27 @@ public class BollingerEJB {
         }
     }
 
+    private void caclBollinger(CandleDTO dto) {
+        CandleDTO candle;
+        Document doc;
+        BigDecimal stdev = BigDecimal.ZERO;
+
+        //Get the candles
+        MongoCursor<Document> cursor = config.getCandleColl()
+                .find(lte("startDate", dto.getStartDate()))
+                .sort(Sorts.descending("startDate"))
+                .limit(20)
+                .iterator();
+
+        while (cursor.hasNext()) {
+            doc = cursor.next();
+            candle = new CandleDTO(doc);
+            //Standard Deviation
+            stdev = stdev.add(candle.getClose().subtract(candle.getBollinger().getSma()).pow(2));
+            
+        }
+    }
+
     private BigDecimal calcSMA(CandleDTO dto) {
         CandleDTO candle;
         BigDecimal close = BigDecimal.ZERO;
