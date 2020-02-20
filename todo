@@ -1,7 +1,7 @@
-+ BUG: CountTrend* - Wrong Down value
++ Chk: SMA
++ Calc: SMA Trends
 
-- Chk: SMA
-- Calc: SMA Trends
+
 - Calc: Bollinger
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 

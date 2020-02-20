@@ -6,6 +6,7 @@
 package krakee.calc;
 
 import java.math.BigDecimal;
+import krakee.Common;
 import org.bson.Document;
 import org.bson.types.Decimal128;
 
@@ -14,32 +15,47 @@ import org.bson.types.Decimal128;
  * @author rgt
  */
 public class BollingerDTO {
-    
+
     private boolean calcBollinger;
     //Single Moving Average
     private BigDecimal sma;
     private BigDecimal deltaSma;
+    private Integer trendSmaUp;
+    private Integer trendSmaDown;
 
     public BollingerDTO() {
-        this.calcBollinger= false;
+        this.calcBollinger = false;
         this.sma = BigDecimal.ZERO;
         this.deltaSma = BigDecimal.ZERO;
+
+        this.trendSmaUp = 0;
+        this.trendSmaDown = 0;
     }
-       
-    public BollingerDTO(Document doc){
-        this.calcBollinger=doc.getBoolean("calcBollinger");
-        this.sma=((Decimal128) doc.get("sma")).bigDecimalValue();
+
+    public BollingerDTO(Document doc) {
+        this.calcBollinger = doc.getBoolean("calcBollinger");
+        this.sma = ((Decimal128) doc.get("sma")).bigDecimalValue();
         this.deltaSma = ((Decimal128) doc.get("deltaSma")).bigDecimalValue();
+        this.trendSmaUp = doc.getInteger("trendSmaUp");
+        this.trendSmaDown = doc.getInteger("trendSmaDown");
     }
-    
-    public Document getBollinger(){
+
+    public Document getBollinger() {
         return new Document("calcBollinger", this.calcBollinger)
                 .append("sma", this.sma)
-                .append("deltaSma", this.deltaSma);
+                .append("deltaSma", this.deltaSma)
+                .append("trendSmaUp", this.trendSmaUp)
+                .append("trendSmaDown", this.trendSmaDown);
     }
-    
-    public void calcDelta(BollingerDTO prev){
+
+    /**
+     * Calculate trend and delta
+     * @param prev 
+     */
+    public void calcDeltaAndTrend(BollingerDTO prev) {
         this.deltaSma = this.sma.subtract(prev.getSma());
+        this.trendSmaUp = Common.calcTrendUp(this.sma, prev.getSma(), prev.getTrendSmaUp());
+        this.trendSmaDown = Common.calcTrendDown(this.sma, prev.getSma(), prev.getTrendSmaDown());
     }
 
     public boolean isCalcBollinger() {
@@ -61,14 +77,13 @@ public class BollingerDTO {
     public BigDecimal getDeltaSma() {
         return deltaSma;
     }
-            
-            
-    
-    
 
+    public Integer getTrendSmaUp() {
+        return trendSmaUp;
+    }
 
-    
-    
-    
-    
+    public Integer getTrendSmaDown() {
+        return trendSmaDown;
+    }
+
 }

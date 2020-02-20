@@ -33,6 +33,8 @@ public class BollingerEJB {
 
     /**
      * Calculate Bollinger values
+     * + Delta
+     * + Trend
      *
      */
     public void calculateBollinger() {
@@ -57,20 +59,26 @@ public class BollingerEJB {
                     .sort(Sorts.descending("startDate"))
                     .first();
 
-            //Calc Delta
+            //Calc Delta + Trend
             if (doc != null) {
                 prev = new CandleDTO(doc);
-                bollinger.calcDelta(prev.getBollinger());
+                bollinger.calcDeltaAndTrend(prev.getBollinger());
             }
 
             //Save candle
-            candle.setBollinger(bollinger);
+            //candle.setBollinger(bollinger);
             config.getCandleColl()
                     .replaceOne(eq("_id", candle.getId()), candle.getCandle());
 
         }
     }
 
+    /**
+     * Calculate SMA
+     *
+     * @param dto
+     * @return
+     */
     private BigDecimal calcSMA(CandleDTO dto) {
         CandleDTO candle;
         BigDecimal close = BigDecimal.ZERO;
