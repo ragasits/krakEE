@@ -171,6 +171,26 @@
                         <p:outputLabel value="Simple Moving Average (Close20)" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.bollinger.sma}"/>
                         <p:outputLabel value="#{candleDetailBean.detail.bollinger.deltaSma}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.trendSmaUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.trendSmaDown}"/>
+                        
+                        <p:outputLabel value="Standard Deviation" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.stDev}"/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>                        
+                        
+                        <p:outputLabel value="Bollinger Upper" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.bollingerUpper}"/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>                                                
+                        
+                        <p:outputLabel value="Bollinger Lower" style="font-weight: bold"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.bollingerLower}"/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>                                                                        
                     </p:panelGrid>
                 </p:panel>                    
             </h:form>

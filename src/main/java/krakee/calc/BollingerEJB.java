@@ -32,7 +32,7 @@ public class BollingerEJB {
     ConfigEJB config;
 
     /**
-     * Calculate Bollinger values
+     * Calculate Bollinger values + Delta + Trend
      *
      */
     public void calculateBollinger() {
@@ -50,6 +50,9 @@ public class BollingerEJB {
             bollinger = candle.getBollinger();
             bollinger.setCalcBollinger(true);
             bollinger.setSma(this.calcSMA(candle));
+            bollinger.setStDev(this.calcStDev(candle));
+            bollinger.setBollingerUpper(bollinger.getSma().add(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));
+            bollinger.setBollingerLower(bollinger.getSma().subtract(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));            
 
             //Get the prev candle
             Document doc = config.getCandleColl()
@@ -57,24 +60,29 @@ public class BollingerEJB {
                     .sort(Sorts.descending("startDate"))
                     .first();
 
-            //Calc Delta
+            //Calc Delta + Trend
             if (doc != null) {
                 prev = new CandleDTO(doc);
-                bollinger.calcDelta(prev.getBollinger());
+                bollinger.calcDeltaAndTrend(prev.getBollinger());
             }
 
             //Save candle
-            candle.setBollinger(bollinger);
             config.getCandleColl()
                     .replaceOne(eq("_id", candle.getId()), candle.getCandle());
 
         }
     }
 
-    private void caclBollinger(CandleDTO dto) {
+    /**
+     * Calculate Standard Deviation
+     * @param dto
+     * @return 
+     */
+    private BigDecimal calcStDev(CandleDTO dto) {
         CandleDTO candle;
         Document doc;
         BigDecimal stdev = BigDecimal.ZERO;
+        int i = 0;
 
         //Get the candles
         MongoCursor<Document> cursor = config.getCandleColl()
@@ -88,10 +96,20 @@ public class BollingerEJB {
             candle = new CandleDTO(doc);
             //Standard Deviation
             stdev = stdev.add(candle.getClose().subtract(candle.getBollinger().getSma()).pow(2));
-            
+            i++;
         }
+        
+        if (i > 0) {
+            return stdev.divide(BigDecimal.valueOf(i), 5, RoundingMode.HALF_UP);
+        }
+        return BigDecimal.ZERO;        
     }
 
+    /**
+     * Calculate Standard Moving Average
+     * @param dto
+     * @return 
+     */
     private BigDecimal calcSMA(CandleDTO dto) {
         CandleDTO candle;
         BigDecimal close = BigDecimal.ZERO;

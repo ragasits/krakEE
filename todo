@@ -1,8 +1,9 @@
-+ Add bollinger Fields
++ Calc: Bollinger
 
-- Chk: SMA
-- Calc: SMA Trends
-- Calc: Bollinger
+- Chk: stDev
+- Chk: Bollinger
+- Calc: stDev
+- Calc: Bollinger deltas, trends
 - BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 
 
