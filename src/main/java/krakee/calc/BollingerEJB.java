@@ -16,6 +16,7 @@ import java.math.RoundingMode;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import krakee.Common;
 import krakee.ConfigEJB;
 import org.bson.Document;
 
@@ -95,12 +96,13 @@ public class BollingerEJB {
             doc = cursor.next();
             candle = new CandleDTO(doc);
             //Standard Deviation
-            stdev = stdev.add(candle.getClose().subtract(candle.getBollinger().getSma()).pow(2));
+            stdev = stdev.add(candle.getClose().subtract(dto.getBollinger().getSma()).pow(2));
             i++;
         }
         
         if (i > 0) {
-            return stdev.divide(BigDecimal.valueOf(i), 5, RoundingMode.HALF_UP);
+            return Common.sqrt(stdev.divide(BigDecimal.valueOf(i), 5, RoundingMode.HALF_UP),2);
+            //return stdev.divide(BigDecimal.valueOf(i), 5, RoundingMode.HALF_UP);
         }
         return BigDecimal.ZERO;        
     }

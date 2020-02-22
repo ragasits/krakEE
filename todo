@@ -1,18 +1,20 @@
-+ Calc: Bollinger
++ calc, chk: bollinger, stdev
++ Calc: Bollinger deltas, trends
++ calc: Bollinger width, delta, trends
 
-- Chk: stDev
-- Chk: Bollinger
-- Calc: stDev
-- Calc: Bollinger deltas, trends
-- BUG: IndexOutOfBoundsException: Index: 0, Size: 0 - krakee.get.TradeEJB.callKrakenTrade(TradeEJB.java:70)
 
+- Calc: Bollinger trade position
 
 Future:
 --------
 - Implement RSI
-- Set the learning data
+- Generate learning data
+- Simulate trade (from the learning data)
 - Self learning with Neural networks
-- Simulate trade 
+- Optimize mongodb
+- calc: Candle.Date (day of week, week, month, moon phase)
+
+
 
 Optional:
 ---------
@@ -21,5 +23,6 @@ Optional:
 - EJB timeout exception - Move to Bath processing?
 - Candle chart: show counts
 - Candle chart: show volumes
+- Metrics: Prometheus + Grafana
 
 

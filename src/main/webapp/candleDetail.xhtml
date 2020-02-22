@@ -176,21 +176,22 @@
                         
                         <p:outputLabel value="Standard Deviation" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.bollinger.stDev}"/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>                        
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.deltaStDev}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.trendStDevUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.trendStDevDown}"/>                    
                         
                         <p:outputLabel value="Bollinger Upper" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.bollinger.bollingerUpper}"/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>                                                
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.deltaBollingerUpper}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.trendBollingerUpperUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.trendBollingerUpperDown}"/>                    
                         
                         <p:outputLabel value="Bollinger Lower" style="font-weight: bold"/>
                         <p:outputLabel value="#{candleDetailBean.detail.bollinger.bollingerLower}"/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>                                                                        
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.deltaBollingerLower}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.trendBollingerLowerUp}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.bollinger.trendBollingerLowerDown}"/>                    
+
                     </p:panelGrid>
                 </p:panel>                    
             </h:form>

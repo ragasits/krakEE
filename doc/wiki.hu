@@ -1,0 +1,40 @@
+KrakEE WIKI
+
+1. A projekt célja:
+- Új technológiák kipróbálása, tesztelése
+- Nagy mennyiségû adatok feldolgozása, optimalizálása
+- Referencia projekt
+- A bölcsek kövének a megtalálása (majd: örök élet)
+
+2. Használt technológiák
+- Jakarta EE
+- Eclipse Microprofile (Paraya micro)
+- MongoDB
+
+3. Az alkalmazás fõbb részei:
+- Kereskedési adatok inkrementális gyûjtése a Kraken BTC tõzsdérõl
+- A kereskedési adatokból aggregált értékek számítása (30min)
+- Felület az adatok lekérdezésére
+
+4. Az alkalmazás futtatása
+
+4.1. A futtatáshoz szükséges programok:
+- JAVA8
+- MongoDB 4.2 + 10GB tárhely
+
+4.2. A telepítõkészlet tartalma:
+- dump - A korábban gyûjtött, feldolgozott adatok mentése 
+- restore.bat – A dump könyvtár tartalmának betöltése MongoDB-be
+- dump.bat – Az adatbázis mentése a dump könyvtárba
+- payara-micro-x.xxx.jar – Paraya Micro futtató környezet 
+- log – A futtatás naplófájljait tartalmazza
+- krakEE-xx.war – Az alkalmazás
+- run.bat – Az alkalmazás elindítása
+
+4.3. A futás paraméterezése, és futtatása (run.bat)
+- KRAKEE_RUNTRADE – A gyûjtés be/ki kapcsolása
+- KRAKEE_RUNCANDLE – A számítások be/ki kapcsolása
+
+4.4.  A WEB GUI
+- http://localhost:8080/krakEE-xx/ 
+
