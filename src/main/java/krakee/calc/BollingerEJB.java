@@ -64,7 +64,7 @@ public class BollingerEJB {
             //Calc Delta + Trend
             if (doc != null) {
                 prev = new CandleDTO(doc);
-                bollinger.calcDeltaAndTrend(prev.getBollinger());
+                bollinger.calcDeltaAndTrend(candle, prev.getBollinger());
             }
 
             //Save candle

@@ -1,9 +1,6 @@
-+ calc, chk: bollinger, stdev
-+ Calc: Bollinger deltas, trends
-+ calc: Bollinger width, delta, trends
++calc: Bollinger trade position
 
-
-- Calc: Bollinger trade position
+- chk: Bollinger trade position
 
 Future:
 --------

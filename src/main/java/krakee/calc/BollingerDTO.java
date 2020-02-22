@@ -43,7 +43,18 @@ public class BollingerDTO {
     private BigDecimal bollingerBandWith;
     private BigDecimal deltaBollingerBandWith;
     private Integer trendBollingerBandWithUp;
-    private Integer trendBollingerBandWithDown;    
+    private Integer trendBollingerBandWithDown;
+
+    //Trade positions
+    private BigDecimal tradeUpper;
+    private BigDecimal deltaTradeUpper;
+    private Integer trendTradeUpperUp;
+    private Integer trendTradeUpperDown;
+
+    private BigDecimal tradeLower;
+    private BigDecimal deltaTradeLower;
+    private Integer trendTradeLowerUp;
+    private Integer trendTradeLowerDown;
 
     public BollingerDTO() {
         this.calcBollinger = false;
@@ -70,8 +81,22 @@ public class BollingerDTO {
         this.bollingerBandWith = BigDecimal.ZERO;
         this.deltaBollingerBandWith = BigDecimal.ZERO;
         this.trendBollingerBandWithUp = 0;
-        this.trendBollingerBandWithDown = 0;        
+        this.trendBollingerBandWithDown = 0;
 
+        this.tradeUpper = BigDecimal.ZERO;
+        this.deltaTradeUpper = BigDecimal.ZERO;
+        this.trendTradeUpperUp = 0;
+        this.trendTradeUpperDown = 0;
+
+        this.tradeLower = BigDecimal.ZERO;
+        this.deltaTradeLower = BigDecimal.ZERO;
+        this.trendTradeLowerUp = 0;
+        this.trendTradeLowerDown = 0;
+
+        this.tradeUpper = BigDecimal.ZERO;
+        this.deltaTradeUpper = BigDecimal.ZERO;
+        this.trendTradeUpperUp = 0;
+        this.trendTradeUpperDown = 0;
     }
 
     public BollingerDTO(Document doc) {
@@ -100,7 +125,17 @@ public class BollingerDTO {
         this.bollingerBandWith = ((Decimal128) doc.get("bollingerBandWith")).bigDecimalValue();
         this.deltaBollingerBandWith = ((Decimal128) doc.get("deltaBollingerBandWith")).bigDecimalValue();
         this.trendBollingerBandWithUp = doc.getInteger("trendBollingerBandWithUp");
-        this.trendBollingerBandWithDown = doc.getInteger("trendBollingerBandWithDown");        
+        this.trendBollingerBandWithDown = doc.getInteger("trendBollingerBandWithDown");
+
+        this.tradeUpper = ((Decimal128) doc.get("tradeUpper")).bigDecimalValue();
+        this.deltaTradeUpper = ((Decimal128) doc.get("deltaTradeUpper")).bigDecimalValue();
+        this.trendTradeUpperUp = doc.getInteger("trendTradeUpperUp");
+        this.trendTradeUpperDown = doc.getInteger("trendTradeUpperDown");
+
+        this.tradeLower = ((Decimal128) doc.get("tradeLower")).bigDecimalValue();
+        this.deltaTradeLower = ((Decimal128) doc.get("deltaTradeLower")).bigDecimalValue();
+        this.trendTradeLowerUp = doc.getInteger("trendTradeLowerUp");
+        this.trendTradeLowerDown = doc.getInteger("trendTradeLowerDown");
     }
 
     public Document getBollinger() {
@@ -113,7 +148,7 @@ public class BollingerDTO {
                 .append("deltaStDev", this.deltaStDev)
                 .append("trendStDevUp", this.trendStDevUp)
                 .append("trendStDevDown", this.trendStDevDown)
-                .append("bollingerUpper", this.bollingerUpper)                
+                .append("bollingerUpper", this.bollingerUpper)
                 .append("deltaBollingerUpper", this.deltaBollingerUpper)
                 .append("trendBollingerUpperUp", this.trendBollingerUpperUp)
                 .append("trendBollingerUpperDown", this.trendBollingerUpperDown)
@@ -124,8 +159,15 @@ public class BollingerDTO {
                 .append("bollingerBandWith", this.bollingerBandWith)
                 .append("deltaBollingerBandWith", this.deltaBollingerBandWith)
                 .append("trendBollingerBandWithUp", this.trendBollingerBandWithUp)
-                .append("trendBollingerBandWithDown", this.trendBollingerBandWithDown)                
-                ;
+                .append("trendBollingerBandWithDown", this.trendBollingerBandWithDown)
+                .append("tradeUpper", this.tradeUpper)
+                .append("deltaTradeUpper", this.deltaTradeUpper)
+                .append("trendTradeUpperUp", this.trendTradeUpperUp)
+                .append("trendTradeUpperDown", this.trendTradeUpperDown)
+                .append("tradeLower", this.tradeLower)
+                .append("deltaTradeLower", this.deltaTradeLower)
+                .append("trendTradeLowerUp", this.trendTradeLowerUp)
+                .append("trendTradeLowerDown", this.trendTradeLowerDown);
     }
 
     /**
@@ -133,7 +175,7 @@ public class BollingerDTO {
      *
      * @param prev
      */
-    public void calcDeltaAndTrend(BollingerDTO prev) {
+    public void calcDeltaAndTrend(CandleDTO candle, BollingerDTO prev) {
         this.deltaSma = this.sma.subtract(prev.getSma());
         this.trendSmaUp = Common.calcTrendUp(this.sma, prev.getSma(), prev.getTrendSmaUp());
         this.trendSmaDown = Common.calcTrendDown(this.sma, prev.getSma(), prev.getTrendSmaDown());
@@ -142,20 +184,43 @@ public class BollingerDTO {
         this.trendStDevUp = Common.calcTrendUp(this.stDev, prev.getStDev(), prev.getTrendStDevUp());
         this.trendStDevDown = Common.calcTrendDown(this.stDev, prev.getStDev(), prev.getTrendStDevDown());
 
-        this.deltaBollingerUpper = this.deltaBollingerUpper.subtract(prev.getBollingerUpper());
+        this.deltaBollingerUpper = this.bollingerUpper.subtract(prev.getBollingerUpper());
         this.trendBollingerUpperUp = Common.calcTrendUp(this.bollingerUpper, prev.getBollingerUpper(), prev.getTrendBollingerUpperUp());
         this.trendBollingerUpperDown = Common.calcTrendDown(this.bollingerUpper, prev.getBollingerUpper(), prev.getTrendBollingerUpperDown());
-        
+
         this.deltaBollingerLower = this.bollingerLower.subtract(prev.getBollingerLower());
         this.trendBollingerLowerUp = Common.calcTrendUp(this.bollingerLower, prev.getBollingerLower(), prev.getTrendBollingerLowerUp());
-        this.trendBollingerLowerDown = Common.calcTrendDown(this.bollingerLower, prev.getBollingerLower(), prev.getTrendBollingerLowerDown());        
-        
+        this.trendBollingerLowerDown = Common.calcTrendDown(this.bollingerLower, prev.getBollingerLower(), prev.getTrendBollingerLowerDown());
+
         this.bollingerBandWith = this.bollingerUpper.subtract(this.bollingerLower);
         this.deltaBollingerBandWith = this.bollingerBandWith.subtract(prev.getBollingerBandWith());
         this.trendBollingerBandWithUp = Common.calcTrendUp(this.bollingerBandWith, prev.getBollingerBandWith(), prev.getTrendBollingerBandWithUp());
-        this.trendBollingerBandWithDown = Common.calcTrendDown(this.bollingerBandWith, prev.getBollingerBandWith(), prev.getTrendBollingerBandWithDown());        
-        
-        
+        this.trendBollingerBandWithDown = Common.calcTrendDown(this.bollingerBandWith, prev.getBollingerBandWith(), prev.getTrendBollingerBandWithDown());
+
+        this.tradeUpper = this.calcTradeUpper(this.bollingerUpper, candle.getHigh());
+        this.deltaTradeUpper = this.tradeUpper.subtract(prev.getTradeUpper());
+        this.trendTradeUpperUp = Common.calcTrendUp(this.tradeUpper, prev.getTradeUpper(), prev.getTrendTradeUpperUp());
+        this.trendTradeUpperDown = Common.calcTrendDown(this.tradeUpper, prev.getTradeUpper(), prev.getTrendTradeUpperDown());
+
+        this.tradeLower = this.calcTradeLower(this.bollingerLower, candle.getLow());
+        this.deltaTradeLower = this.tradeLower.subtract(prev.getTradeLower());
+        this.trendTradeLowerUp = Common.calcTrendUp(this.tradeLower, prev.getTradeLower(), prev.getTrendTradeLowerUp());
+        this.trendTradeLowerDown = Common.calcTrendDown(this.tradeLower, prev.getTradeLower(), prev.getTrendTradeLowerDown());
+
+    }
+
+    private BigDecimal calcTradeUpper(BigDecimal bl, BigDecimal high) {
+        if (high.compareTo(bl) == 1) {
+            return high.subtract(bl);
+        }
+        return BigDecimal.ZERO;
+    }
+
+    private BigDecimal calcTradeLower(BigDecimal bl, BigDecimal low) {
+        if (low.compareTo(bl) == -1) {
+            return bl.subtract(low);
+        }
+        return BigDecimal.ZERO;
     }
 
     public boolean isCalcBollinger() {
@@ -261,7 +326,37 @@ public class BollingerDTO {
     public Integer getTrendBollingerBandWithDown() {
         return trendBollingerBandWithDown;
     }
-    
-    
+
+    public BigDecimal getTradeUpper() {
+        return tradeUpper;
+    }
+
+    public BigDecimal getDeltaTradeUpper() {
+        return deltaTradeUpper;
+    }
+
+    public Integer getTrendTradeUpperUp() {
+        return trendTradeUpperUp;
+    }
+
+    public Integer getTrendTradeUpperDown() {
+        return trendTradeUpperDown;
+    }
+
+    public BigDecimal getTradeLower() {
+        return tradeLower;
+    }
+
+    public BigDecimal getDeltaTradeLower() {
+        return deltaTradeLower;
+    }
+
+    public Integer getTrendTradeLowerUp() {
+        return trendTradeLowerUp;
+    }
+
+    public Integer getTrendTradeLowerDown() {
+        return trendTradeLowerDown;
+    }
 
 }
