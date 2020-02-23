@@ -15,18 +15,24 @@
             <p:menuitem value="Index" outcome="/index">
                 <f:param name="i" value="0"/>
             </p:menuitem>
-            
-            <p:menuitem value="Candles" outcome="/candle">
-                <f:param name="i" value="1" />
-            </p:menuitem>
-            
-            <p:menuitem value="Detail" outcome="/candleDetail">
-                <f:param name="i" value="2" />
-            </p:menuitem>            
-            
+
             <p:menuitem value="Trades" outcome="/trade">
+                <f:param name="i" value="1" />
+            </p:menuitem>   
+
+            <p:menuitem value="Candles" outcome="/candle">
+                <f:param name="i" value="2" />
+            </p:menuitem>
+
+            <p:menuitem value="Detail" outcome="/candleDetail">
                 <f:param name="i" value="3" />
-            </p:menuitem>            
+            </p:menuitem>        
+
+            <p:menuitem value="Train" outcome="/train">
+                <f:param name="i" value="4" />
+            </p:menuitem>   
+
+
         </p:tabMenu>
     </cc:implementation>
 </html>

@@ -62,6 +62,7 @@ public class ConfigEJB {
     private MongoDatabase database;
     private MongoCollection<Document> tradePairColl;
     private MongoCollection<Document> candleColl;
+    private MongoCollection<Document> trainColl;
 
     /**
      * Initiate:
@@ -98,6 +99,9 @@ public class ConfigEJB {
         if (!this.isIndex(candleColl, "calcCandle_1")) {
             this.candleColl.createIndex(Indexes.ascending("calcCandle"));
         }
+        
+        this.trainColl = this.database.getCollection("train");
+        
     }
 
     /**
@@ -136,6 +140,10 @@ public class ConfigEJB {
         return candleColl;
     }
 
+    public MongoCollection<Document> getTrainColl() {
+        return trainColl;
+    }
+    
     public String getKrakenURL() {
         return krakenURL;
     }
