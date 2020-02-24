@@ -18,20 +18,31 @@ import org.bson.types.ObjectId;
  */
 public class ProfitDTO {
 
+    static final String BUY = "buy";
+    static final String SELL = "sell";
+    static final String NONE = "none";
+    static final String[] op = {BUY, SELL, NONE};
+
     private ObjectId id;
     private Date startDate;
     private String trade;
     private BigDecimal close;
     private BigDecimal eur;
     private BigDecimal btc;
-    
+
+    public ProfitDTO(BigDecimal eur) {
+        this.eur = eur;
+        this.close = BigDecimal.ZERO;
+        this.btc = BigDecimal.ZERO;
+    }
+
     public ProfitDTO(CandleDTO candle, String trade) {
         this.startDate = candle.getStartDate();
         this.close = candle.getClose();
         this.trade = trade;
         this.eur = BigDecimal.ZERO;
         this.btc = BigDecimal.ZERO;
-        
+
     }
 
     public ProfitDTO(Document doc) {
@@ -50,20 +61,16 @@ public class ProfitDTO {
                 .append("eur", this.eur)
                 .append("btc", this.btc);
     }
-    
-    private void buyBtc(ProfitDTO prev){
-        if (prev.getEur().compareTo(BigDecimal.ZERO)==1){
-            this.btc = prev.getEur().divide(prev.getClose());
-            this.eur = BigDecimal.ZERO;
-        }
+
+    public void buyBtc(BigDecimal eur) {
+        this.btc = eur.divide(this.close);
+        this.eur = BigDecimal.ZERO;
     }
 
-    private void sellBtc(ProfitDTO prev){
-        if (prev.getBtc().compareTo(BigDecimal.ZERO)==1){
-            this.eur = prev.getBtc().multiply(prev.getClose());
-            this.btc = BigDecimal.ZERO;
-        }
-    }    
+    public void sellBtc(BigDecimal btc) {
+        this.eur = btc.multiply(this.close);
+        this.btc = BigDecimal.ZERO;
+    }
 
     public ObjectId getId() {
         return id;
@@ -84,6 +91,5 @@ public class ProfitDTO {
     public BigDecimal getBtc() {
         return btc;
     }
-    
-    
+
 }

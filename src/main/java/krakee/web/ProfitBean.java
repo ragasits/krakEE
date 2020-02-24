@@ -28,6 +28,11 @@ public class ProfitBean implements Serializable {
     @EJB
     ProfitEJB profitEjb;
     
+    public void onRandom(){
+        profitEjb.calcProfit();
+        this.onProfitQuery();
+    }
+    
     public void onProfitQuery(){
         this.profitList = profitEjb.get();
     }

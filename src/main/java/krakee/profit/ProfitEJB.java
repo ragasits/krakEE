@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -30,18 +31,14 @@ public class ProfitEJB {
 
     static final Logger LOGGER = Logger.getLogger(DeltaEJB.class.getCanonicalName());
 
-    private enum Trade {
-        BUY, SELL, NONE
-    }
-    
     @EJB
     ConfigEJB config;
-    
-    public List<ProfitDTO> get(){
-        MongoCursor<Document> cursor = config.getTrainColl()
+
+    public List<ProfitDTO> get() {
+        MongoCursor<Document> cursor = config.getProfitColl()
                 .find()
                 .iterator();
-        
+
         List<ProfitDTO> list = new ArrayList<>();
         while (cursor.hasNext()) {
             ProfitDTO dto = new ProfitDTO(cursor.next());
@@ -51,24 +48,22 @@ public class ProfitEJB {
     }
 
     /**
-     * Simulate trades
-     * Looking for the best training data
+     * Simulate trades Looking for the best training data
      */
-    public void calcTrain() {
+    public void calcProfit() {
         CandleDTO candle;
-        ProfitSumDTO sum = new ProfitSumDTO(1, BigDecimal.valueOf(1000L));
-        
-        //Set random to ENUM
-        Trade[] values = Trade.values();
-        int size = values.length;
+        BigDecimal eur = BigDecimal.valueOf(1000L);
+        BigDecimal btc = BigDecimal.ZERO;
+        String op;
+
+        //Set random
         Random random = new Random();
-        Trade op;
 
         //Get last 1k candles
         FindIterable<Document> result = config.getCandleColl()
                 .find(eq("calcCandle", true))
                 .sort(Sorts.descending("startDate"))
-                .limit(1000);
+                .limit(100);
 
         result = result.sort(Sorts.ascending("startDate"));
 
@@ -76,40 +71,51 @@ public class ProfitEJB {
         while (cursor.hasNext()) {
             candle = new CandleDTO(cursor.next());
 
-            op = values[random.nextInt(size)];
-            switch(op){
-                case BUY:
-                    sum = this.buy(sum, candle);
+            op = ProfitDTO.op[random.nextInt(ProfitDTO.op.length)];
+            ProfitDTO dto = new ProfitDTO(candle, op);
+
+            switch (op) {
+                case ProfitDTO.BUY:
+                    if (eur.compareTo(BigDecimal.ZERO) == 1) {
+                        dto.buyBtc(eur);
+                    }
                     break;
-                case SELL:
+                case ProfitDTO.SELL:
+                    if (btc.compareTo(BigDecimal.ZERO) == 1) {
+                        dto.sellBtc(btc);
+                    }
                     break;
-                case NONE:
+                case ProfitDTO.NONE:
                     break;
-            }          
+            }
+            eur = dto.getEur();
+            btc = dto.getBtc();
+            config.getProfitColl().insertOne(dto.getProfit());
         }
     }
-    
+
     /**
      * Buy BTC
+     *
      * @param sum
      * @param candle
-     * @return 
+     * @return
      */
-    private ProfitSumDTO buy(ProfitSumDTO sum, CandleDTO candle){
-        if (sum.getEuro().compareTo(BigDecimal.ZERO)==1){
+    private ProfitSumDTO buy(ProfitSumDTO sum, CandleDTO candle) {
+        if (sum.getEuro().compareTo(BigDecimal.ZERO) == 1) {
             sum.setBtc(sum.getEuro().divide(candle.getClose()));
             sum.setEuro(BigDecimal.ZERO);
         }
-        
+
         return sum;
     }
-    
-     private ProfitSumDTO sell(ProfitSumDTO sum, CandleDTO candle){
-        if (sum.getBtc().compareTo(BigDecimal.ZERO)==1){
+
+    private ProfitSumDTO sell(ProfitSumDTO sum, CandleDTO candle) {
+        if (sum.getBtc().compareTo(BigDecimal.ZERO) == 1) {
             sum.setEuro(sum.getBtc().multiply(candle.getClose()));
             sum.setBtc(BigDecimal.ZERO);
         }
-        
+
         return sum;
     }
 }

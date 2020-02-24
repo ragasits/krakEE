@@ -140,7 +140,7 @@ public class ConfigEJB {
         return candleColl;
     }
 
-    public MongoCollection<Document> getTrainColl() {
+    public MongoCollection<Document> getProfitColl() {
         return profitColl;
     }
     
