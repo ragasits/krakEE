@@ -62,7 +62,7 @@ public class ConfigEJB {
     private MongoDatabase database;
     private MongoCollection<Document> tradePairColl;
     private MongoCollection<Document> candleColl;
-    private MongoCollection<Document> trainColl;
+    private MongoCollection<Document> profitColl;
 
     /**
      * Initiate:
@@ -100,7 +100,7 @@ public class ConfigEJB {
             this.candleColl.createIndex(Indexes.ascending("calcCandle"));
         }
         
-        this.trainColl = this.database.getCollection("train");
+        this.profitColl = this.database.getCollection("profit");
         
     }
 
@@ -141,7 +141,7 @@ public class ConfigEJB {
     }
 
     public MongoCollection<Document> getTrainColl() {
-        return trainColl;
+        return profitColl;
     }
     
     public String getKrakenURL() {

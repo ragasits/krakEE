@@ -10,30 +10,30 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-import krakee.train.TrainDTO;
-import krakee.train.TrainEJB;
+import krakee.profit.ProfitDTO;
+import krakee.profit.ProfitEJB;
 
 /**
  *
  * @author rgt
  */
 @SessionScoped
-@Named(value = "trainBean")
-public class TrainBean implements Serializable {
+@Named(value = "profitBean")
+public class ProfitBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    private List<TrainDTO> trainList;
+    private List<ProfitDTO> profitList;
 
     @EJB
-    TrainEJB trainEjb;
+    ProfitEJB profitEjb;
     
-    public void onTrainQuery(){
-        this.trainList = trainEjb.get();
+    public void onProfitQuery(){
+        this.profitList = profitEjb.get();
     }
 
-    public List<TrainDTO> getTrainList() {
-        return trainList;
+    public List<ProfitDTO> getProfitList() {
+        return profitList;
     }
     
 

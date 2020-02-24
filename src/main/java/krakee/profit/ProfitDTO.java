@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package krakee.train;
+package krakee.profit;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -16,7 +16,7 @@ import org.bson.types.ObjectId;
  *
  * @author rgt
  */
-public class TrainDTO {
+public class ProfitDTO {
 
     private ObjectId id;
     private Date startDate;
@@ -25,7 +25,7 @@ public class TrainDTO {
     private BigDecimal eur;
     private BigDecimal btc;
     
-    public TrainDTO(CandleDTO candle, String trade) {
+    public ProfitDTO(CandleDTO candle, String trade) {
         this.startDate = candle.getStartDate();
         this.close = candle.getClose();
         this.trade = trade;
@@ -34,7 +34,7 @@ public class TrainDTO {
         
     }
 
-    public TrainDTO(Document doc) {
+    public ProfitDTO(Document doc) {
         this.id = doc.getObjectId("_id");
         this.startDate = doc.getDate("startDate");
         this.trade = doc.getString("trade");
@@ -43,7 +43,7 @@ public class TrainDTO {
         this.btc = ((Decimal128) doc.get("btc")).bigDecimalValue();
     }
 
-    public Document getTrain() {
+    public Document getProfit() {
         return new Document("startDate", this.startDate)
                 .append("trade", this.trade)
                 .append("close", this.close)
@@ -51,14 +51,14 @@ public class TrainDTO {
                 .append("btc", this.btc);
     }
     
-    private void buyBtc(TrainDTO prev){
+    private void buyBtc(ProfitDTO prev){
         if (prev.getEur().compareTo(BigDecimal.ZERO)==1){
             this.btc = prev.getEur().divide(prev.getClose());
             this.eur = BigDecimal.ZERO;
         }
     }
 
-    private void sellBtc(TrainDTO prev){
+    private void sellBtc(ProfitDTO prev){
         if (prev.getBtc().compareTo(BigDecimal.ZERO)==1){
             this.eur = prev.getBtc().multiply(prev.getClose());
             this.btc = BigDecimal.ZERO;

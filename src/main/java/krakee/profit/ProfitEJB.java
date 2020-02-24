@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package krakee.train;
+package krakee.profit;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
@@ -26,7 +26,7 @@ import org.bson.Document;
  * @author rgt
  */
 @Stateless
-public class TrainEJB {
+public class ProfitEJB {
 
     static final Logger LOGGER = Logger.getLogger(DeltaEJB.class.getCanonicalName());
 
@@ -37,14 +37,14 @@ public class TrainEJB {
     @EJB
     ConfigEJB config;
     
-    public List<TrainDTO> get(){
+    public List<ProfitDTO> get(){
         MongoCursor<Document> cursor = config.getTrainColl()
                 .find()
                 .iterator();
         
-        List<TrainDTO> list = new ArrayList<>();
+        List<ProfitDTO> list = new ArrayList<>();
         while (cursor.hasNext()) {
-            TrainDTO dto = new TrainDTO(cursor.next());
+            ProfitDTO dto = new ProfitDTO(cursor.next());
             list.add(dto);
         }
         return list;
@@ -56,7 +56,7 @@ public class TrainEJB {
      */
     public void calcTrain() {
         CandleDTO candle;
-        TrainSumDTO sum = new TrainSumDTO(1, BigDecimal.valueOf(1000L));
+        ProfitSumDTO sum = new ProfitSumDTO(1, BigDecimal.valueOf(1000L));
         
         //Set random to ENUM
         Trade[] values = Trade.values();
@@ -95,7 +95,7 @@ public class TrainEJB {
      * @param candle
      * @return 
      */
-    private TrainSumDTO buy(TrainSumDTO sum, CandleDTO candle){
+    private ProfitSumDTO buy(ProfitSumDTO sum, CandleDTO candle){
         if (sum.getEuro().compareTo(BigDecimal.ZERO)==1){
             sum.setBtc(sum.getEuro().divide(candle.getClose()));
             sum.setEuro(BigDecimal.ZERO);
@@ -104,7 +104,7 @@ public class TrainEJB {
         return sum;
     }
     
-     private TrainSumDTO sell(TrainSumDTO sum, CandleDTO candle){
+     private ProfitSumDTO sell(ProfitSumDTO sum, CandleDTO candle){
         if (sum.getBtc().compareTo(BigDecimal.ZERO)==1){
             sum.setEuro(sum.getBtc().multiply(candle.getClose()));
             sum.setBtc(BigDecimal.ZERO);

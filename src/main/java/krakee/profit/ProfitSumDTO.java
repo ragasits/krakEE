@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package krakee.train;
+package krakee.profit;
 
 import java.math.BigDecimal;
 
@@ -11,13 +11,13 @@ import java.math.BigDecimal;
  *
  * @author rgt
  */
-public class TrainSumDTO {
+public class ProfitSumDTO {
         
     private final Integer id;
     private BigDecimal euro;
     private BigDecimal btc;
 
-    public TrainSumDTO(Integer id, BigDecimal euro) {
+    public ProfitSumDTO(Integer id, BigDecimal euro) {
         this.id = id;
         this.euro = euro;
         this.btc = BigDecimal.ZERO;

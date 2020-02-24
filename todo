@@ -1,5 +1,6 @@
-+ Add train GUI
++ Rename train -> profit
 
+- BUG: CandleDetail Trade trend vrong values
 - Generate trades
 - Store profit
 - chk: Bollinger trade position
