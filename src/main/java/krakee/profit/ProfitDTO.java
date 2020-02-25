@@ -109,4 +109,8 @@ public class ProfitDTO {
         return btc;
     }
 
+    public String getTrade() {
+        return trade;
+    }
+
 }

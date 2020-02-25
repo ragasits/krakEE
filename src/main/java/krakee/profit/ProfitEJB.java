@@ -5,12 +5,13 @@
  */
 package krakee.profit;
 
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.gte;
 import com.mongodb.client.model.Sorts;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -62,15 +63,20 @@ public class ProfitEJB {
         //Set random
         Random random = new Random();
 
-        //Get last 1k candles
-        FindIterable<Document> result = config.getCandleColl()
+        //Get last 100 candles
+        Date first = config.getCandleColl()
                 .find(eq("calcCandle", true))
                 .sort(Sorts.descending("startDate"))
-                .limit(100);
+                .limit(100)
+                .skip(99)
+                .first()
+                .getDate("startDate");
+        
+        MongoCursor<Document> cursor = config.getCandleColl()
+                .find(gte("startDate", first))
+                .sort(Sorts.ascending("startDate"))
+                .iterator();
 
-        result = result.sort(Sorts.ascending("startDate"));
-
-        MongoCursor<Document> cursor = result.iterator();
         while (cursor.hasNext()) {
             candle = new CandleDTO(cursor.next());
 

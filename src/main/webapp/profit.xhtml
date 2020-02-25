@@ -22,22 +22,25 @@
                     <p:panelGrid columns="4">
                         <p:commandButton value="Query"  id="btn" 
                                          action="#{profitBean.onProfitQuery()}" 
-                                         update=":form1:listPanel" >
+                                         update="tbl" >
                         </p:commandButton>
                         <p:commandButton value="Random"  id="randBtn" 
                                          action="#{profitBean.onRandom()}" 
-                                         update=":form1:listPanel" >
+                                         update="tbl" >
                         </p:commandButton>                        
                     </p:panelGrid>
                 </p:panel>         
 
-                <p:panel id="listPanel">    
-                    <p:dataTable value="#{trainBean.trainList}" var="item" tableStyle="width:auto" id="tbl">
+                <p:panel>    
+                    <p:dataTable value="#{profitBean.profitList}" var="item" tableStyle="width:auto" id="tbl">
                         <p:column headerText="startDate">
                             <p:outputLabel value="#{item.startDate}"/>
                         </p:column>
                         <p:column headerText="close">
                             <p:outputLabel value="#{item.close}"/>
+                        </p:column>
+                        <p:column headerText="trade">
+                            <p:outputLabel value="#{item.trade}"/>
                         </p:column>
                         <p:column headerText="eur">
                             <p:outputLabel value="#{item.eur}"/>
