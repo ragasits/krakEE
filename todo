@@ -1,7 +1,6 @@
-+ Create Javadoc
++ BUG: CandleDetail Trade trend wrong values
 
 - BUG:  java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result. (ProfitDTO.java:66)
-- BUG: CandleDetail Trade trend wrong values
 - Generate trades
 - Store profit
 - chk: Bollinger trade position

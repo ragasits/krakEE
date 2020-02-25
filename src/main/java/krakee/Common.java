@@ -10,6 +10,7 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 
 /**
  * My common methods
+ *
  * @author rgt
  */
 public class Common {
@@ -69,13 +70,18 @@ public class Common {
      * @return
      */
     public static Integer calcTrendUp(BigDecimal last, BigDecimal prev, Integer prevUp) {
-        switch (last.compareTo(prev)) {
-            case 1:
-                return prevUp + 1;
-            case 0:
-                return prevUp;
-            case -1:
-                return 0;
+        if (last.compareTo(BigDecimal.ZERO) == 0 && prev.compareTo(BigDecimal.ZERO) == 0) {
+            return 0;
+
+        } else {
+            switch (last.compareTo(prev)) {
+                case 1:
+                    return prevUp + 1;
+                case 0:
+                    return prevUp;
+                case -1:
+                    return 0;
+            }
         }
         return null;
     }
@@ -89,13 +95,17 @@ public class Common {
      * @return
      */
     public static Integer calcTrendDown(BigDecimal last, BigDecimal prev, Integer prevDown) {
-        switch (last.compareTo(prev)) {
-            case 1:
-                return 0;
-            case 0:
-                return prevDown;
-            case -1:
-                return prevDown + 1;
+        if (last.compareTo(BigDecimal.ZERO) == 0 && prev.compareTo(BigDecimal.ZERO) == 0) {
+            return 0;
+        } else {
+            switch (last.compareTo(prev)) {
+                case 1:
+                    return 0;
+                case 0:
+                    return prevDown;
+                case -1:
+                    return prevDown + 1;
+            }
         }
         return null;
     }
