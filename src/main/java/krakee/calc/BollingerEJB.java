@@ -21,7 +21,7 @@ import krakee.ConfigEJB;
 import org.bson.Document;
 
 /**
- *
+ * Calculate Bollinger values
  * @author rgt
  */
 @Stateless

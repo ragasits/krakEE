@@ -14,7 +14,7 @@ import krakee.profit.ProfitDTO;
 import krakee.profit.ProfitEJB;
 
 /**
- *
+ * JSF bean for Profit page
  * @author rgt
  */
 @SessionScoped
@@ -28,11 +28,17 @@ public class ProfitBean implements Serializable {
     @EJB
     ProfitEJB profitEjb;
     
+    /**
+     * Start Random profit calculation
+     */
     public void onRandom(){
         profitEjb.calcProfit();
         this.onProfitQuery();
     }
     
+    /**
+     * get All profit
+     */
     public void onProfitQuery(){
         this.profitList = profitEjb.get();
     }

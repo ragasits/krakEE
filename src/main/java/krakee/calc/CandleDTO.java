@@ -56,6 +56,10 @@ public class CandleDTO {
         this.bollinger = new BollingerDTO();
     }
 
+    /**
+     * Create DTO from Document
+     * @param doc 
+     */
     public CandleDTO(Document doc) {
         this.id = doc.getObjectId("_id");
         this.startDate = doc.getDate("startDate");
@@ -78,6 +82,10 @@ public class CandleDTO {
         this.bollinger = new BollingerDTO((Document) doc.get("bollinger"));
     }
 
+    /**
+     * Create Document from DTO
+     * @return 
+     */
     public Document getCandle() {
         return new Document("startDate", this.startDate)
                 .append("count", this.count)
@@ -110,6 +118,10 @@ public class CandleDTO {
         return cal.getTime();
     }
 
+    /**
+     * Show OHLC values
+     * @return 
+     */
     public String getOHLCtMsg() {
         return "O:" + this.open + " H:" + this.high + " L:" + this.low + " C:" + this.close;
     }

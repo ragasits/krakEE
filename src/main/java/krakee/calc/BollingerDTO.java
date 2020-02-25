@@ -11,7 +11,7 @@ import org.bson.Document;
 import org.bson.types.Decimal128;
 
 /**
- *
+ * Calculated Bollinger values
  * @author rgt
  */
 public class BollingerDTO {
@@ -99,6 +99,10 @@ public class BollingerDTO {
         this.trendTradeUpperDown = 0;
     }
 
+    /**
+     * Convert Document to BollingerDTO
+     * @param doc 
+     */
     public BollingerDTO(Document doc) {
         this.calcBollinger = doc.getBoolean("calcBollinger");
 
@@ -138,6 +142,10 @@ public class BollingerDTO {
         this.trendTradeLowerDown = doc.getInteger("trendTradeLowerDown");
     }
 
+    /**
+     * Create Document from BollingerDTO
+     * @return 
+     */
     public Document getBollinger() {
         return new Document("calcBollinger", this.calcBollinger)
                 .append("sma", this.sma)
@@ -209,6 +217,13 @@ public class BollingerDTO {
 
     }
 
+    /**
+     * Calculate trade upper value
+     * The Candle High value more then bollinger upper
+     * @param bl - Boolinger upper
+     * @param high - Candle high
+     * @return 
+     */
     private BigDecimal calcTradeUpper(BigDecimal bl, BigDecimal high) {
         if (high.compareTo(bl) == 1) {
             return high.subtract(bl);
@@ -216,6 +231,13 @@ public class BollingerDTO {
         return BigDecimal.ZERO;
     }
 
+    /**
+     * Calculate trade lower value
+     * The candle lower is less then bollinger lower
+     * @param bl - Bollonger lower
+     * @param low candle.low
+     * @return 
+     */
     private BigDecimal calcTradeLower(BigDecimal bl, BigDecimal low) {
         if (low.compareTo(bl) == -1) {
             return bl.subtract(low);

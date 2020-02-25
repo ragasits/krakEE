@@ -17,7 +17,7 @@ import org.primefaces.model.chart.OhlcChartModel;
 import org.primefaces.model.chart.OhlcChartSeries;
 
 /**
- *
+ * JSF bean for Candles
  * @author rgt
  */
 @SessionScoped
@@ -68,11 +68,17 @@ public class CandleBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    /**
+     * Query candles
+     */
     public void onCandleQuery() {
         this.candleList = mongo.getLastCandles(this.queryLimit);
         this.createOhlcModel();
     }
 
+    /**
+     * Create model for the chart
+     */
     private void createOhlcModel() {
 
         ohlcModel = new OhlcChartModel();

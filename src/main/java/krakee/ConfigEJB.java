@@ -16,7 +16,7 @@ import org.bson.Document;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
- *
+ * Global configuration, database settings, 
  * @author rgt
  */
 @Singleton

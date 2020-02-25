@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 /**
- *
+ * Kraken Trades REST client definition
  * @author rgt
  */
 @Path("/Trades")

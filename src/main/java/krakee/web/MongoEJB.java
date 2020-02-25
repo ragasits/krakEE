@@ -25,7 +25,7 @@ import org.bson.types.Decimal128;
 import org.bson.types.ObjectId;
 
 /**
- *
+ * Common Mongo queries for JSF Beans
  * @author rgt
  */
 @Stateless

@@ -13,11 +13,12 @@ import org.bson.types.Decimal128;
 import org.bson.types.ObjectId;
 
 /**
- *
+ * DTO for profits
  * @author rgt
  */
 public class ProfitDTO {
 
+    // Random values
     static final String BUY = "buy";
     static final String SELL = "sell";
     static final String NONE = "none";
@@ -45,6 +46,10 @@ public class ProfitDTO {
 
     }
 
+    /**
+     * Create DTO from Document
+     * @param doc 
+     */
     public ProfitDTO(Document doc) {
         this.id = doc.getObjectId("_id");
         this.startDate = doc.getDate("startDate");
@@ -54,6 +59,10 @@ public class ProfitDTO {
         this.btc = ((Decimal128) doc.get("btc")).bigDecimalValue();
     }
 
+    /**
+     * Create Document from DTO
+     * @return 
+     */
     public Document getProfit() {
         return new Document("startDate", this.startDate)
                 .append("trade", this.trade)
@@ -62,11 +71,19 @@ public class ProfitDTO {
                 .append("btc", this.btc);
     }
 
+    /**
+     * Buy BTC
+     * @param eur 
+     */
     public void buyBtc(BigDecimal eur) {
         this.btc = eur.divide(this.close);
         this.eur = BigDecimal.ZERO;
     }
 
+    /**
+     * Sell BTC
+     * @param btc 
+     */
     public void sellBtc(BigDecimal btc) {
         this.eur = btc.multiply(this.close);
         this.btc = BigDecimal.ZERO;

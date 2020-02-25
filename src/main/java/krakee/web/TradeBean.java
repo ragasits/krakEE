@@ -10,7 +10,7 @@ import javax.inject.Named;
 import krakee.get.TradePairDTO;
 
 /**
- *
+ * JSF bean for Trades
  * @author rgt
  */
 @SessionScoped
@@ -25,6 +25,9 @@ public class TradeBean implements Serializable {
     private List<TradePairDTO> tradeList;
     private int queryLimit = 100;
 
+    /**
+     * Consistency checking 
+     */
     public void onTradeChk() {
         List<String> list = mongo.chkTradePair();
         FacesMessage msg;
@@ -37,6 +40,9 @@ public class TradeBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    /**
+     * Get Trade data
+     */
     public void onTradeQuery() {
         this.tradeList = mongo.getLastTrades(this.queryLimit);
     }

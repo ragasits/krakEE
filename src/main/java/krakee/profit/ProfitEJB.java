@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -23,7 +22,7 @@ import krakee.calc.DeltaEJB;
 import org.bson.Document;
 
 /**
- *
+ * Calculate profit
  * @author rgt
  */
 @Stateless
@@ -34,6 +33,10 @@ public class ProfitEJB {
     @EJB
     ConfigEJB config;
 
+    /**
+     * Get all data from profit collection
+     * @return 
+     */
     public List<ProfitDTO> get() {
         MongoCursor<Document> cursor = config.getProfitColl()
                 .find()
@@ -92,30 +95,5 @@ public class ProfitEJB {
             btc = dto.getBtc();
             config.getProfitColl().insertOne(dto.getProfit());
         }
-    }
-
-    /**
-     * Buy BTC
-     *
-     * @param sum
-     * @param candle
-     * @return
-     */
-    private ProfitSumDTO buy(ProfitSumDTO sum, CandleDTO candle) {
-        if (sum.getEuro().compareTo(BigDecimal.ZERO) == 1) {
-            sum.setBtc(sum.getEuro().divide(candle.getClose()));
-            sum.setEuro(BigDecimal.ZERO);
-        }
-
-        return sum;
-    }
-
-    private ProfitSumDTO sell(ProfitSumDTO sum, CandleDTO candle) {
-        if (sum.getBtc().compareTo(BigDecimal.ZERO) == 1) {
-            sum.setEuro(sum.getBtc().multiply(candle.getClose()));
-            sum.setBtc(BigDecimal.ZERO);
-        }
-
-        return sum;
     }
 }

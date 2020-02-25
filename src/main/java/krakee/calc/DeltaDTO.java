@@ -11,7 +11,7 @@ import org.bson.Document;
 import org.bson.types.Decimal128;
 
 /**
- *
+ * DTO for deltas
  * @author rgt
  */
 public class DeltaDTO {
@@ -112,6 +112,10 @@ public class DeltaDTO {
 
     }
 
+    /**
+     * Create DTO from Document
+     * @param doc 
+     */
     public DeltaDTO(Document doc) {
         this.calcDelta = doc.getBoolean("calcDelta");
         this.deltaCount = doc.getInteger("deltaCount");
@@ -216,6 +220,10 @@ public class DeltaDTO {
     }
 
 
+    /**
+     * Create Document from DTO
+     * @return 
+     */
     public Document getDelta() {
         return new Document("calcDelta", this.calcDelta)
                 .append("deltaCount", this.deltaCount)

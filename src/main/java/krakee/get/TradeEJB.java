@@ -32,7 +32,7 @@ import org.bson.Document;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 /**
- *
+ * Download and process Trade values
  * @author rgt
  */
 @Stateless

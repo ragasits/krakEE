@@ -1,10 +1,11 @@
 KrakEE WIKI
 
 1. A projekt célja:
+- Játék a számokkal, a jövobeli legjobb vételi, eladási poziciók megtalálása
 - Új technológiák kipróbálása, tesztelése
 - Nagy mennyiségû adatok feldolgozásának kipróbálásása, tesztelése
 - Referencia projekt
-- A bölcsek kövének a megtalálása (majd: örök élet)
+- A bölcsek kövének a megtalálása (majd: örök élet + 42)
 
 2. Használt technológiák
 - Jakarta EE
@@ -35,6 +36,12 @@ KrakEE WIKI
 - KRAKEE_RUNTRADE – A gyûjtés be/ki kapcsolása
 - KRAKEE_RUNCANDLE – A számítások be/ki kapcsolása
 
-4.4.  A WEB GUI
+4.4 Telepítés
+- restore.bat - Adatbázis betöltése a Mongoba
+- run.bat - Alkalmazás elindítása
+
+4.5. A WEB GUI
 - http://localhost:8080/krakEE-xx/ 
+
+
 

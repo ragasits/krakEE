@@ -8,7 +8,7 @@ import krakee.ConfigEJB;
 import krakee.TimerEjb;
 
 /**
- *
+ * JSF bean for Index page
  * @author rgt
  */
 @SessionScoped

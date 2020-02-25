@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import static java.math.BigDecimal.ROUND_HALF_UP;
 
 /**
- *
+ * My common methods
  * @author rgt
  */
 public class Common {

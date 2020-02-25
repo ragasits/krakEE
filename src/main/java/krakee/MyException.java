@@ -1,7 +1,7 @@
 package krakee;
 
 /**
- *
+ * My Exception
  * @author rgt
  */
 public class MyException extends Exception {

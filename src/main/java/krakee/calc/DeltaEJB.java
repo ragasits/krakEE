@@ -18,7 +18,7 @@ import krakee.ConfigEJB;
 import org.bson.Document;
 
 /**
- *
+ * Calculate Delta values
  * @author rgt
  */
 @Stateless

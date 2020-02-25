@@ -15,7 +15,7 @@ import krakee.calc.CandleDTO;
 import org.bson.types.ObjectId;
 
 /**
- *
+ * JSF bean for one Canlde
  * @author rgt
  */
 @SessionScoped
@@ -30,6 +30,10 @@ public class CandleDetailBean implements Serializable {
     private String selectedIdHexa;
     private Date selectedDate;
 
+    /**
+     * get one Candle
+     * @return 
+     */
     public CandleDTO getDetail() {
         if (this.selectedIdHexa==null || this.selectedIdHexa.isEmpty()){
             return null;
@@ -45,6 +49,10 @@ public class CandleDetailBean implements Serializable {
         this.selectedDate = selectedDate;
     }
 
+    /**
+     * Get date related candles
+     * @return 
+     */
     public List<CandleDTO> getCandleList() {
         if (selectedDate != null) {
             return mongo.getCandleOneDayCandles(selectedDate);
