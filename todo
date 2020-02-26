@@ -1,6 +1,5 @@
-+ Use X last Candle.startDate order by  asc 
++ BUG:  java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result. (ProfitDTO.java:66)
 
-- BUG:  java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result. (ProfitDTO.java:66)
 - Generate trades
 - Store profit
 - chk: Bollinger trade position

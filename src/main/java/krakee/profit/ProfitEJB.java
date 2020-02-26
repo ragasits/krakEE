@@ -10,6 +10,7 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
 import com.mongodb.client.model.Sorts;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.bson.Document;
 
 /**
  * Calculate profit
+ *
  * @author rgt
  */
 @Stateless
@@ -36,7 +38,8 @@ public class ProfitEJB {
 
     /**
      * Get all data from profit collection
-     * @return 
+     *
+     * @return
      */
     public List<ProfitDTO> get() {
         MongoCursor<Document> cursor = config.getProfitColl()
@@ -56,8 +59,10 @@ public class ProfitEJB {
      */
     public void calcProfit() {
         CandleDTO candle;
-        BigDecimal eur = BigDecimal.valueOf(1000L);
-        BigDecimal btc = BigDecimal.ZERO;
+        BigDecimal eur = BigDecimal.valueOf(1000L).setScale(5, RoundingMode.HALF_UP);
+        BigDecimal btc = BigDecimal.ZERO.setScale(5,RoundingMode.HALF_UP);
+        
+        
         String op;
 
         //Set random
@@ -71,7 +76,7 @@ public class ProfitEJB {
                 .skip(99)
                 .first()
                 .getDate("startDate");
-        
+
         MongoCursor<Document> cursor = config.getCandleColl()
                 .find(gte("startDate", first))
                 .sort(Sorts.ascending("startDate"))
@@ -80,25 +85,27 @@ public class ProfitEJB {
         while (cursor.hasNext()) {
             candle = new CandleDTO(cursor.next());
 
-            op = ProfitDTO.op[random.nextInt(ProfitDTO.op.length)];
+            op = ProfitDTO.OP[random.nextInt(ProfitDTO.OP.length)];
             ProfitDTO dto = new ProfitDTO(candle, op);
 
             switch (op) {
                 case ProfitDTO.BUY:
                     if (eur.compareTo(BigDecimal.ZERO) == 1) {
                         dto.buyBtc(eur);
+                        eur = dto.getEur();
+                        btc = dto.getBtc();
                     }
                     break;
                 case ProfitDTO.SELL:
                     if (btc.compareTo(BigDecimal.ZERO) == 1) {
                         dto.sellBtc(btc);
+                        eur = dto.getEur();
+                        btc = dto.getBtc();
                     }
                     break;
                 case ProfitDTO.NONE:
                     break;
             }
-            eur = dto.getEur();
-            btc = dto.getBtc();
             config.getProfitColl().insertOne(dto.getProfit());
         }
     }

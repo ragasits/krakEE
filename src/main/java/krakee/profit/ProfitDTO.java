@@ -6,6 +6,7 @@
 package krakee.profit;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import krakee.calc.CandleDTO;
 import org.bson.Document;
@@ -22,7 +23,7 @@ public class ProfitDTO {
     static final String BUY = "buy";
     static final String SELL = "sell";
     static final String NONE = "none";
-    static final String[] op = {BUY, SELL, NONE};
+    static final String[] OP = {BUY, SELL, NONE};
 
     private ObjectId id;
     private Date startDate;
@@ -76,7 +77,7 @@ public class ProfitDTO {
      * @param eur 
      */
     public void buyBtc(BigDecimal eur) {
-        this.btc = eur.divide(this.close);
+        this.btc = eur.divide(this.close, RoundingMode.HALF_UP);
         this.eur = BigDecimal.ZERO;
     }
 
