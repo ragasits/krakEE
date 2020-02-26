@@ -29,7 +29,11 @@
                                          update="tbl" >
                         </p:commandButton>                        
                     </p:panelGrid>
-                </p:panel>         
+                </p:panel>      
+
+                <p:blockUI block="form1" trigger="btn, randBtn">
+                    <p:graphicImage value="/resources/ajax-loader.gif" />
+                </p:blockUI>    
 
                 <p:panel>    
                     <p:dataTable value="#{profitBean.profitList}" var="item" tableStyle="width:auto" id="tbl">

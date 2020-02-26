@@ -8,6 +8,7 @@ package krakee.profit;
 import com.mongodb.client.MongoCursor;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
+import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.client.model.Sorts;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -59,11 +60,10 @@ public class ProfitEJB {
      */
     public void calcProfit() {
         CandleDTO candle;
-        BigDecimal eur = BigDecimal.valueOf(1000L).setScale(5, RoundingMode.HALF_UP);
-        BigDecimal btc = BigDecimal.ZERO.setScale(5,RoundingMode.HALF_UP);
-        
-        
-        String op;
+        BigDecimal eur = BigDecimal.valueOf(1000L).setScale(10, RoundingMode.HALF_UP);
+        BigDecimal btc = BigDecimal.ZERO.setScale(10,RoundingMode.HALF_UP);
+        String trade;
+        List<Document> docList = new ArrayList<>();
 
         //Set random
         Random random = new Random();
@@ -85,15 +85,16 @@ public class ProfitEJB {
         while (cursor.hasNext()) {
             candle = new CandleDTO(cursor.next());
 
-            op = ProfitDTO.OP[random.nextInt(ProfitDTO.OP.length)];
-            ProfitDTO dto = new ProfitDTO(candle, op);
+            trade = ProfitDTO.OP[random.nextInt(ProfitDTO.OP.length)];
+            ProfitDTO dto = new ProfitDTO(candle, trade);
 
-            switch (op) {
+            switch (trade) {
                 case ProfitDTO.BUY:
                     if (eur.compareTo(BigDecimal.ZERO) == 1) {
                         dto.buyBtc(eur);
                         eur = dto.getEur();
                         btc = dto.getBtc();
+                        docList.add(dto.getProfit());
                     }
                     break;
                 case ProfitDTO.SELL:
@@ -101,12 +102,13 @@ public class ProfitEJB {
                         dto.sellBtc(btc);
                         eur = dto.getEur();
                         btc = dto.getBtc();
+                        docList.add(dto.getProfit());
                     }
                     break;
                 case ProfitDTO.NONE:
                     break;
             }
-            config.getProfitColl().insertOne(dto.getProfit());
         }
+        config.getProfitColl().insertMany(docList,  new InsertManyOptions());
     }
 }

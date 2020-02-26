@@ -1,5 +1,4 @@
-+ BUG:  java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result. (ProfitDTO.java:66)
-
++ Add insertMany - Save result in one step 
 - Generate trades
 - Store profit
 - chk: Bollinger trade position

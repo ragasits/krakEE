@@ -15,6 +15,7 @@ import org.bson.types.ObjectId;
 
 /**
  * DTO for profits
+ *
  * @author rgt
  */
 public class ProfitDTO {
@@ -24,32 +25,33 @@ public class ProfitDTO {
     static final String SELL = "sell";
     static final String NONE = "none";
     static final String[] OP = {BUY, SELL, NONE};
-
+    
     private ObjectId id;
     private Date startDate;
     private String trade;
     private BigDecimal close;
     private BigDecimal eur;
     private BigDecimal btc;
-
+    
     public ProfitDTO(BigDecimal eur) {
         this.eur = eur;
         this.close = BigDecimal.ZERO;
         this.btc = BigDecimal.ZERO;
     }
-
+    
     public ProfitDTO(CandleDTO candle, String trade) {
         this.startDate = candle.getStartDate();
         this.close = candle.getClose();
         this.trade = trade;
         this.eur = BigDecimal.ZERO;
         this.btc = BigDecimal.ZERO;
-
+        
     }
 
     /**
      * Create DTO from Document
-     * @param doc 
+     *
+     * @param doc
      */
     public ProfitDTO(Document doc) {
         this.id = doc.getObjectId("_id");
@@ -62,7 +64,8 @@ public class ProfitDTO {
 
     /**
      * Create Document from DTO
-     * @return 
+     *
+     * @return
      */
     public Document getProfit() {
         return new Document("startDate", this.startDate)
@@ -74,44 +77,46 @@ public class ProfitDTO {
 
     /**
      * Buy BTC
-     * @param eur 
+     *
+     * @param eur
      */
     public void buyBtc(BigDecimal eur) {
-        this.btc = eur.divide(this.close, RoundingMode.HALF_UP);
+        this.btc = eur.divide(this.close, RoundingMode.HALF_UP).setScale(10, RoundingMode.HALF_UP);
         this.eur = BigDecimal.ZERO;
     }
 
     /**
      * Sell BTC
-     * @param btc 
+     *
+     * @param btc
      */
     public void sellBtc(BigDecimal btc) {
-        this.eur = btc.multiply(this.close);
+        this.eur = btc.multiply(this.close).setScale(10, RoundingMode.HALF_UP);
         this.btc = BigDecimal.ZERO;
     }
-
+    
     public ObjectId getId() {
         return id;
     }
-
+    
     public Date getStartDate() {
         return startDate;
     }
-
+    
     public BigDecimal getClose() {
         return close;
     }
-
+    
     public BigDecimal getEur() {
         return eur;
     }
-
+    
     public BigDecimal getBtc() {
         return btc;
     }
-
+    
     public String getTrade() {
         return trade;
     }
-
+    
 }
