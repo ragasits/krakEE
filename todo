@@ -1,6 +1,7 @@
-+ Add insertMany - Save result in one step 
-- Generate trades
-- Store profit
++ Generate trades
++ Store better profit
+
+- Profit GUI: filter best profit
 - chk: Bollinger trade position
 - Generate learning data (Looking for the best profit)
 

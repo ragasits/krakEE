@@ -27,24 +27,21 @@ public class ProfitDTO {
     static final String[] OP = {BUY, SELL, NONE};
     
     private ObjectId id;
-    private Date startDate;
-    private String trade;
-    private BigDecimal close;
+    private final Long testNum;
+    private final Date startDate;
+    private final String trade;
+    private final BigDecimal close;
     private BigDecimal eur;
     private BigDecimal btc;
     
-    public ProfitDTO(BigDecimal eur) {
-        this.eur = eur;
-        this.close = BigDecimal.ZERO;
-        this.btc = BigDecimal.ZERO;
-    }
     
-    public ProfitDTO(CandleDTO candle, String trade) {
+    public ProfitDTO(CandleDTO candle, String trade, Long testNum) {
         this.startDate = candle.getStartDate();
         this.close = candle.getClose();
         this.trade = trade;
         this.eur = BigDecimal.ZERO;
         this.btc = BigDecimal.ZERO;
+        this.testNum = testNum;
         
     }
 
@@ -55,6 +52,7 @@ public class ProfitDTO {
      */
     public ProfitDTO(Document doc) {
         this.id = doc.getObjectId("_id");
+        this.testNum = doc.getLong("testNum");
         this.startDate = doc.getDate("startDate");
         this.trade = doc.getString("trade");
         this.close = ((Decimal128) doc.get("close")).bigDecimalValue();
@@ -69,6 +67,7 @@ public class ProfitDTO {
      */
     public Document getProfit() {
         return new Document("startDate", this.startDate)
+                .append("testNum", this.testNum)
                 .append("trade", this.trade)
                 .append("close", this.close)
                 .append("eur", this.eur)
@@ -118,5 +117,11 @@ public class ProfitDTO {
     public String getTrade() {
         return trade;
     }
+
+    public Long getTestNum() {
+        return testNum;
+    }
+    
+    
     
 }

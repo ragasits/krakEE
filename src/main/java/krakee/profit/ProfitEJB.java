@@ -17,11 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.calc.CandleDTO;
-import krakee.calc.DeltaEJB;
 import org.bson.Document;
 
 /**
@@ -32,10 +32,12 @@ import org.bson.Document;
 @Stateless
 public class ProfitEJB {
 
-    static final Logger LOGGER = Logger.getLogger(DeltaEJB.class.getCanonicalName());
+    static final Logger LOGGER = Logger.getLogger(ProfitEJB.class.getCanonicalName());
 
     @EJB
     ConfigEJB config;
+    @EJB
+    ProfitBestEJB bestEjb;
 
     /**
      * Get all data from profit collection
@@ -55,25 +57,15 @@ public class ProfitEJB {
         return list;
     }
 
-    /**
-     * Simulate trades Looking for the best training data
-     */
-    public void calcProfit() {
+    private List<CandleDTO> getLastXCandles(int last) {
         CandleDTO candle;
-        BigDecimal eur = BigDecimal.valueOf(1000L).setScale(10, RoundingMode.HALF_UP);
-        BigDecimal btc = BigDecimal.ZERO.setScale(10,RoundingMode.HALF_UP);
-        String trade;
-        List<Document> docList = new ArrayList<>();
+        List<CandleDTO> candleList = new ArrayList<>();
 
-        //Set random
-        Random random = new Random();
-
-        //Get last 100 candles
         Date first = config.getCandleColl()
                 .find(eq("calcCandle", true))
                 .sort(Sorts.descending("startDate"))
-                .limit(100)
-                .skip(99)
+                .limit(last)
+                .skip(last - 1)
                 .first()
                 .getDate("startDate");
 
@@ -84,9 +76,49 @@ public class ProfitEJB {
 
         while (cursor.hasNext()) {
             candle = new CandleDTO(cursor.next());
+            candleList.add(candle);
+        }
 
+        return candleList;
+    }
+
+    @Asynchronous
+    public void calcProfit(Long iter) {
+        long start = 0L;
+        long stop = iter;
+        List<CandleDTO> candleList = this.getLastXCandles(1000);
+
+        ProfitBestDTO best = bestEjb.getMaxTest();
+        if (best != null) {
+            start = best.getTestNum() + 1;
+            stop = start + iter;
+        }
+
+        while (start <= stop) {
+            this.calcOneProfit(candleList, start++);
+        }
+    }
+
+    /**
+     * Simulate trades Looking for the best training data
+     *
+     * @param candleList
+     * @param testNum
+     */
+    @Asynchronous
+    public void calcOneProfit(List<CandleDTO> candleList, Long testNum) {
+        BigDecimal eur = BigDecimal.valueOf(1000L).setScale(10, RoundingMode.HALF_UP);
+        BigDecimal btc = BigDecimal.ZERO.setScale(10, RoundingMode.HALF_UP);
+        BigDecimal lastEur = BigDecimal.ZERO;
+        String trade;
+        List<Document> docList = new ArrayList<>();
+
+        //Set random
+        Random random = new Random();
+
+        for (CandleDTO candle : candleList) {
             trade = ProfitDTO.OP[random.nextInt(ProfitDTO.OP.length)];
-            ProfitDTO dto = new ProfitDTO(candle, trade);
+            ProfitDTO dto = new ProfitDTO(candle, trade, testNum);
 
             switch (trade) {
                 case ProfitDTO.BUY:
@@ -101,6 +133,7 @@ public class ProfitEJB {
                     if (btc.compareTo(BigDecimal.ZERO) == 1) {
                         dto.sellBtc(btc);
                         eur = dto.getEur();
+                        lastEur = eur;
                         btc = dto.getBtc();
                         docList.add(dto.getProfit());
                     }
@@ -109,6 +142,19 @@ public class ProfitEJB {
                     break;
             }
         }
-        config.getProfitColl().insertMany(docList,  new InsertManyOptions());
+
+        //Store better profit
+        ProfitBestDTO best = bestEjb.getBest();
+        if (best == null) {
+            this.saveProfit(docList, new ProfitBestDTO(testNum, lastEur));
+        } else if (lastEur != null && lastEur.compareTo(best.getEur()) == 1) {
+            this.saveProfit(docList, new ProfitBestDTO(testNum, lastEur));
+        }
+    }
+
+    private void saveProfit(List<Document> docList, ProfitBestDTO dto) {
+        config.getProfitColl().insertMany(docList, new InsertManyOptions());
+        config.getProfitBestColl().insertOne(dto.getProfitBest());
+
     }
 }

@@ -63,6 +63,7 @@ public class ConfigEJB {
     private MongoCollection<Document> tradePairColl;
     private MongoCollection<Document> candleColl;
     private MongoCollection<Document> profitColl;
+    private MongoCollection<Document> profitBestColl;
 
     /**
      * Initiate:
@@ -101,6 +102,7 @@ public class ConfigEJB {
         }
         
         this.profitColl = this.database.getCollection("profit");
+        this.profitBestColl = this.database.getCollection("profitBest");
         
     }
 
@@ -142,6 +144,10 @@ public class ConfigEJB {
 
     public MongoCollection<Document> getProfitColl() {
         return profitColl;
+    }
+
+    public MongoCollection<Document> getProfitBestColl() {
+        return profitBestColl;
     }
     
     public String getKrakenURL() {

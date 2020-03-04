@@ -24,6 +24,7 @@ public class ProfitBean implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private List<ProfitDTO> profitList;
+    private long testIter=1000;
 
     @EJB
     ProfitEJB profitEjb;
@@ -32,7 +33,7 @@ public class ProfitBean implements Serializable {
      * Start Random profit calculation
      */
     public void onRandom(){
-        profitEjb.calcProfit();
+        profitEjb.calcProfit(testIter);
         this.onProfitQuery();
     }
     
@@ -45,6 +46,14 @@ public class ProfitBean implements Serializable {
 
     public List<ProfitDTO> getProfitList() {
         return profitList;
+    }
+
+    public long getTestIter() {
+        return testIter;
+    }
+
+    public void setTestIter(long testIter) {
+        this.testIter = testIter;
     }
     
 

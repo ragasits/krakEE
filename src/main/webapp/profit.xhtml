@@ -24,6 +24,9 @@
                                          action="#{profitBean.onProfitQuery()}" 
                                          update="tbl" >
                         </p:commandButton>
+                        
+                        <p:inputNumber value="#{profitBean.testIter}" decimalPlaces="0"/> 
+                        
                         <p:commandButton value="Random"  id="randBtn" 
                                          action="#{profitBean.onRandom()}" 
                                          update="tbl" >
@@ -37,6 +40,9 @@
 
                 <p:panel>    
                     <p:dataTable value="#{profitBean.profitList}" var="item" tableStyle="width:auto" id="tbl">
+                        <p:column headerText="testNum">
+                            <p:outputLabel value="#{item.testNum}"/>
+                        </p:column>
                         <p:column headerText="startDate">
                             <p:outputLabel value="#{item.startDate}"/>
                         </p:column>
