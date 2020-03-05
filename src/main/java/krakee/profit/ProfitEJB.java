@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
@@ -34,10 +35,12 @@ public class ProfitEJB {
 
     static final Logger LOGGER = Logger.getLogger(ProfitEJB.class.getCanonicalName());
 
+    private Boolean isBest;
+
     @EJB
-    ConfigEJB config;
+    private ConfigEJB config;
     @EJB
-    ProfitBestEJB bestEjb;
+    private ProfitBestEJB bestEjb;
 
     /**
      * Get all data from profit collection
@@ -83,19 +86,17 @@ public class ProfitEJB {
     }
 
     @Asynchronous
-    public void calcProfit(Long iter) {
-        long start = 0L;
-        long stop = iter;
+    public void calcProfit() {
+        this.isBest = false;
         List<CandleDTO> candleList = this.getLastXCandles(1000);
-
         ProfitBestDTO best = bestEjb.getMaxTest();
+        Long testNum = 0L;
         if (best != null) {
-            start = best.getTestNum() + 1;
-            stop = start + iter;
+            testNum = best.getTestNum();
         }
 
-        while (start <= stop) {
-            this.calcOneProfit(candleList, start++);
+        while (!this.isBest) {
+            this.calcOneProfit(candleList, testNum++);
         }
     }
 
@@ -155,6 +156,7 @@ public class ProfitEJB {
     private void saveProfit(List<Document> docList, ProfitBestDTO dto) {
         config.getProfitColl().insertMany(docList, new InsertManyOptions());
         config.getProfitBestColl().insertOne(dto.getProfitBest());
-
+        this.isBest = true;
+        LOGGER.log(Level.SEVERE, "Add new best profit (" + dto.getTestNum() + ":" + dto.getEur());
     }
 }

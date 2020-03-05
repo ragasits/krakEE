@@ -24,13 +24,11 @@
                                          action="#{profitBean.onProfitQuery()}" 
                                          update="tbl" >
                         </p:commandButton>
-                        
-                        <p:inputNumber value="#{profitBean.testIter}" decimalPlaces="0"/> 
-                        
-                        <p:commandButton value="Random"  id="randBtn" 
+
+                        <p:commandButton value="Next best"  id="randBtn" 
                                          action="#{profitBean.onRandom()}" 
                                          update="tbl" >
-                        </p:commandButton>                        
+                        </p:commandButton>      
                     </p:panelGrid>
                 </p:panel>      
 
