@@ -60,6 +60,19 @@ public class ProfitEJB {
         return list;
     }
 
+    public List<ProfitDTO> get(Long testNum) {
+        MongoCursor<Document> cursor = config.getProfitColl()
+                .find(eq("testNum", testNum))
+                .iterator();
+
+        List<ProfitDTO> list = new ArrayList<>();
+        while (cursor.hasNext()) {
+            ProfitDTO dto = new ProfitDTO(cursor.next());
+            list.add(dto);
+        }
+        return list;
+    }
+
     private List<CandleDTO> getLastXCandles(int last) {
         CandleDTO candle;
         List<CandleDTO> candleList = new ArrayList<>();

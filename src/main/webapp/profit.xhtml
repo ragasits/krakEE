@@ -20,10 +20,13 @@
             <h:form id="form1">
                 <p:panel>
                     <p:panelGrid columns="4">
-                        <p:commandButton value="Query"  id="btn" 
-                                         action="#{profitBean.onProfitQuery()}" 
-                                         update="tbl" >
-                        </p:commandButton>
+                        <p:outputLabel value="Best:"/>  
+                        <p:selectOneMenu value="#{profitBean.selectedTest}" id="testList">
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{profitBean.bestList}" var="best" 
+                                           itemLabel="#{best.eur}" itemValue="#{best.testNum}" />
+                            <p:ajax event="itemSelect"  update="tbl"/>
+                        </p:selectOneMenu>
 
                         <p:commandButton value="Next best"  id="randBtn" 
                                          action="#{profitBean.onRandom()}" 
@@ -32,7 +35,7 @@
                     </p:panelGrid>
                 </p:panel>      
 
-                <p:blockUI block="form1" trigger="btn, randBtn">
+                <p:blockUI block="form1" trigger="randBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
 

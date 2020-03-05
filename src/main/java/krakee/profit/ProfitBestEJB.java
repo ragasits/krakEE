@@ -5,7 +5,10 @@
  */
 package krakee.profit;
 
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Sorts;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -24,6 +27,20 @@ public class ProfitBestEJB {
 
     @EJB
     ConfigEJB config;
+
+    public List<ProfitBestDTO> get() {
+        MongoCursor<Document> cursor = config.getProfitBestColl()
+                .find()
+                .sort(Sorts.descending("testNum"))
+                .iterator();
+
+        List<ProfitBestDTO> list = new ArrayList<>();
+        while (cursor.hasNext()) {
+            ProfitBestDTO dto = new ProfitBestDTO(cursor.next());
+            list.add(dto);
+        }
+        return list;
+    }
 
     public ProfitBestDTO getBest() {
         Document doc = config.getProfitBestColl()
