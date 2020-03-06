@@ -102,7 +102,13 @@ public class ConfigEJB {
         }
         
         this.profitColl = this.database.getCollection("profit");
+        
         this.profitBestColl = this.database.getCollection("profitBest");
+        if (!this.isIndex(profitBestColl, "testNum_1")) {
+            this.profitBestColl.createIndex(Indexes.ascending("testNum"), new IndexOptions().unique(true));
+        }
+        
+        
         
     }
 

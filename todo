@@ -1,4 +1,7 @@
-+ Profit GUI: filter best profit
++ Caching last best profit (less db request)
++ unique testNum
++ Add primefaces8
+
 
 - Optimize Paraya Micro - Increase EJB threads
 - chk: Bollinger trade position

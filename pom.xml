@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rgt</groupId>
     <artifactId>krakEE</artifactId>
-    <version>60</version>
+    <version>70</version>
     <packaging>war</packaging>
     <name>krakEE</name>
 
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>7.0</version>
+            <version>8.0</version>
         </dependency>
         
         <dependency>

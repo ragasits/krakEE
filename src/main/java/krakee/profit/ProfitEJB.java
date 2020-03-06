@@ -36,6 +36,7 @@ public class ProfitEJB {
     static final Logger LOGGER = Logger.getLogger(ProfitEJB.class.getCanonicalName());
 
     private Boolean isBest;
+    private ProfitBestDTO lastBest;
 
     @EJB
     private ConfigEJB config;
@@ -105,7 +106,7 @@ public class ProfitEJB {
         ProfitBestDTO best = bestEjb.getMaxTest();
         Long testNum = 0L;
         if (best != null) {
-            testNum = best.getTestNum();
+            testNum = best.getTestNum() + 1L;
         }
 
         while (!this.isBest) {
@@ -157,18 +158,25 @@ public class ProfitEJB {
             }
         }
 
-        //Store better profit
-        ProfitBestDTO best = bestEjb.getBest();
-        if (best == null) {
-            this.saveProfit(docList, new ProfitBestDTO(testNum, lastEur));
-        } else if (lastEur != null && lastEur.compareTo(best.getEur()) == 1) {
-            this.saveProfit(docList, new ProfitBestDTO(testNum, lastEur));
+        //Store better profit (cached version)
+        if (this.lastBest == null) {
+            this.lastBest = bestEjb.getBest();
+            if (this.lastBest == null) {
+                this.saveProfit(docList, new ProfitBestDTO(testNum, lastEur));
+            } else if (lastEur.compareTo(lastBest.getEur()) == 1) {
+                this.saveProfit(docList, new ProfitBestDTO(testNum, lastEur));
+            }
+        } else if (lastEur != null && lastEur.compareTo(lastBest.getEur()) == 1) {
+            this.lastBest = bestEjb.getBest();
+            if (lastEur.compareTo(lastBest.getEur()) == 1) {
+                this.saveProfit(docList, new ProfitBestDTO(testNum, lastEur));
+            }
         }
     }
 
     private void saveProfit(List<Document> docList, ProfitBestDTO dto) {
-        config.getProfitColl().insertMany(docList, new InsertManyOptions());
         config.getProfitBestColl().insertOne(dto.getProfitBest());
+        config.getProfitColl().insertMany(docList, new InsertManyOptions());
         this.isBest = true;
         LOGGER.log(Level.SEVERE, "Add new best profit (" + dto.getTestNum() + ":" + dto.getEur());
     }

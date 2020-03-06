@@ -31,7 +31,7 @@ public class ProfitBestEJB {
     public List<ProfitBestDTO> get() {
         MongoCursor<Document> cursor = config.getProfitBestColl()
                 .find()
-                .sort(Sorts.descending("testNum"))
+                .sort(Sorts.descending("eur"))
                 .iterator();
 
         List<ProfitBestDTO> list = new ArrayList<>();
