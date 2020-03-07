@@ -30,7 +30,7 @@
 
                         <p:commandButton value="Next best"  id="randBtn" 
                                          action="#{profitBean.onRandom()}" 
-                                         update="tbl" >
+                                         update="tbl, testList" >
                         </p:commandButton>      
                     </p:panelGrid>
                 </p:panel>      
@@ -61,6 +61,9 @@
                         <p:column headerText="btc">
                             <p:outputLabel value="#{item.btc}"/>
                         </p:column>
+                        <p:column headerText="fee">
+                            <p:outputLabel value="#{item.fee}"/>
+                        </p:column>                        
                     </p:dataTable>
                 </p:panel>                    
             </h:form>

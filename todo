@@ -1,13 +1,10 @@
-+ Caching last best profit (less db request)
-+ unique testNum
-+ Add primefaces8
++ Profit: Calculate with Kraken fee
 
 - Optimize Paraya Micro - Increase EJB threads
 - chk: Bollinger trade position
 - Generate learning data (Looking for the best profit) + Save it in the candle
 - Simulate trade (from the learning data)
 - calc: Candle.Date (day of week, week, month, moon phase)
-- Profit: Calculate with Kraken fee
 
 Future:
 --------

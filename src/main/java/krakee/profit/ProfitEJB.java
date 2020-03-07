@@ -135,7 +135,7 @@ public class ProfitEJB {
      * @param candleList
      * @param testNum
      */
-    @Asynchronous
+    //@Asynchronous
     public void calcOneProfit(List<CandleDTO> candleList, Long testNum) {
         BigDecimal eur = BigDecimal.valueOf(1000L).setScale(10, RoundingMode.HALF_UP);
         BigDecimal btc = BigDecimal.ZERO.setScale(10, RoundingMode.HALF_UP);

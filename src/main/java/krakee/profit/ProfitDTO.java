@@ -20,12 +20,17 @@ import org.bson.types.ObjectId;
  */
 public class ProfitDTO {
 
+    //Kranken Fees
+    private static final BigDecimal MAKER = new BigDecimal(0.16).setScale(10, RoundingMode.HALF_UP);
+    private static final BigDecimal TAKER = new BigDecimal(0.26).setScale(10, RoundingMode.HALF_UP);
+    private static final BigDecimal HUNDRED = new BigDecimal(100).setScale(10, RoundingMode.HALF_UP);
+
     // Random values
     static final String BUY = "buy";
     static final String SELL = "sell";
     static final String NONE = "none";
     static final String[] OP = {BUY, SELL, NONE};
-    
+
     private ObjectId id;
     private final Long testNum;
     private final Date startDate;
@@ -33,16 +38,17 @@ public class ProfitDTO {
     private final BigDecimal close;
     private BigDecimal eur;
     private BigDecimal btc;
-    
-    
+    private BigDecimal fee;
+
     public ProfitDTO(CandleDTO candle, String trade, Long testNum) {
         this.startDate = candle.getStartDate();
         this.close = candle.getClose();
         this.trade = trade;
         this.eur = BigDecimal.ZERO;
         this.btc = BigDecimal.ZERO;
+        this.fee = BigDecimal.ZERO;
         this.testNum = testNum;
-        
+
     }
 
     /**
@@ -58,6 +64,7 @@ public class ProfitDTO {
         this.close = ((Decimal128) doc.get("close")).bigDecimalValue();
         this.eur = ((Decimal128) doc.get("eur")).bigDecimalValue();
         this.btc = ((Decimal128) doc.get("btc")).bigDecimalValue();
+        this.fee = ((Decimal128) doc.get("fee")).bigDecimalValue();
     }
 
     /**
@@ -71,7 +78,34 @@ public class ProfitDTO {
                 .append("trade", this.trade)
                 .append("close", this.close)
                 .append("eur", this.eur)
-                .append("btc", this.btc);
+                .append("btc", this.btc)
+                .append("fee", this.fee);
+    }
+
+    /**
+     * Calculate Kraken Marker Fee
+     *
+     * @param eur
+     * @return
+     */
+    private BigDecimal calcMakerFee(BigDecimal eur) {
+        this.fee = eur.divide(HUNDRED, RoundingMode.HALF_UP)
+                .multiply(MAKER)
+                .setScale(10, RoundingMode.HALF_UP);
+        return fee;
+    }
+
+    /**
+     * Calculate Kraken Taker Fee
+     *
+     * @param eur
+     * @return
+     */
+    private BigDecimal calcTakerFee(BigDecimal eur) {
+        this.fee = eur.divide(HUNDRED)
+                .multiply(TAKER)
+                .setScale(10, RoundingMode.HALF_UP);
+        return fee;
     }
 
     /**
@@ -80,40 +114,48 @@ public class ProfitDTO {
      * @param eur
      */
     public void buyBtc(BigDecimal eur) {
-        this.btc = eur.divide(this.close, RoundingMode.HALF_UP).setScale(10, RoundingMode.HALF_UP);
+        this.btc = eur
+                .subtract(this.calcMakerFee(eur))
+                .divide(this.close, RoundingMode.HALF_UP)
+                .setScale(10, RoundingMode.HALF_UP);
+
         this.eur = BigDecimal.ZERO;
     }
 
     /**
      * Sell BTC
      *
+     *
      * @param btc
      */
     public void sellBtc(BigDecimal btc) {
-        this.eur = btc.multiply(this.close).setScale(10, RoundingMode.HALF_UP);
+        this.eur = btc.multiply(this.close);
+        this.eur = this.eur.subtract(this.calcTakerFee(this.eur))
+                .setScale(10, RoundingMode.HALF_UP);
+
         this.btc = BigDecimal.ZERO;
     }
-    
+
     public ObjectId getId() {
         return id;
     }
-    
+
     public Date getStartDate() {
         return startDate;
     }
-    
+
     public BigDecimal getClose() {
         return close;
     }
-    
+
     public BigDecimal getEur() {
         return eur;
     }
-    
+
     public BigDecimal getBtc() {
         return btc;
     }
-    
+
     public String getTrade() {
         return trade;
     }
@@ -121,7 +163,8 @@ public class ProfitDTO {
     public Long getTestNum() {
         return testNum;
     }
-    
-    
-    
+
+    public BigDecimal getFee() {
+        return fee;
+    }
 }
