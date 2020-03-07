@@ -63,8 +63,9 @@ public class ProfitEJB {
 
     /**
      * Get profit filter by testNum
+     *
      * @param testNum
-     * @return 
+     * @return
      */
     public List<ProfitDTO> get(Long testNum) {
         MongoCursor<Document> cursor = config.getProfitColl()
@@ -80,9 +81,10 @@ public class ProfitEJB {
     }
 
     /**
-     * Get last X candles 
+     * Get last X candles
+     *
      * @param last
-     * @return 
+     * @return
      */
     private List<CandleDTO> getLastXCandles(int last) {
         CandleDTO candle;
@@ -137,9 +139,9 @@ public class ProfitEJB {
      */
     //@Asynchronous
     public void calcOneProfit(List<CandleDTO> candleList, Long testNum) {
-        BigDecimal eur = BigDecimal.valueOf(1000L).setScale(10, RoundingMode.HALF_UP);
-        BigDecimal btc = BigDecimal.ZERO.setScale(10, RoundingMode.HALF_UP);
-        BigDecimal lastEur = BigDecimal.ZERO;
+        double eur = 1000;
+        double btc = 0;
+        double lastEur = 0;
         String trade;
         List<ProfitDTO> profitList = new ArrayList<>();
 
@@ -152,7 +154,7 @@ public class ProfitEJB {
 
             switch (trade) {
                 case ProfitDTO.BUY:
-                    if (eur.compareTo(BigDecimal.ZERO) == 1) {
+                    if (eur > 0) {
                         dto.buyBtc(eur);
                         eur = dto.getEur();
                         btc = dto.getBtc();
@@ -160,7 +162,7 @@ public class ProfitEJB {
                     }
                     break;
                 case ProfitDTO.SELL:
-                    if (btc.compareTo(BigDecimal.ZERO) == 1) {
+                    if (btc > 0) {
                         dto.sellBtc(btc);
                         eur = dto.getEur();
                         lastEur = eur;
@@ -178,12 +180,12 @@ public class ProfitEJB {
             this.lastBest = bestEjb.getBest();
             if (this.lastBest == null) {
                 this.saveProfit(profitList, new ProfitBestDTO(testNum, lastEur));
-            } else if (lastEur.compareTo(lastBest.getEur()) == 1) {
+            } else if (lastEur>lastBest.getEur()) {
                 this.saveProfit(profitList, new ProfitBestDTO(testNum, lastEur));
             }
-        } else if (lastEur != null && lastEur.compareTo(lastBest.getEur()) == 1) {
+        } else if (lastEur>lastBest.getEur()) {
             this.lastBest = bestEjb.getBest();
-            if (lastEur.compareTo(lastBest.getEur()) == 1) {
+            if (lastEur>lastBest.getEur()) {
                 this.saveProfit(profitList, new ProfitBestDTO(testNum, lastEur));
             }
         }
@@ -191,19 +193,20 @@ public class ProfitEJB {
 
     /**
      * Save latest best profit to Mongo
+     *
      * @param docList
-     * @param dto 
+     * @param dto
      */
     private void saveProfit(List<ProfitDTO> profitList, ProfitBestDTO dto) {
         //save best
         config.getProfitBestColl().insertOne(dto.getProfitBest());
-        
+
         //Save items
         List<Document> docList = new ArrayList<>();
         profitList.forEach((profit) -> {
             docList.add(profit.getProfit());
         });
-        
+
         config.getProfitColl().insertMany(docList, new InsertManyOptions());
         this.isBest = true;
         LOGGER.log(Level.SEVERE, "Add new best profit ({0}:{1}", new Object[]{dto.getTestNum(), dto.getEur()});

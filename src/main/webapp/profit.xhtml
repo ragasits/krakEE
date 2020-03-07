@@ -56,13 +56,19 @@
                             <p:outputLabel value="#{item.trade}"/>
                         </p:column>
                         <p:column headerText="eur">
-                            <p:outputLabel value="#{item.eur}"/>
+                            <p:outputLabel value="#{item.eur}">
+                                <f:convertNumber maxFractionDigits="10" groupingUsed="false" />
+                            </p:outputLabel>
                         </p:column>
                         <p:column headerText="btc">
-                            <p:outputLabel value="#{item.btc}"/>
+                            <p:outputLabel value="#{item.btc}">
+                                <f:convertNumber maxFractionDigits="10" groupingUsed="false" />
+                            </p:outputLabel>
                         </p:column>
                         <p:column headerText="fee">
-                            <p:outputLabel value="#{item.fee}"/>
+                            <p:outputLabel value="#{item.fee}">
+                                <f:convertNumber maxFractionDigits="10" groupingUsed="false" />
+                            </p:outputLabel>
                         </p:column>                        
                     </p:dataTable>
                 </p:panel>                    

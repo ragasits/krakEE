@@ -5,9 +5,7 @@
  */
 package krakee.profit;
 
-import java.math.BigDecimal;
 import org.bson.Document;
-import org.bson.types.Decimal128;
 import org.bson.types.ObjectId;
 
 /**
@@ -19,9 +17,9 @@ public class ProfitBestDTO {
         
     private ObjectId id;
     private final Long testNum;
-    private final BigDecimal eur;
+    private final double eur;
 
-    public ProfitBestDTO(Long testNum, BigDecimal eur) {
+    public ProfitBestDTO(Long testNum, double eur) {
         this.testNum = testNum;
         this.eur = eur;
     }
@@ -33,7 +31,7 @@ public class ProfitBestDTO {
     public ProfitBestDTO(Document doc) {
         this.id = doc.getObjectId("_id");
         this.testNum = doc.getLong("testNum");
-        this.eur = ((Decimal128) doc.get("eur")).bigDecimalValue();
+        this.eur = doc.getDouble("eur");
     }
     
     /**
@@ -49,7 +47,7 @@ public class ProfitBestDTO {
         return testNum;
     }
 
-    public BigDecimal getEur() {
+    public double getEur() {
         return eur;
     }
     
