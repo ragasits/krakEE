@@ -141,7 +141,7 @@ public class ProfitEJB {
         BigDecimal btc = BigDecimal.ZERO.setScale(10, RoundingMode.HALF_UP);
         BigDecimal lastEur = BigDecimal.ZERO;
         String trade;
-        List<Document> docList = new ArrayList<>();
+        List<ProfitDTO> profitList = new ArrayList<>();
 
         //Set random
         Random random = new Random();
@@ -156,7 +156,7 @@ public class ProfitEJB {
                         dto.buyBtc(eur);
                         eur = dto.getEur();
                         btc = dto.getBtc();
-                        docList.add(dto.getProfit());
+                        profitList.add(dto);
                     }
                     break;
                 case ProfitDTO.SELL:
@@ -165,7 +165,7 @@ public class ProfitEJB {
                         eur = dto.getEur();
                         lastEur = eur;
                         btc = dto.getBtc();
-                        docList.add(dto.getProfit());
+                        profitList.add(dto);
                     }
                     break;
                 case ProfitDTO.NONE:
@@ -177,14 +177,14 @@ public class ProfitEJB {
         if (this.lastBest == null) {
             this.lastBest = bestEjb.getBest();
             if (this.lastBest == null) {
-                this.saveProfit(docList, new ProfitBestDTO(testNum, lastEur));
+                this.saveProfit(profitList, new ProfitBestDTO(testNum, lastEur));
             } else if (lastEur.compareTo(lastBest.getEur()) == 1) {
-                this.saveProfit(docList, new ProfitBestDTO(testNum, lastEur));
+                this.saveProfit(profitList, new ProfitBestDTO(testNum, lastEur));
             }
         } else if (lastEur != null && lastEur.compareTo(lastBest.getEur()) == 1) {
             this.lastBest = bestEjb.getBest();
             if (lastEur.compareTo(lastBest.getEur()) == 1) {
-                this.saveProfit(docList, new ProfitBestDTO(testNum, lastEur));
+                this.saveProfit(profitList, new ProfitBestDTO(testNum, lastEur));
             }
         }
     }
@@ -194,10 +194,18 @@ public class ProfitEJB {
      * @param docList
      * @param dto 
      */
-    private void saveProfit(List<Document> docList, ProfitBestDTO dto) {
+    private void saveProfit(List<ProfitDTO> profitList, ProfitBestDTO dto) {
+        //save best
         config.getProfitBestColl().insertOne(dto.getProfitBest());
+        
+        //Save items
+        List<Document> docList = new ArrayList<>();
+        profitList.forEach((profit) -> {
+            docList.add(profit.getProfit());
+        });
+        
         config.getProfitColl().insertMany(docList, new InsertManyOptions());
         this.isBest = true;
-        LOGGER.log(Level.SEVERE, "Add new best profit (" + dto.getTestNum() + ":" + dto.getEur());
+        LOGGER.log(Level.SEVERE, "Add new best profit ({0}:{1}", new Object[]{dto.getTestNum(), dto.getEur()});
     }
 }
