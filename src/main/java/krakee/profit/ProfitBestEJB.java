@@ -28,6 +28,10 @@ public class ProfitBestEJB {
     @EJB
     ConfigEJB config;
 
+    /**
+     * Get ProfitBest list, desc
+     * @return 
+     */
     public List<ProfitBestDTO> get() {
         MongoCursor<Document> cursor = config.getProfitBestColl()
                 .find()
@@ -42,6 +46,10 @@ public class ProfitBestEJB {
         return list;
     }
 
+    /**
+     * Get best profit
+     * @return 
+     */
     public ProfitBestDTO getBest() {
         Document doc = config.getProfitBestColl()
                 .find()
@@ -55,6 +63,10 @@ public class ProfitBestEJB {
         }
     }
 
+    /**
+     * Get last profit best
+     * @return 
+     */
     public ProfitBestDTO getMaxTest() {
         Document doc = config.getProfitBestColl()
                 .find()

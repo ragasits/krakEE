@@ -42,7 +42,9 @@
                 <p:panel>    
                     <p:dataTable value="#{profitBean.profitList}" var="item" tableStyle="width:auto" id="tbl">
                         <p:column headerText="testNum">
-                            <p:outputLabel value="#{item.testNum}"/>
+                            <p:outputLabel value="#{item.testNum}">
+                                <f:convertNumber maxFractionDigits="0" groupingUsed="true" />
+                            </p:outputLabel>
                         </p:column>
                         <p:column headerText="startDate">
                             <p:outputLabel value="#{item.startDate}"/>

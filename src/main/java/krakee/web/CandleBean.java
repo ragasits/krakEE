@@ -139,9 +139,4 @@ public class CandleBean implements Serializable {
     public boolean isNotEmtyOhlcChart() {
         return !(this.candleList == null || this.candleList.isEmpty());
     }
-
-    @Override
-    public String toString() {
-        return "CandleBean{" + "mongo=" + mongo + ", candleList=" + candleList + ", queryLimit=" + queryLimit + ", ohlcModel=" + ohlcModel + '}';
-    }
 }

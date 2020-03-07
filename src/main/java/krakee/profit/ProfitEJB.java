@@ -61,6 +61,11 @@ public class ProfitEJB {
         return list;
     }
 
+    /**
+     * Get profit filter by testNum
+     * @param testNum
+     * @return 
+     */
     public List<ProfitDTO> get(Long testNum) {
         MongoCursor<Document> cursor = config.getProfitColl()
                 .find(eq("testNum", testNum))
@@ -74,10 +79,16 @@ public class ProfitEJB {
         return list;
     }
 
+    /**
+     * Get last X candles 
+     * @param last
+     * @return 
+     */
     private List<CandleDTO> getLastXCandles(int last) {
         CandleDTO candle;
         List<CandleDTO> candleList = new ArrayList<>();
 
+        //Get first startDate
         Date first = config.getCandleColl()
                 .find(eq("calcCandle", true))
                 .sort(Sorts.descending("startDate"))
@@ -86,6 +97,7 @@ public class ProfitEJB {
                 .first()
                 .getDate("startDate");
 
+        //Get candles from first startDate
         MongoCursor<Document> cursor = config.getCandleColl()
                 .find(gte("startDate", first))
                 .sort(Sorts.ascending("startDate"))
@@ -99,6 +111,9 @@ public class ProfitEJB {
         return candleList;
     }
 
+    /**
+     * Looking for the best Profit buy/sell combinations
+     */
     @Asynchronous
     public void calcProfit() {
         this.isBest = false;
@@ -174,6 +189,11 @@ public class ProfitEJB {
         }
     }
 
+    /**
+     * Save latest best profit to Mongo
+     * @param docList
+     * @param dto 
+     */
     private void saveProfit(List<Document> docList, ProfitBestDTO dto) {
         config.getProfitBestColl().insertOne(dto.getProfitBest());
         config.getProfitColl().insertMany(docList, new InsertManyOptions());

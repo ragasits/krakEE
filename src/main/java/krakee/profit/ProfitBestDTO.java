@@ -26,12 +26,20 @@ public class ProfitBestDTO {
         this.eur = eur;
     }
 
+    /**
+     * Create DTO from document
+     * @param doc 
+     */
     public ProfitBestDTO(Document doc) {
         this.id = doc.getObjectId("_id");
         this.testNum = doc.getLong("testNum");
         this.eur = ((Decimal128) doc.get("eur")).bigDecimalValue();
     }
     
+    /**
+     * Create Document from DTO
+     * @return 
+     */
     public Document getProfitBest() {
         return new Document("testNum", this.testNum)
                 .append("eur", this.eur);

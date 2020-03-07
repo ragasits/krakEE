@@ -39,6 +39,10 @@ public class ProfitBean implements Serializable {
         profitEjb.calcProfit();
     }
 
+    /**
+     * get profit list, filter by best
+     * @return 
+     */
     public List<ProfitDTO> getProfitList() {
         if (this.selectedTest!=null){
             return profitEjb.get(selectedTest);
@@ -46,6 +50,10 @@ public class ProfitBean implements Serializable {
         return null;
     }
 
+    /**
+     * Get best list
+     * @return 
+     */
     public List<ProfitBestDTO> getBestList() {
         return bestEjb.get();
     }

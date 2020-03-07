@@ -59,11 +59,4 @@ public class TradeBean implements Serializable {
         this.queryLimit = queryLimit;
     }
 
-    @Override
-    public String toString() {
-        return "TradeBean{" + "mongo=" + mongo + ", tradeList=" + tradeList + ", queryLimit=" + queryLimit + '}';
-    }
-    
-    
-
 }

@@ -126,12 +126,4 @@ public class TradePairDTO {
     public String toString() {
         return "TradePairDTO{" + "price=" + price + ", volume=" + volume + ", time=" + time + ", buySel=" + buySel + ", marketLimit=" + marketLimit + ", miscellaneous=" + miscellaneous + ", error=" + error + ", last=" + last + ", pair=" + pair + '}';
     }
-    
-    
-    
-    
-    
-    
-    
-    
 }

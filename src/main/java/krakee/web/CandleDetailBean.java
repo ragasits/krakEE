@@ -15,7 +15,7 @@ import krakee.calc.CandleDTO;
 import org.bson.types.ObjectId;
 
 /**
- * JSF bean for one Canlde
+ * JSF bean for one Candle
  * @author rgt
  */
 @SessionScoped
