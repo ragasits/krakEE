@@ -33,6 +33,7 @@ public class CandleDTO {
 
     private DeltaDTO delta;
     private BollingerDTO bollinger;
+    private DateDTO date;
 
     public CandleDTO(Date candleDate) {
         this.id = null;
@@ -54,6 +55,7 @@ public class CandleDTO {
 
         this.delta = new DeltaDTO();
         this.bollinger = new BollingerDTO();
+        this.date = new DateDTO(this.startDate);
     }
 
     /**
@@ -80,6 +82,7 @@ public class CandleDTO {
 
         this.delta = new DeltaDTO((Document) doc.get("delta"));
         this.bollinger = new BollingerDTO((Document) doc.get("bollinger"));
+        this.date = new DateDTO((Document) doc.get("date"));
     }
 
     /**
@@ -103,7 +106,9 @@ public class CandleDTO {
                 .append("volumeSell", this.volumeSell)
                 .append("calcCandle", this.calcCandle)
                 .append("delta", this.delta.getDelta())
-                .append("bollinger", this.bollinger.getBollinger());
+                .append("bollinger", this.bollinger.getBollinger())
+                .append("date", this.date.getDate());
+        
     }
 
     /**
@@ -270,6 +275,10 @@ public class CandleDTO {
 
     public void setBollinger(BollingerDTO bollinger) {
         this.bollinger = bollinger;
+    }
+
+    public DateDTO getDate() {
+        return date;
     }
 
     

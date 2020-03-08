@@ -53,6 +53,24 @@
                         <p:outputLabel value="CalcBollinger"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollinger.calcBollinger}"/>                                                
                     </p:panelGrid>
+                    
+                    <p:panelGrid columns="7">
+                        <p:outputLabel value="Season"/>
+                        <p:outputLabel value="Month"/>
+                        <p:outputLabel value="Day"/>
+                        <p:outputLabel value="Week"/>
+                        <p:outputLabel value="DayOfWeek"/>
+                        <p:outputLabel value="JulianDate"/>
+                        <p:outputLabel value="MoonAge"/>
+                        
+                        <p:outputLabel value="#{candleDetailBean.detail.date.season}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.date.month}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.date.day}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.date.week}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.date.dayOfWeek}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.date.julianDate}"/>
+                        <p:outputLabel value="#{candleDetailBean.detail.date.moonPhase}"/>
+                    </p:panelGrid>
 
 
                     <p:panelGrid columns="5">
