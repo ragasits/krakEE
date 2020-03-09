@@ -1,4 +1,4 @@
-+ calc: Candle.Date (day of week, week, month, moon phase, season)
++ Detail: Format date panel
 
 - chk: Bollinger trade position
 - Generate learning data (Looking for the best profit) + Save it in the candle
