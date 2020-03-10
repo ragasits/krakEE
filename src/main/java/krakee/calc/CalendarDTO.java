@@ -24,7 +24,7 @@ import org.bson.Document;
  *
  * @author rgt
  */
-public class DateDTO {
+public class CalendarDTO {
 
     private final String season;
     private final int month;
@@ -32,16 +32,20 @@ public class DateDTO {
     private final int day;
     private final int dayOfWeek;
     private final int julianDate;
-    private final double moonPhase;
+    private final double moonAge;
+    private final int hour;
 
-    public DateDTO(Date startDate) {
+    private final boolean holiday;
+
+    public CalendarDTO(Date startDate) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(startDate);
 
-        this.month = cal.get(Calendar.MONTH)+1;
+        this.month = cal.get(Calendar.MONTH) + 1;
         this.dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
         this.week = cal.get(Calendar.WEEK_OF_YEAR);
         this.day = cal.get(Calendar.DAY_OF_MONTH);
+        this.hour = cal.get(Calendar.HOUR_OF_DAY);
 
         if (month == 3 || month == 4 || month == 5) {
             this.season = "Spring";
@@ -54,7 +58,20 @@ public class DateDTO {
         }
 
         this.julianDate = this.julianDate(day, month, cal.get(Calendar.YEAR));
-        this.moonPhase = this.MoonAge(day, month, cal.get(Calendar.YEAR), this.julianDate);
+        this.moonAge = this.MoonAge(day, month, cal.get(Calendar.YEAR), this.julianDate);
+
+        //West holidays
+        this.holiday
+                = //XMAS
+                (this.month == 12 && (this.day == 25 || this.day == 26))
+                //New year
+                || (this.month == 1 && this.day == 1);
+        //Easter
+        //Pentecost
+        //Halloween
+
+        //China holidays
+        //Arabs holidays
     }
 
     /**
@@ -62,14 +79,16 @@ public class DateDTO {
      *
      * @param doc
      */
-    public DateDTO(Document doc) {
+    public CalendarDTO(Document doc) {
         this.season = doc.getString("season");
         this.month = doc.getInteger("month");
         this.week = doc.getInteger("week");
         this.day = doc.getInteger("day");
+        this.hour = doc.getInteger("hour");
         this.dayOfWeek = doc.getInteger("dayOfWeek");
         this.julianDate = doc.getInteger("julianDate");
-        this.moonPhase = doc.getDouble("moonPhase");
+        this.moonAge = doc.getDouble("moonAge");
+        this.holiday = doc.getBoolean("holiday");
     }
 
     /**
@@ -77,14 +96,16 @@ public class DateDTO {
      *
      * @return
      */
-    public Document getDate() {
+    public Document getCalendar() {
         return new Document("season", this.season)
                 .append("month", this.month)
                 .append("week", this.week)
                 .append("day", this.day)
+                .append("hour", this.hour)
                 .append("dayOfWeek", this.dayOfWeek)
                 .append("julianDate", this.julianDate)
-                .append("moonPhase", this.moonPhase);
+                .append("moonAge", this.moonAge)
+                .append("holiday", this.holiday);
     }
 
     /**
@@ -166,8 +187,16 @@ public class DateDTO {
         return julianDate;
     }
 
-    public double getMoonPhase() {
-        return moonPhase;
+    public double getMoonAge() {
+        return moonAge;
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public boolean isHoliday() {
+        return holiday;
     }
     
     

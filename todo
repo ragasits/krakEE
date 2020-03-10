@@ -1,10 +1,13 @@
-+ Detail: Format date panel
++ Rename DateDTO to CalendarDTO
++ Rename calendar.moonPhase to calendar.moonAge
++ Add calendar.hour
++ calc: Candle.Date (xmas, new year)
 
 - chk: Bollinger trade position
 - Generate learning data (Looking for the best profit) + Save it in the candle
 - Save Profit sample start stop dates
 - Simulate trade (from the learning data)
-- calc: Candle.Date (xmas, easter, Pentecost, new year, halloween)
+- calc: Candle.Date (easter, Pentecost, halloween)
 
 Future:
 --------

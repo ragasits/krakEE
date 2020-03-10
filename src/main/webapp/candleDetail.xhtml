@@ -211,25 +211,28 @@
 
                         <p:panelGrid columns="2">
                             <p:outputLabel value="Season" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.date.season}"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.calendar.season}"/>
 
                             <p:outputLabel value="Month" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.date.month}"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.calendar.month}"/>
 
                             <p:outputLabel value="Day" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.date.day}"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.calendar.day}"/>
 
                             <p:outputLabel value="Week" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.date.week}"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.calendar.week}"/>
 
                             <p:outputLabel value="DayOfWeek" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.date.dayOfWeek}"/>
-                            
+                            <p:outputLabel value="#{candleDetailBean.detail.calendar.dayOfWeek}"/>
+
                             <p:outputLabel value="JulianDate" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.date.julianDate}"/>
-                            
+                            <p:outputLabel value="#{candleDetailBean.detail.calendar.julianDate}"/>
+
                             <p:outputLabel value="MoonAge" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.date.moonPhase}"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.calendar.moonAge}"/>
+
+                            <p:outputLabel value="MoonAge" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.calendar.holiday}"/>                            
                         </p:panelGrid>
                     </p:panelGrid>
                 </p:panel>                    
