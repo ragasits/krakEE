@@ -25,7 +25,7 @@ public class ProfitDTO {
     static final String BUY = "buy";
     static final String SELL = "sell";
     static final String NONE = "none";
-    static final String[] OP = {BUY, SELL, NONE};
+    static final String[] OP = {BUY,NONE, SELL, NONE};
 
     private ObjectId id;
     private final Long testNum;

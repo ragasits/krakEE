@@ -119,7 +119,7 @@ public class ProfitEJB {
     @Asynchronous
     public void calcProfit() {
         this.isBest = false;
-        List<CandleDTO> candleList = this.getLastXCandles(1000);
+        List<CandleDTO> candleList = this.getLastXCandles(2000);
         ProfitBestDTO best = bestEjb.getMaxTest();
         Long testNum = 0L;
         if (best != null) {
