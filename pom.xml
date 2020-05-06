@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rgt</groupId>
     <artifactId>krakEE</artifactId>
-    <version>70</version>
+    <version>80</version>
     <packaging>war</packaging>
     <name>krakEE</name>
 
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>3.12.1</version>
+            <version>4.0.2</version>
             <type>jar</type>
         </dependency>
         
@@ -47,10 +47,10 @@
     <reporting>
         <plugins>
             <plugin>
-                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:3.1.12.2:spotbugs -->
+                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.0.0:spotbugs -->
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>3.1.12.2</version>
+                <version>4.0.0</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
                     <xmlOutputDirectory>target/site</xmlOutputDirectory>
@@ -64,7 +64,7 @@
             <plugin>
                 <groupId>fish.payara.maven.plugins</groupId>
                 <artifactId>payara-micro-maven-plugin</artifactId>
-                <version>1.0.6</version>
+                <version>1.0.7</version>
                 <configuration>
                     <payaraVersion>${version.payara}</payaraVersion>
                     <deployWar>false</deployWar>

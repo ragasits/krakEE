@@ -10,8 +10,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-import krakee.profit.ProfitBestDTO;
-import krakee.profit.ProfitBestEJB;
+import krakee.profit.ProfitItemDTO;
 import krakee.profit.ProfitDTO;
 import krakee.profit.ProfitEJB;
 
@@ -21,31 +20,29 @@ import krakee.profit.ProfitEJB;
  * @author rgt
  */
 @SessionScoped
-@Named(value = "profitBean")
+@Named(value = "profit1Bean")
 public class ProfitBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private Long selectedTest;
 
     @EJB
-    private ProfitEJB profitEjb;
-    @EJB
-    private ProfitBestEJB bestEjb;
+    private ProfitEJB profit1Ejb;
 
     /**
      * Start Random profit calculation
      */
     public void onRandom() {
-        profitEjb.calcProfit();
+        profit1Ejb.calcProfit();
     }
 
     /**
      * get profit list, filter by best
      * @return 
      */
-    public List<ProfitDTO> getProfitList() {
+    public List<ProfitItemDTO> getProfitList() {
         if (this.selectedTest!=null){
-            return profitEjb.get(selectedTest);
+            return profit1Ejb.get(selectedTest).getItems();
         }
         return null;
     }
@@ -54,8 +51,8 @@ public class ProfitBean implements Serializable {
      * Get best list
      * @return 
      */
-    public List<ProfitBestDTO> getBestList() {
-        return bestEjb.get();
+    public List<ProfitDTO> getBestList() {
+        return profit1Ejb.get();
     }
 
     public Long getSelectedTest() {
@@ -65,7 +62,4 @@ public class ProfitBean implements Serializable {
     public void setSelectedTest(Long selectedTest) {
         this.selectedTest = selectedTest;
     }
-    
-    
-
 }

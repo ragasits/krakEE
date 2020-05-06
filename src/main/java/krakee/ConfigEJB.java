@@ -1,5 +1,6 @@
 package krakee;
 
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -12,11 +13,17 @@ import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import krakee.profit.ProfitDTO;
 import org.bson.Document;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
- * Global configuration, database settings, 
+ * Global configuration, database settings,
+ *
  * @author rgt
  */
 @Singleton
@@ -62,13 +69,10 @@ public class ConfigEJB {
     private MongoDatabase database;
     private MongoCollection<Document> tradePairColl;
     private MongoCollection<Document> candleColl;
-    private MongoCollection<Document> profitColl;
-    private MongoCollection<Document> profitBestColl;
+    private MongoCollection<ProfitDTO> profitColl;
 
     /**
-     * Initiate:
-     * - Set proxy
-     * - MongoDB Create collections and missing indexes
+     * Initiate: - Set proxy - MongoDB Create collections and missing indexes
      */
     @PostConstruct
     public void init() {
@@ -79,8 +83,11 @@ public class ConfigEJB {
         }
 
         //Set Mongodb 
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
         this.client = MongoClients.create();
-        this.database = this.client.getDatabase("krakEE");
+        this.database = this.client.getDatabase("krakEE").withCodecRegistry(pojoCodecRegistry);
 
         this.tradePairColl = this.database.getCollection("tradepair");
         if (!this.isIndex(tradePairColl, "last_-1")) {
@@ -96,20 +103,17 @@ public class ConfigEJB {
         }
         if (!this.isIndex(candleColl, "startDate_-1")) {
             this.candleColl.createIndex(Indexes.descending("startDate"), new IndexOptions().unique(true));
-        }        
+        }
         if (!this.isIndex(candleColl, "calcCandle_1")) {
             this.candleColl.createIndex(Indexes.ascending("calcCandle"));
         }
-        
-        this.profitColl = this.database.getCollection("profit");
-        
-        this.profitBestColl = this.database.getCollection("profitBest");
-        if (!this.isIndex(profitBestColl, "testNum_1")) {
-            this.profitBestColl.createIndex(Indexes.ascending("testNum"), new IndexOptions().unique(true));
+
+
+        this.profitColl = this.database.getCollection("profit", ProfitDTO.class);
+        if (!this.isIndex(profitColl, "testNum_1")) {
+            this.profitColl.createIndex(Indexes.ascending("testNum"), new IndexOptions().unique(true));
         }
-        
-        
-        
+
     }
 
     /**
@@ -119,7 +123,7 @@ public class ConfigEJB {
      * @param indexName
      * @return
      */
-    private boolean isIndex(MongoCollection<Document> collection, String indexName) {
+    private boolean isIndex(MongoCollection collection, String indexName) {
         MongoCursor<Document> indexes = collection.listIndexes().iterator();
         while (indexes.hasNext()) {
             Document index = indexes.next();
@@ -148,14 +152,10 @@ public class ConfigEJB {
         return candleColl;
     }
 
-    public MongoCollection<Document> getProfitColl() {
+    public MongoCollection<ProfitDTO> getProfit1Coll() {
         return profitColl;
     }
 
-    public MongoCollection<Document> getProfitBestColl() {
-        return profitBestColl;
-    }
-    
     public String getKrakenURL() {
         return krakenURL;
     }

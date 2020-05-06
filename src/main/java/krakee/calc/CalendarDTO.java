@@ -47,14 +47,25 @@ public class CalendarDTO {
         this.day = cal.get(Calendar.DAY_OF_MONTH);
         this.hour = cal.get(Calendar.HOUR_OF_DAY);
 
-        if (month == 3 || month == 4 || month == 5) {
-            this.season = "Spring";
-        } else if (month == 6 || month == 7 || month == 8) {
-            this.season = "Summer";
-        } else if (month == 9 || month == 10 || month == 11) {
-            this.season = "Autumn";
-        } else {
-            this.season = "Winter";
+        switch (month) {
+            case 3:
+            case 4:
+            case 5:
+                this.season = "Spring";
+                break;
+            case 6:
+            case 7:
+            case 8:
+                this.season = "Summer";
+                break;
+            case 9:
+            case 10:
+            case 11:
+                this.season = "Autumn";
+                break;
+            default:
+                this.season = "Winter";
+                break;
         }
 
         this.julianDate = this.julianDate(day, month, cal.get(Calendar.YEAR));

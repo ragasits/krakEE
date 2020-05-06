@@ -21,15 +21,15 @@
                 <p:panel>
                     <p:panelGrid columns="4">
                         <p:outputLabel value="Best:"/>  
-                        <p:selectOneMenu value="#{profitBean.selectedTest}" id="testList">
+                        <p:selectOneMenu value="#{profit1Bean.selectedTest}" id="testList">
                             <f:selectItem itemLabel="-" itemValue=""/>
-                            <f:selectItems value="#{profitBean.bestList}" var="best" 
+                            <f:selectItems value="#{profit1Bean.bestList}" var="best" 
                                            itemLabel="#{best.eur}" itemValue="#{best.testNum}" />
                             <p:ajax event="itemSelect"  update="tbl"/>
                         </p:selectOneMenu>
 
                         <p:commandButton value="Next best"  id="randBtn" 
-                                         action="#{profitBean.onRandom()}" 
+                                         action="#{profit1Bean.onRandom()}" 
                                          update="tbl, testList" >
                         </p:commandButton>      
                     </p:panelGrid>
@@ -40,7 +40,7 @@
                 </p:blockUI>    
 
                 <p:panel>    
-                    <p:dataTable value="#{profitBean.profitList}" var="item" tableStyle="width:auto" id="tbl">
+                    <p:dataTable value="#{profit1Bean.profitList}" var="item" tableStyle="width:auto" id="tbl">
                         <p:column headerText="testNum">
                             <p:outputLabel value="#{item.testNum}">
                                 <f:convertNumber maxFractionDigits="0" groupingUsed="true" />

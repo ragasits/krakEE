@@ -1,7 +1,4 @@
-+ Rename DateDTO to CalendarDTO
-+ Rename calendar.moonPhase to calendar.moonAge
-+ Add calendar.hour
-+ calc: Candle.Date (xmas, new year)
++ Profit: Use POJO (Entity) with Mongodb 
 
 - chk: Bollinger trade position
 - Generate learning data (Looking for the best profit) + Save it in the candle
