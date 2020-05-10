@@ -5,20 +5,20 @@
  */
 package krakee.calc;
 
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCursor;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.lt;
 import com.mongodb.client.model.Sorts;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
-import org.bson.Document;
 
 /**
  * Calculate Delta values
+ *
  * @author rgt
  */
 @Stateless
@@ -34,42 +34,31 @@ public class DeltaEJB {
      *
      */
     public void calculateDelta() {
-        CandleDTO candle;
-        CandleDTO prev;
-        DeltaDTO delta;
-
         //Get the candles
-        FindIterable<Document> result = config.getCandleColl()
-                .find(and(eq("calcCandle", true), eq("delta.calcDelta", false)));
+        List<CandleDTO> candleList = config.getCandleColl()
+                .find(and(eq("calcCandle", true), eq("delta.calcDelta", false)))
+                .into(new ArrayList<CandleDTO>());
 
-        try (MongoCursor<Document> cursor = result.iterator()) {
-            while (cursor.hasNext()) {
-                candle = new CandleDTO(cursor.next());
+        for (CandleDTO candle : candleList) {
+            //Get the prev candle
+            CandleDTO prev = config.getCandleColl()
+                    .find(lt("startDate", candle.getStartDate()))
+                    .sort(Sorts.descending("startDate"))
+                    .first();
 
-                //Get the prev candle
-                Document doc = config.getCandleColl()
-                        .find(lt("startDate", candle.getStartDate()))
-                        .sort(Sorts.descending("startDate"))
-                        .first();
+            if (prev != null) {
+                //Calculate delta values
+                DeltaDTO delta = new DeltaDTO(candle, prev);
+                candle.setDelta(delta);
 
-                if (doc != null) {
-                    prev = new CandleDTO(doc);
-
-                    //Calculate delta values
-                    delta = new DeltaDTO(candle, prev);
-                    candle.setDelta(delta);
-
-                } else {
-                    //First row
-                    candle.getDelta().setCalcDelta(true);
-                }
-
-                //Save candle
-                config.getCandleColl()
-                        .replaceOne(eq("_id", candle.getId()), candle.getCandle());
-
+            } else {
+                //First row
+                candle.getDelta().setCalcDelta(true);
             }
+
+            //Save candle
+            config.getCandleColl()
+                    .replaceOne(eq("_id", candle.getId()), candle);
         }
     }
-
 }

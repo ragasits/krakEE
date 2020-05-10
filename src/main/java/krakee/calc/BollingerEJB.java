@@ -5,7 +5,6 @@
  */
 package krakee.calc;
 
-import com.mongodb.client.MongoCursor;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.lt;
@@ -13,15 +12,17 @@ import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.client.model.Sorts;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.Common;
 import krakee.ConfigEJB;
-import org.bson.Document;
 
 /**
  * Calculate Bollinger values
+ *
  * @author rgt
  */
 @Stateless
@@ -37,97 +38,88 @@ public class BollingerEJB {
      *
      */
     public void calculateBollinger() {
-        CandleDTO candle;
+        List<CandleDTO> candleList;
         CandleDTO prev;
         BollingerDTO bollinger;
 
         //Get the candles
-        MongoCursor<Document> cursor = config.getCandleColl()
+        candleList = config.getCandleColl()
                 .find(and(eq("calcCandle", true), eq("bollinger.calcBollinger", false)))
-                .iterator();
+                .into(new ArrayList<>());
 
-        while (cursor.hasNext()) {
-            candle = new CandleDTO(cursor.next());
+        for (CandleDTO candle : candleList) {
             bollinger = candle.getBollinger();
             bollinger.setCalcBollinger(true);
             bollinger.setSma(this.calcSMA(candle));
             bollinger.setStDev(this.calcStDev(candle));
             bollinger.setBollingerUpper(bollinger.getSma().add(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));
-            bollinger.setBollingerLower(bollinger.getSma().subtract(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));            
+            bollinger.setBollingerLower(bollinger.getSma().subtract(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));
 
             //Get the prev candle
-            Document doc = config.getCandleColl()
+            prev = config.getCandleColl()
                     .find(lt("startDate", candle.getStartDate()))
                     .sort(Sorts.descending("startDate"))
                     .first();
 
             //Calc Delta + Trend
-            if (doc != null) {
-                prev = new CandleDTO(doc);
+            if (prev != null) {
                 bollinger.calcDeltaAndTrend(candle, prev.getBollinger());
             }
 
             //Save candle
             config.getCandleColl()
-                    .replaceOne(eq("_id", candle.getId()), candle.getCandle());
+                    .replaceOne(eq("_id", candle.getId()), candle);
 
         }
     }
 
     /**
      * Calculate Standard Deviation
+     *
      * @param dto
-     * @return 
+     * @return
      */
     private BigDecimal calcStDev(CandleDTO dto) {
-        CandleDTO candle;
-        Document doc;
         BigDecimal stdev = BigDecimal.ZERO;
         int i = 0;
 
         //Get the candles
-        MongoCursor<Document> cursor = config.getCandleColl()
+        List<CandleDTO> candleList = config.getCandleColl()
                 .find(lte("startDate", dto.getStartDate()))
                 .sort(Sorts.descending("startDate"))
                 .limit(20)
-                .iterator();
+                .into(new ArrayList<>());
 
-        while (cursor.hasNext()) {
-            doc = cursor.next();
-            candle = new CandleDTO(doc);
+        for (CandleDTO candle : candleList) {
             //Standard Deviation
             stdev = stdev.add(candle.getClose().subtract(dto.getBollinger().getSma()).pow(2));
             i++;
         }
-        
+
         if (i > 0) {
-            return Common.sqrt(stdev.divide(BigDecimal.valueOf(i), 5, RoundingMode.HALF_UP),2);
-            //return stdev.divide(BigDecimal.valueOf(i), 5, RoundingMode.HALF_UP);
+            return Common.sqrt(stdev.divide(BigDecimal.valueOf(i), 5, RoundingMode.HALF_UP), 2);
         }
-        return BigDecimal.ZERO;        
+        return BigDecimal.ZERO;
     }
 
     /**
      * Calculate Standard Moving Average
+     *
      * @param dto
-     * @return 
+     * @return
      */
     private BigDecimal calcSMA(CandleDTO dto) {
-        CandleDTO candle;
         BigDecimal close = BigDecimal.ZERO;
-        Document doc;
         int i = 0;
 
         //Get the candles
-        MongoCursor<Document> cursor = config.getCandleColl()
+        List<CandleDTO> candleList = config.getCandleColl()
                 .find(lte("startDate", dto.getStartDate()))
                 .sort(Sorts.descending("startDate"))
                 .limit(20)
-                .iterator();
+                .into(new ArrayList<>());
 
-        while (cursor.hasNext()) {
-            doc = cursor.next();
-            candle = new CandleDTO(doc);
+        for (CandleDTO candle : candleList) {
             close = close.add(candle.getClose());
             i++;
         }

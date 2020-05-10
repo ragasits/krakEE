@@ -8,8 +8,10 @@ import static com.mongodb.client.model.Filters.gte;
 import static com.mongodb.client.model.Filters.lt;
 import com.mongodb.client.model.Sorts;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Asynchronous;
@@ -57,15 +59,16 @@ public class CandleEJB {
      * Set the last Candle calcCandle value to false (Incremental running)
      */
     private void setLastCandleCalcToFalse() {
+        Document doc;
+        
         //Get last startDate from Candle
-        Document doc = config.getCandleColl()
+        CandleDTO candle  = config.getCandleColl()
                 .find()
                 .sort(Sorts.descending("startDate"))
                 .first();
-        if (doc == null) {
+        if (candle  == null || candle.getStartDate()==null) {
             return;
         }
-        CandleDTO candle = new CandleDTO(doc);
 
         //Get last date from TradePair
         doc = config.getTradePairColl()
@@ -85,7 +88,7 @@ public class CandleEJB {
 
             //Update last Candle
             config.getCandleColl().replaceOne(
-                    eq("_id", candle.getId()), candle.getCandle());
+                    eq("_id", candle.getId()), candle);
         }
     }
 
@@ -93,22 +96,20 @@ public class CandleEJB {
      * Calculate candle values Max 10K rows (Prevent the timeout?)
      */
     private void calcCandle() {
-        CandleDTO dto;
         int i = 0;
 
-        FindIterable<Document> result = config.getCandleColl()
+        List<CandleDTO> candleList = config.getCandleColl()
                 .find(eq("calcCandle", false))
-                .limit(5000);
+                .limit(5000)
+                .into(new ArrayList<>());
 
-        try (MongoCursor<Document> cursor = result.iterator()) {
-            while (cursor.hasNext()) {
-                dto = new CandleDTO(cursor.next());
-                this.calcCandleItem(dto);
-                i++;
-            }
+        for (CandleDTO dto : candleList) {
+            this.calcCandleItem(dto);
+            i++;
         }
+
         this.candleSize = i;
-        LOGGER.log(Level.INFO, "calcCandle:" + i);
+        LOGGER.log(Level.INFO, "calcCandle:{0}", i);
     }
 
     /**
@@ -182,8 +183,7 @@ public class CandleEJB {
         dto.setCalcCandle(true);
 
         config.getCandleColl().replaceOne(
-                eq("_id", dto.getId()),
-                dto.getCandle());
+                eq("_id", dto.getId()), dto);
     }
 
     /**
@@ -204,7 +204,7 @@ public class CandleEJB {
             LOGGER.log(Level.INFO, "calcDateList " + startDate + "-" + stopDate);
 
             CandleDTO dto = new CandleDTO(startDate);
-            config.getCandleColl().insertOne(dto.getCandle());
+            config.getCandleColl().insertOne(dto);
             cal.setTime(startDate);
             cal.add(Calendar.MINUTE, 30);
             startDate = cal.getTime();
@@ -222,10 +222,11 @@ public class CandleEJB {
         Date startDate;
 
         if (config.getCandleColl().countDocuments() > 0) {
-            startDate = config.getCandleColl().find()
+            CandleDTO dto = config.getCandleColl().find()
                     .sort(Sorts.descending("startDate"))
-                    .first()
-                    .getDate("startDate");
+                    .first();
+            startDate = dto.getStartDate();
+
             Calendar cal = Calendar.getInstance();
             cal.setTime(startDate);
             cal.add(Calendar.MINUTE, 30);

@@ -26,16 +26,19 @@ import org.bson.Document;
  */
 public class CalendarDTO {
 
-    private final String season;
-    private final int month;
-    private final int week;
-    private final int day;
-    private final int dayOfWeek;
-    private final int julianDate;
-    private final double moonAge;
-    private final int hour;
+    private String season;
+    private int month;
+    private int week;
+    private int day;
+    private int dayOfWeek;
+    private int julianDate;
+    private double moonAge;
+    private int hour;
 
-    private final boolean holiday;
+    private boolean holiday;
+
+    public CalendarDTO() {
+    }
 
     public CalendarDTO(Date startDate) {
         Calendar cal = Calendar.getInstance();
@@ -83,40 +86,6 @@ public class CalendarDTO {
 
         //China holidays
         //Arabs holidays
-    }
-
-    /**
-     * Create DTO from Document
-     *
-     * @param doc
-     */
-    public CalendarDTO(Document doc) {
-        this.season = doc.getString("season");
-        this.month = doc.getInteger("month");
-        this.week = doc.getInteger("week");
-        this.day = doc.getInteger("day");
-        this.hour = doc.getInteger("hour");
-        this.dayOfWeek = doc.getInteger("dayOfWeek");
-        this.julianDate = doc.getInteger("julianDate");
-        this.moonAge = doc.getDouble("moonAge");
-        this.holiday = doc.getBoolean("holiday");
-    }
-
-    /**
-     * Create Document from DTO
-     *
-     * @return
-     */
-    public Document getCalendar() {
-        return new Document("season", this.season)
-                .append("month", this.month)
-                .append("week", this.week)
-                .append("day", this.day)
-                .append("hour", this.hour)
-                .append("dayOfWeek", this.dayOfWeek)
-                .append("julianDate", this.julianDate)
-                .append("moonAge", this.moonAge)
-                .append("holiday", this.holiday);
     }
 
     /**
@@ -209,7 +178,42 @@ public class CalendarDTO {
     public boolean isHoliday() {
         return holiday;
     }
-    
-    
 
+    public void setSeason(String season) {
+        this.season = season;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public void setWeek(int week) {
+        this.week = week;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public void setDayOfWeek(int dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
+    public void setJulianDate(int julianDate) {
+        this.julianDate = julianDate;
+    }
+
+    public void setMoonAge(double moonAge) {
+        this.moonAge = moonAge;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public void setHoliday(boolean holiday) {
+        this.holiday = holiday;
+    }
+
+    
 }

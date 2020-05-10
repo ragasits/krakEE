@@ -7,61 +7,60 @@ package krakee.calc;
 
 import java.math.BigDecimal;
 import krakee.Common;
-import org.bson.Document;
-import org.bson.types.Decimal128;
 
 /**
  * DTO for deltas
+ *
  * @author rgt
  */
 public class DeltaDTO {
 
     private boolean calcDelta;
 
-    private final Integer deltaCount;
-    private final Integer deltaCountBuy;
-    private final Integer deltaCountSell;
-    private final BigDecimal deltaOpen;
-    private final BigDecimal deltaLow;
-    private final BigDecimal deltaHigh;
-    private final BigDecimal deltaClose;
-    private final BigDecimal deltaTotal;
-    private final BigDecimal deltaTotalBuy;
-    private final BigDecimal deltaTotalSell;
-    private final BigDecimal deltaVolume;
-    private final BigDecimal deltaVolumeBuy;
-    private final BigDecimal deltaVolumeSell;
+    private Integer deltaCount;
+    private Integer deltaCountBuy;
+    private Integer deltaCountSell;
+    private BigDecimal deltaOpen;
+    private BigDecimal deltaLow;
+    private BigDecimal deltaHigh;
+    private BigDecimal deltaClose;
+    private BigDecimal deltaTotal;
+    private BigDecimal deltaTotalBuy;
+    private BigDecimal deltaTotalSell;
+    private BigDecimal deltaVolume;
+    private BigDecimal deltaVolumeBuy;
+    private BigDecimal deltaVolumeSell;
     //Trends
-    private final Integer trendOpenUp;
-    private final Integer trendOpenDown;
-    private final Integer trendHighUp;
-    private final Integer trendHighDown;
-    private final Integer trendLowUp;
-    private final Integer trendLowDown;
-    private final Integer trendCloseUp;
-    private final Integer trendCloseDown;
+    private Integer trendOpenUp;
+    private Integer trendOpenDown;
+    private Integer trendHighUp;
+    private Integer trendHighDown;
+    private Integer trendLowUp;
+    private Integer trendLowDown;
+    private Integer trendCloseUp;
+    private Integer trendCloseDown;
 
-    private final Integer trendTotalUp;
-    private final Integer trendTotalBuyUp;
-    private final Integer trendTotalSellUp;
-    private final Integer trendVolumeUp;
-    private final Integer trendVolumeBuyUp;
-    private final Integer trendVolumeSellUp;
+    private Integer trendTotalUp;
+    private Integer trendTotalBuyUp;
+    private Integer trendTotalSellUp;
+    private Integer trendVolumeUp;
+    private Integer trendVolumeBuyUp;
+    private Integer trendVolumeSellUp;
 
-    private final Integer trendTotalDown;
-    private final Integer trendTotalBuyDown;
-    private final Integer trendTotalSellDown;
-    private final Integer trendVolumeDown;
-    private final Integer trendVolumeBuyDown;
-    private final Integer trendVolumeSellDown;
+    private Integer trendTotalDown;
+    private Integer trendTotalBuyDown;
+    private Integer trendTotalSellDown;
+    private Integer trendVolumeDown;
+    private Integer trendVolumeBuyDown;
+    private Integer trendVolumeSellDown;
 
-    private final Integer trendCountUp;
-    private final Integer trendCountBuyUp;
-    private final Integer trendCountSellUp;
+    private Integer trendCountUp;
+    private Integer trendCountBuyUp;
+    private Integer trendCountSellUp;
 
-    private final Integer trendCountDown;
-    private final Integer trendCountBuyDown;
-    private final Integer trendCountSellDown;
+    private Integer trendCountDown;
+    private Integer trendCountBuyDown;
+    private Integer trendCountSellDown;
 
     public DeltaDTO() {
         this.calcDelta = false;
@@ -109,59 +108,6 @@ public class DeltaDTO {
         this.trendCountDown = 0;
         this.trendCountBuyDown = 0;
         this.trendCountSellDown = 0;
-
-    }
-
-    /**
-     * Create DTO from Document
-     * @param doc 
-     */
-    public DeltaDTO(Document doc) {
-        this.calcDelta = doc.getBoolean("calcDelta");
-        this.deltaCount = doc.getInteger("deltaCount");
-        this.deltaCountBuy = doc.getInteger("deltaCountBuy");
-        this.deltaCountSell = doc.getInteger("deltaCountSell");
-        this.deltaOpen = ((Decimal128) doc.get("deltaOpen")).bigDecimalValue();
-        this.deltaLow = ((Decimal128) doc.get("deltaLow")).bigDecimalValue();
-        this.deltaHigh = ((Decimal128) doc.get("deltaHigh")).bigDecimalValue();
-        this.deltaClose = ((Decimal128) doc.get("deltaClose")).bigDecimalValue();
-        this.deltaTotal = ((Decimal128) doc.get("deltaTotal")).bigDecimalValue();
-        this.deltaTotalBuy = ((Decimal128) doc.get("deltaTotalBuy")).bigDecimalValue();
-        this.deltaTotalSell = ((Decimal128) doc.get("deltaTotalSell")).bigDecimalValue();
-        this.deltaVolume = ((Decimal128) doc.get("deltaVolume")).bigDecimalValue();
-        this.deltaVolumeBuy = ((Decimal128) doc.get("deltaVolumeBuy")).bigDecimalValue();
-        this.deltaVolumeSell = ((Decimal128) doc.get("deltaVolumeSell")).bigDecimalValue();
-
-        this.trendOpenUp = doc.getInteger("trendOpenUp");
-        this.trendOpenDown = doc.getInteger("trendOpenDown");
-        this.trendHighUp = doc.getInteger("trendHighUp");
-        this.trendHighDown = doc.getInteger("trendHighDown");
-        this.trendLowUp = doc.getInteger("trendLowUp");
-        this.trendLowDown = doc.getInteger("trendLowDown");
-        this.trendCloseUp = doc.getInteger("trendCloseUp");
-        this.trendCloseDown = doc.getInteger("trendCloseDown");
-
-        this.trendTotalUp = doc.getInteger("trendTotalUp");
-        this.trendTotalBuyUp = doc.getInteger("trendTotalBuyUp");
-        this.trendTotalSellUp = doc.getInteger("trendTotalSellUp");
-        this.trendVolumeUp = doc.getInteger("trendVolumeUp");
-        this.trendVolumeBuyUp = doc.getInteger("trendVolumeBuyUp");
-        this.trendVolumeSellUp = doc.getInteger("trendVolumeSellUp");
-
-        this.trendTotalDown = doc.getInteger("trendTotalDown");
-        this.trendTotalBuyDown = doc.getInteger("trendTotalBuyDown");
-        this.trendTotalSellDown = doc.getInteger("trendTotalSellDown");
-        this.trendVolumeDown = doc.getInteger("trendVolumeDown");
-        this.trendVolumeBuyDown = doc.getInteger("trendVolumeBuyDown");
-        this.trendVolumeSellDown = doc.getInteger("trendVolumeSellDown");
-
-        this.trendCountUp = doc.getInteger("trendCountUp");
-        this.trendCountBuyUp = doc.getInteger("trendCountBuyUp");
-        this.trendCountSellUp = doc.getInteger("trendCountSellUp");
-
-        this.trendCountDown = doc.getInteger("trendCountDown");
-        this.trendCountBuyDown = doc.getInteger("trendCountBuyDown");
-        this.trendCountSellDown = doc.getInteger("trendCountSellDown");
 
     }
 
@@ -219,55 +165,6 @@ public class DeltaDTO {
         this.trendCountSellDown = Common.calcTrendDown(last.getCountSell(), prev.getCountSell(), prev.getDelta().trendCountSellDown);
     }
 
-
-    /**
-     * Create Document from DTO
-     * @return 
-     */
-    public Document getDelta() {
-        return new Document("calcDelta", this.calcDelta)
-                .append("deltaCount", this.deltaCount)
-                .append("deltaCountBuy", this.deltaCountBuy)
-                .append("deltaCountSell", this.deltaCountSell)
-                .append("deltaOpen", this.deltaOpen)
-                .append("deltaLow", this.deltaLow)
-                .append("deltaHigh", this.deltaHigh)
-                .append("deltaClose", this.deltaClose)
-                .append("deltaTotal", this.deltaTotal)
-                .append("deltaTotalBuy", this.deltaTotalBuy)
-                .append("deltaTotalSell", this.deltaTotalSell)
-                .append("deltaVolume", this.deltaVolume)
-                .append("deltaVolumeBuy", this.deltaVolumeBuy)
-                .append("deltaVolumeSell", this.deltaVolumeSell)
-                .append("trendOpenUp", this.trendOpenUp)
-                .append("trendOpenDown", this.trendOpenDown)
-                .append("trendLowUp", this.trendLowUp)
-                .append("trendLowDown", this.trendLowDown)
-                .append("trendHighUp", this.trendHighUp)
-                .append("trendHighDown", this.trendHighDown)
-                .append("trendCloseUp", this.trendCloseUp)
-                .append("trendCloseDown", this.trendCloseDown)
-                .append("trendTotalUp", this.trendTotalUp)
-                .append("trendTotalBuyUp", this.trendTotalBuyUp)
-                .append("trendTotalSellUp", this.trendTotalSellUp)
-                .append("trendVolumeUp", this.trendVolumeUp)
-                .append("trendVolumeBuyUp", this.trendVolumeBuyUp)
-                .append("trendVolumeSellUp", this.trendVolumeSellUp)
-                .append("trendTotalDown", this.trendTotalDown)
-                .append("trendTotalBuyDown", this.trendTotalBuyDown)
-                .append("trendTotalSellDown", this.trendTotalSellDown)
-                .append("trendVolumeDown", this.trendVolumeDown)
-                .append("trendVolumeBuyDown", this.trendVolumeBuyDown)
-                .append("trendVolumeSellDown", this.trendVolumeSellDown)
-                .append("trendCountUp", this.trendCountUp)
-                .append("trendCountBuyUp", this.trendCountBuyUp)
-                .append("trendCountSellUp", this.trendCountSellUp)
-                .append("trendCountDown", this.trendCountDown)
-                .append("trendCountBuyDown", this.trendCountBuyDown)
-                .append("trendCountSellDown", this.trendCountSellDown);
-
-    }
-
     public boolean isCalcDelta() {
         return calcDelta;
     }
@@ -275,7 +172,7 @@ public class DeltaDTO {
     public void setCalcDelta(boolean calcDelta) {
         this.calcDelta = calcDelta;
     }
-    
+
     public Integer getDeltaCount() {
         return deltaCount;
     }
@@ -432,4 +329,161 @@ public class DeltaDTO {
         return trendCountSellDown;
     }
 
+    public void setDeltaCount(Integer deltaCount) {
+        this.deltaCount = deltaCount;
+    }
+
+    public void setDeltaCountBuy(Integer deltaCountBuy) {
+        this.deltaCountBuy = deltaCountBuy;
+    }
+
+    public void setDeltaCountSell(Integer deltaCountSell) {
+        this.deltaCountSell = deltaCountSell;
+    }
+
+    public void setDeltaOpen(BigDecimal deltaOpen) {
+        this.deltaOpen = deltaOpen;
+    }
+
+    public void setDeltaLow(BigDecimal deltaLow) {
+        this.deltaLow = deltaLow;
+    }
+
+    public void setDeltaHigh(BigDecimal deltaHigh) {
+        this.deltaHigh = deltaHigh;
+    }
+
+    public void setDeltaClose(BigDecimal deltaClose) {
+        this.deltaClose = deltaClose;
+    }
+
+    public void setDeltaTotal(BigDecimal deltaTotal) {
+        this.deltaTotal = deltaTotal;
+    }
+
+    public void setDeltaTotalBuy(BigDecimal deltaTotalBuy) {
+        this.deltaTotalBuy = deltaTotalBuy;
+    }
+
+    public void setDeltaTotalSell(BigDecimal deltaTotalSell) {
+        this.deltaTotalSell = deltaTotalSell;
+    }
+
+    public void setDeltaVolume(BigDecimal deltaVolume) {
+        this.deltaVolume = deltaVolume;
+    }
+
+    public void setDeltaVolumeBuy(BigDecimal deltaVolumeBuy) {
+        this.deltaVolumeBuy = deltaVolumeBuy;
+    }
+
+    public void setDeltaVolumeSell(BigDecimal deltaVolumeSell) {
+        this.deltaVolumeSell = deltaVolumeSell;
+    }
+
+    public void setTrendOpenUp(Integer trendOpenUp) {
+        this.trendOpenUp = trendOpenUp;
+    }
+
+    public void setTrendOpenDown(Integer trendOpenDown) {
+        this.trendOpenDown = trendOpenDown;
+    }
+
+    public void setTrendHighUp(Integer trendHighUp) {
+        this.trendHighUp = trendHighUp;
+    }
+
+    public void setTrendHighDown(Integer trendHighDown) {
+        this.trendHighDown = trendHighDown;
+    }
+
+    public void setTrendLowUp(Integer trendLowUp) {
+        this.trendLowUp = trendLowUp;
+    }
+
+    public void setTrendLowDown(Integer trendLowDown) {
+        this.trendLowDown = trendLowDown;
+    }
+
+    public void setTrendCloseUp(Integer trendCloseUp) {
+        this.trendCloseUp = trendCloseUp;
+    }
+
+    public void setTrendCloseDown(Integer trendCloseDown) {
+        this.trendCloseDown = trendCloseDown;
+    }
+
+    public void setTrendTotalUp(Integer trendTotalUp) {
+        this.trendTotalUp = trendTotalUp;
+    }
+
+    public void setTrendTotalBuyUp(Integer trendTotalBuyUp) {
+        this.trendTotalBuyUp = trendTotalBuyUp;
+    }
+
+    public void setTrendTotalSellUp(Integer trendTotalSellUp) {
+        this.trendTotalSellUp = trendTotalSellUp;
+    }
+
+    public void setTrendVolumeUp(Integer trendVolumeUp) {
+        this.trendVolumeUp = trendVolumeUp;
+    }
+
+    public void setTrendVolumeBuyUp(Integer trendVolumeBuyUp) {
+        this.trendVolumeBuyUp = trendVolumeBuyUp;
+    }
+
+    public void setTrendVolumeSellUp(Integer trendVolumeSellUp) {
+        this.trendVolumeSellUp = trendVolumeSellUp;
+    }
+
+    public void setTrendTotalDown(Integer trendTotalDown) {
+        this.trendTotalDown = trendTotalDown;
+    }
+
+    public void setTrendTotalBuyDown(Integer trendTotalBuyDown) {
+        this.trendTotalBuyDown = trendTotalBuyDown;
+    }
+
+    public void setTrendTotalSellDown(Integer trendTotalSellDown) {
+        this.trendTotalSellDown = trendTotalSellDown;
+    }
+
+    public void setTrendVolumeDown(Integer trendVolumeDown) {
+        this.trendVolumeDown = trendVolumeDown;
+    }
+
+    public void setTrendVolumeBuyDown(Integer trendVolumeBuyDown) {
+        this.trendVolumeBuyDown = trendVolumeBuyDown;
+    }
+
+    public void setTrendVolumeSellDown(Integer trendVolumeSellDown) {
+        this.trendVolumeSellDown = trendVolumeSellDown;
+    }
+
+    public void setTrendCountUp(Integer trendCountUp) {
+        this.trendCountUp = trendCountUp;
+    }
+
+    public void setTrendCountBuyUp(Integer trendCountBuyUp) {
+        this.trendCountBuyUp = trendCountBuyUp;
+    }
+
+    public void setTrendCountSellUp(Integer trendCountSellUp) {
+        this.trendCountSellUp = trendCountSellUp;
+    }
+
+    public void setTrendCountDown(Integer trendCountDown) {
+        this.trendCountDown = trendCountDown;
+    }
+
+    public void setTrendCountBuyDown(Integer trendCountBuyDown) {
+        this.trendCountBuyDown = trendCountBuyDown;
+    }
+
+    public void setTrendCountSellDown(Integer trendCountSellDown) {
+        this.trendCountSellDown = trendCountSellDown;
+    }
+
+ 
 }

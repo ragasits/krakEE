@@ -81,29 +81,22 @@ public class ProfitEJB {
      */
     private List<CandleDTO> getLastXCandles(int last) {
         CandleDTO candle;
-        List<CandleDTO> candleList = new ArrayList<>();
 
         //Get first startDate
-        Date first = config.getCandleColl()
+        CandleDTO dto = config.getCandleColl()
                 .find(eq("calcCandle", true))
                 .sort(Sorts.descending("startDate"))
                 .limit(last)
                 .skip(last - 1)
-                .first()
-                .getDate("startDate");
+                .first();        
+        
+        Date first = dto.getStartDate();
 
         //Get candles from first startDate
-        MongoCursor<Document> cursor = config.getCandleColl()
+        return config.getCandleColl()
                 .find(gte("startDate", first))
                 .sort(Sorts.ascending("startDate"))
-                .iterator();
-
-        while (cursor.hasNext()) {
-            candle = new CandleDTO(cursor.next());
-            candleList.add(candle);
-        }
-
-        return candleList;
+                .into(new ArrayList<>());
     }
 
     public ProfitDTO getMaxTest() {

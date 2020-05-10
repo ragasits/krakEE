@@ -13,6 +13,7 @@ import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import krakee.calc.CandleDTO;
 import krakee.profit.ProfitDTO;
 import org.bson.Document;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -68,7 +69,7 @@ public class ConfigEJB {
     private MongoClient client;
     private MongoDatabase database;
     private MongoCollection<Document> tradePairColl;
-    private MongoCollection<Document> candleColl;
+    private MongoCollection<CandleDTO> candleColl;
     private MongoCollection<ProfitDTO> profitColl;
 
     /**
@@ -97,7 +98,7 @@ public class ConfigEJB {
             this.tradePairColl.createIndex(Indexes.ascending("timeDate"));
         }
 
-        this.candleColl = this.database.getCollection("candle");
+        this.candleColl = this.database.getCollection("candle",CandleDTO.class);
         if (!this.isIndex(candleColl, "startDate_1")) {
             this.candleColl.createIndex(Indexes.ascending("startDate"), new IndexOptions().unique(true));
         }
@@ -148,7 +149,7 @@ public class ConfigEJB {
         return tradePairColl;
     }
 
-    public MongoCollection<Document> getCandleColl() {
+    public MongoCollection<CandleDTO> getCandleColl() {
         return candleColl;
     }
 

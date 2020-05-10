@@ -3,8 +3,6 @@ package krakee.calc;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
-import org.bson.Document;
-import org.bson.types.Decimal128;
 import org.bson.types.ObjectId;
 
 /**
@@ -14,8 +12,8 @@ import org.bson.types.ObjectId;
  */
 public class CandleDTO {
 
-    private final ObjectId id;
-    private final Date startDate;
+    private ObjectId id;
+    private Date startDate;
     private Integer count;
     private Integer countBuy;
     private Integer countSell;
@@ -34,6 +32,9 @@ public class CandleDTO {
     private DeltaDTO delta;
     private BollingerDTO bollinger;
     private CalendarDTO calendar;
+
+    public CandleDTO() {
+    }
 
     public CandleDTO(Date candleDate) {
         this.id = null;
@@ -59,59 +60,6 @@ public class CandleDTO {
     }
 
     /**
-     * Create DTO from Document
-     * @param doc 
-     */
-    public CandleDTO(Document doc) {
-        this.id = doc.getObjectId("_id");
-        this.startDate = doc.getDate("startDate");
-        this.count = doc.getInteger("count");
-        this.countBuy = doc.getInteger("countBuy");
-        this.countSell = doc.getInteger("countSell");
-        this.open = ((Decimal128) doc.get("open")).bigDecimalValue();
-        this.low = ((Decimal128) doc.get("low")).bigDecimalValue();
-        this.high = ((Decimal128) doc.get("high")).bigDecimalValue();
-        this.close = ((Decimal128) doc.get("close")).bigDecimalValue();
-        this.total = ((Decimal128) doc.get("total")).bigDecimalValue();
-        this.totalBuy = ((Decimal128) doc.get("totalBuy")).bigDecimalValue();
-        this.totalSell = ((Decimal128) doc.get("totalSell")).bigDecimalValue();
-        this.volume = ((Decimal128) doc.get("volume")).bigDecimalValue();
-        this.volumeBuy = ((Decimal128) doc.get("volumeBuy")).bigDecimalValue();
-        this.volumeSell = ((Decimal128) doc.get("volumeSell")).bigDecimalValue();
-        this.calcCandle = doc.getBoolean("calcCandle");
-
-        this.delta = new DeltaDTO((Document) doc.get("delta"));
-        this.bollinger = new BollingerDTO((Document) doc.get("bollinger"));
-        this.calendar = new CalendarDTO((Document) doc.get("calendar"));
-    }
-
-    /**
-     * Create Document from DTO
-     * @return 
-     */
-    public Document getCandle() {
-        return new Document("startDate", this.startDate)
-                .append("count", this.count)
-                .append("countBuy", this.countBuy)
-                .append("countSell", this.countSell)
-                .append("open", this.open)
-                .append("low", this.low)
-                .append("high", this.high)
-                .append("close", this.close)
-                .append("total", this.total)
-                .append("totalBuy", this.totalBuy)
-                .append("totalSell", this.totalSell)
-                .append("volume", this.volume)
-                .append("volumeBuy", this.volumeBuy)
-                .append("volumeSell", this.volumeSell)
-                .append("calcCandle", this.calcCandle)
-                .append("delta", this.delta.getDelta())
-                .append("bollinger", this.bollinger.getBollinger())
-                .append("calendar", this.calendar.getCalendar());
-        
-    }
-
-    /**
      * Calculate stop Date candleDate + 30 minute
      *
      * @return
@@ -125,19 +73,25 @@ public class CandleDTO {
 
     /**
      * Show OHLC values
-     * @return 
+     *
+     * @return
      */
     public String getOHLCtMsg() {
         return "O:" + this.open + " H:" + this.high + " L:" + this.low + " C:" + this.close;
     }
 
     public String getIdHexa() {
-        return this.id.toHexString();
+        if (this.id != null) {
+            return this.id.toHexString();
+        }
+        return null;
     }
 
     public Date getStartDate() {
-        //return startDate;
-        return (Date) startDate.clone();
+        if (this.startDate != null) {
+            return (Date) startDate.clone();
+        }
+        return null;
     }
 
     public Integer getCount() {
@@ -281,6 +235,18 @@ public class CandleDTO {
         return calendar;
     }
 
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setCalendar(CalendarDTO calendar) {
+        this.calendar = calendar;
+    }
     
     
+
 }

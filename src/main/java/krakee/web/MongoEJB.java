@@ -44,14 +44,12 @@ public class MongoEJB {
     public List<String> chkCandleTradeCount() {
         List<String> list = new ArrayList<>();
         //Get candles
-        MongoCursor<Document> candles = config.getCandleColl()
+        List<CandleDTO> candleList = config.getCandleColl()
                 .find()
-                .iterator();
-
-        while (candles.hasNext()) {
-            CandleDTO dto = new CandleDTO(candles.next());
-
-            //Count trades    
+                .into(new ArrayList<>());
+        
+        for (CandleDTO dto : candleList) {
+           //Count trades    
             Document trade = config.getTradePairColl().aggregate(
                     Arrays.asList(
                             Aggregates.match(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate()))),
@@ -69,8 +67,9 @@ public class MongoEJB {
                 if (cnt == null || !cnt.equals(dto.getCount())) {
                     list.add(dto.getStartDate().toString() + " " + cnt + "," + dto.getCount());
                 }
-            }
+            } 
         }
+
         return list;
     }
 
@@ -100,10 +99,10 @@ public class MongoEJB {
         while (firstDate.before(lastDate)) {
             i++;
             //Seek date
-            Document doc = config.getCandleColl()
+            CandleDTO dto = config.getCandleColl()
                     .find(eq("startDate", firstDate))
                     .first();
-            if (doc == null) {
+            if (dto == null) {
                 list.add(firstDate);
             }
 
@@ -173,19 +172,11 @@ public class MongoEJB {
      * @return
      */
     public List<CandleDTO> getLastCandles(int limit) {
-        MongoCursor<Document> cursor = config.getCandleColl()
+        return config.getCandleColl()
                 .find()
                 .sort(Sorts.descending("startDate"))
                 .limit(limit)
-                .iterator();
-
-        List<CandleDTO> list = new ArrayList<>();
-        while (cursor.hasNext()) {
-            CandleDTO dto = new CandleDTO(cursor.next());
-            list.add(dto);
-        }
-
-        return list;
+                .into(new ArrayList<CandleDTO>());
     }
 
     /**
@@ -195,11 +186,12 @@ public class MongoEJB {
      */
     public Date getLatesDateFromCandle() {
         try {
-            return config.getCandleColl()
+            CandleDTO dto = config.getCandleColl()
                     .find()
                     .sort(Sorts.descending("startDate"))
-                    .first()
-                    .getDate("startDate");
+                    .first();
+            
+            return dto.getStartDate();
         } catch (NullPointerException e) {
             return null;
         }
@@ -212,11 +204,12 @@ public class MongoEJB {
      */
     public Date getFirstDateFromCandle() {
         try {
-            return config.getCandleColl()
+            CandleDTO dto = config.getCandleColl()
                     .find()
                     .sort(Sorts.ascending("startDate"))
-                    .first()
-                    .getDate("startDate");
+                    .first();
+            
+            return dto.getStartDate();
         } catch (NullPointerException e) {
             return null;
         }
@@ -234,17 +227,11 @@ public class MongoEJB {
         cal.add(Calendar.DAY_OF_YEAR, 1);
         Date stopDate = cal.getTime();
 
-        MongoCursor<Document> cursor = config.getCandleColl()
+        return config.getCandleColl()
                 .find(and(gte("startDate", startDate), lt("startDate", stopDate)))
                 .sort(Sorts.ascending("startDate"))
-                .iterator();
+                .into(new ArrayList<>());
 
-        List<CandleDTO> list = new ArrayList<>();
-        while (cursor.hasNext()) {
-            CandleDTO dto = new CandleDTO(cursor.next());
-            list.add(dto);
-        }
-        return list;
     }
 
     /**
@@ -254,10 +241,9 @@ public class MongoEJB {
      * @return
      */
     public CandleDTO getCandle(Date startDate) {
-        Document doc = config.getCandleColl()
+        return config.getCandleColl()
                 .find(eq("startDate", startDate))
                 .first();
-        return new CandleDTO(doc);
     }
 
     /**
@@ -267,10 +253,9 @@ public class MongoEJB {
      * @return
      */
     public CandleDTO getCandle(ObjectId id) {
-        Document doc = config.getCandleColl()
+        return config.getCandleColl()
                 .find(eq("_id", id))
                 .first();
-        return new CandleDTO(doc);
     }
 
     /**
@@ -281,17 +266,15 @@ public class MongoEJB {
      * @return
      */
     public List<Date> getCandleChartFromCandleDates(Date startDate, Date stopDate) {
-        MongoCursor<Document> cursor = config.getCandleColl()
+        List<CandleDTO> dtoList = config.getCandleColl()
                 .find(and(gte("startDate", startDate), lte("startDate", stopDate)))
                 .sort(Sorts.descending("startDate"))
-                .iterator();
+                .into(new ArrayList<CandleDTO>());
 
         List<Date> list = new ArrayList<>();
-        while (cursor.hasNext()) {
-
-            list.add(cursor.next().getDate("startDate"));
-        }
-
+        for (CandleDTO dto : dtoList) {
+            list.add(dto.getStartDate())
+;        }
         return list;
     }
 }
