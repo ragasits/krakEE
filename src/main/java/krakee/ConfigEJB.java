@@ -14,6 +14,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 import krakee.calc.CandleDTO;
+import krakee.get.TradePairDTO;
 import krakee.profit.ProfitDTO;
 import org.bson.Document;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -68,7 +69,7 @@ public class ConfigEJB {
 
     private MongoClient client;
     private MongoDatabase database;
-    private MongoCollection<Document> tradePairColl;
+    private MongoCollection<TradePairDTO> tradePairColl;
     private MongoCollection<CandleDTO> candleColl;
     private MongoCollection<ProfitDTO> profitColl;
 
@@ -90,7 +91,7 @@ public class ConfigEJB {
         this.client = MongoClients.create();
         this.database = this.client.getDatabase("krakEE").withCodecRegistry(pojoCodecRegistry);
 
-        this.tradePairColl = this.database.getCollection("tradepair");
+        this.tradePairColl = this.database.getCollection("tradepair", TradePairDTO.class);
         if (!this.isIndex(tradePairColl, "last_-1")) {
             this.tradePairColl.createIndex(Indexes.descending("last"));
         }
@@ -145,7 +146,7 @@ public class ConfigEJB {
         return "ConfigEJB{" + "krakenURL=" + krakenURL + ", proxyEnabled=" + proxyEnabled + ", proxyHostname=" + proxyHostname + ", proxyPort=" + proxyPort + ", defaultTimerDuration=" + defaultTimerDuration + ", runTrade=" + runTrade + ", runCandle=" + runCandle + '}';
     }
 
-    public MongoCollection<Document> getTradePairColl() {
+    public MongoCollection<TradePairDTO> getTradePairColl() {
         return tradePairColl;
     }
 

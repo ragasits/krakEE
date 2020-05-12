@@ -28,7 +28,6 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
 import krakee.ConfigEJB;
 import krakee.MyException;
-import org.bson.Document;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 /**
@@ -56,11 +55,11 @@ public class TradeEJB {
 
         //Get last value from Mongo
         String last = "0";
-        Document document = config.getTradePairColl().find()
+        TradePairDTO lastDto = config.getTradePairColl().find()
                 .sort(Sorts.descending("last"))
                 .first();
-        if (document != null) {
-            last = new TradePairDTO(document).getLast();
+        if (lastDto != null) {
+            last = lastDto.getLast();
         }
 
         try {
@@ -70,7 +69,7 @@ public class TradeEJB {
 
             //Insert TradePairs to Mongo
             for (TradePairDTO dto : pairList) {
-                config.getTradePairColl().insertOne(dto.getTradepair());
+                config.getTradePairColl().insertOne(dto);
             }
 
             LOGGER.log(Level.INFO, "Trade Fired .... " + this.pairTradeSize + " " + pairList.get(0).getLastDate());

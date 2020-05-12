@@ -1,7 +1,6 @@
-+ Candle: Use POJO (Entity) with Mongodb 
++ Trade: Use POJO (Entity) with Mongodb 
 
 - Candle: delete oHLCtMsg field
-- Candle: Use POJO (Entity) with Mongodb 
 - chk: Bollinger trade position
 - Generate learning data (Looking for the best profit) + Save it in the candle
 - Save Profit sample start stop dates
@@ -22,7 +21,6 @@ Future:
 
 Optional:
 ---------
-- Use POJO (Entity) with Mongodb (Next JakartaEE? )
 - Code review findbugs or sonar
 - EJB timeout exception - Move to Bath processing?
 - Metrics: Prometheus + Grafana

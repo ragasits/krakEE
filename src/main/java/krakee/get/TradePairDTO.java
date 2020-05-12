@@ -2,8 +2,6 @@ package krakee.get;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import org.bson.Document;
-import org.bson.types.Decimal128;
 
 /**
  * DTO for Kraken trade pairs
@@ -12,16 +10,19 @@ import org.bson.types.Decimal128;
  */
 public class TradePairDTO {
 
-    private final BigDecimal price;
-    private final BigDecimal volume;
-    private final BigDecimal time;
-    private final String buySel;
-    private final String marketLimit;
-    private final String miscellaneous;
+    private BigDecimal price;
+    private BigDecimal volume;
+    private BigDecimal time;
+    private String buySel;
+    private String marketLimit;
+    private String miscellaneous;
 
-    private final String error;
-    private final String last;
-    private final String pair;
+    private String error;
+    private String last;
+    private String pair;
+
+    public TradePairDTO() {
+    }
 
     public TradePairDTO(BigDecimal price, BigDecimal volume, BigDecimal time, String buySel, String marketLimit, String miscellaneous, String error, String last, String pair) {
         this.price = price;
@@ -33,23 +34,6 @@ public class TradePairDTO {
         this.error = error;
         this.last = last;
         this.pair = pair;
-    }
-
-    /**
-     * Create object from Mongo Document
-     * @param doc 
-     */
-    public TradePairDTO(Document doc) {
-        this.price = ((Decimal128)doc.get("price")).bigDecimalValue();
-        this.volume = ((Decimal128)doc.get("volume")).bigDecimalValue();
-        this.time = ((Decimal128)doc.get("time")).bigDecimalValue();
-
-        this.buySel = doc.getString("buySel");
-        this.marketLimit = doc.getString("marketLimit");
-        this.miscellaneous = doc.getString("miscellaneous");
-        this.error = doc.getString("error");
-        this.last = doc.getString("last");
-        this.pair = doc.getString("pair");
     }
 
     /**
@@ -76,29 +60,11 @@ public class TradePairDTO {
     }
 
     /**
-     * Create Mongo document
+     * calculate total value
      *
      * @return
      */
-    public Document getTradepair() {
-        return new Document("time", this.time)
-                .append("pair", this.pair)
-                .append("timeDate", this.getTimeDate())
-                .append("price", this.price)
-                .append("volume", this.volume)
-                .append("buySel", this.buySel)
-                .append("marketLimit", this.marketLimit)
-                .append("miscellaneous", this.miscellaneous)
-                .append("error", this.error)
-                .append("last", this.last)
-                .append("lastDate", this.getLastDate());
-    }
-    
-    /**
-     * calculate total value
-     * @return 
-     */
-    public BigDecimal getTotal(){
+    public BigDecimal getTotal() {
         return this.price.multiply(this.volume);
     }
 
@@ -126,4 +92,43 @@ public class TradePairDTO {
     public String toString() {
         return "TradePairDTO{" + "price=" + price + ", volume=" + volume + ", time=" + time + ", buySel=" + buySel + ", marketLimit=" + marketLimit + ", miscellaneous=" + miscellaneous + ", error=" + error + ", last=" + last + ", pair=" + pair + '}';
     }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setVolume(BigDecimal volume) {
+        this.volume = volume;
+    }
+
+    public void setTime(BigDecimal time) {
+        this.time = time;
+    }
+
+    public void setBuySel(String buySel) {
+        this.buySel = buySel;
+    }
+
+    public void setMarketLimit(String marketLimit) {
+        this.marketLimit = marketLimit;
+    }
+
+    public void setMiscellaneous(String miscellaneous) {
+        this.miscellaneous = miscellaneous;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public void setLast(String last) {
+        this.last = last;
+    }
+
+    public void setPair(String pair) {
+        this.pair = pair;
+    }
+    
+    
+
 }

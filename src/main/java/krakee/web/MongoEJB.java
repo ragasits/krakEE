@@ -1,5 +1,6 @@
 package krakee.web;
 
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -26,6 +27,7 @@ import org.bson.types.ObjectId;
 
 /**
  * Common Mongo queries for JSF Beans
+ *
  * @author rgt
  */
 @Stateless
@@ -36,7 +38,7 @@ public class MongoEJB {
     @EJB
     CandleEJB candle;
 
-    /**
+     /**
      * Check Candle consistency II. Count trades
      *
      * @return
@@ -54,7 +56,7 @@ public class MongoEJB {
                     Arrays.asList(
                             Aggregates.match(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate()))),
                             Aggregates.group("pair", Accumulators.sum("count", 1))
-                    )
+                    ), Document.class
             ).first();
 
             //Check
@@ -73,6 +75,7 @@ public class MongoEJB {
         return list;
     }
 
+
     /**
      * Check Candle consistency I. Seek missing dates
      *
@@ -81,28 +84,30 @@ public class MongoEJB {
     public List<Date> chkCandleDates() {
         Calendar cal = Calendar.getInstance();
         List<Date> list = new ArrayList<>();
+        TradePairDTO dto;
 
         //get first trade date
-        Date firstDate = config.getTradePairColl()
+        dto = config.getTradePairColl()
                 .find()
                 .sort(Sorts.ascending("timeDate"))
-                .first().get("timeDate", Date.class);
-        firstDate = candle.calcCandel30Min(firstDate);
+                .first();
+        Date firstDate = candle.calcCandel30Min(dto.getTimeDate());
 
         //Get last trade date
-        Date lastDate = config.getTradePairColl()
+        dto = config.getTradePairColl()
                 .find()
                 .sort(Sorts.descending("timeDate"))
-                .first().get("timeDate", Date.class);
+                .first();
+        Date lastDate = dto.getTimeDate();
 
         int i = 0;
         while (firstDate.before(lastDate)) {
             i++;
             //Seek date
-            CandleDTO dto = config.getCandleColl()
+            CandleDTO candleDto = config.getCandleColl()
                     .find(eq("startDate", firstDate))
                     .first();
-            if (dto == null) {
+            if (candleDto == null) {
                 list.add(firstDate);
             }
 
@@ -126,7 +131,7 @@ public class MongoEJB {
         MongoCursor<Document> cursor = config.getTradePairColl().aggregate(
                 Arrays.asList(
                         Aggregates.group("$last", Accumulators.max("max", "$time"))
-                )
+                ), Document.class
         ).cursor();
 
         List<String> list = new ArrayList();
@@ -150,19 +155,11 @@ public class MongoEJB {
      * @return
      */
     public List<TradePairDTO> getLastTrades(int limit) {
-        MongoCursor<Document> cursor = config.getTradePairColl()
+        return config.getTradePairColl()
                 .find()
                 .sort(Sorts.descending("timeDate"))
                 .limit(limit)
-                .iterator();
-
-        List<TradePairDTO> list = new ArrayList<>();
-        while (cursor.hasNext()) {
-            TradePairDTO dto = new TradePairDTO(cursor.next());
-            list.add(dto);
-        }
-
-        return list;
+                .into(new ArrayList<>());
     }
 
     /**
@@ -190,7 +187,7 @@ public class MongoEJB {
                     .find()
                     .sort(Sorts.descending("startDate"))
                     .first();
-            
+
             return dto.getStartDate();
         } catch (NullPointerException e) {
             return null;
@@ -208,7 +205,7 @@ public class MongoEJB {
                     .find()
                     .sort(Sorts.ascending("startDate"))
                     .first();
-            
+
             return dto.getStartDate();
         } catch (NullPointerException e) {
             return null;
@@ -273,8 +270,8 @@ public class MongoEJB {
 
         List<Date> list = new ArrayList<>();
         for (CandleDTO dto : dtoList) {
-            list.add(dto.getStartDate())
-;        }
+            list.add(dto.getStartDate());
+        }
         return list;
     }
 }

@@ -59,26 +59,24 @@ public class CandleEJB {
      * Set the last Candle calcCandle value to false (Incremental running)
      */
     private void setLastCandleCalcToFalse() {
-        Document doc;
-        
+
         //Get last startDate from Candle
-        CandleDTO candle  = config.getCandleColl()
+        CandleDTO candle = config.getCandleColl()
                 .find()
                 .sort(Sorts.descending("startDate"))
                 .first();
-        if (candle  == null || candle.getStartDate()==null) {
+        if (candle == null || candle.getStartDate() == null) {
             return;
         }
 
         //Get last date from TradePair
-        doc = config.getTradePairColl()
+        TradePairDTO trade = config.getTradePairColl()
                 .find()
                 .sort(Sorts.descending("timeDate"))
                 .first();
-        if (doc == null) {
+        if (trade == null) {
             return;
         }
-        TradePairDTO trade = new TradePairDTO(doc);
 
         //If the tradePair is newer then Candle - Reset
         if (trade.getTimeDate().after(candle.getStartDate())) {
@@ -118,12 +116,12 @@ public class CandleEJB {
      * @param dto
      */
     private void calcCandleItem(CandleDTO dto) {
-        Document doc;
+        TradePairDTO trade;
 
-        FindIterable<Document> result = config.getTradePairColl()
+        FindIterable<TradePairDTO> result = config.getTradePairColl()
                 .find(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate())))
                 .sort(Sorts.ascending("timeDate"));
-        MongoCursor<Document> cursor = result.iterator();
+        MongoCursor<TradePairDTO> cursor = result.iterator();
 
         Integer count = 0;
         Integer countBuy = 0;
@@ -135,28 +133,28 @@ public class CandleEJB {
         BigDecimal volumeBuy = BigDecimal.ZERO;
         BigDecimal volumeSell = BigDecimal.ZERO;
 
-        doc = result.sort(Sorts.ascending("timeDate")).first();
-        if (doc != null) {
-            dto.setOpen(((Decimal128) doc.get("price")).bigDecimalValue());
+        trade = result.sort(Sorts.ascending("timeDate")).first();
+        if (trade != null) {
+             dto.setOpen(trade.getPrice());
         }
 
-        doc = result.sort(Sorts.descending("timeDate")).first();
-        if (doc != null) {
-            dto.setClose(((Decimal128) doc.get("price")).bigDecimalValue());
+        trade = result.sort(Sorts.descending("timeDate")).first();
+        if (trade != null) {
+            dto.setClose(trade.getPrice());
         }
 
-        doc = result.sort(Sorts.ascending("price")).first();
-        if (doc != null) {
-            dto.setLow(((Decimal128) doc.get("price")).bigDecimalValue());
+        trade = result.sort(Sorts.ascending("price")).first();
+        if (trade != null) {
+            dto.setLow(trade.getPrice());
         }
 
-        doc = result.sort(Sorts.descending("price")).first();
-        if (doc != null) {
-            dto.setHigh(((Decimal128) doc.get("price")).bigDecimalValue());
+        trade = result.sort(Sorts.descending("price")).first();
+        if (trade != null) {
+            dto.setHigh(trade.getPrice());
         }
 
         while (cursor.hasNext()) {
-            TradePairDTO trade = new TradePairDTO(cursor.next());
+            trade = cursor.next();
             count++;
             total = total.add(trade.getTotal());
             volume = volume.add(trade.getVolume());
@@ -195,16 +193,17 @@ public class CandleEJB {
         Date startDate = this.getStartDate();
 
         //Stopdate
-        Date stopDate = config.getTradePairColl().find()
+        TradePairDTO dto = config.getTradePairColl().find()
                 .sort(Sorts.descending("timeDate"))
-                .first().get("timeDate", Date.class);
+                .first();
+
+        Date stopDate = dto.getTimeDate();
 
         //Store dates
         while (startDate.before(stopDate)) {
             LOGGER.log(Level.INFO, "calcDateList " + startDate + "-" + stopDate);
 
-            CandleDTO dto = new CandleDTO(startDate);
-            config.getCandleColl().insertOne(dto);
+            config.getCandleColl().insertOne(new CandleDTO(startDate));
             cal.setTime(startDate);
             cal.add(Calendar.MINUTE, 30);
             startDate = cal.getTime();
@@ -233,10 +232,10 @@ public class CandleEJB {
             startDate = cal.getTime();
 
         } else {
-            startDate = config.getTradePairColl().find()
+            TradePairDTO dto = config.getTradePairColl().find()
                     .sort(Sorts.ascending("timeDate"))
-                    .first()
-                    .getDate("timeDate");
+                    .first();
+            startDate = dto.getTimeDate();
         }
         return calcCandel30Min(startDate);
     }
