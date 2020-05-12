@@ -1,4 +1,4 @@
-+ Trade: Use POJO (Entity) with Mongodb 
++ BUG: NoSuchMethodError: com.mongodb.client.MongoCollection.insertMany(Ljava/util/List;)Lcom/mongodb/client/result/InsertManyResult;
 
 - Candle: delete oHLCtMsg field
 - chk: Bollinger trade position

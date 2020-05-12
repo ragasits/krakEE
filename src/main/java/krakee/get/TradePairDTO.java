@@ -2,6 +2,7 @@ package krakee.get;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import org.bson.types.ObjectId;
 
 /**
  * DTO for Kraken trade pairs
@@ -10,6 +11,8 @@ import java.util.Date;
  */
 public class TradePairDTO {
 
+    private ObjectId id;
+    
     private BigDecimal price;
     private BigDecimal volume;
     private BigDecimal time;
@@ -127,6 +130,30 @@ public class TradePairDTO {
 
     public void setPair(String pair) {
         this.pair = pair;
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
+
+    public String getMarketLimit() {
+        return marketLimit;
+    }
+
+    public String getMiscellaneous() {
+        return miscellaneous;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public String getPair() {
+        return pair;
     }
     
     

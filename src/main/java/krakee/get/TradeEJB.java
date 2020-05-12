@@ -1,6 +1,7 @@
 package krakee.get;
 
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.result.InsertManyResult;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -68,10 +69,13 @@ public class TradeEJB {
             this.pairTradeSize = pairList.size();
 
             //Insert TradePairs to Mongo
+            /*
             for (TradePairDTO dto : pairList) {
-                config.getTradePairColl().insertOne(dto);
+            config.getTradePairColl().insertOne(dto);
             }
-
+             */
+            InsertManyResult insertMany = config.getTradePairColl().insertMany(pairList);
+  
             LOGGER.log(Level.INFO, "Trade Fired .... " + this.pairTradeSize + " " + pairList.get(0).getLastDate());
             config.setRunTrade(true);
         } catch (MyException ex) {

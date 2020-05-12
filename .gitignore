@@ -4,3 +4,4 @@
 /micro/*.war
 /micro/log
 /micro/payara-micro-5.194.jar
+/micro/root
