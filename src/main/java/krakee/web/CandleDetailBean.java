@@ -12,10 +12,13 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import krakee.calc.CandleDTO;
+import krakee.learn.LearnDTO;
+import krakee.learn.LearnEJB;
 import org.bson.types.ObjectId;
 
 /**
  * JSF bean for one Candle
+ *
  * @author rgt
  */
 @SessionScoped
@@ -26,16 +29,21 @@ public class CandleDetailBean implements Serializable {
 
     @EJB
     MongoEJB mongo;
+    @EJB
+    LearnEJB learn;
 
-    private String selectedIdHexa;
+    private String selectedIdHexa = null;
     private Date selectedDate;
+    private LearnDTO learnDetail = new LearnDTO();
+    private boolean insertLearn = false;
 
     /**
      * get one Candle
-     * @return 
+     *
+     * @return
      */
     public CandleDTO getDetail() {
-        if (this.selectedIdHexa==null || this.selectedIdHexa.isEmpty()){
+        if (this.selectedIdHexa == null || this.selectedIdHexa.isEmpty()) {
             return null;
         }
         return mongo.getCandle(new ObjectId(selectedIdHexa));
@@ -51,7 +59,8 @@ public class CandleDetailBean implements Serializable {
 
     /**
      * Get date related candles
-     * @return 
+     *
+     * @return
      */
     public List<CandleDTO> getCandleList() {
         if (selectedDate != null) {
@@ -60,10 +69,83 @@ public class CandleDetailBean implements Serializable {
         return null;
     }
 
+    
+    /**
+     * Name list for p:autoComplete
+     * @param query
+     * @return 
+     */
+    public List<String> complete(String query) {
+        return learn.getNames();
+    }
+
+    /**
+     * Is the candle exists?
+     * @return 
+     */
+    public boolean isSelectedCandle() {
+        return (this.selectedIdHexa == null || this.selectedIdHexa.isEmpty());
+    }
+
+    /**
+     * Get Candle related learns
+     *
+     * @return
+     */
+    public List<LearnDTO> getLearnList() {
+        if (this.getDetail() != null) {
+            return learn.get(this.getDetail().getId());
+        }
+        return null;
+    }
+
+    public void showLearnDetail(LearnDTO dto) {
+        this.learnDetail = dto;
+    }
+
+    /**
+     * Create a new Learn
+     * @return 
+     */
+    public String onNewLearn() {
+        this.insertLearn = true;
+        this.learnDetail = new LearnDTO();
+        this.learnDetail.setStartDate(selectedDate);
+        this.learnDetail.setCandleId(this.getDetail().getId());
+        return null;
+    }
+
+
+    /**
+     * Save a Learn data
+     */
+    public void onSaveLearn() {
+        if (this.insertLearn) {
+            learn.add(learnDetail);
+        } else {
+            learn.update(learnDetail);
+        }
+    }
+
+    /**
+     * Delete a learn data
+     */
+    public void onDeleteLearn() {
+        learn.delete(learnDetail);
+    }
+
+    /**
+     * Get the minimum date from the Candle
+     * @return 
+     */
     public Date getMinDate() {
         return mongo.getFirstDateFromCandle();
     }
 
+    /**
+     * Get the maximum date from the Candle
+     * @return 
+     */
     public Date getMaxDate() {
         return mongo.getLatesDateFromCandle();
     }
@@ -75,4 +157,17 @@ public class CandleDetailBean implements Serializable {
     public void setSelectedIdHexa(String selectedIdHexa) {
         this.selectedIdHexa = selectedIdHexa;
     }
+
+    public LearnDTO getLearnDetail() {
+        return learnDetail;
+    }
+
+    public void setLearnDetail(LearnDTO learnDetail) {
+        this.learnDetail = learnDetail;
+    }
+
+    public boolean isInsertLearn() {
+        return insertLearn;
+    }
+
 }

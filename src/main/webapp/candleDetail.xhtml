@@ -20,7 +20,7 @@
 
             <h:form id="form1">
                 <p:panel>
-                    <p:panelGrid columns="4">
+                    <p:panelGrid columns="5">
                         <p:outputLabel value="StartDate:"/>
                         <p:calendar value="#{candleDetailBean.selectedDate}" mindate="#{candleDetailBean.minDate}" 
                                     maxdate="#{candleDetailBean.maxDate}" pages="3"  >
@@ -32,13 +32,39 @@
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{candleDetailBean.candleList}" var="candle" 
                                            itemLabel="#{candle.startDate}" itemValue="#{candle.idHexa}" />
-                            <p:ajax event="itemSelect"  update="detailPanel"/>
+                            <p:ajax event="itemSelect"  update="detailPanel, addBtn"/>
                         </p:selectOneMenu>
 
+                        <p:commandButton value="+Learn" action="#{candleDetailBean.onNewLearn()}"
+                                         disabled="#{candleDetailBean.selectedCandle eq true}"
+                                         id="addBtn" oncomplete="PF('dlg').show();" update="learnDialog"/>
                     </p:panelGrid>
+                </p:panel>   
 
-                </p:panel>         
+                <p:dialog header="Learn" widgetVar="dlg" modal="true" id="learnDialog">
+                    <p:panel>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Name:"/>
+                            <p:autoComplete value="#{candleDetailBean.learnDetail.name}" 
+                                            completeMethod="#{candleDetailBean.complete}"/>
 
+                            <p:outputLabel value="Trade:"/>
+                            <p:selectOneRadio  value="#{candleDetailBean.learnDetail.trade}">
+                                <f:selectItem itemLabel="Buy" itemValue="b"/>
+                                <f:selectItem itemLabel="Sell" itemValue="s"/>
+                            </p:selectOneRadio>                             
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <p:panel>        
+                        <p:commandButton value="Delete" action="#{candleDetailBean.onDeleteLearn()}" 
+                                         oncomplete="PF('dlg').hide()" update="tbl"
+                                         disabled="#{candleDetailBean.insertLearn}" />
+                        <p:commandButton value="Save" action="#{candleDetailBean.onSaveLearn()}" 
+                                         oncomplete="PF('dlg').hide()" update="tbl"/>
+                        <p:commandButton value="Close" oncomplete="PF('dlg').hide()"/>
+                    </p:panel>
+                </p:dialog>
 
                 <p:panel id="detailPanel">                
                     <p:panelGrid columns="8">
@@ -54,7 +80,6 @@
                         <p:outputLabel value="CalcBollinger"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollinger.calcBollinger}"/>                                                
                     </p:panelGrid>
-
 
                     <p:panelGrid columns="2" columnClasses="alignTop,alignTop">
 
@@ -209,33 +234,50 @@
 
                         </p:panelGrid>
 
-                        <p:panelGrid columns="2">
-                            <p:outputLabel value="Season" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.calendar.season}"/>
+                        <p:panel>
+                            <p:panel header="Learn">
+                                <p:dataTable tableStyle="width:auto" id="tbl" value="#{candleDetailBean.learnList}" 
+                                             var="item" editable="true">
+                                    <p:column headerText="Name">
+                                        <p:commandLink value="#{item.name}" 
+                                                       action="#{candleDetailBean.showLearnDetail(item)}" 
+                                                       oncomplete="PF('dlg').show();"
+                                                       update=":form1:learnDialog"/>
+                                    </p:column>
+                                    <p:column headerText="Trade">
+                                        <p:outputLabel value="#{item.tradeName}"/>  
+                                    </p:column>  
+                                </p:dataTable>
+                            </p:panel>
 
-                            <p:outputLabel value="Month" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.calendar.month}"/>
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Season" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.calendar.season}"/>
 
-                            <p:outputLabel value="Day" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.calendar.day}"/>
+                                <p:outputLabel value="Month" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.calendar.month}"/>
 
-                            <p:outputLabel value="Week" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.calendar.week}"/>
+                                <p:outputLabel value="Day" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.calendar.day}"/>
 
-                            <p:outputLabel value="DayOfWeek" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.calendar.dayOfWeek}"/>
+                                <p:outputLabel value="Week" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.calendar.week}"/>
 
-                            <p:outputLabel value="JulianDate" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.calendar.julianDate}"/>
+                                <p:outputLabel value="DayOfWeek" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.calendar.dayOfWeek}"/>
 
-                            <p:outputLabel value="MoonAge" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.calendar.moonAge}"/>
+                                <p:outputLabel value="JulianDate" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.calendar.julianDate}"/>
 
-                            <p:outputLabel value="Holiday" style="font-weight: bold"/>
-                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.calendar.holiday}"/>                            
-                        </p:panelGrid>
+                                <p:outputLabel value="MoonAge" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.calendar.moonAge}"/>
+
+                                <p:outputLabel value="Holiday" style="font-weight: bold"/>
+                                <p:selectBooleanCheckbox value="#{candleDetailBean.detail.calendar.holiday}"/>                            
+                            </p:panelGrid>
+                        </p:panel> 
                     </p:panelGrid>
-                </p:panel>                    
+                </p:panel> 
             </h:form>
         </f:view>                
     </h:body>

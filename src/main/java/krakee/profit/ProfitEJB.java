@@ -5,7 +5,6 @@
  */
 package krakee.profit;
 
-import com.mongodb.client.MongoCursor;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
 import com.mongodb.client.model.Sorts;
@@ -19,7 +18,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.calc.CandleDTO;
-import org.bson.Document;
 
 /**
  * Calculate profit
@@ -43,7 +41,7 @@ public class ProfitEJB {
      * @return
      */
     public List<ProfitDTO> get() {
-        return config.getProfit1Coll()
+        return config.getProfitColl()
                 .find()
                 .sort(Sorts.descending("eur"))
                 .into(new ArrayList<>());
@@ -56,7 +54,7 @@ public class ProfitEJB {
      * @return
      */
     public ProfitDTO get(Long testNum) {
-        return config.getProfit1Coll()
+        return config.getProfitColl()
                 .find(eq("testNum", testNum))
                 .first();
     }
@@ -67,7 +65,7 @@ public class ProfitEJB {
      * @return
      */
     public ProfitDTO getBest() {
-        return config.getProfit1Coll()
+        return config.getProfitColl()
                 .find()
                 .sort(Sorts.descending("eur"))
                 .first();
@@ -100,7 +98,7 @@ public class ProfitEJB {
     }
 
     public ProfitDTO getMaxTest() {
-        return config.getProfit1Coll()
+        return config.getProfitColl()
                 .find()
                 .sort(Sorts.descending("testNum"))
                 .first();
@@ -172,14 +170,14 @@ public class ProfitEJB {
         if (this.lastBest == null) {
             this.lastBest = this.getBest();
             if (this.lastBest == null) {
-                config.getProfit1Coll().insertOne(new ProfitDTO(testNum, lastEur, profitList));
+                config.getProfitColl().insertOne(new ProfitDTO(testNum, lastEur, profitList));
             } else if (lastEur > lastBest.getEur()) {
-                config.getProfit1Coll().insertOne(new ProfitDTO(testNum, lastEur, profitList));
+                config.getProfitColl().insertOne(new ProfitDTO(testNum, lastEur, profitList));
             }
         } else if (lastEur > lastBest.getEur()) {
             this.lastBest = this.getBest();
             if (lastEur > lastBest.getEur()) {
-                config.getProfit1Coll().insertOne(new ProfitDTO(testNum, lastEur, profitList));
+                config.getProfitColl().insertOne(new ProfitDTO(testNum, lastEur, profitList));
             }
         }
     }

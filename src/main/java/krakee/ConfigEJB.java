@@ -15,6 +15,7 @@ import javax.ejb.Startup;
 import javax.inject.Inject;
 import krakee.calc.CandleDTO;
 import krakee.get.TradePairDTO;
+import krakee.learn.LearnDTO;
 import krakee.profit.ProfitDTO;
 import org.bson.Document;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -72,6 +73,7 @@ public class ConfigEJB {
     private MongoCollection<TradePairDTO> tradePairColl;
     private MongoCollection<CandleDTO> candleColl;
     private MongoCollection<ProfitDTO> profitColl;
+    private MongoCollection<LearnDTO> learnColl;
 
     /**
      * Initiate: - Set proxy - MongoDB Create collections and missing indexes
@@ -110,11 +112,12 @@ public class ConfigEJB {
             this.candleColl.createIndex(Indexes.ascending("calcCandle"));
         }
 
-
         this.profitColl = this.database.getCollection("profit", ProfitDTO.class);
         if (!this.isIndex(profitColl, "testNum_1")) {
             this.profitColl.createIndex(Indexes.ascending("testNum"), new IndexOptions().unique(true));
         }
+        
+        this.learnColl = this.database.getCollection("learn", LearnDTO.class);
 
     }
 
@@ -154,9 +157,13 @@ public class ConfigEJB {
         return candleColl;
     }
 
-    public MongoCollection<ProfitDTO> getProfit1Coll() {
+    public MongoCollection<ProfitDTO> getProfitColl() {
         return profitColl;
     }
+
+    public MongoCollection<LearnDTO> getLearnColl() {
+        return learnColl;
+    }  
 
     public String getKrakenURL() {
         return krakenURL;
