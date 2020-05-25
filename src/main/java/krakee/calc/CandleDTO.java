@@ -3,6 +3,7 @@ package krakee.calc;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
 /**
@@ -64,6 +65,7 @@ public class CandleDTO {
      *
      * @return
      */
+    @BsonIgnore
     public Date getStopDate() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(this.startDate);
@@ -76,10 +78,12 @@ public class CandleDTO {
      *
      * @return
      */
+    @BsonIgnore
     public String getOHLCtMsg() {
         return "O:" + this.open + " H:" + this.high + " L:" + this.low + " C:" + this.close;
     }
 
+    @BsonIgnore
     public String getIdHexa() {
         if (this.id != null) {
             return this.id.toHexString();

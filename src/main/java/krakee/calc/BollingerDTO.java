@@ -155,7 +155,7 @@ public class BollingerDTO {
     /**
      * Calculate trade lower value The candle lower is less then bollinger lower
      *
-     * @param bl - Bollonger lower
+     * @param bl - Bollinger lower
      * @param low candle.low
      * @return
      */

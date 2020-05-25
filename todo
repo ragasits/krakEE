@@ -1,7 +1,9 @@
-+ GUI for the Learning data (add, modify, delete)
++ Candle: delete oHLCtMsg, stopDate, idHexa  fields
++ Delete calendar.holiday field
++ Delete LearnDTO.candleID field
+ 
 
 - BUG: candle.detail.volume.delta filed value 0
-- Candle: delete oHLCtMsg field
 - chk: Bollinger trade position
 - Save Profit sample start stop dates
 - Simulate trade (from the learning data)

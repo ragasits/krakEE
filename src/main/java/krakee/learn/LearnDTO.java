@@ -28,7 +28,6 @@ public class LearnDTO {
     private ObjectId id;
     private String name;
     private Date startDate;
-    private ObjectId candleId;
     private String trade;
 
     public LearnDTO() {  
@@ -68,14 +67,6 @@ public class LearnDTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public ObjectId getCandleId() {
-        return candleId;
-    }
-
-    public void setCandleId(ObjectId candleId) {
-        this.candleId = candleId;
     }
 
     public String getTrade() {

@@ -27,4 +27,7 @@ Any value defined here will override the pom.xml file value but is only applicab
         <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
     </properties>
+    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>Bollinger</word>
+    </spellchecker-wordlist>
 </project-shared-configuration>

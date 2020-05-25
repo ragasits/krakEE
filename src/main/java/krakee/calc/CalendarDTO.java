@@ -18,7 +18,6 @@ package krakee.calc;
 
 import java.util.Calendar;
 import java.util.Date;
-import org.bson.Document;
 
 /**
  *
@@ -34,8 +33,6 @@ public class CalendarDTO {
     private int julianDate;
     private double moonAge;
     private int hour;
-
-    private boolean holiday;
 
     public CalendarDTO() {
     }
@@ -73,19 +70,6 @@ public class CalendarDTO {
 
         this.julianDate = this.julianDate(day, month, cal.get(Calendar.YEAR));
         this.moonAge = this.MoonAge(day, month, cal.get(Calendar.YEAR), this.julianDate);
-
-        //West holidays
-        this.holiday
-                = //XMAS
-                (this.month == 12 && (this.day == 25 || this.day == 26))
-                //New year
-                || (this.month == 1 && this.day == 1);
-        //Easter
-        //Pentecost
-        //Halloween
-
-        //China holidays
-        //Arabs holidays
     }
 
     /**
@@ -175,10 +159,6 @@ public class CalendarDTO {
         return hour;
     }
 
-    public boolean isHoliday() {
-        return holiday;
-    }
-
     public void setSeason(String season) {
         this.season = season;
     }
@@ -210,10 +190,5 @@ public class CalendarDTO {
     public void setHour(int hour) {
         this.hour = hour;
     }
-
-    public void setHoliday(boolean holiday) {
-        this.holiday = holiday;
-    }
-
-    
+   
 }
