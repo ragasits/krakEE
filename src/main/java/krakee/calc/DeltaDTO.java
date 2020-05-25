@@ -129,7 +129,7 @@ public class DeltaDTO {
         this.deltaTotal = last.getTotal().subtract(prev.getTotal());
         this.deltaTotalBuy = last.getTotalBuy().subtract(prev.getTotalBuy());
         this.deltaTotalSell = last.getTotalSell().subtract(prev.getTotalSell());
-        this.deltaVolume = last.getVolume().subtract(last.getVolume());
+        this.deltaVolume = last.getVolume().subtract(prev.getVolume());
         this.deltaVolumeBuy = last.getVolumeBuy().subtract(prev.getVolumeBuy());
         this.deltaVolumeSell = last.getVolumeSell().subtract(prev.getVolumeSell());
 

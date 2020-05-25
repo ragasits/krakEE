@@ -1,13 +1,9 @@
-+ Candle: delete oHLCtMsg, stopDate, idHexa  fields
-+ Delete calendar.holiday field
-+ Delete LearnDTO.candleID field
- 
++ BUG: candle.detail.volume.delta filed value 0
 
-- BUG: candle.detail.volume.delta filed value 0
 - chk: Bollinger trade position
 - Save Profit sample start stop dates
 - Simulate trade (from the learning data)
-- calc: Candle.Date (easter, Pentecost, halloween)
+
 
 
 Future:
@@ -19,6 +15,7 @@ Future:
 - Separate mongodb logic 
 - Eclipse Micro 3.3
 - Change JDK (11LTS?)
+- calc: get natianal bank holidays (https://holidaydata.io/) and calculate distances
 
 
 Optional:
