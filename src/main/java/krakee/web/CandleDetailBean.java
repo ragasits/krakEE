@@ -94,7 +94,7 @@ public class CandleDetailBean implements Serializable {
      */
     public List<LearnDTO> getLearnList() {
         if (this.getDetail() != null) {
-            return learn.get(this.getDetail().getId());
+            return learn.get(this.getDetail().getStartDate());
         }
         return null;
     }

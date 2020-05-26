@@ -19,6 +19,7 @@ package krakee.learn;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -28,6 +29,7 @@ import org.bson.types.ObjectId;
 
 /**
  * Manage learning data
+ *
  * @author rgt
  */
 @Stateless
@@ -39,20 +41,29 @@ public class LearnEJB {
     private ConfigEJB config;
 
     /**
-     * Get Learns by Candle 
+     * Get Learns by Candle
+     *
      * @param candleId
-     * @return 
+     * @return
      */
-    public List<LearnDTO> get(ObjectId candleId) {
+    public List<LearnDTO> get(Date startDate) {
         return config.getLearnColl()
-                .find(eq("candleId", candleId))
+                .find(eq("startDate", startDate))
+                .sort(Sorts.ascending("startDate"))
+                .into(new ArrayList<>());
+    }
+
+    public List<LearnDTO> get() {
+        return config.getLearnColl()
+                .find()
                 .sort(Sorts.ascending("startDate"))
                 .into(new ArrayList<>());
     }
 
     /**
      * Get only unique names
-     * @return 
+     *
+     * @return
      */
     public List<String> getNames() {
         return config.getLearnColl()
@@ -62,7 +73,8 @@ public class LearnEJB {
 
     /**
      * Add new learn data
-     * @param dto 
+     *
+     * @param dto
      */
     public void add(LearnDTO dto) {
         config.getLearnColl().insertOne(dto);
@@ -70,7 +82,8 @@ public class LearnEJB {
 
     /**
      * Modify existing learning data
-     * @param dto 
+     *
+     * @param dto
      */
     public void update(LearnDTO dto) {
         config.getLearnColl().replaceOne(
@@ -79,7 +92,8 @@ public class LearnEJB {
 
     /**
      * Delete existing learning data
-     * @param dto 
+     *
+     * @param dto
      */
     public void delete(LearnDTO dto) {
         config.getLearnColl().deleteOne(eq("_id", dto.getId()));
