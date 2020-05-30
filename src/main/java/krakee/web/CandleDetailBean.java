@@ -110,7 +110,8 @@ public class CandleDetailBean implements Serializable {
     public String onNewLearn() {
         this.insertLearn = true;
         this.learnDetail = new LearnDTO();
-        this.learnDetail.setStartDate(selectedDate);
+        //this.learnDetail.setStartDate(selectedDate);
+        this.learnDetail.setStartDate(this.getDetail().getStartDate());
         return null;
     }
 

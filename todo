@@ -1,4 +1,4 @@
-+ BUG: candle.detail.volume.delta filed value 0
++ BUG: Add learn with wrong startDate
 
 - chk: Bollinger trade position
 - Save Profit sample start stop dates
