@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rgt</groupId>
     <artifactId>krakEE</artifactId>
-    <version>80</version>
+    <version>90</version>
     <packaging>war</packaging>
     <name>krakEE</name>
 
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.0.3</version>
+            <version>4.0.4</version>
             <type>jar</type>
         </dependency>
         
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile</groupId>
             <artifactId>microprofile</artifactId>
-            <version>3.2</version>
+            <version>3.3</version>
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
@@ -41,7 +41,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>5.201</version.payara>
+        <version.payara>5.2020.2</version.payara>
     </properties>
     
     <reporting>
