@@ -6,14 +6,10 @@
 package krakee.profit;
 
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gte;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
-import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
@@ -31,9 +27,6 @@ import krakee.learn.LearnEJB;
 public class ProfitEJB {
 
     static final Logger LOGGER = Logger.getLogger(ProfitEJB.class.getCanonicalName());
-
-    private Boolean isBest;
-    private ProfitDTO lastBest;
 
     @EJB
     private ConfigEJB config;
@@ -53,6 +46,19 @@ public class ProfitEJB {
                 .sort(Sorts.descending("eur"))
                 .into(new ArrayList<>());
     }
+    
+
+    /**
+     * Get profit filter by learnName
+     * @param learnName
+     * @return 
+     */
+    public List<ProfitDTO> get(String learnName) {
+        return config.getProfitColl()
+                .find(eq("learnName", learnName))
+                .sort(Sorts.descending("eur"))
+                .into(new ArrayList<>());
+    }    
 
     /**
      * Get profit filter by testNum
@@ -79,32 +85,9 @@ public class ProfitEJB {
     }
 
     /**
-     * Get last X candles
-     *
-     * @param last
-     * @return
+     * Get MAX testNum value
+     * @return 
      */
-    private List<CandleDTO> getLastXCandles(int last) {
-        CandleDTO candle;
-
-        //Get first startDate
-        CandleDTO dto = config.getCandleColl()
-                .find(eq("calcCandle", true))
-                .sort(Sorts.descending("startDate"))
-                .limit(last)
-                .skip(last - 1)
-                .first();
-
-        Date first = dto.getStartDate();
-
-        //Get candles from first startDate
-        return config.getCandleColl()
-                .find(gte("startDate", first))
-                .sort(Sorts.ascending("startDate"))
-                .into(new ArrayList<>());
-    }
-
-
     public Long getMaxTestNum() {
         Long testNum = 0L;
         ProfitDTO dto = this.config.getProfitColl()
@@ -115,20 +98,6 @@ public class ProfitEJB {
             testNum = dto.getTestNum();
         }
         return testNum;
-    }
-
-    /**
-     * Looking for the best Profit buy/sell combinations
-     */
-    @Asynchronous
-    public void calcProfit() {
-        this.isBest = false;
-        List<CandleDTO> candleList = this.getLastXCandles(1000);
-        Long testNum = this.getMaxTestNum();
-
-        while (!this.isBest) {
-            this.calcOneProfit(candleList, testNum++);
-        }
     }
 
     /**
@@ -170,68 +139,8 @@ public class ProfitEJB {
                     break;
             }
         }
-        
+
         //Store profit
         config.getProfitColl().insertOne(new ProfitDTO(learnName, testNum, lastEur, profitList));
-    }
-
-    /**
-     * Simulate trades Looking for the best training data
-     *
-     * @param candleList
-     * @param testNum
-     */
-    //@Asynchronous
-    public void calcOneProfit(List<CandleDTO> candleList, Long testNum) {
-        double eur = 1000;
-        double btc = 0;
-        double lastEur = 0;
-        String trade;
-        List<ProfitItemDTO> profitList = new ArrayList<>();
-
-        //Set random
-        Random random = new Random();
-
-        for (CandleDTO candle : candleList) {
-            trade = ProfitDTO.OP[random.nextInt(ProfitDTO.OP.length)];
-            ProfitItemDTO dto = new ProfitItemDTO(candle, trade, testNum);
-
-            switch (trade) {
-                case ProfitDTO.BUY:
-                    if (eur > 0) {
-                        dto.buyBtc(eur);
-                        eur = dto.getEur();
-                        btc = dto.getBtc();
-                        profitList.add(dto);
-                    }
-                    break;
-                case ProfitDTO.SELL:
-                    if (btc > 0) {
-                        dto.sellBtc(btc);
-                        eur = dto.getEur();
-                        lastEur = eur;
-                        btc = dto.getBtc();
-                        profitList.add(dto);
-                    }
-                    break;
-                case ProfitDTO.NONE:
-                    break;
-            }
-        }
-
-        //Store better profit (cached version)
-        if (this.lastBest == null) {
-            this.lastBest = this.getBest();
-            if (this.lastBest == null) {
-                config.getProfitColl().insertOne(new ProfitDTO(testNum, lastEur, profitList));
-            } else if (lastEur > lastBest.getEur()) {
-                config.getProfitColl().insertOne(new ProfitDTO(testNum, lastEur, profitList));
-            }
-        } else if (lastEur > lastBest.getEur()) {
-            this.lastBest = this.getBest();
-            if (lastEur > lastBest.getEur()) {
-                config.getProfitColl().insertOne(new ProfitDTO(testNum, lastEur, profitList));
-            }
-        }
     }
 }

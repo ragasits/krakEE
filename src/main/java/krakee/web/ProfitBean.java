@@ -20,7 +20,7 @@ import krakee.profit.ProfitEJB;
  * @author rgt
  */
 @SessionScoped
-@Named(value = "profit1Bean")
+@Named(value = "profitBean")
 public class ProfitBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,14 +29,7 @@ public class ProfitBean implements Serializable {
 
     @EJB
     private ProfitEJB profitEjb;
-
-    /**
-     * Start Random profit calculation
-     */
-    public void onRandom() {
-        profitEjb.calcProfit();
-    }
-    
+  
     public void onCalc(){
         profitEjb.calcProfit(selectedName);
     }
@@ -51,6 +44,17 @@ public class ProfitBean implements Serializable {
         }
         return null;
     }
+    
+    /**
+     * Get selected profit
+     * @return 
+     */
+    public ProfitDTO getProfit() {
+        if (this.selectedTest!=null){
+            return profitEjb.get(selectedTest);
+        }
+        return null;
+    }    
 
     /**
      * Get best list
@@ -75,6 +79,4 @@ public class ProfitBean implements Serializable {
     public void setSelectedName(String selectedName) {
         this.selectedName = selectedName;
     }
-    
-    
 }

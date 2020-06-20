@@ -1,8 +1,5 @@
-+ Simulate trade (from the learning data)
-
-- Delete random profit generation
-- GUI: Query learn+testnum
-- chk: Bollinger trade position
++ Delete random profit generation
++ GUI: Query learn+testnum
 
 Future:
 --------
@@ -19,5 +16,6 @@ Optional:
 - Code review findbugs or sonar
 - EJB timeout exception - Move to Bath processing?
 - Metrics: Prometheus + Grafana
+- Use Primefaces icons (buttons)
 
 
