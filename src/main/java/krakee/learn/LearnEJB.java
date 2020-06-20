@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
-import org.bson.types.ObjectId;
 
 /**
  * Manage learning data
@@ -41,9 +40,20 @@ public class LearnEJB {
     private ConfigEJB config;
 
     /**
+     * Get all learns
+     * @return 
+     */
+    public List<LearnDTO> get() {
+        return config.getLearnColl()
+                .find()
+                .sort(Sorts.ascending("startDate"))
+                .into(new ArrayList<>());
+    }
+
+    /**
      * Get Learns by Candle
      *
-     * @param candleId
+     * @param startDate
      * @return
      */
     public List<LearnDTO> get(Date startDate) {
@@ -53,9 +63,14 @@ public class LearnEJB {
                 .into(new ArrayList<>());
     }
 
-    public List<LearnDTO> get() {
+    /**
+     * Get learns filter by Name
+     * @param learnName
+     * @return 
+     */
+    public List<LearnDTO> get(String learnName) {
         return config.getLearnColl()
-                .find()
+                .find(eq("name", learnName))
                 .sort(Sorts.ascending("startDate"))
                 .into(new ArrayList<>());
     }
@@ -68,7 +83,7 @@ public class LearnEJB {
     public List<String> getNames() {
         return config.getLearnColl()
                 .distinct("name", String.class)
-                .into(new ArrayList<String>());
+                .into(new ArrayList<>());
     }
 
     /**

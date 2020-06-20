@@ -53,7 +53,6 @@ public class ProfitItemDTO {
         this.testNum = testNum;
     }
 
-
     /**
      * Buy BTC
      *
@@ -82,7 +81,6 @@ public class ProfitItemDTO {
         this.btc = 0;
     }
 
- 
     public ObjectId getCandleId() {
         return candleId;
     }
@@ -146,5 +144,4 @@ public class ProfitItemDTO {
     public void setFee(double fee) {
         this.fee = fee;
     }
-
 }

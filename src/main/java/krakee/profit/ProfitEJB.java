@@ -18,6 +18,9 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.calc.CandleDTO;
+import krakee.calc.CandleEJB;
+import krakee.learn.LearnDTO;
+import krakee.learn.LearnEJB;
 
 /**
  * Calculate profit
@@ -34,6 +37,10 @@ public class ProfitEJB {
 
     @EJB
     private ConfigEJB config;
+    @EJB
+    private LearnEJB learnEjb;
+    @EJB
+    private CandleEJB candleEjb;
 
     /**
      * Get all data from profit collection
@@ -86,8 +93,8 @@ public class ProfitEJB {
                 .sort(Sorts.descending("startDate"))
                 .limit(last)
                 .skip(last - 1)
-                .first();        
-        
+                .first();
+
         Date first = dto.getStartDate();
 
         //Get candles from first startDate
@@ -97,11 +104,17 @@ public class ProfitEJB {
                 .into(new ArrayList<>());
     }
 
-    public ProfitDTO getMaxTest() {
-        return config.getProfitColl()
+
+    public Long getMaxTestNum() {
+        Long testNum = 0L;
+        ProfitDTO dto = this.config.getProfitColl()
                 .find()
                 .sort(Sorts.descending("testNum"))
                 .first();
+        if (dto != null && dto.getTestNum() != null) {
+            testNum = dto.getTestNum();
+        }
+        return testNum;
     }
 
     /**
@@ -111,15 +124,55 @@ public class ProfitEJB {
     public void calcProfit() {
         this.isBest = false;
         List<CandleDTO> candleList = this.getLastXCandles(1000);
-        ProfitDTO best = this.getMaxTest();
-        Long testNum = 0L;
-        if (best != null) {
-            testNum = best.getTestNum() + 1L;
-        }
+        Long testNum = this.getMaxTestNum();
 
         while (!this.isBest) {
             this.calcOneProfit(candleList, testNum++);
         }
+    }
+
+    /**
+     * Calculate one learn profit
+     *
+     * @param learnName
+     */
+    public void calcProfit(String learnName) {
+        double eur = 1000;
+        double btc = 0;
+        double lastEur = 0;
+        List<ProfitItemDTO> profitList = new ArrayList<>();
+        Long testNum = 1L + this.getMaxTestNum();
+
+        List<LearnDTO> learnList = learnEjb.get(learnName);
+        for (LearnDTO learn : learnList) {
+            CandleDTO candle = this.candleEjb.get(learn.getStartDate());
+            ProfitItemDTO dto = new ProfitItemDTO(candle, learn.getTrade(), testNum);
+
+            switch (learn.getTrade()) {
+                case ProfitDTO.BUY:
+                    if (eur > 0) {
+                        dto.buyBtc(eur);
+                        eur = dto.getEur();
+                        btc = dto.getBtc();
+                        profitList.add(dto);
+                    }
+                    break;
+                case ProfitDTO.SELL:
+                    if (btc > 0) {
+                        dto.sellBtc(btc);
+                        eur = dto.getEur();
+                        lastEur = eur;
+                        btc = dto.getBtc();
+                        profitList.add(dto);
+                    }
+                    break;
+                case ProfitDTO.NONE:
+                    break;
+            }
+        }
+        
+        //Store profit
+        config.getProfitColl().insertOne(new ProfitDTO(learnName, testNum, lastEur, profitList));
     }
 
     /**

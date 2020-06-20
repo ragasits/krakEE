@@ -25,15 +25,20 @@ public class ProfitBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private Long selectedTest;
+    private String selectedName;
 
     @EJB
-    private ProfitEJB profit1Ejb;
+    private ProfitEJB profitEjb;
 
     /**
      * Start Random profit calculation
      */
     public void onRandom() {
-        profit1Ejb.calcProfit();
+        profitEjb.calcProfit();
+    }
+    
+    public void onCalc(){
+        profitEjb.calcProfit(selectedName);
     }
 
     /**
@@ -42,7 +47,7 @@ public class ProfitBean implements Serializable {
      */
     public List<ProfitItemDTO> getProfitList() {
         if (this.selectedTest!=null){
-            return profit1Ejb.get(selectedTest).getItems();
+            return profitEjb.get(selectedTest).getItems();
         }
         return null;
     }
@@ -52,7 +57,7 @@ public class ProfitBean implements Serializable {
      * @return 
      */
     public List<ProfitDTO> getBestList() {
-        return profit1Ejb.get();
+        return profitEjb.get();
     }
 
     public Long getSelectedTest() {
@@ -62,4 +67,14 @@ public class ProfitBean implements Serializable {
     public void setSelectedTest(Long selectedTest) {
         this.selectedTest = selectedTest;
     }
+
+    public String getSelectedName() {
+        return selectedName;
+    }
+
+    public void setSelectedName(String selectedName) {
+        this.selectedName = selectedName;
+    }
+    
+    
 }

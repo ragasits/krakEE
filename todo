@@ -1,10 +1,8 @@
-+ BUG: Add learn with wrong startDate
++ Simulate trade (from the learning data)
 
+- Delete random profit generation
+- GUI: Query learn+testnum
 - chk: Bollinger trade position
-- Save Profit sample start stop dates
-- Simulate trade (from the learning data)
-
-
 
 Future:
 --------
@@ -13,10 +11,8 @@ Future:
 - Optimize mongodb
 - Candle1d (one day) + Simulation
 - Separate mongodb logic 
-- Eclipse Micro 3.3
 - Change JDK (11LTS?)
-- calc: get natianal bank holidays (https://holidaydata.io/) and calculate distances
-
+- calc: get national bank holidays (https://holidaydata.io/) and calculate distances
 
 Optional:
 ---------

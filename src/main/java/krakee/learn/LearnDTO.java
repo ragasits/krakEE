@@ -17,7 +17,6 @@
 package krakee.learn;
 
 import java.util.Date;
-import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
 /**
@@ -33,26 +32,6 @@ public class LearnDTO {
     public LearnDTO() {  
     }
     
-    /**
-     * Get trade name
-     * @return 
-     */
-    @BsonIgnore
-    public String getTradeName(){
-        if (this.trade==null){
-            return null;
-        }
-        
-        switch (this.trade) {
-            case "b":
-                return "Buy";
-            case "s":
-                return "Sell";
-            default:
-                return "";
-        }
-    }
-
     public ObjectId getId() {
         return id;
     }

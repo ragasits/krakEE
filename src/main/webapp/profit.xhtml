@@ -19,7 +19,7 @@
 
             <h:form id="form1">
                 <p:panel>
-                    <p:panelGrid columns="4">
+                    <p:panelGrid columns="6">
                         <p:outputLabel value="Best:"/>  
                         <p:selectOneMenu value="#{profit1Bean.selectedTest}" id="testList">
                             <f:selectItem itemLabel="-" itemValue=""/>
@@ -31,7 +31,21 @@
                         <p:commandButton value="Next best"  id="randBtn" 
                                          action="#{profit1Bean.onRandom()}" 
                                          update="tbl, testList" >
-                        </p:commandButton>      
+                        </p:commandButton>   
+
+                        <p:outputLabel value="Learn:"/>  
+                        <p:selectOneMenu value="#{profit1Bean.selectedName}" id="nameList">
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{learnBean.learnNameList}" var="names" 
+                                           itemLabel="#{names}" itemValue="#{names}" />
+                        </p:selectOneMenu>
+
+                        <p:commandButton value="Calculate"  id="calcBtn" 
+                                         action="#{profit1Bean.onCalc()}" 
+                                         update="tbl" >
+                        </p:commandButton>   
+
+
                     </p:panelGrid>
                 </p:panel>      
 

@@ -6,15 +6,12 @@
 package krakee.web;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-import krakee.calc.CandleDTO;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
-import org.bson.types.ObjectId;
 
 /**
  * JSF bean for one Candle
@@ -39,5 +36,13 @@ public class LearnBean implements Serializable {
      */
     public List<LearnDTO> getLearnList() {
         return learn.get();
+    }
+    
+    /**
+     * Get Names (Distinct)
+     * @return 
+     */
+    public List<String> getLearnNameList(){
+        return learn.getNames();
     }
 }

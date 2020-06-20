@@ -33,16 +33,26 @@ public class ProfitDTO {
 
     private ObjectId id;
     private Long testNum;
+    private String learnName;
     private double eur;
     private List<ProfitItemDTO> items;
+    
 
     public ProfitDTO() {
     }
-
+    
     public ProfitDTO(Long testNum, double eur, List<ProfitItemDTO> items) {
         this.testNum = testNum;
         this.eur = eur;
         this.items = items;
+    }
+    
+
+    public ProfitDTO(String learnName, Long testNum, double eur, List<ProfitItemDTO> items) {
+        this.testNum = testNum;
+        this.eur = eur;
+        this.items = items;
+        this.learnName = learnName;
     }
 
     public ObjectId getId() {
@@ -77,4 +87,11 @@ public class ProfitDTO {
         this.items = items;
     }
 
+    public String getLearnName() {
+        return learnName;
+    }
+
+    public void setLearnName(String learnName) {
+        this.learnName = learnName;
+    }
 }

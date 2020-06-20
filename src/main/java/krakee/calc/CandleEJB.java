@@ -19,8 +19,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.get.TradePairDTO;
-import org.bson.Document;
-import org.bson.types.Decimal128;
 
 /**
  * Calculate and store candle elements
@@ -38,6 +36,17 @@ public class CandleEJB {
     DeltaEJB delta;
     @EJB
     BollingerEJB bollinger;
+    
+    /**
+     * Get a Candle
+     * @param startDate
+     * @return 
+     */
+    public CandleDTO get(Date startDate){
+        return this.config.getCandleColl()
+                .find(eq("startDate", startDate))
+                .first();
+    }
 
     private int candleSize = 5000;
 

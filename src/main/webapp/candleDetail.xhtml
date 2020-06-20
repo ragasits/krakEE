@@ -50,8 +50,8 @@
 
                             <p:outputLabel value="Trade:"/>
                             <p:selectOneRadio  value="#{candleDetailBean.learnDetail.trade}">
-                                <f:selectItem itemLabel="Buy" itemValue="b"/>
-                                <f:selectItem itemLabel="Sell" itemValue="s"/>
+                                <f:selectItem itemLabel="Buy" itemValue="buy"/>
+                                <f:selectItem itemLabel="Sell" itemValue="sell"/>
                             </p:selectOneRadio>                             
                         </p:panelGrid>
                     </p:panel>
@@ -245,7 +245,7 @@
                                                        update=":form1:learnDialog"/>
                                     </p:column>
                                     <p:column headerText="Trade">
-                                        <p:outputLabel value="#{item.tradeName}"/>  
+                                        <p:outputLabel value="#{item.trade}"/>  
                                     </p:column>  
                                 </p:dataTable>
                             </p:panel>
