@@ -7,6 +7,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import krakee.get.TradeEJB;
 import krakee.get.TradePairDTO;
 
 /**
@@ -20,7 +21,7 @@ public class TradeBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @EJB
-    MongoEJB mongo;
+    TradeEJB trade;
 
     private List<TradePairDTO> tradeList;
     private int queryLimit = 100;
@@ -29,7 +30,7 @@ public class TradeBean implements Serializable {
      * Consistency checking 
      */
     public void onTradeChk() {
-        List<String> list = mongo.chkTradePair();
+        List<String> list = trade.chkTradePair();
         FacesMessage msg;
         if (list == null || list.isEmpty()) {
             String errorMsg = "Consistency error: " + list.size();
@@ -44,7 +45,7 @@ public class TradeBean implements Serializable {
      * Get Trade data
      */
     public void onTradeQuery() {
-        this.tradeList = mongo.getLastTrades(this.queryLimit);
+        this.tradeList = trade.getLasts(this.queryLimit);
     }
 
     public List<TradePairDTO> getTradeList() {

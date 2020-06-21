@@ -10,6 +10,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import krakee.calc.CandleDTO;
+import krakee.calc.CandleEJB;
 import org.primefaces.event.ItemSelectEvent;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.DateAxis;
@@ -27,7 +28,7 @@ public class CandleBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @EJB
-    MongoEJB mongo;
+    CandleEJB candle;
 
     private List<CandleDTO> candleList;
     private int queryLimit = 100;
@@ -44,7 +45,7 @@ public class CandleBean implements Serializable {
     public void onCandleTradeCountChk() {
         FacesMessage msg;
 
-        List<String> list = mongo.chkCandleTradeCount();
+        List<String> list = candle.chkTradeCount();
         if (list.isEmpty()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "TradeCnt check: OK");
         } else {
@@ -59,7 +60,7 @@ public class CandleBean implements Serializable {
     public void onDateChk() {
         FacesMessage msg;
 
-        List<Date> list = mongo.chkCandleDates();
+        List<Date> list = candle.chkDates();
         if (list.isEmpty()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Date check: OK");
         } else {
@@ -72,7 +73,7 @@ public class CandleBean implements Serializable {
      * Query candles
      */
     public void onCandleQuery() {
-        this.candleList = mongo.getLastCandles(this.queryLimit);
+        this.candleList = candle.getLasts(this.queryLimit);
         this.createOhlcModel();
     }
 

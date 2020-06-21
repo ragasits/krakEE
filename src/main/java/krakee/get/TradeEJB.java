@@ -1,5 +1,8 @@
 package krakee.get;
 
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.InsertManyResult;
 import java.io.InputStream;
@@ -11,6 +14,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +33,8 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
 import krakee.ConfigEJB;
 import krakee.MyException;
+import org.bson.Document;
+import org.bson.types.Decimal128;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 /**
@@ -44,6 +50,21 @@ public class TradeEJB {
     ConfigEJB config;
 
     private int pairTradeSize = 0;
+    
+    /**
+     * get Last limit size trade pairs
+     *
+     * @param limit
+     * @return
+     */
+    public List<TradePairDTO> getLasts(int limit) {
+        return config.getTradePairColl()
+                .find()
+                .sort(Sorts.descending("timeDate"))
+                .limit(limit)
+                .into(new ArrayList<>());
+    }
+    
 
     /**
      * Get, convert, store trades from Kraken
@@ -187,4 +208,31 @@ public class TradeEJB {
         }
 
     }
+    
+    /**
+     * Check Trade consistency
+     *
+     * @return
+     */
+    public List<String> chkTradePair() {
+        //Chk last<>max(time)
+        MongoCursor<Document> cursor = config.getTradePairColl().aggregate(
+                Arrays.asList(
+                        Aggregates.group("$last", Accumulators.max("max", "$time"))
+                ), Document.class
+        ).cursor();
+
+        List<String> list = new ArrayList();
+
+        while (cursor.hasNext()) {
+            Document doc = cursor.next();
+            String id = doc.getString("_id").substring(0, 14);
+            String max = ((Decimal128) doc.get("max")).bigDecimalValue().toString().replace(".", "");
+
+            if (!id.equals(max)) {
+                list.add("last:" + id + " max($time):" + max);
+            }
+        }
+        return list;
+    }    
 }

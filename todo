@@ -1,13 +1,14 @@
-+ Delete random profit generation
-+ GUI: Query learn+testnum
++ Merge MongoEJB to EJBs
+
+- Implement RSI
+- Review by spotbugs
 
 Future:
 --------
-- Implement RSI
+
 - Self learning with Neural networks
 - Optimize mongodb
 - Candle1d (one day) + Simulation
-- Separate mongodb logic 
 - Change JDK (11LTS?)
 - calc: get national bank holidays (https://holidaydata.io/) and calculate distances
 

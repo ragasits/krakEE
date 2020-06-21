@@ -12,6 +12,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import krakee.calc.CandleDTO;
+import krakee.calc.CandleEJB;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 import org.bson.types.ObjectId;
@@ -28,9 +29,9 @@ public class CandleDetailBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @EJB
-    MongoEJB mongo;
-    @EJB
     LearnEJB learn;
+    @EJB
+    CandleEJB candle;
 
     private String selectedIdHexa = null;
     private Date selectedDate;
@@ -46,7 +47,7 @@ public class CandleDetailBean implements Serializable {
         if (this.selectedIdHexa == null || this.selectedIdHexa.isEmpty()) {
             return null;
         }
-        return mongo.getCandle(new ObjectId(selectedIdHexa));
+        return candle.get(new ObjectId(selectedIdHexa));
     }
 
     public Date getSelectedDate() {
@@ -64,7 +65,7 @@ public class CandleDetailBean implements Serializable {
      */
     public List<CandleDTO> getCandleList() {
         if (selectedDate != null) {
-            return mongo.getCandleOneDayCandles(selectedDate);
+            return candle.getOneDay(selectedDate);
         }
         return null;
     }
@@ -139,7 +140,7 @@ public class CandleDetailBean implements Serializable {
      * @return 
      */
     public Date getMinDate() {
-        return mongo.getFirstDateFromCandle();
+        return candle.getFirstDate();
     }
 
     /**
@@ -147,7 +148,7 @@ public class CandleDetailBean implements Serializable {
      * @return 
      */
     public Date getMaxDate() {
-        return mongo.getLatesDateFromCandle();
+        return candle.getLatesDate();
     }
 
     public String getSelectedIdHexa() {

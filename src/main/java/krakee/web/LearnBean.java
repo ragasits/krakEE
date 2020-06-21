@@ -25,8 +25,6 @@ public class LearnBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @EJB
-    MongoEJB mongo;
-    @EJB
     LearnEJB learn;
 
     /**

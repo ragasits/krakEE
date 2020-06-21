@@ -2,6 +2,8 @@ package krakee.calc;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
@@ -9,6 +11,7 @@ import static com.mongodb.client.model.Filters.lt;
 import com.mongodb.client.model.Sorts;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +22,8 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.get.TradePairDTO;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
 /**
  * Calculate and store candle elements
@@ -36,20 +41,102 @@ public class CandleEJB {
     DeltaEJB delta;
     @EJB
     BollingerEJB bollinger;
-    
+
+    private int candleSize = 5000;
+
     /**
-     * Get a Candle
+     * Get one Candle by startDate
+     *
      * @param startDate
-     * @return 
+     * @return
      */
-    public CandleDTO get(Date startDate){
+    public CandleDTO get(Date startDate) {
         return this.config.getCandleColl()
                 .find(eq("startDate", startDate))
                 .first();
     }
 
-    private int candleSize = 5000;
+    /**
+     * Get one Candle by ID
+     *
+     * @param id
+     * @return
+     */
+    public CandleDTO get(ObjectId id) {
+        return config.getCandleColl()
+                .find(eq("_id", id))
+                .first();
+    }
 
+    /**
+     * get last "limit" size candles
+     *
+     * @param limit
+     * @return
+     */
+    public List<CandleDTO> getLasts(int limit) {
+        return config.getCandleColl()
+                .find()
+                .sort(Sorts.descending("startDate"))
+                .limit(limit)
+                .into(new ArrayList<CandleDTO>());
+    }
+    
+    /**
+     * Get latest date value from Candle collection
+     *
+     * @return
+     */
+    public Date getLatesDate() {
+        try {
+            CandleDTO dto = config.getCandleColl()
+                    .find()
+                    .sort(Sorts.descending("startDate"))
+                    .first();
+
+            return dto.getStartDate();
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }   
+    
+    /**
+     * Get first date from the candle collection
+     *
+     * @return
+     */
+    public Date getFirstDate() {
+        try {
+            CandleDTO dto = config.getCandleColl()
+                    .find()
+                    .sort(Sorts.ascending("startDate"))
+                    .first();
+
+            return dto.getStartDate();
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }    
+    
+    /**
+     * Get one day's all Candles
+     *
+     * @param startDate
+     * @return
+     */
+    public List<CandleDTO> getOneDay(Date startDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(startDate);
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        Date stopDate = cal.getTime();
+
+        return config.getCandleColl()
+                .find(and(gte("startDate", startDate), lt("startDate", stopDate)))
+                .sort(Sorts.ascending("startDate"))
+                .into(new ArrayList<>());
+
+    }    
+    
     /**
      * Call candle generation methods
      */
@@ -144,7 +231,7 @@ public class CandleEJB {
 
         trade = result.sort(Sorts.ascending("timeDate")).first();
         if (trade != null) {
-             dto.setOpen(trade.getPrice());
+            dto.setOpen(trade.getPrice());
         }
 
         trade = result.sort(Sorts.descending("timeDate")).first();
@@ -280,5 +367,88 @@ public class CandleEJB {
     public String toString() {
         return "CandleEJB{" + "config=" + config + ", candleSize=" + candleSize + '}';
     }
+    
+   /**
+     * Check Candle consistency I. Seek missing dates
+     *
+     * @return
+     */
+    public List<Date> chkDates() {
+        Calendar cal = Calendar.getInstance();
+        List<Date> list = new ArrayList<>();
+        TradePairDTO dto;
+
+        //get first trade date
+        dto = config.getTradePairColl()
+                .find()
+                .sort(Sorts.ascending("timeDate"))
+                .first();
+        Date firstDate = this.calcCandel30Min(dto.getTimeDate());
+
+        //Get last trade date
+        dto = config.getTradePairColl()
+                .find()
+                .sort(Sorts.descending("timeDate"))
+                .first();
+        Date lastDate = dto.getTimeDate();
+
+        int i = 0;
+        while (firstDate.before(lastDate)) {
+            i++;
+            //Seek date
+            CandleDTO candleDto = config.getCandleColl()
+                    .find(eq("startDate", firstDate))
+                    .first();
+            if (candleDto == null) {
+                list.add(firstDate);
+            }
+
+            //calc next value
+            cal.setTime(firstDate);
+            cal.add(Calendar.MINUTE, 30);
+            firstDate = cal.getTime();
+        }
+
+        System.out.println("chkCandleDates: " + i);
+        return list;
+    }    
+    
+   /**
+     * Check Candle consistency II. Count trades
+     *
+     * @return
+     */
+    public List<String> chkTradeCount() {
+        List<String> list = new ArrayList<>();
+        //Get candles
+        List<CandleDTO> candleList = config.getCandleColl()
+                .find()
+                .into(new ArrayList<>());
+        
+        for (CandleDTO dto : candleList) {
+           //Count trades    
+            Document trade = config.getTradePairColl().aggregate(
+                    Arrays.asList(
+                            Aggregates.match(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate()))),
+                            Aggregates.group("pair", Accumulators.sum("count", 1))
+                    ), Document.class
+            ).first();
+
+            //Check
+            if (trade == null) {
+                if (dto.getCount() != 0) {
+                    list.add(dto.getStartDate().toString() + " 0, " + dto.getCount());
+                }
+            } else {
+                Integer cnt = trade.getInteger("count");
+                if (cnt == null || !cnt.equals(dto.getCount())) {
+                    list.add(dto.getStartDate().toString() + " " + cnt + "," + dto.getCount());
+                }
+            } 
+        }
+
+        return list;
+    }
+    
 
 }

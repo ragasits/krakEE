@@ -20,8 +20,6 @@ public class IndexBean implements Serializable {
     @EJB
     ConfigEJB config;
     @EJB
-    MongoEJB mongo;
-    @EJB
     TimerEjb timer;
 
     
