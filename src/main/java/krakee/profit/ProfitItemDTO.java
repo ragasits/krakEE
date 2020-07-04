@@ -30,7 +30,6 @@ public class ProfitItemDTO {
     private static final double MAKER = 0.16;
     private static final double TAKER = 0.26;
 
-    private ObjectId candleId;
     private Long testNum;
     private Date startDate;
     private String trade;
@@ -43,7 +42,6 @@ public class ProfitItemDTO {
     }
 
     public ProfitItemDTO(CandleDTO candle, String trade, Long testNum) {
-        this.candleId = candle.getId();
         this.startDate = candle.getStartDate();
         this.close = candle.getClose().doubleValue();
         this.trade = trade;
@@ -79,14 +77,6 @@ public class ProfitItemDTO {
         this.eur = this.eur - this.fee;
 
         this.btc = 0;
-    }
-
-    public ObjectId getCandleId() {
-        return candleId;
-    }
-
-    public void setCandleId(ObjectId candleId) {
-        this.candleId = candleId;
     }
 
     public Long getTestNum() {
