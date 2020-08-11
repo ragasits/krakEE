@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.0.4</version>
+            <version>4.0.5</version>
             <type>jar</type>
         </dependency>
         
@@ -35,13 +35,20 @@
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>com.deepnetts</groupId>
+            <artifactId>deepnetts-core</artifactId>
+            <version>1.12</version>
+        </dependency>
+        
     </dependencies>
     
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>5.2020.2</version.payara>
+        <version.payara>5.2020.3</version.payara>
     </properties>
     
     <reporting>
@@ -50,7 +57,7 @@
                 <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.0.0:spotbugs -->
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.0.0</version>
+                <version>4.0.4</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
                     <xmlOutputDirectory>target/site</xmlOutputDirectory>

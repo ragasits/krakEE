@@ -6,6 +6,7 @@
 package krakee.calc;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import krakee.Common;
 
 /**
@@ -135,6 +136,56 @@ public class BollingerDTO {
         this.trendTradeLowerUp = Common.calcTrendUp(this.tradeLower, prev.getTradeLower(), prev.getTrendTradeLowerUp());
         this.trendTradeLowerDown = Common.calcTrendDown(this.tradeLower, prev.getTradeLower(), prev.getTrendTradeLowerDown());
 
+    }
+
+    /**
+     * Convert DTO fields to ArrayList<Float>
+     * @return 
+     */
+    public ArrayList<Float> toArrayList() {
+        ArrayList<Float> l = new ArrayList<>();
+
+        l.add(this.sma.floatValue());
+        l.add(this.deltaSma.floatValue());
+        l.add(this.trendSmaUp.floatValue());
+        l.add(this.trendSmaDown.floatValue());
+
+        l.add(this.stDev.floatValue());
+        l.add(this.deltaStDev.floatValue());
+        l.add(this.trendStDevUp.floatValue());
+        l.add(this.trendStDevDown.floatValue());
+
+        l.add(this.bollingerUpper.floatValue());
+        l.add(this.deltaBollingerUpper.floatValue());
+        l.add(this.trendBollingerUpperUp.floatValue());
+        l.add(this.trendBollingerUpperDown.floatValue());
+
+        l.add(this.bollingerLower.floatValue());
+        l.add(this.deltaBollingerLower.floatValue());
+        l.add(this.trendBollingerLowerUp.floatValue());
+        l.add(this.trendBollingerLowerDown.floatValue());
+
+        l.add(this.bollingerBandWith.floatValue());
+        l.add(this.deltaBollingerBandWith.floatValue());
+        l.add(this.trendBollingerBandWithUp.floatValue());
+        l.add(this.trendBollingerBandWithDown.floatValue());
+
+        l.add(this.tradeUpper.floatValue());
+        l.add(this.deltaTradeUpper.floatValue());
+        l.add(this.trendTradeUpperUp.floatValue());
+        l.add(this.trendTradeUpperDown.floatValue());
+
+        l.add(this.tradeLower.floatValue());
+        l.add(this.deltaTradeLower.floatValue());
+        l.add(this.trendTradeLowerUp.floatValue());
+        l.add(this.trendTradeLowerDown.floatValue());
+
+        l.add(this.tradeUpper.floatValue());
+        l.add(this.deltaTradeUpper.floatValue());
+        l.add(this.trendTradeUpperUp.floatValue());
+        l.add(this.trendTradeUpperDown.floatValue());
+
+        return l;
     }
 
     /**
@@ -397,7 +448,5 @@ public class BollingerDTO {
     public void setTrendTradeLowerDown(Integer trendTradeLowerDown) {
         this.trendTradeLowerDown = trendTradeLowerDown;
     }
-    
-    
 
 }

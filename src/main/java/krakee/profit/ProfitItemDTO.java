@@ -18,7 +18,6 @@ package krakee.profit;
 
 import java.util.Date;
 import krakee.calc.CandleDTO;
-import org.bson.types.ObjectId;
 
 /**
  *

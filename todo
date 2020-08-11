@@ -1,5 +1,6 @@
-+ ProfitItemDTO - CandleID didn't use
++ Convert candle fields to Tensor
 
+- BUG: NullPointerException .convertToDTO(TradeEJB.java:108)
 - Implement RSI
 - Review by spotbugs
 

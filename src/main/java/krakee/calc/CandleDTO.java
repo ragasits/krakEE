@@ -1,6 +1,8 @@
 package krakee.calc;
 
+import deepnetts.util.Tensor;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
@@ -58,6 +60,36 @@ public class CandleDTO {
         this.delta = new DeltaDTO();
         this.bollinger = new BollingerDTO();
         this.calendar = new CalendarDTO(this.startDate);
+    }
+
+    /**
+     * Convert Candle fields to Tensor
+     *
+     * @return
+     */
+    public Tensor toTensor() {
+        ArrayList<Float> l = new ArrayList<>();
+
+        l.add(this.count.floatValue());
+        l.add(this.countBuy.floatValue());
+        l.add(this.countSell.floatValue());
+        l.add(this.open.floatValue());
+        l.add(this.low.floatValue());
+        l.add(this.high.floatValue());
+        l.add(this.close.floatValue());
+        l.add(this.total.floatValue());
+        l.add(this.totalBuy.floatValue());
+        l.add(this.totalSell.floatValue());
+        l.add(this.volume.floatValue());
+        l.add(this.volumeBuy.floatValue());
+        l.add(this.volumeSell.floatValue());
+
+        l.addAll(this.delta.toArrayList());
+        l.addAll(this.bollinger.toArrayList());
+        l.addAll(this.calendar.toArrayList());
+
+        float[] f = new float[l.size()];
+        return new Tensor(f);
     }
 
     /**
@@ -250,7 +282,5 @@ public class CandleDTO {
     public void setCalendar(CalendarDTO calendar) {
         this.calendar = calendar;
     }
-    
-    
 
 }

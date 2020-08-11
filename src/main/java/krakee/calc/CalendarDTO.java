@@ -16,8 +16,10 @@
  */
 package krakee.calc;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 
 /**
  *
@@ -25,7 +27,7 @@ import java.util.Date;
  */
 public class CalendarDTO {
 
-    private String season;
+    private int season;
     private int month;
     private int week;
     private int day;
@@ -51,20 +53,20 @@ public class CalendarDTO {
             case 3:
             case 4:
             case 5:
-                this.season = "Spring";
+                this.season = 1;
                 break;
             case 6:
             case 7:
             case 8:
-                this.season = "Summer";
+                this.season = 2;
                 break;
             case 9:
             case 10:
             case 11:
-                this.season = "Autumn";
+                this.season = 3;
                 break;
             default:
-                this.season = "Winter";
+                this.season = 4;
                 break;
         }
 
@@ -127,7 +129,47 @@ public class CalendarDTO {
         return ag;
     }
 
-    public String getSeason() {
+    /**
+     * Convert DTO fields to ArrayList<Float>
+     *
+     * @return
+     */
+    public ArrayList<Float> toArrayList() {
+        ArrayList<Float> l = new ArrayList<>();
+
+        l.add((float) season);
+        l.add((float) month);
+        l.add((float) week);
+        l.add((float) day);
+        l.add((float) dayOfWeek);
+        l.add((float) julianDate);
+        l.add((float) moonAge);
+        l.add((float) hour);
+
+        return l;
+    }
+
+    /**
+     * Convert Season to Season name
+     *
+     * @return
+     */
+    @BsonIgnore
+    public String getSeasonName() {
+        switch (this.season) {
+            case 1:
+                return "Spring";
+            case 2:
+                return "Summer";
+            case 3:
+                return "Autumn";
+            case 4:
+                return "Winter";
+        }
+        return null;
+    }
+
+    public int getSeason() {
         return season;
     }
 
@@ -159,7 +201,7 @@ public class CalendarDTO {
         return hour;
     }
 
-    public void setSeason(String season) {
+    public void setSeason(int season) {
         this.season = season;
     }
 
@@ -190,5 +232,5 @@ public class CalendarDTO {
     public void setHour(int hour) {
         this.hour = hour;
     }
-   
+
 }

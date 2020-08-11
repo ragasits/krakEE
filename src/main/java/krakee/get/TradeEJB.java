@@ -89,12 +89,6 @@ public class TradeEJB {
             List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
             this.pairTradeSize = pairList.size();
 
-            //Insert TradePairs to Mongo
-            /*
-            for (TradePairDTO dto : pairList) {
-            config.getTradePairColl().insertOne(dto);
-            }
-             */
             InsertManyResult insertMany = config.getTradePairColl().insertMany(pairList);
   
             LOGGER.log(Level.INFO, "Trade Fired .... " + this.pairTradeSize + " " + pairList.get(0).getLastDate());
