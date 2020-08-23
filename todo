@@ -1,5 +1,6 @@
-+ Convert candle fields to Tensor
++ Convert candle fields to Dataset
 
+- Add neural GUI
 - BUG: NullPointerException .convertToDTO(TradeEJB.java:108)
 - Implement RSI
 - Review by spotbugs

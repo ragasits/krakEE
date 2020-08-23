@@ -16,6 +16,7 @@
  */
 package krakee.learn;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
@@ -41,7 +42,8 @@ public class LearnEJB {
 
     /**
      * Get all learns
-     * @return 
+     *
+     * @return
      */
     public List<LearnDTO> get() {
         return config.getLearnColl()
@@ -65,14 +67,54 @@ public class LearnEJB {
 
     /**
      * Get learns filter by Name
+     *
      * @param learnName
-     * @return 
+     * @return
      */
     public List<LearnDTO> get(String learnName) {
         return config.getLearnColl()
                 .find(eq("name", learnName))
                 .sort(Sorts.ascending("startDate"))
                 .into(new ArrayList<>());
+    }
+
+
+    /**
+     * Get one learn
+     * @param learnName
+     * @param startDate
+     * @return 
+     */
+    public LearnDTO get(String learnName, Date startDate){
+        return config.getLearnColl()
+                .find(and(eq("name", learnName), eq("startDate", startDate)))
+                .first();
+    }    
+
+    /**
+     * Get first learn
+     *
+     * @param learnName
+     * @return
+     */
+    public LearnDTO getFirst(String learnName) {
+        return config.getLearnColl()
+                .find(eq("name", learnName))
+                .sort(Sorts.ascending("startDate"))
+                .first();
+    }
+
+    /**
+     * Get last learn
+     *
+     * @param learnName
+     * @return
+     */
+    public LearnDTO getLast(String learnName) {
+        return config.getLearnColl()
+                .find(eq("name", learnName))
+                .sort(Sorts.descending("startDate"))
+                .first();
     }
 
     /**

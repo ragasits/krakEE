@@ -63,11 +63,11 @@ public class CandleDTO {
     }
 
     /**
-     * Convert Candle fields to Tensor
+     * Convert Candle fields to ArrayList
      *
      * @return
      */
-    public Tensor toTensor() {
+    public ArrayList<Float> toArrayList() {
         ArrayList<Float> l = new ArrayList<>();
 
         l.add(this.count.floatValue());
@@ -88,8 +88,7 @@ public class CandleDTO {
         l.addAll(this.bollinger.toArrayList());
         l.addAll(this.calendar.toArrayList());
 
-        float[] f = new float[l.size()];
-        return new Tensor(f);
+        return l;
     }
 
     /**

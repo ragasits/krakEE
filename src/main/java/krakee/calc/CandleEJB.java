@@ -8,6 +8,7 @@ import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.gte;
 import static com.mongodb.client.model.Filters.lt;
+import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.client.model.Sorts;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class CandleEJB {
                 .find(eq("startDate", startDate))
                 .first();
     }
-
+    
     /**
      * Get one Candle by ID
      *
@@ -66,6 +67,19 @@ public class CandleEJB {
         return config.getCandleColl()
                 .find(eq("_id", id))
                 .first();
+    }
+    
+    /**
+     * Get Candles
+     * @param first
+     * @param last
+     * @return 
+     */
+    public List<CandleDTO> get(Date first, Date last){
+        return config.getCandleColl()
+                .find(and(gte("startDate", first), lte("startDate", last)))
+                .sort(Sorts.ascending("startDate"))
+                .into(new ArrayList<CandleDTO>());
     }
 
     /**
