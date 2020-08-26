@@ -7,6 +7,7 @@ package krakee;
 
 import java.math.BigDecimal;
 import static java.math.BigDecimal.ROUND_HALF_UP;
+import java.util.ArrayList;
 
 /**
  * My common methods
@@ -16,6 +17,20 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 public class Common {
 
     private static final BigDecimal TWO = BigDecimal.valueOf(2);
+
+    /**
+     * Convert ArrayList<Float> to float[]
+     * @param list
+     * @return 
+     */
+    public static float[] convert(ArrayList<Float> list) {
+        float[] out = new float[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            out[i] = list.get(i).floatValue();
+
+        }
+        return out;
+    }
 
     /**
      * Local BigDecimal.sqrt (Babylonian_method) Implemented only in the JAVA9

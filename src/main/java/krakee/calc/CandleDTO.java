@@ -1,6 +1,5 @@
 package krakee.calc;
 
-import deepnetts.util.Tensor;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,11 +62,11 @@ public class CandleDTO {
     }
 
     /**
-     * Convert Candle fields to ArrayList
+     * Convert Candle values to ArrayList
      *
      * @return
      */
-    public ArrayList<Float> toArrayList() {
+    public ArrayList<Float> toValueList() {
         ArrayList<Float> l = new ArrayList<>();
 
         l.add(this.count.floatValue());
@@ -84,9 +83,37 @@ public class CandleDTO {
         l.add(this.volumeBuy.floatValue());
         l.add(this.volumeSell.floatValue());
 
-        l.addAll(this.delta.toArrayList());
-        l.addAll(this.bollinger.toArrayList());
-        l.addAll(this.calendar.toArrayList());
+        l.addAll(this.delta.toValueList());
+        l.addAll(this.bollinger.toValueList());
+        l.addAll(this.calendar.toValueList());
+
+        return l;
+    }
+
+    /**
+     * Get column names
+     * @return 
+     */
+    public ArrayList<String> toColumnNameList() {
+        ArrayList<String> l = new ArrayList<>();
+
+        l.add("count");
+        l.add("countBuy");
+        l.add("countSell");
+        l.add("open");
+        l.add("low");
+        l.add("high");
+        l.add("close");
+        l.add("total");
+        l.add("totalBuy");
+        l.add("totalSell");
+        l.add("volume");
+        l.add("volumeBuy");
+        l.add("volumeSell");
+
+        l.addAll(this.delta.toColumnNameList());
+        l.addAll(this.bollinger.toColumnNameList());
+        l.addAll(this.calendar.toColumnNameList());
 
         return l;
     }

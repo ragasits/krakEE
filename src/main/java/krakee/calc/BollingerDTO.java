@@ -140,9 +140,10 @@ public class BollingerDTO {
 
     /**
      * Convert DTO fields to ArrayList<Float>
-     * @return 
+     *
+     * @return
      */
-    public ArrayList<Float> toArrayList() {
+    public ArrayList<Float> toValueList() {
         ArrayList<Float> l = new ArrayList<>();
 
         l.add(this.sma.floatValue());
@@ -184,6 +185,57 @@ public class BollingerDTO {
         l.add(this.deltaTradeUpper.floatValue());
         l.add(this.trendTradeUpperUp.floatValue());
         l.add(this.trendTradeUpperDown.floatValue());
+
+        return l;
+    }
+
+    /**
+     * Get column names
+     *
+     * @return
+     */
+    public ArrayList<String> toColumnNameList() {
+        ArrayList<String> l = new ArrayList<>();
+
+        l.add("sma");
+        l.add("deltaSma");
+        l.add("trendSmaUp");
+        l.add("trendSmaDown");
+
+        l.add("stDev");
+        l.add("deltaStDev");
+        l.add("trendStDevUp");
+        l.add("trendStDevDown");
+
+        l.add("bollingerUpper");
+        l.add("deltaBollingerUpper");
+        l.add("trendBollingerUpperUp");
+        l.add("trendBollingerUpperDown");
+
+        l.add("bollingerLower");
+        l.add("deltaBollingerLower");
+        l.add("trendBollingerLowerUp");
+        l.add("trendBollingerLowerDown");
+
+        l.add("bollingerBandWith");
+        l.add("deltaBollingerBandWith");
+        l.add("trendBollingerBandWithUp");
+        l.add("trendBollingerBandWithDown");
+
+        l.add("tradeUpper");
+        l.add("deltaTradeUpper");
+        l.add("trendTradeUpperUp");
+        l.add("trendTradeUpperDown");
+
+        l.add("tradeLower");
+        l.add("deltaTradeLower");
+        l.add("trendTradeLowerUp");
+        l.add("trendTradeLowerDown");
+
+        l.add("tradeUpper");
+        l.add("deltaTradeUpper");
+        l.add("trendTradeUpperUp");
+        l.add("trendTradeUpperDown");
 
         return l;
     }

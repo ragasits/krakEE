@@ -134,7 +134,7 @@ public class CalendarDTO {
      *
      * @return
      */
-    public ArrayList<Float> toArrayList() {
+    public ArrayList<Float> toValueList() {
         ArrayList<Float> l = new ArrayList<>();
 
         l.add((float) season);
@@ -145,6 +145,26 @@ public class CalendarDTO {
         l.add((float) julianDate);
         l.add((float) moonAge);
         l.add((float) hour);
+
+        return l;
+    }
+
+    /**
+     * Get column names
+     *
+     * @return
+     */
+    public ArrayList<String> toColumnNameList() {
+        ArrayList<String> l = new ArrayList<>();
+
+        l.add("season");
+        l.add("month");
+        l.add("week");
+        l.add("day");
+        l.add("dayOfWeek");
+        l.add("julianDate");
+        l.add("moonAge");
+        l.add("hour");
 
         return l;
     }
