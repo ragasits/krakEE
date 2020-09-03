@@ -4,7 +4,8 @@ import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-import krakee.dl.DlEJB;
+import krakee.deep.DeepDTO;
+import krakee.deep.DeepEJB;
 
 /**
  * JSF bean for Deep Learning
@@ -12,18 +13,25 @@ import krakee.dl.DlEJB;
  * @author rgt
  */
 @SessionScoped
-@Named(value = "dlBean")
-public class DlBean implements Serializable {
+@Named(value = "deepBean")
+public class DeepBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @EJB
-    private DlEJB dlEjb;
+    private DeepEJB dlEjb;
 
     private String selectedName;
-    
-    public void onLearn(){
-        dlEjb.learndDl(selectedName);
+    private DeepDTO detail;
+
+    public void onLearn() {
+        detail = new DeepDTO();
+        detail.setLearnName(selectedName);
+        this.detail = dlEjb.learndDl(detail);
+    }
+
+    public DeepDTO getDetail() {
+        return detail;
     }
 
     public String getSelectedName() {
@@ -34,5 +42,4 @@ public class DlBean implements Serializable {
         this.selectedName = selectedName;
     }
 
-    
 }

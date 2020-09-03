@@ -1,6 +1,5 @@
-+ Add neural GUI
++ BUG: NullPointerException .convertToDTO(TradeEJB.java:108)
 
-- BUG: NullPointerException .convertToDTO(TradeEJB.java:108)
 - Implement RSI
 - Review by spotbugs
 

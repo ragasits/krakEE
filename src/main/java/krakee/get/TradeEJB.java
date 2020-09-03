@@ -39,6 +39,7 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 /**
  * Download and process Trade values
+ *
  * @author rgt
  */
 @Stateless
@@ -50,7 +51,7 @@ public class TradeEJB {
     ConfigEJB config;
 
     private int pairTradeSize = 0;
-    
+
     /**
      * get Last limit size trade pairs
      *
@@ -64,7 +65,6 @@ public class TradeEJB {
                 .limit(limit)
                 .into(new ArrayList<>());
     }
-    
 
     /**
      * Get, convert, store trades from Kraken
@@ -87,11 +87,15 @@ public class TradeEJB {
         try {
             JsonObject tradeJson = this.getRestTrade(last);
             List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
-            this.pairTradeSize = pairList.size();
 
-            InsertManyResult insertMany = config.getTradePairColl().insertMany(pairList);
-  
-            LOGGER.log(Level.INFO, "Trade Fired .... " + this.pairTradeSize + " " + pairList.get(0).getLastDate());
+            if (!pairList.isEmpty()) {
+                this.pairTradeSize = pairList.size();
+                InsertManyResult insertMany = config.getTradePairColl().insertMany(pairList);
+                LOGGER.log(Level.INFO, "Trade Fired .... {0} {1}", new Object[]{this.pairTradeSize, pairList.get(0).getLastDate()});
+            } else {
+                LOGGER.log(Level.INFO, "Trade Fired .... Error");
+            }
+
             config.setRunTrade(true);
         } catch (MyException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
@@ -105,7 +109,14 @@ public class TradeEJB {
      * @return
      */
     private List<TradePairDTO> convertToDTO(JsonObject ob) {
-        String last = ob.asJsonObject().getJsonObject("result").getString("last");
+        List<TradePairDTO> tradePairList = new ArrayList<>();
+        String last = null;
+        try {
+            last = ob.asJsonObject().getJsonObject("result").getString("last");
+        } catch (NullPointerException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            return tradePairList;
+        }
 
         JsonArray errors = ob.asJsonObject().getJsonArray("error");
         StringBuilder sb = new StringBuilder();
@@ -115,7 +126,6 @@ public class TradeEJB {
         String error = sb.toString().trim();
         String pair = "XXBTZEUR";
 
-        List<TradePairDTO> tradePairList = new ArrayList<>();
         JsonArray jsonPairs = ob.asJsonObject().getJsonObject("result").getJsonArray(pair);
         for (JsonValue p : jsonPairs) {
             tradePairList.add(
@@ -172,7 +182,7 @@ public class TradeEJB {
         try {
             sc = SSLContext.getInstance("ssl");
             sc.init(null, noopTrustManager, null);
-         
+
             //"https://api.kraken.com/0/public/Trades?pair=XBTEUR&since=";
             URI apiUri = new URI(config.getKrakenURL());
 
@@ -202,7 +212,7 @@ public class TradeEJB {
         }
 
     }
-    
+
     /**
      * Check Trade consistency
      *
@@ -228,5 +238,5 @@ public class TradeEJB {
             }
         }
         return list;
-    }    
+    }
 }

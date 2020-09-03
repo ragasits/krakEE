@@ -1,4 +1,4 @@
-set KRAKEE_RUNTRADE=false
+set KRAKEE_RUNTRADE=true
 set KRAKEE_PROXYENABLED=false
 
 set KRAKEE_RUNCANDLE=false

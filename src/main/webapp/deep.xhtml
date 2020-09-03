@@ -21,21 +21,54 @@
                 <p:panel>
                     <p:panelGrid columns="6">
                         <p:outputLabel value="Learn:"/>  
-                        <p:selectOneMenu value="#{dlBean.selectedName}" id="nameList">
+                        <p:selectOneMenu value="#{deepBean.selectedName}" id="nameList">
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{learnBean.learnNameList}" var="names" 
                                            itemLabel="#{names}" itemValue="#{names}" />
                         </p:selectOneMenu>
 
                         <p:commandButton value="Calculate"  id="calcBtn" 
-                                         action="#{dlBean.onLearn()}">
-                        </p:commandButton>   
+                                         action="#{deepBean.onLearn()}" update="panel"/>
                     </p:panelGrid>
                 </p:panel>      
 
                 <p:blockUI block="form1" trigger="calcBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
+
+                <p:panel id="panel">
+                    <h:panelGrid columns="2">
+                        <p:panelGrid columns="4">
+                            <p:outputLabel value=""/>
+                            <p:outputLabel value="Count" style="font-weight: bold" />
+                            <p:outputLabel value="Buy" style="font-weight: bold" />
+                            <p:outputLabel value="Sell" style="font-weight: bold" />
+
+                            <p:outputLabel value="Source" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.sourceCount}"/>
+                            <p:outputLabel value="#{deepBean.detail.sourceBuy}"/>
+                            <p:outputLabel value="#{deepBean.detail.sourceSell}"/>
+
+                            <p:outputLabel value="Training" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.trainCount}"/>
+                            <p:outputLabel value="#{deepBean.detail.trainBuy}"/>
+                            <p:outputLabel value="#{deepBean.detail.trainSell}"/>
+
+                            <p:outputLabel value="Testing" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.testCount}"/>
+                            <p:outputLabel value="#{deepBean.detail.testBuy}"/>
+                            <p:outputLabel value="#{deepBean.detail.testSell}"/>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="4">
+                            <p:outputLabel value="numInputs" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.numInputs}"/>
+
+                            <p:outputLabel value="numOutputs" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.numOutputs}"/>
+                        </p:panelGrid>
+                    </h:panelGrid>
+                </p:panel>
             </h:form>
         </f:view>                
     </h:body>

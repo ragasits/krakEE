@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.dl;
+package krakee.deep;
 
 import deepnetts.data.TabularDataSet;
 import deepnetts.data.norm.MaxNormalizer;
@@ -45,7 +45,7 @@ import krakee.Common;
  * @author rgt
  */
 @Stateless
-public class DlEJB {
+public class DeepEJB {
 
     static final Logger LOGGER = Logger.getLogger(TradeEJB.class.getCanonicalName());
 
@@ -54,17 +54,57 @@ public class DlEJB {
     @EJB
     CandleEJB candleEjb;
 
-    int numInputs;
-    int numOutputs = 3;
+    /**
+     * Count train cases
+     *
+     * @param dto
+     * @param dataSet
+     * @return
+     */
+    private DeepDTO calcTrainCount(DeepDTO dto, TabularDataSet dataSet) {
+        List<TabularDataSet.Item> itemList = dataSet.getItems();
+        for (TabularDataSet.Item item : itemList) {
+            dto.incTrainCount();
+
+            if (item.getTargetOutput().get(1) > 0) {
+                dto.incTrainBuy();
+            } else if (item.getTargetOutput().get(2) > 0) {
+                dto.incTrainSell();
+            }
+        }
+        return dto;
+    }
+
+    /**
+     * Count test cases
+     *
+     * @param dto
+     * @param dataSet
+     * @return
+     */
+    private DeepDTO calcTestCount(DeepDTO dto, TabularDataSet dataSet) {
+        List<TabularDataSet.Item> itemList = dataSet.getItems();
+        for (TabularDataSet.Item item : itemList) {
+            dto.incTestCount();
+
+            if (item.getTargetOutput().get(1) > 0) {
+                dto.incTestBuy();
+            } else if (item.getTargetOutput().get(2) > 0) {
+                dto.incTestSell();
+            }
+        }
+        return dto;
+    }
 
     /**
      * Learn and test Neural network
      *
-     * @param learnName
+     * @param dto
+     * @return
      */
-    public void learndDl(String learnName) {
+    public DeepDTO learndDl(DeepDTO dto) {
         //Get dataset
-        TabularDataSet dataSet = this.getDlDataSet(learnName);
+        TabularDataSet dataSet = this.getDlDataSet(dto);
 
         //Normalize data
         MaxNormalizer norm = new MaxNormalizer(dataSet);
@@ -72,13 +112,16 @@ public class DlEJB {
 
         DataSet[] trainTestSet = dataSet.split(0.6, 0.4);
 
+        //Create statistics
+        dto = this.calcTrainCount(dto, (TabularDataSet) trainTestSet[0]);
+        dto = this.calcTestCount(dto, (TabularDataSet) trainTestSet[1]);
+
         // create instance of multi addLayer percetpron using builder
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
-                .addInputLayer(numInputs)
-                .addFullyConnectedLayer(100, ActivationType.TANH)
-                .addFullyConnectedLayer(100, ActivationType.TANH)
-                .addFullyConnectedLayer(100, ActivationType.TANH)
-                .addOutputLayer(numOutputs, ActivationType.SOFTMAX)
+                .addInputLayer(dto.getNumInputs())
+                .addFullyConnectedLayer(50, ActivationType.TANH)
+                .addFullyConnectedLayer(50, ActivationType.TANH)
+                .addOutputLayer(dto.getNumOutputs(), ActivationType.SOFTMAX)
                 .lossFunction(LossType.CROSS_ENTROPY)
                 .randomSeed(456)
                 .build();
@@ -101,6 +144,7 @@ public class DlEJB {
         ConfusionMatrix cm = evaluator.getConfusionMatrix();
         System.out.println(cm);
 
+        return dto;
     }
 
     /**
@@ -109,30 +153,33 @@ public class DlEJB {
      * @param learnName
      * @return
      */
-    private TabularDataSet getDlDataSet(String learnName) {
+    private TabularDataSet getDlDataSet(DeepDTO deep) {
         //Get Learning data
-        LearnDTO firstLearn = learnEjb.getFirst(learnName);
-        LearnDTO lastLearn = learnEjb.getLast(learnName);
+        LearnDTO firstLearn = learnEjb.getFirst(deep.getLearnName());
+        LearnDTO lastLearn = learnEjb.getLast(deep.getLearnName());
 
         //Get Candles
         List<CandleDTO> candleList = candleEjb.get(firstLearn.getStartDate(), lastLearn.getStartDate());
         CandleDTO c = candleEjb.get(firstLearn.getStartDate());
-        this.numInputs = c.toValueList().size();
+        deep.setNumInputs(c.toValueList().size());
+        deep.setNumOutputs(3);
 
-        TabularDataSet dataSet = new TabularDataSet(this.numInputs, this.numOutputs);
+        TabularDataSet dataSet = new TabularDataSet(deep.getNumInputs(), deep.getNumOutputs());
 
         //Add column names
         List<String> columnNames = c.toColumnNameList();
-        columnNames.add("out_nothing");
-        columnNames.add("out_buy");
-        columnNames.add("out_sell");
+        columnNames.add("nothing");
+        columnNames.add("buy");
+        columnNames.add("sell");
         dataSet.setColumnNames(columnNames.toArray(new String[0]));
 
         //Set inpuit, output data
         for (CandleDTO candleDto : candleList) {
+            deep.incSourceCount();
+
             ArrayList<Float> i = candleDto.toValueList();
             ArrayList<Float> o = new ArrayList<>();
-            LearnDTO learnDto = learnEjb.get(learnName, candleDto.getStartDate());
+            LearnDTO learnDto = learnEjb.get(deep.getLearnName(), candleDto.getStartDate());
 
             if (learnDto == null) {
                 //Do nothing
@@ -144,11 +191,13 @@ public class DlEJB {
                 o.add(0f);
                 o.add(1f);
                 o.add(0f);
+                deep.incSourceBuy();
             } else if (learnDto.getTrade().equals("sell")) {
                 //Sell
                 o.add(0f);
                 o.add(0f);
                 o.add(1f);
+                deep.incSourceSell();
             } else {
                 o.add(1f);
                 o.add(0f);
