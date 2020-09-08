@@ -1,4 +1,4 @@
-+ BUG: NullPointerException .convertToDTO(TradeEJB.java:108)
++ Export dataset to CSV
 
 - Implement RSI
 - Review by spotbugs

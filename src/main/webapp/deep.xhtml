@@ -7,6 +7,18 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
+    <script type="text/javascript">
+        //<![CDATA[
+        function start() {
+            PF('statusDialog').show();
+        }
+
+        function stop() {
+            PF('statusDialog').hide();
+        }
+        //]]>
+    </script> 
+
     <h:head>
         <title>KrakEE</title>
     </h:head>
@@ -16,6 +28,12 @@
             <h:form>
                 <ez:globalMenu/>
             </h:form>
+
+            <p:messages id="msgs" showDetail="false" />
+
+            <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
+                <p:graphicImage name="ajax-loader.gif" />
+            </p:dialog>
 
             <h:form id="form1">
                 <p:panel>
@@ -29,6 +47,15 @@
 
                         <p:commandButton value="Calculate"  id="calcBtn" 
                                          action="#{deepBean.onLearn()}" update="panel"/>
+
+                        <p:commandButton value="toCSV" icon="pi-arrow-down" ajax="false"
+                                         id="csvBtn" action="#{deepBean.onCSV()}"
+                                         onclick="PrimeFaces.monitorDownload(start, stop);">
+                            <p:fileDownload value="#{deepBean.file}" />
+                        </p:commandButton>
+
+
+
                     </p:panelGrid>
                 </p:panel>      
 

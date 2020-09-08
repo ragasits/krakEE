@@ -26,6 +26,7 @@ import deepnetts.net.loss.LossType;
 import deepnetts.net.train.BackpropagationTrainer;
 import deepnetts.net.train.opt.OptimizerType;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -38,6 +39,7 @@ import krakee.learn.LearnEJB;
 import javax.visrec.ml.data.DataSet;
 import javax.visrec.ml.eval.EvaluationMetrics;
 import krakee.Common;
+import krakee.MyException;
 
 /**
  * Manage neural network
@@ -53,6 +55,53 @@ public class DeepEJB {
     LearnEJB learnEjb;
     @EJB
     CandleEJB candleEjb;
+
+    /**
+     * Convert dataSet into csv line
+     *
+     * @param deep
+     * @return
+     * @throws krakee.MyException
+     */
+    public LinkedList<String> dataSetToCsv(DeepDTO deep) throws MyException {
+        TabularDataSet dataSet = this.getDlDataSet(deep);
+        StringBuilder sb = new StringBuilder();
+        LinkedList<String> csvList = new LinkedList<>();
+
+        //Get header
+        String[] columnNames = dataSet.getColumnNames();
+        for (int i = 0; i < columnNames.length; i++) {
+            sb.append(columnNames[i]);
+            if (i != columnNames.length - 1) {
+                sb.append(";");
+            }
+        }
+        csvList.add(sb.toString());
+
+        //Get Lines
+        float[] values;
+        List<TabularDataSet.Item> itemList = dataSet.getItems();
+        for (TabularDataSet.Item item : itemList) {
+            sb = new StringBuilder();
+            //Input values
+            values = item.getInput().getValues();
+            for (int i = 0; i < values.length; i++) {
+                sb.append(values[i]).append(";");
+            }
+
+            //Output values
+            values = item.getTargetOutput().getValues();
+            for (int i = 0; i < values.length; i++) {
+                sb.append(values[i]);
+                if (i != values.length - 1) {
+                    sb.append(";");
+                }
+            }
+
+            csvList.add(sb.toString());
+        }
+        return csvList;
+    }
 
     /**
      * Count train cases
@@ -101,8 +150,9 @@ public class DeepEJB {
      *
      * @param dto
      * @return
+     * @throws krakee.MyException
      */
-    public DeepDTO learndDl(DeepDTO dto) {
+    public DeepDTO learndDl(DeepDTO dto) throws MyException {
         //Get dataset
         TabularDataSet dataSet = this.getDlDataSet(dto);
 
@@ -153,7 +203,11 @@ public class DeepEJB {
      * @param learnName
      * @return
      */
-    private TabularDataSet getDlDataSet(DeepDTO deep) {
+    private TabularDataSet getDlDataSet(DeepDTO deep) throws MyException {
+        if (deep == null || deep.getLearnName() == null || deep.getLearnName().isEmpty()) {
+            throw new MyException("Missing: learnname");
+        }
+
         //Get Learning data
         LearnDTO firstLearn = learnEjb.getFirst(deep.getLearnName());
         LearnDTO lastLearn = learnEjb.getLast(deep.getLearnName());

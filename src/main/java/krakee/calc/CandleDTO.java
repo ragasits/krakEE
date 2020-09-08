@@ -92,7 +92,8 @@ public class CandleDTO {
 
     /**
      * Get column names
-     * @return 
+     *
+     * @return
      */
     public ArrayList<String> toColumnNameList() {
         ArrayList<String> l = new ArrayList<>();
