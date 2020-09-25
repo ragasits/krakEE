@@ -49,6 +49,10 @@ import krakee.MyException;
 @Stateless
 public class DeepEJB {
 
+    //Column indexes
+    static final int BUYPOS = 0;
+    static final int SELLPOS = 1;
+
     static final Logger LOGGER = Logger.getLogger(TradeEJB.class.getCanonicalName());
 
     @EJB
@@ -115,9 +119,9 @@ public class DeepEJB {
         for (TabularDataSet.Item item : itemList) {
             dto.incTrainCount();
 
-            if (item.getTargetOutput().get(1) > 0) {
+            if (item.getTargetOutput().get(BUYPOS) > 0f) {
                 dto.incTrainBuy();
-            } else if (item.getTargetOutput().get(2) > 0) {
+            } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
                 dto.incTrainSell();
             }
         }
@@ -136,9 +140,9 @@ public class DeepEJB {
         for (TabularDataSet.Item item : itemList) {
             dto.incTestCount();
 
-            if (item.getTargetOutput().get(1) > 0) {
+            if (item.getTargetOutput().get(BUYPOS) > 0f) {
                 dto.incTestBuy();
-            } else if (item.getTargetOutput().get(2) > 0) {
+            } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
                 dto.incTestSell();
             }
         }
@@ -216,13 +220,12 @@ public class DeepEJB {
         List<CandleDTO> candleList = candleEjb.get(firstLearn.getStartDate(), lastLearn.getStartDate());
         CandleDTO c = candleEjb.get(firstLearn.getStartDate());
         deep.setNumInputs(c.toValueList().size());
-        deep.setNumOutputs(3);
+        deep.setNumOutputs(2);
 
         TabularDataSet dataSet = new TabularDataSet(deep.getNumInputs(), deep.getNumOutputs());
 
         //Add column names
         List<String> columnNames = c.toColumnNameList();
-        columnNames.add("nothing");
         columnNames.add("buy");
         columnNames.add("sell");
         dataSet.setColumnNames(columnNames.toArray(new String[0]));
@@ -237,23 +240,19 @@ public class DeepEJB {
 
             if (learnDto == null) {
                 //Do nothing
-                o.add(1f);
                 o.add(0f);
                 o.add(0f);
             } else if (learnDto.getTrade().equals("buy")) {
                 //Buy
-                o.add(0f);
                 o.add(1f);
                 o.add(0f);
                 deep.incSourceBuy();
             } else if (learnDto.getTrade().equals("sell")) {
                 //Sell
                 o.add(0f);
-                o.add(0f);
                 o.add(1f);
                 deep.incSourceSell();
             } else {
-                o.add(1f);
                 o.add(0f);
                 o.add(0f);
             }
