@@ -64,37 +64,87 @@
                 </p:blockUI>    
 
                 <p:panel id="panel">
-                    <h:panelGrid columns="2">
-                        <p:panelGrid columns="4">
-                            <p:outputLabel value=""/>
-                            <p:outputLabel value="Count" style="font-weight: bold" />
-                            <p:outputLabel value="Buy" style="font-weight: bold" />
-                            <p:outputLabel value="Sell" style="font-weight: bold" />
+                    <p:panel header="Input"  >
+                        <p:panelGrid columns="2">
+                            <p:panelGrid columns="4" >
+                                <p:outputLabel value=""/>
+                                <p:outputLabel value="Count" style="font-weight: bold" />
+                                <p:outputLabel value="Buy" style="font-weight: bold" />
+                                <p:outputLabel value="Sell" style="font-weight: bold" />
 
-                            <p:outputLabel value="Source" style="font-weight: bold" />
-                            <p:outputLabel value="#{deepBean.detail.sourceCount}"/>
-                            <p:outputLabel value="#{deepBean.detail.sourceBuy}"/>
-                            <p:outputLabel value="#{deepBean.detail.sourceSell}"/>
+                                <p:outputLabel value="Source" style="font-weight: bold" />
+                                <p:outputLabel value="#{deepBean.detail.sourceCount}"/>
+                                <p:outputLabel value="#{deepBean.detail.sourceBuy}"/>
+                                <p:outputLabel value="#{deepBean.detail.sourceSell}"/>
 
-                            <p:outputLabel value="Training" style="font-weight: bold" />
-                            <p:outputLabel value="#{deepBean.detail.trainCount}"/>
-                            <p:outputLabel value="#{deepBean.detail.trainBuy}"/>
-                            <p:outputLabel value="#{deepBean.detail.trainSell}"/>
+                                <p:outputLabel value="Training" style="font-weight: bold" />
+                                <p:outputLabel value="#{deepBean.detail.trainCount}"/>
+                                <p:outputLabel value="#{deepBean.detail.trainBuy}"/>
+                                <p:outputLabel value="#{deepBean.detail.trainSell}"/>
 
-                            <p:outputLabel value="Testing" style="font-weight: bold" />
-                            <p:outputLabel value="#{deepBean.detail.testCount}"/>
-                            <p:outputLabel value="#{deepBean.detail.testBuy}"/>
-                            <p:outputLabel value="#{deepBean.detail.testSell}"/>
+                                <p:outputLabel value="Testing" style="font-weight: bold" />
+                                <p:outputLabel value="#{deepBean.detail.testCount}"/>
+                                <p:outputLabel value="#{deepBean.detail.testBuy}"/>
+                                <p:outputLabel value="#{deepBean.detail.testSell}"/>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="4" >
+                                <p:outputLabel value="numInputs" style="font-weight: bold"/>
+                                <p:outputLabel value="#{deepBean.detail.numInputs}"/>
+
+                                <p:outputLabel value="numOutputs" style="font-weight: bold" />
+                                <p:outputLabel value="#{deepBean.detail.numOutputs}"/>
+                            </p:panelGrid>
                         </p:panelGrid>
+                    </p:panel>
 
-                        <p:panelGrid columns="4">
-                            <p:outputLabel value="numInputs" style="font-weight: bold" />
-                            <p:outputLabel value="#{deepBean.detail.numInputs}"/>
+                    <p:panel header="Classifier Evaluation Metrics">
+                        <p:panelGrid columns="6">
+                            <p:outputLabel value="MeanAbsoluteError" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emMeanAbsoluteError}"/>
+                            <p:outputLabel value=""/> 
 
-                            <p:outputLabel value="numOutputs" style="font-weight: bold" />
-                            <p:outputLabel value="#{deepBean.detail.numOutputs}"/>
+                            <p:outputLabel value="MeanSquaredError" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emMeanSquaredError}"/>                                
+                            <p:outputLabel value=""/> 
+
+                            <p:outputLabel value="RootMeanSquaredError" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emRootMeanSquaredError}"/>                                       
+                            <p:outputLabel value=""/> 
+
+                            <p:outputLabel value="ResidualSquareSum" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emResidualSquareSum}"/>      
+                            <p:outputLabel value=""/> 
+
+                            <p:outputLabel value="ResidualStandardError" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emResidualStandardError}"/>      
+                            <p:outputLabel value=""/> 
+
+                            <p:outputLabel value="RSquared" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emRSquared}"/>      
+                            <p:outputLabel value=""/> 
+
+                            <p:outputLabel value="FStatistics" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emFStatistics}"/>      
+                            <p:outputLabel value=""/> 
+
+                            <p:outputLabel value="Accuracy" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emAccuracy}"/>      
+                            <p:outputLabel value="How often is classifier correct in total"/> 
+
+                            <p:outputLabel value="Precision" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emPrecision}"/>      
+                            <p:outputLabel value="How often is classifier correct when it gives positive prediction"/> 
+
+                            <p:outputLabel value="Recall" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emRecall}"/>      
+                            <p:outputLabel value="When it is actually positive class, how often does it give positive prediction"/> 
+
+                            <p:outputLabel value="F1Score" style="font-weight: bold" />
+                            <p:outputLabel value="#{deepBean.detail.emF1Score}"/>                                     
+                            <p:outputLabel value="(Average of precision and recall"/> 
                         </p:panelGrid>
-                    </h:panelGrid>
+                    </p:panel>
                 </p:panel>
             </h:form>
         </f:view>                

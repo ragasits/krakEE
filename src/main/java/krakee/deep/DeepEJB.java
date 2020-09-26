@@ -182,7 +182,7 @@ public class DeepEJB {
 
         // create and configure instanceof backpropagation trainer
         BackpropagationTrainer trainer = neuralNet.getTrainer();
-        trainer.setMaxError(0.04f);
+        trainer.setMaxError(0.7f);
         trainer.setLearningRate(0.01f);
         trainer.setMomentum(0.9f);
         trainer.setOptimizer(OptimizerType.MOMENTUM);
@@ -192,8 +192,8 @@ public class DeepEJB {
         // evaluate/test classifier
         ClassifierEvaluator evaluator = new ClassifierEvaluator();
         EvaluationMetrics em = evaluator.evaluate(neuralNet, trainTestSet[1]);
-        System.out.println("CLASSIFIER EVALUATION METRICS");
-        System.out.println(em);
+        dto.setEvaluationMetrics(em);
+
         System.out.println("CONFUSION MATRIX");
         ConfusionMatrix cm = evaluator.getConfusionMatrix();
         System.out.println(cm);

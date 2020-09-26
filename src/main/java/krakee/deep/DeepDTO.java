@@ -16,6 +16,8 @@
  */
 package krakee.deep;
 
+import javax.visrec.ml.eval.EvaluationMetrics;
+
 /**
  * Store Neural Network parameters and results
  *
@@ -39,6 +41,53 @@ public class DeepDTO {
     private int testCount = 0;
     private int testBuy = 0;
     private int testSell = 0;
+
+    //EvaluationMetrics
+    private Float emMeanAbsoluteError;
+    private Float emMeanSquaredError;
+    private Float emRootMeanSquaredError;
+    private Float emResidualSquareSum;
+    private Float emResidualStandardError;
+    private Float emRSquared;
+    private Float emFStatistics;
+    private Float emAccuracy;
+    private Float emPrecision;
+    private Float emRecall;
+    private Float emF1Score;
+
+    
+    /**
+     * Get metrics value, manage nulls
+     * @param em
+     * @param key
+     * @return 
+     */
+    private Float getMetrics(EvaluationMetrics em, String key){
+        try {
+            return em.get(key);
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Store EvaluationMetrics values
+     *
+     * @param em
+     */
+    public void setEvaluationMetrics(EvaluationMetrics em) {
+        this.emMeanAbsoluteError = getMetrics(em,"MeanAbsoluteError");
+        this.emMeanSquaredError = getMetrics(em,"MeanSquaredError");
+        this.emRootMeanSquaredError = getMetrics(em,"RootMeanSquaredError");
+        this.emResidualSquareSum = getMetrics(em,"ResidualSquareSum");
+        this.emResidualStandardError = getMetrics(em,"ResidualStandardError");
+        this.emRSquared = getMetrics(em,"RSquared");
+        this.emFStatistics = getMetrics(em,"FStatistics");
+        this.emAccuracy = getMetrics(em,"Accuracy");
+        this.emPrecision = getMetrics(em,"Precision");
+        this.emRecall = getMetrics(em,"Recall");
+        this.emF1Score = getMetrics(em,"F1Score");
+    }
 
     public int getTrainCount() {
         return trainCount;
@@ -135,7 +184,49 @@ public class DeepDTO {
     public void setNumOutputs(int numOutputs) {
         this.numOutputs = numOutputs;
     }
-    
-    
+
+    public Float getEmMeanAbsoluteError() {
+        return emMeanAbsoluteError;
+    }
+
+    public Float getEmMeanSquaredError() {
+        return emMeanSquaredError;
+    }
+
+    public Float getEmRootMeanSquaredError() {
+        return emRootMeanSquaredError;
+    }
+
+    public Float getEmResidualSquareSum() {
+        return emResidualSquareSum;
+    }
+
+    public Float getEmResidualStandardError() {
+        return emResidualStandardError;
+    }
+
+    public Float getEmRSquared() {
+        return emRSquared;
+    }
+
+    public Float getEmFStatistics() {
+        return emFStatistics;
+    }
+
+    public Float getEmAccuracy() {
+        return emAccuracy;
+    }
+
+    public Float getEmPrecision() {
+        return emPrecision;
+    }
+
+    public Float getEmRecall() {
+        return emRecall;
+    }
+
+    public Float getEmF1Score() {
+        return emF1Score;
+    }
 
 }
