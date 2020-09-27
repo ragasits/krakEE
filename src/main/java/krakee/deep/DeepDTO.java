@@ -43,13 +43,6 @@ public class DeepDTO {
     private int testSell = 0;
 
     //EvaluationMetrics
-    private Float emMeanAbsoluteError;
-    private Float emMeanSquaredError;
-    private Float emRootMeanSquaredError;
-    private Float emResidualSquareSum;
-    private Float emResidualStandardError;
-    private Float emRSquared;
-    private Float emFStatistics;
     private Float emAccuracy;
     private Float emPrecision;
     private Float emRecall;
@@ -76,13 +69,6 @@ public class DeepDTO {
      * @param em
      */
     public void setEvaluationMetrics(EvaluationMetrics em) {
-        this.emMeanAbsoluteError = getMetrics(em,"MeanAbsoluteError");
-        this.emMeanSquaredError = getMetrics(em,"MeanSquaredError");
-        this.emRootMeanSquaredError = getMetrics(em,"RootMeanSquaredError");
-        this.emResidualSquareSum = getMetrics(em,"ResidualSquareSum");
-        this.emResidualStandardError = getMetrics(em,"ResidualStandardError");
-        this.emRSquared = getMetrics(em,"RSquared");
-        this.emFStatistics = getMetrics(em,"FStatistics");
         this.emAccuracy = getMetrics(em,"Accuracy");
         this.emPrecision = getMetrics(em,"Precision");
         this.emRecall = getMetrics(em,"Recall");
@@ -183,34 +169,6 @@ public class DeepDTO {
 
     public void setNumOutputs(int numOutputs) {
         this.numOutputs = numOutputs;
-    }
-
-    public Float getEmMeanAbsoluteError() {
-        return emMeanAbsoluteError;
-    }
-
-    public Float getEmMeanSquaredError() {
-        return emMeanSquaredError;
-    }
-
-    public Float getEmRootMeanSquaredError() {
-        return emRootMeanSquaredError;
-    }
-
-    public Float getEmResidualSquareSum() {
-        return emResidualSquareSum;
-    }
-
-    public Float getEmResidualStandardError() {
-        return emResidualStandardError;
-    }
-
-    public Float getEmRSquared() {
-        return emRSquared;
-    }
-
-    public Float getEmFStatistics() {
-        return emFStatistics;
     }
 
     public Float getEmAccuracy() {
