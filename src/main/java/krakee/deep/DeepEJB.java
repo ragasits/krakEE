@@ -194,10 +194,9 @@ public class DeepEJB {
         EvaluationMetrics em = evaluator.evaluate(neuralNet, trainTestSet[1]);
         dto.setEvaluationMetrics(em);
 
-        System.out.println("CONFUSION MATRIX");
         ConfusionMatrix cm = evaluator.getConfusionMatrix();
-        System.out.println(cm);
-
+        dto.setConfusionMatrix(cm);
+        
         return dto;
     }
 

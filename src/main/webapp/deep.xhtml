@@ -5,7 +5,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
     <script type="text/javascript">
         //<![CDATA[
@@ -98,25 +99,46 @@
                         </p:panelGrid>
                     </p:panel>
 
-                    <p:panel header="Classifier Evaluation Metrics">
-                        <p:panelGrid columns="3">
-                            <p:outputLabel value="Accuracy" style="font-weight: bold" />
-                            <p:outputLabel value="#{deepBean.detail.emAccuracy}"/>      
-                            <p:outputLabel value="How often is classifier correct in total"/> 
+                    <p:panelGrid columns="2">
+                        <p:panel header="Classifier Evaluation Metrics">
+                            <p:panelGrid columns="3">
+                                <p:outputLabel value="Accuracy" style="font-weight: bold" />
+                                <p:outputLabel value="#{deepBean.detail.emAccuracy}"/>      
+                                <p:outputLabel value="How often is classifier correct in total"/> 
 
-                            <p:outputLabel value="Precision" style="font-weight: bold" />
-                            <p:outputLabel value="#{deepBean.detail.emPrecision}"/>      
-                            <p:outputLabel value="How often is classifier correct when it gives positive prediction"/> 
+                                <p:outputLabel value="Precision" style="font-weight: bold" />
+                                <p:outputLabel value="#{deepBean.detail.emPrecision}"/>      
+                                <p:outputLabel value="How often is classifier correct when it gives positive prediction"/> 
 
-                            <p:outputLabel value="Recall" style="font-weight: bold" />
-                            <p:outputLabel value="#{deepBean.detail.emRecall}"/>      
-                            <p:outputLabel value="When it is actually positive class, how often does it give positive prediction"/> 
+                                <p:outputLabel value="Recall" style="font-weight: bold" />
+                                <p:outputLabel value="#{deepBean.detail.emRecall}"/>      
+                                <p:outputLabel value="When it is actually positive class, how often does it give positive prediction"/> 
 
-                            <p:outputLabel value="F1Score" style="font-weight: bold" />
-                            <p:outputLabel value="#{deepBean.detail.emF1Score}"/>                                     
-                            <p:outputLabel value="(Average of precision and recall"/> 
-                        </p:panelGrid>
-                    </p:panel>
+                                <p:outputLabel value="F1Score" style="font-weight: bold" />
+                                <p:outputLabel value="#{deepBean.detail.emF1Score}"/>                                     
+                                <p:outputLabel value="(Average of precision and recall"/> 
+                            </p:panelGrid>
+                        </p:panel>
+
+                        <p:panel header="Confusion Matrix">
+                            <p:dataTable var="rowName" value="#{deepBean.detail.cmClassLabels}" rowIndexVar="rowIdx"
+                                         tableStyle="width:auto">
+                                <p:column headerText="" style="font-weight: bold" >
+                                    <h:outputText value="#{rowName}" />
+                                </p:column>
+
+
+                                <p:columns var="columnName" value="#{deepBean.detail.cmClassLabels}" 
+                                           headerText="#{columnName}" columnIndexVar="colIdx">
+
+                                    <ui:repeat value="#{deepBean.detail.cmValues[rowIdx][colIdx]}" var="data">
+                                        <h:outputText value="#{data}"/>
+                                    </ui:repeat>
+                                </p:columns>
+
+                            </p:dataTable>
+                        </p:panel>
+                    </p:panelGrid>
                 </p:panel>
             </h:form>
         </f:view>                

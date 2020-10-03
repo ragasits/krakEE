@@ -16,6 +16,7 @@
  */
 package krakee.deep;
 
+import deepnetts.eval.ConfusionMatrix;
 import javax.visrec.ml.eval.EvaluationMetrics;
 
 /**
@@ -48,31 +49,50 @@ public class DeepDTO {
     private Float emRecall;
     private Float emF1Score;
 
-    
+    //ConfusionMatrix
+    private String[] cmClassLabels;
+    private int[][] cmValues;
+
     /**
      * Get metrics value, manage nulls
+     *
      * @param em
      * @param key
-     * @return 
+     * @return
      */
-    private Float getMetrics(EvaluationMetrics em, String key){
+    private Float getMetrics(EvaluationMetrics em, String key) {
         try {
             return em.get(key);
         } catch (NullPointerException e) {
             return null;
         }
     }
-    
+
     /**
      * Store EvaluationMetrics values
      *
-     * @param em
+     * @param em 
      */
     public void setEvaluationMetrics(EvaluationMetrics em) {
-        this.emAccuracy = getMetrics(em,"Accuracy");
-        this.emPrecision = getMetrics(em,"Precision");
-        this.emRecall = getMetrics(em,"Recall");
-        this.emF1Score = getMetrics(em,"F1Score");
+        this.emAccuracy = getMetrics(em, "Accuracy");
+        this.emPrecision = getMetrics(em, "Precision");
+        this.emRecall = getMetrics(em, "Recall");
+        this.emF1Score = getMetrics(em, "F1Score");
+    }
+
+    /**
+     * Store ConfusionMatrix values
+     * @param m 
+     */
+    public void setConfusionMatrix(ConfusionMatrix m) {
+        this.cmClassLabels = m.getClassLabels();
+        this.cmValues = new int[this.cmClassLabels.length][this.cmClassLabels.length];
+
+        for (int i = 0; i < cmClassLabels.length; i++) {
+            for (int j = 0; j < cmClassLabels.length; j++) {
+                this.cmValues[i][j] = m.get(i, j);
+            }
+        }
     }
 
     public int getTrainCount() {
@@ -186,5 +206,17 @@ public class DeepDTO {
     public Float getEmF1Score() {
         return emF1Score;
     }
+
+    public String[] getCmClassLabels() {
+        return cmClassLabels;
+    }
+
+    public int[][] getCmValues() {
+        return cmValues;
+    }
+
+
+    
+    
 
 }
