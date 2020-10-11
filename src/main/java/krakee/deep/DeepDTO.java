@@ -16,7 +16,9 @@
  */
 package krakee.deep;
 
+import deepnetts.data.TabularDataSet;
 import deepnetts.eval.ConfusionMatrix;
+import java.util.ArrayList;
 import javax.visrec.ml.eval.EvaluationMetrics;
 
 /**
@@ -29,6 +31,10 @@ public class DeepDTO {
     private String learnName;
     private int numInputs;
     private int numOutputs;
+
+    private ArrayList<String> columnNames;
+    private float[][] inputValues;
+    private float[][] outputValues;
 
     //Learning data
     private int sourceCount = 0;
@@ -71,7 +77,7 @@ public class DeepDTO {
     /**
      * Store EvaluationMetrics values
      *
-     * @param em 
+     * @param em
      */
     public void setEvaluationMetrics(EvaluationMetrics em) {
         this.emAccuracy = getMetrics(em, "Accuracy");
@@ -82,7 +88,8 @@ public class DeepDTO {
 
     /**
      * Store ConfusionMatrix values
-     * @param m 
+     *
+     * @param m
      */
     public void setConfusionMatrix(ConfusionMatrix m) {
         this.cmClassLabels = m.getClassLabels();
@@ -93,6 +100,39 @@ public class DeepDTO {
                 this.cmValues[i][j] = m.get(i, j);
             }
         }
+    }
+
+    /**
+     * Merge in out arrays
+     * @return 
+     */
+    public float[][] getInOutValues() {
+        float[][] values = new float[this.inputValues.length][this.numInputs + this.numOutputs];
+
+        for (int i = 0; i < this.inputValues.length; i++) {
+
+            //Input values
+            System.arraycopy(this.inputValues[i], 0, values[i], 0, this.numInputs);
+
+            //Output values
+            System.arraycopy(this.outputValues[i], 0, values[i], this.numInputs, this.numOutputs);
+        }
+
+        return values;
+    }
+
+    /**
+     * Convert in out arrays to Data set
+     * @return 
+     */
+    public TabularDataSet getDataset() {
+        TabularDataSet dataSet = new TabularDataSet(this.numInputs, this.numOutputs);
+        dataSet.setColumnNames(columnNames.toArray(new String[0]));
+        
+        for (int i = 0; i< inputValues.length; i++){
+          dataSet.add(new TabularDataSet.Item(inputValues[i], outputValues[i]));  
+        }
+        return dataSet;
     }
 
     public int getTrainCount() {
@@ -215,8 +255,28 @@ public class DeepDTO {
         return cmValues;
     }
 
+    public ArrayList<String> getColumnNames() {
+        return columnNames;
+    }
 
-    
-    
+    public void setColumnNames(ArrayList<String> columnNames) {
+        this.columnNames = columnNames;
+    }
+
+    public float[][] getInputValues() {
+        return inputValues;
+    }
+
+    public void setInputValues(float[][] inputValues) {
+        this.inputValues = inputValues;
+    }
+
+    public float[][] getOutputValues() {
+        return outputValues;
+    }
+
+    public void setOutputValues(float[][] outputValues) {
+        this.outputValues = outputValues;
+    }
 
 }

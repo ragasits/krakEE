@@ -1,11 +1,14 @@
-+ Add Confusion Matrix to the GUI
++ GUI: Store and show inOut values
+
+- Export inOut values to CSV, XLS
+- Save deepDTO
+- Add Neural parameters from the GUI
 
 - Implement RSI
 - Review by spotbugs
 
 Future:
 --------
-
 - Self learning with Neural networks
 - Optimize mongodb
 - Candle1d (one day) + Simulation

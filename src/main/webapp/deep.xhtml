@@ -8,18 +8,6 @@
       xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-    <script type="text/javascript">
-        //<![CDATA[
-        function start() {
-            PF('statusDialog').show();
-        }
-
-        function stop() {
-            PF('statusDialog').hide();
-        }
-        //]]>
-    </script> 
-
     <h:head>
         <title>KrakEE</title>
     </h:head>
@@ -30,13 +18,11 @@
                 <ez:globalMenu/>
             </h:form>
 
-            <p:messages id="msgs" showDetail="false" />
-
-            <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
-                <p:graphicImage name="ajax-loader.gif" />
-            </p:dialog>
-
             <h:form id="form1">
+                <p:messages id="msgs" showDetail="false" >
+                    <p:autoUpdate />
+                </p:messages>
+
                 <p:panel>
                     <p:panelGrid columns="6">
                         <p:outputLabel value="Learn:"/>  
@@ -46,27 +32,35 @@
                                            itemLabel="#{names}" itemValue="#{names}" />
                         </p:selectOneMenu>
 
+                        <p:commandButton value="DataSet"  id="dsBtn" 
+                                         action="#{deepBean.onDataset()}" update="panel, calcBtn"/>
+
                         <p:commandButton value="Calculate"  id="calcBtn" 
-                                         action="#{deepBean.onLearn()}" update="panel"/>
-
-                        <p:commandButton value="toCSV" icon="pi-arrow-down" ajax="false"
-                                         id="csvBtn" action="#{deepBean.onCSV()}"
-                                         onclick="PrimeFaces.monitorDownload(start, stop);">
-                            <p:fileDownload value="#{deepBean.file}" />
-                        </p:commandButton>
-
-
+                                         disabled="#{deepBean.disableBtn}" action="#{deepBean.onLearn()}" 
+                                         update="panel"/>
 
                     </p:panelGrid>
-                </p:panel>      
+                </p:panel>   
 
-                <p:blockUI block="form1" trigger="calcBtn">
+                <p:blockUI block="form1" trigger="calcBtn, inBtn, dsBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
 
                 <p:panel id="panel">
                     <p:panel header="Input"  >
                         <p:panelGrid columns="2">
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="numInputs" style="font-weight: bold"/>
+                                <p:outputLabel value="#{deepBean.detail.numInputs}"/>
+
+                                <p:outputLabel value="numOutputs" style="font-weight: bold" />
+                                <p:outputLabel value="#{deepBean.detail.numOutputs}"/>
+
+                                <p:outputLabel value="" style="font-weight: bold"/>
+                                <p:commandButton value="Show" id="inBtn" disabled="#{deepBean.disableBtn}" 
+                                                 action="#{deepBean.onInput()}"/>
+                            </p:panelGrid>
+
                             <p:panelGrid columns="4" >
                                 <p:outputLabel value=""/>
                                 <p:outputLabel value="Count" style="font-weight: bold" />
@@ -87,14 +81,6 @@
                                 <p:outputLabel value="#{deepBean.detail.testCount}"/>
                                 <p:outputLabel value="#{deepBean.detail.testBuy}"/>
                                 <p:outputLabel value="#{deepBean.detail.testSell}"/>
-                            </p:panelGrid>
-
-                            <p:panelGrid columns="4" >
-                                <p:outputLabel value="numInputs" style="font-weight: bold"/>
-                                <p:outputLabel value="#{deepBean.detail.numInputs}"/>
-
-                                <p:outputLabel value="numOutputs" style="font-weight: bold" />
-                                <p:outputLabel value="#{deepBean.detail.numOutputs}"/>
                             </p:panelGrid>
                         </p:panelGrid>
                     </p:panel>

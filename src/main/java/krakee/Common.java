@@ -26,8 +26,7 @@ public class Common {
     public static float[] convert(ArrayList<Float> list) {
         float[] out = new float[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            out[i] = list.get(i).floatValue();
-
+            out[i] = list.get(i);
         }
         return out;
     }

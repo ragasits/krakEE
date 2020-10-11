@@ -26,7 +26,6 @@ import deepnetts.net.loss.LossType;
 import deepnetts.net.train.BackpropagationTrainer;
 import deepnetts.net.train.opt.OptimizerType;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -38,7 +37,6 @@ import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 import javax.visrec.ml.data.DataSet;
 import javax.visrec.ml.eval.EvaluationMetrics;
-import krakee.Common;
 import krakee.MyException;
 
 /**
@@ -59,53 +57,6 @@ public class DeepEJB {
     LearnEJB learnEjb;
     @EJB
     CandleEJB candleEjb;
-
-    /**
-     * Convert dataSet into csv line
-     *
-     * @param deep
-     * @return
-     * @throws krakee.MyException
-     */
-    public LinkedList<String> dataSetToCsv(DeepDTO deep) throws MyException {
-        TabularDataSet dataSet = this.getDlDataSet(deep);
-        StringBuilder sb = new StringBuilder();
-        LinkedList<String> csvList = new LinkedList<>();
-
-        //Get header
-        String[] columnNames = dataSet.getColumnNames();
-        for (int i = 0; i < columnNames.length; i++) {
-            sb.append(columnNames[i]);
-            if (i != columnNames.length - 1) {
-                sb.append(";");
-            }
-        }
-        csvList.add(sb.toString());
-
-        //Get Lines
-        float[] values;
-        List<TabularDataSet.Item> itemList = dataSet.getItems();
-        for (TabularDataSet.Item item : itemList) {
-            sb = new StringBuilder();
-            //Input values
-            values = item.getInput().getValues();
-            for (int i = 0; i < values.length; i++) {
-                sb.append(values[i]).append(";");
-            }
-
-            //Output values
-            values = item.getTargetOutput().getValues();
-            for (int i = 0; i < values.length; i++) {
-                sb.append(values[i]);
-                if (i != values.length - 1) {
-                    sb.append(";");
-                }
-            }
-
-            csvList.add(sb.toString());
-        }
-        return csvList;
-    }
 
     /**
      * Count train cases
@@ -153,12 +104,11 @@ public class DeepEJB {
      * Learn and test Neural network
      *
      * @param dto
-     * @return
      * @throws krakee.MyException
      */
-    public DeepDTO learndDl(DeepDTO dto) throws MyException {
+    public void learndDl(DeepDTO dto) throws MyException {
         //Get dataset
-        TabularDataSet dataSet = this.getDlDataSet(dto);
+        TabularDataSet dataSet = dto.getDataset();
 
         //Normalize data
         MaxNormalizer norm = new MaxNormalizer(dataSet);
@@ -196,17 +146,14 @@ public class DeepEJB {
 
         ConfusionMatrix cm = evaluator.getConfusionMatrix();
         dto.setConfusionMatrix(cm);
-        
-        return dto;
     }
 
     /**
-     * Collect Deep learning dataSet
-     *
-     * @param learnName
-     * @return
+     * Create and store input, out values from the Candles and the Learning data
+     * @param deep
+     * @throws MyException 
      */
-    private TabularDataSet getDlDataSet(DeepDTO deep) throws MyException {
+    public void createDlValues(DeepDTO deep) throws MyException {
         if (deep == null || deep.getLearnName() == null || deep.getLearnName().isEmpty()) {
             throw new MyException("Missing: learnname");
         }
@@ -221,44 +168,50 @@ public class DeepEJB {
         deep.setNumInputs(c.toValueList().size());
         deep.setNumOutputs(2);
 
-        TabularDataSet dataSet = new TabularDataSet(deep.getNumInputs(), deep.getNumOutputs());
-
         //Add column names
-        List<String> columnNames = c.toColumnNameList();
+        ArrayList<String> columnNames = c.toColumnNameList();
         columnNames.add("buy");
         columnNames.add("sell");
-        dataSet.setColumnNames(columnNames.toArray(new String[0]));
+        deep.setColumnNames(columnNames);
 
-        //Set inpuit, output data
+        float[][] inputValues = new float[candleList.size()][deep.getNumInputs()];
+        float[][] outputValues = new float[candleList.size()][deep.getNumOutputs()];
+
+        //Set input, output data
+        int i = 0;
         for (CandleDTO candleDto : candleList) {
             deep.incSourceCount();
 
-            ArrayList<Float> i = candleDto.toValueList();
-            ArrayList<Float> o = new ArrayList<>();
+            float[] in = candleDto.tovalueArray();
+            float[] out = new float[deep.getNumOutputs()];
             LearnDTO learnDto = learnEjb.get(deep.getLearnName(), candleDto.getStartDate());
 
             if (learnDto == null) {
                 //Do nothing
-                o.add(0f);
-                o.add(0f);
+                out[0] = 0f;
+                out[1] = 0f;
             } else if (learnDto.getTrade().equals("buy")) {
                 //Buy
-                o.add(1f);
-                o.add(0f);
+                out[0] = 1f;
+                out[1] = 0f;
                 deep.incSourceBuy();
             } else if (learnDto.getTrade().equals("sell")) {
                 //Sell
-                o.add(0f);
-                o.add(1f);
+                out[0] = 0f;
+                out[1] = 1f;
                 deep.incSourceSell();
             } else {
-                o.add(0f);
-                o.add(0f);
+                out[0] = 0f;
+                out[1] = 0f;
             }
 
-            //Make dataset
-            dataSet.add(new TabularDataSet.Item(Common.convert(i), Common.convert(o)));
+            System.arraycopy(in, 0, inputValues[i], 0, in.length);
+            System.arraycopy(out, 0, outputValues[i], 0, out.length);
+            i++;
         }
-        return dataSet;
+
+        //Store values
+        deep.setInputValues(inputValues);
+        deep.setOutputValues(outputValues);
     }
 }

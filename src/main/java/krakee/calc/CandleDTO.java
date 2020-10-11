@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import krakee.Common;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
@@ -88,6 +89,14 @@ public class CandleDTO {
         l.addAll(this.calendar.toValueList());
 
         return l;
+    }
+    
+    /** 
+     * Convert  Candle values to array
+     * @return 
+     */ 
+    public float[] tovalueArray(){
+        return Common.convert(this.toValueList());
     }
 
     /**
