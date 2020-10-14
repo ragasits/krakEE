@@ -6,3 +6,4 @@
 /micro/payara-micro-5.194.jar
 /micro/root
 /logs
+/micro/logs/*.log

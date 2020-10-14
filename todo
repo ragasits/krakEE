@@ -1,5 +1,6 @@
-+ GUI: Store and show inOut values
++ Migrate to JakartaEE 9.0.0-RC2 + Paraya Micro 5.2020.5
 
+- JakartaEE9 migration Bug:  Compilation failure CandleBean.java:[118,48] cannot access javax.faces.event.AjaxBehaviorEvent
 - Export inOut values to CSV, XLS
 - Save deepDTO
 - Add Neural parameters from the GUI
