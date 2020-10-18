@@ -7,9 +7,9 @@ package krakee.web;
 
 import java.io.Serializable;
 import java.util.List;
-import jakarta.ejb.EJB;
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Named;
+import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import krakee.profit.ProfitItemDTO;
 import krakee.profit.ProfitDTO;
 import krakee.profit.ProfitEJB;

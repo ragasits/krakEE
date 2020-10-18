@@ -1,7 +1,6 @@
-+ Migrate to JakartaEE 9.0.0-RC2 + Paraya Micro 5.2020.5
++ Revert back to JakartaEE8 (We had several problems after migration. See todo)
++ Export inOut values to CSV file
 
-- JakartaEE9 migration Bug:  Compilation failure CandleBean.java:[118,48] cannot access javax.faces.event.AjaxBehaviorEvent
-- Export inOut values to CSV, XLS
 - Save deepDTO
 - Add Neural parameters from the GUI
 
@@ -10,10 +9,14 @@
 
 Future:
 --------
+Migrate to JakartaEE9:
+- The Netbeans doesn't support it yet (JSF, Composite: No library found for namespace)  
+- Bug:  Compilation failure CandleBean.java:[118,48] cannot access javax.faces.event.AjaxBehaviorEvent
+- Change JDK (11LTS?)
+
 - Self learning with Neural networks
 - Optimize mongodb
 - Candle1d (one day) + Simulation
-- Change JDK (11LTS?)
 - calc: get national bank holidays (https://holidaydata.io/) and calculate distances
 
 Optional:

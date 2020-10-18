@@ -1,9 +1,9 @@
 package krakee.web;
 
 import java.io.Serializable;
-import jakarta.ejb.EJB;
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Named;
+import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import krakee.ConfigEJB;
 import krakee.TimerEjb;
 

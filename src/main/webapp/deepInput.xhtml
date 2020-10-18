@@ -8,6 +8,18 @@
       xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
+    <script type="text/javascript">
+        //<![CDATA[
+        function start() {
+            PF('statusDialog').show();
+        }
+
+        function stop() {
+            PF('statusDialog').hide();
+        }
+        //]]>
+    </script> 
+
     <h:head>
         <title>KrakEE</title>
     </h:head>
@@ -18,7 +30,19 @@
                 <ez:globalMenu/>
             </h:form>
 
+            <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
+                <p:graphicImage name="ajax-loader.gif" />
+            </p:dialog>
+
             <h:form id="form1">
+                <p:panel>
+                    <p:commandLink actionListener="#{deepBean.onCSV}"
+                                   onclick="PrimeFaces.monitorDownload(start, stop);"
+                                   ajax="false">
+                        <p:graphicImage name="csv.png" width="24"/>
+                        <p:fileDownload value="#{deepBean.file}" />
+                    </p:commandLink>
+                </p:panel>
                 <p:panel>
                     <p:dataTable var="rowName" value="#{deepBean.detail.inputValues}" id="tbl"
                                  rowIndexVar="rowIdx"
@@ -26,15 +50,6 @@
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                  rowsPerPageTemplate="25, 50,100">
-
-                        <f:facet name="{Exporters}">
-                            <div style="float:left;padding-top: 5px;">
-                                <h:commandLink>
-                                    <p:graphicImage name="/resources/ajax-loader.gif" width="24"/>
-                                    <p:dataExporter type="xls" target="tbl" fileName="input" />
-                                </h:commandLink>
-                            </div>
-                        </f:facet>
 
                         <p:columns var="columnName" value="#{deepBean.detail.columnNames}" 
                                    headerText="#{columnName}" columnIndexVar="colIdx">

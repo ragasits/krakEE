@@ -3,12 +3,12 @@ package krakee.web;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import jakarta.annotation.PostConstruct;
-import jakarta.ejb.EJB;
-import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Named;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
 import org.primefaces.event.ItemSelectEvent;
@@ -115,7 +115,6 @@ public class CandleBean implements Serializable {
      * @param event
      */
 
-    /*
     public void candleSelect(ItemSelectEvent event) {
         int id = this.candleList.size() - event.getItemIndex() - 1;
         CandleDTO dto = this.candleList.get(id);
@@ -123,7 +122,6 @@ public class CandleBean implements Serializable {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", dto.getOHLCtMsg());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-     */
     
     public List<CandleDTO> getCandleList() {
         return this.candleList;

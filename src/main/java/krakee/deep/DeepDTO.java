@@ -19,6 +19,7 @@ package krakee.deep;
 import deepnetts.data.TabularDataSet;
 import deepnetts.eval.ConfusionMatrix;
 import java.util.ArrayList;
+import java.util.List;
 import javax.visrec.ml.eval.EvaluationMetrics;
 
 /**
@@ -104,7 +105,8 @@ public class DeepDTO {
 
     /**
      * Merge in out arrays
-     * @return 
+     *
+     * @return
      */
     public float[][] getInOutValues() {
         float[][] values = new float[this.inputValues.length][this.numInputs + this.numOutputs];
@@ -122,15 +124,51 @@ public class DeepDTO {
     }
 
     /**
-     * Convert in out arrays to Data set
+     * Convert Values to CSV format
      * @return 
+     */
+    public ArrayList<String> inOutValuesToCsv() {
+        ArrayList<String> rowList = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+
+        //Header
+        List<String> columns = this.columnNames;
+        for (String column : columns) {
+            if (sb.length() != 0) {
+                sb.append(";");
+            }
+            sb.append(column);
+        }
+        rowList.add(sb.toString());
+
+        //Rows
+        float[][] values = this.getInOutValues();
+
+        for (float[] value : values) {
+            sb = new StringBuilder();
+            for (int j = 0; j < value.length; j++) {
+                if (j != 0) {
+                    sb.append(";");
+                }
+                sb.append(value[j]);
+            }
+            rowList.add(sb.toString());
+        }
+
+        return rowList;
+    }
+
+    /**
+     * Convert in out arrays to Data set
+     *
+     * @return
      */
     public TabularDataSet getDataset() {
         TabularDataSet dataSet = new TabularDataSet(this.numInputs, this.numOutputs);
         dataSet.setColumnNames(columnNames.toArray(new String[0]));
-        
-        for (int i = 0; i< inputValues.length; i++){
-          dataSet.add(new TabularDataSet.Item(inputValues[i], outputValues[i]));  
+
+        for (int i = 0; i < inputValues.length; i++) {
+            dataSet.add(new TabularDataSet.Item(inputValues[i], outputValues[i]));
         }
         return dataSet;
     }
