@@ -38,7 +38,7 @@ public class LearnEJB {
     static final Logger LOGGER = Logger.getLogger(LearnEJB.class.getCanonicalName());
 
     @EJB
-    private ConfigEJB config;
+    private ConfigEJB configEjb;
 
     /**
      * Get all learns
@@ -46,7 +46,7 @@ public class LearnEJB {
      * @return
      */
     public List<LearnDTO> get() {
-        return config.getLearnColl()
+        return configEjb.getLearnColl()
                 .find()
                 .sort(Sorts.ascending("startDate"))
                 .into(new ArrayList<>());
@@ -59,7 +59,7 @@ public class LearnEJB {
      * @return
      */
     public List<LearnDTO> get(Date startDate) {
-        return config.getLearnColl()
+        return configEjb.getLearnColl()
                 .find(eq("startDate", startDate))
                 .sort(Sorts.ascending("startDate"))
                 .into(new ArrayList<>());
@@ -72,7 +72,7 @@ public class LearnEJB {
      * @return
      */
     public List<LearnDTO> get(String learnName) {
-        return config.getLearnColl()
+        return configEjb.getLearnColl()
                 .find(eq("name", learnName))
                 .sort(Sorts.ascending("startDate"))
                 .into(new ArrayList<>());
@@ -86,7 +86,7 @@ public class LearnEJB {
      * @return 
      */
     public LearnDTO get(String learnName, Date startDate){
-        return config.getLearnColl()
+        return configEjb.getLearnColl()
                 .find(and(eq("name", learnName), eq("startDate", startDate)))
                 .first();
     }    
@@ -98,7 +98,7 @@ public class LearnEJB {
      * @return
      */
     public LearnDTO getFirst(String learnName) {
-        return config.getLearnColl()
+        return configEjb.getLearnColl()
                 .find(eq("name", learnName))
                 .sort(Sorts.ascending("startDate"))
                 .first();
@@ -111,7 +111,7 @@ public class LearnEJB {
      * @return
      */
     public LearnDTO getLast(String learnName) {
-        return config.getLearnColl()
+        return configEjb.getLearnColl()
                 .find(eq("name", learnName))
                 .sort(Sorts.descending("startDate"))
                 .first();
@@ -123,7 +123,7 @@ public class LearnEJB {
      * @return
      */
     public List<String> getNames() {
-        return config.getLearnColl()
+        return configEjb.getLearnColl()
                 .distinct("name", String.class)
                 .into(new ArrayList<>());
     }
@@ -134,7 +134,7 @@ public class LearnEJB {
      * @param dto
      */
     public void add(LearnDTO dto) {
-        config.getLearnColl().insertOne(dto);
+        configEjb.getLearnColl().insertOne(dto);
     }
 
     /**
@@ -143,7 +143,7 @@ public class LearnEJB {
      * @param dto
      */
     public void update(LearnDTO dto) {
-        config.getLearnColl().replaceOne(
+        configEjb.getLearnColl().replaceOne(
                 eq("_id", dto.getId()), dto);
     }
 
@@ -153,6 +153,6 @@ public class LearnEJB {
      * @param dto
      */
     public void delete(LearnDTO dto) {
-        config.getLearnColl().deleteOne(eq("_id", dto.getId()));
+        configEjb.getLearnColl().deleteOne(eq("_id", dto.getId()));
     }
 }

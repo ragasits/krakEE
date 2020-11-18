@@ -1,27 +1,37 @@
+/*
+ * Copyright (C) 2020 rgt
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package krakee.web;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.ServletContext;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import krakee.MyException;
 import krakee.deep.DeepDTO;
 import krakee.deep.DeepEJB;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
+import krakee.deep.DeepInputEJB;
+import org.primefaces.event.SelectEvent;
 
 /**
- * JSF bean for Deep Learning
- *
+ * JSF bean for Deep
  * @author rgt
  */
 @SessionScoped
@@ -29,16 +39,17 @@ import org.primefaces.model.StreamedContent;
 public class DeepBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private StreamedContent file;
-
-    static final String FILENAME = "dataset.csv";
-
-    @EJB
-    private DeepEJB dlEjb;
-
-    private String selectedName;
+    private String selectedLearnName;
+    private String selectedDeepName;
     private DeepDTO detail = new DeepDTO();
     private boolean disableBtn = true;
+
+    @EJB
+    private DeepEJB deepEjb;
+    @EJB
+    private DeepInputEJB deepInputEjb;
+    @Inject
+    private DeepInputBean inputBean;
 
     /**
      * Show input data
@@ -46,13 +57,13 @@ public class DeepBean implements Serializable {
      * @return
      */
     public String onInput() {
-        try {
-            dlEjb.createDlValues(detail);
+        if (this.detail!=null){
+            inputBean.fillInputList(detail);
+            inputBean.setDetail(detail);
             return "deepInput.xhtml?faces-redirect=true";
-        } catch (MyException ex) {
-            addMsg(ex.getMessage());
         }
         return null;
+        
     }
 
     /**
@@ -60,9 +71,9 @@ public class DeepBean implements Serializable {
      */
     public void onDataset() {
         try {
-            detail = new DeepDTO();
-            detail.setLearnName(selectedName);
-            dlEjb.createDlValues(detail);
+            detail.setLearnName(this.selectedLearnName);
+            detail.setDeepName(this.selectedDeepName);
+            deepInputEjb.fillDataset(this.detail);
             this.disableBtn = false;
         } catch (MyException ex) {
             addMsg(ex.getMessage());
@@ -70,61 +81,79 @@ public class DeepBean implements Serializable {
     }
 
     /**
+     * Save (Insert / update) Deep data
+     * @return 
+     */
+    public String onSave() {
+        DeepDTO dto = deepEjb.get(this.selectedDeepName);
+
+        if (dto == null) {
+            deepEjb.add(this.detail);
+        } else {
+            deepEjb.update(this.detail);
+        }
+
+        return null;
+    }
+
+    /**
      * Starting learning, testing process
      */
     public void onLearn() {
         try {
-            dlEjb.learndDl(detail);
+            deepEjb.learnDeep(detail);
         } catch (MyException ex) {
             this.addMsg(ex.getMessage());
         }
     }
 
     /**
-     * Download values as CSV file 
+     * Listener for p:autoComplete event
+     * @param event 
      */
-    public void onCSV() {
-        ArrayList<String> csvList = this.detail.inOutValuesToCsv();
+    public void onSelectedDeep(SelectEvent<String> event) {
+        this.detail = deepEjb.get(event.getObject());
 
-        //Create file
-        ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-        String realPath = ctx.getRealPath("/WEB-INF/").concat("/" + FILENAME);
-
-        //Save to file
-        try {
-            OutputStream fout = new FileOutputStream(realPath);
-            OutputStream bout = new BufferedOutputStream(fout);
-            try (OutputStreamWriter out = new OutputStreamWriter(bout, "ISO-8859-2")) {
-                for (String s : csvList) {
-                    out.write(s + "\n");
-                }
-            }
-        } catch (IOException ex) {
-            this.addMsg("Error: " + ex.getMessage());
-            return;
+        if (this.detail != null) {
+            this.selectedLearnName = this.detail.getLearnName();
         }
 
-        this.file = DefaultStreamedContent.builder()
-                .name(FILENAME)
-                .contentType("application/csv")
-                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/" + FILENAME))
-                .build();
     }
 
+    /**
+     * Show message
+     * @param msg 
+     */
     private void addMsg(String msg) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
+    }
+
+    public List<String> complete(String query) {
+        return deepEjb.getDeepNames();
+    }
+
+    public String getSelectedLearnName() {
+        return selectedLearnName;
+    }
+
+    public void setSelectedLearnName(String selectedLearnName) {
+        this.selectedLearnName = selectedLearnName;
     }
 
     public DeepDTO getDetail() {
         return detail;
     }
 
-    public String getSelectedName() {
-        return selectedName;
+    public void setDetail(DeepDTO detail) {
+        this.detail = detail;
     }
 
-    public void setSelectedName(String selectedName) {
-        this.selectedName = selectedName;
+    public String getSelectedDeepName() {
+        return selectedDeepName;
+    }
+
+    public void setSelectedDeepName(String selectedDeepName) {
+        this.selectedDeepName = selectedDeepName;
     }
 
     public boolean isDisableBtn() {
@@ -134,10 +163,4 @@ public class DeepBean implements Serializable {
     public void setDisableBtn(boolean disableBtn) {
         this.disableBtn = disableBtn;
     }
-
-    public StreamedContent getFile() {
-        return file;
-    }
-    
-    
 }

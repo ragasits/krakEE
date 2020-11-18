@@ -16,26 +16,27 @@
  */
 package krakee.deep;
 
-import deepnetts.data.TabularDataSet;
 import deepnetts.eval.ConfusionMatrix;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import javax.visrec.ml.eval.EvaluationMetrics;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.types.ObjectId;
 
 /**
- * Store Neural Network parameters and results
+ * Deep learning parameters
  *
  * @author rgt
  */
 public class DeepDTO {
 
+    private ObjectId id;
+    private String deepName;
     private String learnName;
+
     private int numInputs;
     private int numOutputs;
-
     private ArrayList<String> columnNames;
-    private float[][] inputValues;
-    private float[][] outputValues;
 
     //Learning data
     private int sourceCount = 0;
@@ -57,8 +58,39 @@ public class DeepDTO {
     private Float emF1Score;
 
     //ConfusionMatrix
-    private String[] cmClassLabels;
-    private int[][] cmValues;
+    private ArrayList<String> cmClassLabels;
+    private ArrayList<ArrayList<Integer>> cmValues;
+
+    /**
+     * get ConfusionMatrix value
+     *
+     * @param rowIdx
+     * @param colIdx
+     * @return
+     */
+    public Integer getCmValue(Integer rowIdx, Integer colIdx) {
+        return this.cmValues.get(rowIdx).get(colIdx);
+    }
+
+    /**
+     * Store ConfusionMatrix values
+     *
+     * @param m
+     */
+    @BsonIgnore
+    public void calcConfusionMatrix(ConfusionMatrix m) {
+        this.cmClassLabels = new ArrayList(Arrays.asList(m.getClassLabels()));
+        this.cmValues = new ArrayList<>();
+
+        for (int i = 0; i < cmClassLabels.size(); i++) {
+            ArrayList<Integer> rowValue = new ArrayList<>();
+            for (int j = 0; j < cmClassLabels.size(); j++) {
+                rowValue.add(m.get(i, j));
+            }
+
+            this.cmValues.add(rowValue);
+        }
+    }
 
     /**
      * Get metrics value, manage nulls
@@ -80,169 +112,20 @@ public class DeepDTO {
      *
      * @param em
      */
-    public void setEvaluationMetrics(EvaluationMetrics em) {
+    @BsonIgnore
+    public void calcEvaluationMetrics(EvaluationMetrics em) {
         this.emAccuracy = getMetrics(em, "Accuracy");
         this.emPrecision = getMetrics(em, "Precision");
         this.emRecall = getMetrics(em, "Recall");
         this.emF1Score = getMetrics(em, "F1Score");
     }
 
-    /**
-     * Store ConfusionMatrix values
-     *
-     * @param m
-     */
-    public void setConfusionMatrix(ConfusionMatrix m) {
-        this.cmClassLabels = m.getClassLabels();
-        this.cmValues = new int[this.cmClassLabels.length][this.cmClassLabels.length];
-
-        for (int i = 0; i < cmClassLabels.length; i++) {
-            for (int j = 0; j < cmClassLabels.length; j++) {
-                this.cmValues[i][j] = m.get(i, j);
-            }
-        }
+    public ObjectId getId() {
+        return id;
     }
 
-    /**
-     * Merge in out arrays
-     *
-     * @return
-     */
-    public float[][] getInOutValues() {
-        float[][] values = new float[this.inputValues.length][this.numInputs + this.numOutputs];
-
-        for (int i = 0; i < this.inputValues.length; i++) {
-
-            //Input values
-            System.arraycopy(this.inputValues[i], 0, values[i], 0, this.numInputs);
-
-            //Output values
-            System.arraycopy(this.outputValues[i], 0, values[i], this.numInputs, this.numOutputs);
-        }
-
-        return values;
-    }
-
-    /**
-     * Convert Values to CSV format
-     * @return 
-     */
-    public ArrayList<String> inOutValuesToCsv() {
-        ArrayList<String> rowList = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
-
-        //Header
-        List<String> columns = this.columnNames;
-        for (String column : columns) {
-            if (sb.length() != 0) {
-                sb.append(";");
-            }
-            sb.append(column);
-        }
-        rowList.add(sb.toString());
-
-        //Rows
-        float[][] values = this.getInOutValues();
-
-        for (float[] value : values) {
-            sb = new StringBuilder();
-            for (int j = 0; j < value.length; j++) {
-                if (j != 0) {
-                    sb.append(";");
-                }
-                sb.append(value[j]);
-            }
-            rowList.add(sb.toString());
-        }
-
-        return rowList;
-    }
-
-    /**
-     * Convert in out arrays to Data set
-     *
-     * @return
-     */
-    public TabularDataSet getDataset() {
-        TabularDataSet dataSet = new TabularDataSet(this.numInputs, this.numOutputs);
-        dataSet.setColumnNames(columnNames.toArray(new String[0]));
-
-        for (int i = 0; i < inputValues.length; i++) {
-            dataSet.add(new TabularDataSet.Item(inputValues[i], outputValues[i]));
-        }
-        return dataSet;
-    }
-
-    public int getTrainCount() {
-        return trainCount;
-    }
-
-    public int getTrainBuy() {
-        return trainBuy;
-    }
-
-    public int getTrainSell() {
-        return trainSell;
-    }
-
-    public int getTestCount() {
-        return testCount;
-    }
-
-    public int getTestBuy() {
-        return testBuy;
-    }
-
-    public int getTestSell() {
-        return testSell;
-    }
-
-    public int getSourceCount() {
-        return sourceCount;
-    }
-
-    public int getSourceBuy() {
-        return sourceBuy;
-    }
-
-    public int getSourceSell() {
-        return sourceSell;
-    }
-
-    public void incTrainCount() {
-        this.trainCount++;
-    }
-
-    public void incTrainBuy() {
-        this.trainBuy++;
-    }
-
-    public void incTrainSell() {
-        this.trainSell++;
-    }
-
-    public void incTestCount() {
-        this.testCount++;
-    }
-
-    public void incTestBuy() {
-        this.testBuy++;
-    }
-
-    public void incTestSell() {
-        this.testSell++;
-    }
-
-    public void incSourceCount() {
-        this.sourceCount++;
-    }
-
-    public void incSourceBuy() {
-        this.sourceBuy++;
-    }
-
-    public void incSourceSell() {
-        this.sourceSell++;
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public String getLearnName() {
@@ -251,6 +134,14 @@ public class DeepDTO {
 
     public void setLearnName(String learnName) {
         this.learnName = learnName;
+    }
+
+    public String getDeepName() {
+        return deepName;
+    }
+
+    public void setDeepName(String deepName) {
+        this.deepName = deepName;
     }
 
     public int getNumInputs() {
@@ -269,28 +160,76 @@ public class DeepDTO {
         this.numOutputs = numOutputs;
     }
 
-    public Float getEmAccuracy() {
-        return emAccuracy;
+    public int getSourceCount() {
+        return sourceCount;
     }
 
-    public Float getEmPrecision() {
-        return emPrecision;
+    public void incSourceCount() {
+        this.sourceCount++;
     }
 
-    public Float getEmRecall() {
-        return emRecall;
+    public int getSourceBuy() {
+        return sourceBuy;
     }
 
-    public Float getEmF1Score() {
-        return emF1Score;
+    public void incSourceBuy() {
+        this.sourceBuy++;
     }
 
-    public String[] getCmClassLabels() {
-        return cmClassLabels;
+    public int getSourceSell() {
+        return sourceSell;
     }
 
-    public int[][] getCmValues() {
-        return cmValues;
+    public void incSourceSell() {
+        this.sourceSell++;
+    }
+
+    public int getTrainCount() {
+        return trainCount;
+    }
+
+    public void incTrainCount() {
+        this.trainCount++;
+    }
+
+    public int getTrainBuy() {
+        return trainBuy;
+    }
+
+    public void incTrainBuy() {
+        this.trainBuy++;
+    }
+
+    public int getTrainSell() {
+        return trainSell;
+    }
+
+    public void incTrainSell() {
+        this.trainSell++;
+    }
+
+    public int getTestCount() {
+        return testCount;
+    }
+
+    public void incTestCount() {
+        this.testCount++;
+    }
+
+    public int getTestBuy() {
+        return testBuy;
+    }
+
+    public void incTestBuy() {
+        this.testBuy++;
+    }
+
+    public int getTestSell() {
+        return testSell;
+    }
+
+    public void incTestSell() {
+        this.testSell++;
     }
 
     public ArrayList<String> getColumnNames() {
@@ -301,20 +240,52 @@ public class DeepDTO {
         this.columnNames = columnNames;
     }
 
-    public float[][] getInputValues() {
-        return inputValues;
+    public Float getEmAccuracy() {
+        return emAccuracy;
     }
 
-    public void setInputValues(float[][] inputValues) {
-        this.inputValues = inputValues;
+    public void setEmAccuracy(Float emAccuracy) {
+        this.emAccuracy = emAccuracy;
     }
 
-    public float[][] getOutputValues() {
-        return outputValues;
+    public Float getEmPrecision() {
+        return emPrecision;
     }
 
-    public void setOutputValues(float[][] outputValues) {
-        this.outputValues = outputValues;
+    public void setEmPrecision(Float emPrecision) {
+        this.emPrecision = emPrecision;
+    }
+
+    public Float getEmRecall() {
+        return emRecall;
+    }
+
+    public void setEmRecall(Float emRecall) {
+        this.emRecall = emRecall;
+    }
+
+    public Float getEmF1Score() {
+        return emF1Score;
+    }
+
+    public void setEmF1Score(Float emF1Score) {
+        this.emF1Score = emF1Score;
+    }
+
+    public ArrayList<String> getCmClassLabels() {
+        return cmClassLabels;
+    }
+
+    public void setCmClassLabels(ArrayList<String> cmClassLabels) {
+        this.cmClassLabels = cmClassLabels;
+    }
+
+    public ArrayList<ArrayList<Integer>> getCmValues() {
+        return cmValues;
+    }
+
+    public void setCmValues(ArrayList<ArrayList<Integer>> cmValues) {
+        this.cmValues = cmValues;
     }
 
 }

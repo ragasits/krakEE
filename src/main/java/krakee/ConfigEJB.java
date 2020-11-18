@@ -14,6 +14,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import krakee.calc.CandleDTO;
+import krakee.deep.DeepDTO;
+import krakee.deep.DeepInputDTO;
 import krakee.get.TradePairDTO;
 import krakee.learn.LearnDTO;
 import krakee.profit.ProfitDTO;
@@ -74,6 +76,8 @@ public class ConfigEJB {
     private MongoCollection<CandleDTO> candleColl;
     private MongoCollection<ProfitDTO> profitColl;
     private MongoCollection<LearnDTO> learnColl;
+    private MongoCollection<DeepDTO> deepColl;
+    private MongoCollection<DeepInputDTO> deepInputColl;
 
     /**
      * Initiate: - Set proxy - MongoDB Create collections and missing indexes
@@ -101,7 +105,7 @@ public class ConfigEJB {
             this.tradePairColl.createIndex(Indexes.ascending("timeDate"));
         }
 
-        this.candleColl = this.database.getCollection("candle",CandleDTO.class);
+        this.candleColl = this.database.getCollection("candle", CandleDTO.class);
         if (!this.isIndex(candleColl, "startDate_1")) {
             this.candleColl.createIndex(Indexes.ascending("startDate"), new IndexOptions().unique(true));
         }
@@ -116,9 +120,10 @@ public class ConfigEJB {
         if (!this.isIndex(profitColl, "testNum_1")) {
             this.profitColl.createIndex(Indexes.ascending("testNum"), new IndexOptions().unique(true));
         }
-        
-        this.learnColl = this.database.getCollection("learn", LearnDTO.class);
 
+        this.learnColl = this.database.getCollection("learn", LearnDTO.class);
+        this.deepColl = this.database.getCollection("deep", DeepDTO.class);
+        this.deepInputColl = this.database.getCollection("deepInput", DeepInputDTO.class);
     }
 
     /**
@@ -163,7 +168,15 @@ public class ConfigEJB {
 
     public MongoCollection<LearnDTO> getLearnColl() {
         return learnColl;
-    }  
+    }
+
+    public MongoCollection<DeepDTO> getDeepColl() {
+        return deepColl;
+    }
+
+    public MongoCollection<DeepInputDTO> getDeepInputColl() {
+        return deepInputColl;
+    }
 
     public String getKrakenURL() {
         return krakenURL;

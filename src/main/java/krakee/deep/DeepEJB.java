@@ -16,6 +16,8 @@
  */
 package krakee.deep;
 
+import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.Sorts;
 import deepnetts.data.TabularDataSet;
 import deepnetts.data.norm.MaxNormalizer;
 import deepnetts.eval.ClassifierEvaluator;
@@ -27,78 +29,28 @@ import deepnetts.net.train.BackpropagationTrainer;
 import deepnetts.net.train.opt.OptimizerType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import krakee.calc.CandleDTO;
-import krakee.calc.CandleEJB;
-import krakee.get.TradeEJB;
-import krakee.learn.LearnDTO;
-import krakee.learn.LearnEJB;
 import javax.visrec.ml.data.DataSet;
 import javax.visrec.ml.eval.EvaluationMetrics;
+import krakee.ConfigEJB;
 import krakee.MyException;
 
 /**
- * Manage neural network
+ * Manage Deep Learning
  *
  * @author rgt
  */
 @Stateless
 public class DeepEJB {
 
-    //Column indexes
     static final int BUYPOS = 0;
     static final int SELLPOS = 1;
 
-    static final Logger LOGGER = Logger.getLogger(TradeEJB.class.getCanonicalName());
-
     @EJB
-    LearnEJB learnEjb;
+    private ConfigEJB configEjb;
     @EJB
-    CandleEJB candleEjb;
-
-    /**
-     * Count train cases
-     *
-     * @param dto
-     * @param dataSet
-     * @return
-     */
-    private DeepDTO calcTrainCount(DeepDTO dto, TabularDataSet dataSet) {
-        List<TabularDataSet.Item> itemList = dataSet.getItems();
-        for (TabularDataSet.Item item : itemList) {
-            dto.incTrainCount();
-
-            if (item.getTargetOutput().get(BUYPOS) > 0f) {
-                dto.incTrainBuy();
-            } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
-                dto.incTrainSell();
-            }
-        }
-        return dto;
-    }
-
-    /**
-     * Count test cases
-     *
-     * @param dto
-     * @param dataSet
-     * @return
-     */
-    private DeepDTO calcTestCount(DeepDTO dto, TabularDataSet dataSet) {
-        List<TabularDataSet.Item> itemList = dataSet.getItems();
-        for (TabularDataSet.Item item : itemList) {
-            dto.incTestCount();
-
-            if (item.getTargetOutput().get(BUYPOS) > 0f) {
-                dto.incTestBuy();
-            } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
-                dto.incTestSell();
-            }
-        }
-        return dto;
-    }
+    private DeepInputEJB inputEjb;
 
     /**
      * Learn and test Neural network
@@ -106,9 +58,9 @@ public class DeepEJB {
      * @param dto
      * @throws krakee.MyException
      */
-    public void learndDl(DeepDTO dto) throws MyException {
+    public void learnDeep(DeepDTO dto) throws MyException {
         //Get dataset
-        TabularDataSet dataSet = dto.getDataset();
+        TabularDataSet dataSet = inputEjb.fillTabularDataset(dto);
 
         //Normalize data
         MaxNormalizer norm = new MaxNormalizer(dataSet);
@@ -142,76 +94,110 @@ public class DeepEJB {
         // evaluate/test classifier
         ClassifierEvaluator evaluator = new ClassifierEvaluator();
         EvaluationMetrics em = evaluator.evaluate(neuralNet, trainTestSet[1]);
-        dto.setEvaluationMetrics(em);
+        dto.calcEvaluationMetrics(em);
 
         ConfusionMatrix cm = evaluator.getConfusionMatrix();
-        dto.setConfusionMatrix(cm);
+        dto.calcConfusionMatrix(cm);
     }
 
     /**
-     * Create and store input, out values from the Candles and the Learning data
-     * @param deep
-     * @throws MyException 
+     * Count Train data buy/sell
+     *
+     * @param dto
+     * @param dataSet
+     * @return
      */
-    public void createDlValues(DeepDTO deep) throws MyException {
-        if (deep == null || deep.getLearnName() == null || deep.getLearnName().isEmpty()) {
-            throw new MyException("Missing: learnname");
-        }
+    private DeepDTO calcTrainCount(DeepDTO dto, TabularDataSet dataSet) {
+        List<TabularDataSet.Item> itemList = dataSet.getItems();
+        for (TabularDataSet.Item item : itemList) {
+            dto.incTrainCount();
 
-        //Get Learning data
-        LearnDTO firstLearn = learnEjb.getFirst(deep.getLearnName());
-        LearnDTO lastLearn = learnEjb.getLast(deep.getLearnName());
-
-        //Get Candles
-        List<CandleDTO> candleList = candleEjb.get(firstLearn.getStartDate(), lastLearn.getStartDate());
-        CandleDTO c = candleEjb.get(firstLearn.getStartDate());
-        deep.setNumInputs(c.toValueList().size());
-        deep.setNumOutputs(2);
-
-        //Add column names
-        ArrayList<String> columnNames = c.toColumnNameList();
-        columnNames.add("buy");
-        columnNames.add("sell");
-        deep.setColumnNames(columnNames);
-
-        float[][] inputValues = new float[candleList.size()][deep.getNumInputs()];
-        float[][] outputValues = new float[candleList.size()][deep.getNumOutputs()];
-
-        //Set input, output data
-        int i = 0;
-        for (CandleDTO candleDto : candleList) {
-            deep.incSourceCount();
-
-            float[] in = candleDto.tovalueArray();
-            float[] out = new float[deep.getNumOutputs()];
-            LearnDTO learnDto = learnEjb.get(deep.getLearnName(), candleDto.getStartDate());
-
-            if (learnDto == null) {
-                //Do nothing
-                out[0] = 0f;
-                out[1] = 0f;
-            } else if (learnDto.getTrade().equals("buy")) {
-                //Buy
-                out[0] = 1f;
-                out[1] = 0f;
-                deep.incSourceBuy();
-            } else if (learnDto.getTrade().equals("sell")) {
-                //Sell
-                out[0] = 0f;
-                out[1] = 1f;
-                deep.incSourceSell();
-            } else {
-                out[0] = 0f;
-                out[1] = 0f;
+            if (item.getTargetOutput().get(BUYPOS) > 0f) {
+                dto.incTrainBuy();
+            } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
+                dto.incTrainSell();
             }
-
-            System.arraycopy(in, 0, inputValues[i], 0, in.length);
-            System.arraycopy(out, 0, outputValues[i], 0, out.length);
-            i++;
         }
-
-        //Store values
-        deep.setInputValues(inputValues);
-        deep.setOutputValues(outputValues);
+        return dto;
     }
+
+    /**
+     * Count Test data buy/sell
+     *
+     * @param dto
+     * @param dataSet
+     * @return
+     */
+    private DeepDTO calcTestCount(DeepDTO dto, TabularDataSet dataSet) {
+        List<TabularDataSet.Item> itemList = dataSet.getItems();
+        for (TabularDataSet.Item item : itemList) {
+            dto.incTestCount();
+
+            if (item.getTargetOutput().get(BUYPOS) > 0f) {
+                dto.incTestBuy();
+            } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
+                dto.incTestSell();
+            }
+        }
+        return dto;
+    }
+
+    /**
+     * Get list of the Deep names (ID)
+     *
+     * @return
+     */
+    public List<String> getDeepNames() {
+        return configEjb.getDeepColl()
+                .distinct("deepName", String.class)
+                .into(new ArrayList<>());
+    }
+
+    /**
+     * Get Deep collection filter by learnName
+     * @return 
+     */
+    public List<DeepDTO> get() {
+        return configEjb.getDeepColl()
+                .find()
+                .sort(Sorts.ascending("learnName"))
+                .into(new ArrayList<>());
+    }
+
+    /**
+     * Get Deep collection filter by deepName
+     * @param deepName
+     * @return 
+     */
+    public DeepDTO get(String deepName) {
+        return configEjb.getDeepColl()
+                .find(eq("deepName", deepName))
+                .first();
+    }
+
+    /**
+     * Add Deep item
+     * @param dto 
+     */
+    public void add(DeepDTO dto) {
+        configEjb.getDeepColl().insertOne(dto);
+    }
+
+    /**
+     * Update Deep item
+     * @param dto 
+     */
+    public void update(DeepDTO dto) {
+        configEjb.getDeepColl().replaceOne(
+                eq("_id", dto.getId()), dto);
+    }
+
+    /**
+     * Delete Deep item
+     * @param dto 
+     */
+    public void delete(DeepDTO dto) {
+        configEjb.getDeepColl().deleteOne(eq("_id", dto.getId()));
+    }
+
 }

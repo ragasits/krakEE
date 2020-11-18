@@ -1,7 +1,7 @@
-+ Revert back to JakartaEE8 (We had several problems after migration. See todo)
-+ Export inOut values to CSV file
++ Save deepDTO item
++ Refactor: Store inputs in the Mongo
 
-- Save deepDTO
+- Delete deepDTO item
 - Add Neural parameters from the GUI
 
 - Implement RSI

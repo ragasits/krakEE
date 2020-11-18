@@ -30,21 +30,22 @@
                 <ez:globalMenu/>
             </h:form>
 
-            <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">
+            <p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" 
+                      resizable="false">
                 <p:graphicImage name="ajax-loader.gif" />
             </p:dialog>
 
             <h:form id="form1">
                 <p:panel>
-                    <p:commandLink actionListener="#{deepBean.onCSV}"
+                    <p:commandLink actionListener="#{deepInputBean.onCSV}"
                                    onclick="PrimeFaces.monitorDownload(start, stop);"
                                    ajax="false">
                         <p:graphicImage name="csv.png" width="24"/>
-                        <p:fileDownload value="#{deepBean.file}" />
+                        <p:fileDownload value="#{deepInputBean.file}" />
                     </p:commandLink>
                 </p:panel>
                 <p:panel>
-                    <p:dataTable var="rowName" value="#{deepBean.detail.inputValues}" id="tbl"
+                    <p:dataTable var="rowName" value="#{deepInputBean.inputList}" id="tbl"
                                  rowIndexVar="rowIdx"
                                  tableStyle="width:auto" scrollable="true" paginator="true" rows="50"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -54,7 +55,7 @@
                         <p:columns var="columnName" value="#{deepBean.detail.columnNames}" 
                                    headerText="#{columnName}" columnIndexVar="colIdx">
 
-                            <ui:repeat value="#{deepBean.detail.inOutValues[rowIdx][colIdx]}" var="data">
+                            <ui:repeat value="#{deepInputBean.getInputValue(rowIdx, colIdx)}" var="data">
                                 <h:outputText value="#{data}"/>
                             </ui:repeat>
 

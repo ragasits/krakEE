@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.1.0</version>
+            <version>4.1.1</version>
             <type>jar</type>
         </dependency>
         
@@ -48,16 +48,16 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>5.2020.5</version.payara>
+        <version.payara>5.2020.6</version.payara>
     </properties>
     
     <reporting>
         <plugins>
             <plugin>
-                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.0.0:spotbugs -->
+                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.1.3:spotbugs -->
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.0.4</version>
+                <version>4.1.4</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
                     <xmlOutputDirectory>target/site</xmlOutputDirectory>
@@ -71,7 +71,7 @@
             <plugin>
                 <groupId>fish.payara.maven.plugins</groupId>
                 <artifactId>payara-micro-maven-plugin</artifactId>
-                <version>1.2.0</version>
+                <version>1.3.0</version>
                 <configuration>
                     <payaraVersion>${version.payara}</payaraVersion>
                     <deployWar>false</deployWar>

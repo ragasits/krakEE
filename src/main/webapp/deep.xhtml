@@ -24,25 +24,32 @@
                 </p:messages>
 
                 <p:panel>
-                    <p:panelGrid columns="6">
+                    <p:panelGrid columns="10">
+                        <p:autoComplete value="#{deepBean.selectedDeepName}"
+                                        completeMethod="#{deepBean.complete}">
+                            <p:ajax event="itemSelect" listener="#{deepBean.onSelectedDeep}" update="nameList, panel"/>                       
+                        </p:autoComplete>
+
+
+                        <p:commandButton value="Save"  id="saveBtn" 
+                                         action="#{deepBean.onSave()}" update="panel"/>
+
                         <p:outputLabel value="Learn:"/>  
-                        <p:selectOneMenu value="#{deepBean.selectedName}" id="nameList">
+                        <p:selectOneMenu value="#{deepBean.selectedLearnName}" id="nameList">
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{learnBean.learnNameList}" var="names" 
                                            itemLabel="#{names}" itemValue="#{names}" />
                         </p:selectOneMenu>
 
                         <p:commandButton value="DataSet"  id="dsBtn" 
-                                         action="#{deepBean.onDataset()}" update="panel, calcBtn"/>
+                                         action="#{deepBean.onDataset()}" update="panel"/>
 
-                        <p:commandButton value="Calculate"  id="calcBtn" 
-                                         disabled="#{deepBean.disableBtn}" action="#{deepBean.onLearn()}" 
-                                         update="panel"/>
-
+                        <p:commandButton value="Learn"  id="learnBtn" 
+                                         action="#{deepBean.onLearn()}" update="panel"/>
                     </p:panelGrid>
                 </p:panel>   
 
-                <p:blockUI block="form1" trigger="calcBtn, inBtn, dsBtn">
+                <p:blockUI block="form1" trigger="dsBtn, saveBtn, learnBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
 
@@ -57,7 +64,7 @@
                                 <p:outputLabel value="#{deepBean.detail.numOutputs}"/>
 
                                 <p:outputLabel value=""/>
-                                <p:commandButton value="Show" id="inBtn" disabled="#{deepBean.disableBtn}" 
+                                <p:commandButton value="Show" id="inBtn"
                                                  action="#{deepBean.onInput()}"/>
                             </p:panelGrid>
 
@@ -117,11 +124,10 @@
                                 <p:columns var="columnName" value="#{deepBean.detail.cmClassLabels}" 
                                            headerText="#{columnName}" columnIndexVar="colIdx">
 
-                                    <ui:repeat value="#{deepBean.detail.cmValues[rowIdx][colIdx]}" var="data">
+                                    <ui:repeat value="#{deepBean.detail.getCmValue(rowIdx, colIdx)}" var="data">
                                         <h:outputText value="#{data}"/>
                                     </ui:repeat>
                                 </p:columns>
-
                             </p:dataTable>
                         </p:panel>
                     </p:panelGrid>
