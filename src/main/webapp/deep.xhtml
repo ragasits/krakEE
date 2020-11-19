@@ -27,15 +27,18 @@
                     <p:panelGrid columns="10">
                         <p:autoComplete value="#{deepBean.selectedDeepName}"
                                         completeMethod="#{deepBean.complete}">
-                            <p:ajax event="itemSelect" listener="#{deepBean.onSelectedDeep}" update="nameList, panel"/>                       
+                            <p:ajax event="itemSelect" listener="#{deepBean.onSelectedDeep}" update="learnList, panel"/>                       
                         </p:autoComplete>
 
 
                         <p:commandButton value="Save"  id="saveBtn" 
                                          action="#{deepBean.onSave()}" update="panel"/>
 
+                        <p:commandButton value="Delete"  id="deleteBtn" 
+                                         action="#{deepBean.onDelete}" update="panel, learnList"/>
+
                         <p:outputLabel value="Learn:"/>  
-                        <p:selectOneMenu value="#{deepBean.selectedLearnName}" id="nameList">
+                        <p:selectOneMenu value="#{deepBean.selectedLearnName}" id="learnList">
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{learnBean.learnNameList}" var="names" 
                                            itemLabel="#{names}" itemValue="#{names}" />
@@ -49,7 +52,7 @@
                     </p:panelGrid>
                 </p:panel>   
 
-                <p:blockUI block="form1" trigger="dsBtn, saveBtn, learnBtn">
+                <p:blockUI block="form1" trigger="dsBtn, saveBtn, learnBtn, deleteBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
 

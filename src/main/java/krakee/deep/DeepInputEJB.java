@@ -127,7 +127,7 @@ public class DeepInputEJB {
         }
 
         //Delete old inputs
-        configEjb.getDeepInputColl().deleteMany(eq("deepName", deep.getDeepName()));
+        this.delete(deep);
 
         ArrayList<DeepInputDTO> datasetList = new ArrayList<>();
 
@@ -157,8 +157,18 @@ public class DeepInputEJB {
     }
 
     /**
+     * Delete inputs by deepName
+     *
+     * @param deep
+     */
+    public void delete(DeepDTO deep) {
+        configEjb.getDeepInputColl().deleteMany(eq("deepName", deep.getDeepName()));
+    }
+
+    /**
      * Set the parameters
-     * @param deep 
+     *
+     * @param deep
      */
     private void setParameters(DeepDTO deep) {
         DeepInputDTO dto = configEjb.getDeepInputColl()

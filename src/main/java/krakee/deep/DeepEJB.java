@@ -155,7 +155,8 @@ public class DeepEJB {
 
     /**
      * Get Deep collection filter by learnName
-     * @return 
+     *
+     * @return
      */
     public List<DeepDTO> get() {
         return configEjb.getDeepColl()
@@ -166,8 +167,9 @@ public class DeepEJB {
 
     /**
      * Get Deep collection filter by deepName
+     *
      * @param deepName
-     * @return 
+     * @return
      */
     public DeepDTO get(String deepName) {
         return configEjb.getDeepColl()
@@ -177,7 +179,8 @@ public class DeepEJB {
 
     /**
      * Add Deep item
-     * @param dto 
+     *
+     * @param dto
      */
     public void add(DeepDTO dto) {
         configEjb.getDeepColl().insertOne(dto);
@@ -185,7 +188,8 @@ public class DeepEJB {
 
     /**
      * Update Deep item
-     * @param dto 
+     *
+     * @param dto
      */
     public void update(DeepDTO dto) {
         configEjb.getDeepColl().replaceOne(
@@ -194,9 +198,13 @@ public class DeepEJB {
 
     /**
      * Delete Deep item
-     * @param dto 
+     *
+     * @param dto
      */
     public void delete(DeepDTO dto) {
+        //Delete inputs
+        inputEjb.delete(dto);
+        //Delete item
         configEjb.getDeepColl().deleteOne(eq("_id", dto.getId()));
     }
 

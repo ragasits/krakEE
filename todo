@@ -1,7 +1,5 @@
-+ Save deepDTO item
-+ Refactor: Store inputs in the Mongo
++ Delete deepDTO item
 
-- Delete deepDTO item
 - Add Neural parameters from the GUI
 
 - Implement RSI

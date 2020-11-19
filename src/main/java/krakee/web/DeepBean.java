@@ -32,6 +32,7 @@ import org.primefaces.event.SelectEvent;
 
 /**
  * JSF bean for Deep
+ *
  * @author rgt
  */
 @SessionScoped
@@ -57,13 +58,13 @@ public class DeepBean implements Serializable {
      * @return
      */
     public String onInput() {
-        if (this.detail!=null){
+        if (this.detail != null) {
             inputBean.fillInputList(detail);
             inputBean.setDetail(detail);
             return "deepInput.xhtml?faces-redirect=true";
         }
         return null;
-        
+
     }
 
     /**
@@ -81,10 +82,10 @@ public class DeepBean implements Serializable {
     }
 
     /**
-     * Save (Insert / update) Deep data
-     * @return 
+     * Save (Insert / update) Deep item
+     *
      */
-    public String onSave() {
+    public void onSave() {
         DeepDTO dto = deepEjb.get(this.selectedDeepName);
 
         if (dto == null) {
@@ -92,8 +93,19 @@ public class DeepBean implements Serializable {
         } else {
             deepEjb.update(this.detail);
         }
+    }
 
-        return null;
+    /**
+     * Delete Deep item
+     */
+    public void onDelete() {
+        DeepDTO dto = deepEjb.get(this.selectedDeepName);
+
+        if (dto != null) {
+            deepEjb.delete(this.detail);
+            this.detail = new DeepDTO();
+            
+        }
     }
 
     /**
@@ -109,7 +121,8 @@ public class DeepBean implements Serializable {
 
     /**
      * Listener for p:autoComplete event
-     * @param event 
+     *
+     * @param event
      */
     public void onSelectedDeep(SelectEvent<String> event) {
         this.detail = deepEjb.get(event.getObject());
@@ -122,7 +135,8 @@ public class DeepBean implements Serializable {
 
     /**
      * Show message
-     * @param msg 
+     *
+     * @param msg
      */
     private void addMsg(String msg) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
