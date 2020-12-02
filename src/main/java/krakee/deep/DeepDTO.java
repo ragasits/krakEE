@@ -17,6 +17,7 @@
 package krakee.deep;
 
 import deepnetts.eval.ConfusionMatrix;
+import deepnetts.net.train.opt.OptimizerType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.visrec.ml.eval.EvaluationMetrics;
@@ -50,6 +51,12 @@ public class DeepDTO {
     private int testCount = 0;
     private int testBuy = 0;
     private int testSell = 0;
+
+    //Trainer
+    private float trainerMaxError = 0.7f;
+    private float trainerLearningRate = 0.01f;
+    private float trainerMomentum = 0.9f;
+    private String optimizerType = OptimizerType.MOMENTUM.toString();
 
     //EvaluationMetrics
     private Float emAccuracy;
@@ -118,6 +125,16 @@ public class DeepDTO {
         this.emPrecision = getMetrics(em, "Precision");
         this.emRecall = getMetrics(em, "Recall");
         this.emF1Score = getMetrics(em, "F1Score");
+    }
+    
+    /**
+     * Get enumList to DropDown
+     *
+     * @return
+     */
+    @BsonIgnore
+    public OptimizerType[] getOptimizerTypes() {
+        return OptimizerType.values();
     }
 
     public ObjectId getId() {
@@ -288,4 +305,35 @@ public class DeepDTO {
         this.cmValues = cmValues;
     }
 
+    public float getTrainerMaxError() {
+        return trainerMaxError;
+    }
+
+    public void setTrainerMaxError(float trainerMaxError) {
+        this.trainerMaxError = trainerMaxError;
+    }
+
+    public float getTrainerLearningRate() {
+        return trainerLearningRate;
+    }
+
+    public void setTrainerLearningRate(float trainerLearningRate) {
+        this.trainerLearningRate = trainerLearningRate;
+    }
+
+    public float getTrainerMomentum() {
+        return trainerMomentum;
+    }
+
+    public void setTrainerMomentum(float trainerMomentum) {
+        this.trainerMomentum = trainerMomentum;
+    }
+
+    public String getOptimizerType() {
+        return optimizerType;
+    }
+
+    public void setOptimizerType(String optimizerType) {
+        this.optimizerType = optimizerType;
+    }
 }

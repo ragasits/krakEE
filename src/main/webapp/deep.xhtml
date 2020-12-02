@@ -58,7 +58,7 @@
 
                 <p:panel id="panel">
                     <p:panel header="Input"  >
-                        <p:panelGrid columns="2">
+                        <p:panelGrid columns="3">
                             <p:panelGrid columns="2" >
                                 <p:outputLabel value="numInputs" style="font-weight: bold"/>
                                 <p:outputLabel value="#{deepBean.detail.numInputs}"/>
@@ -91,6 +91,23 @@
                                 <p:outputLabel value="#{deepBean.detail.testCount}"/>
                                 <p:outputLabel value="#{deepBean.detail.testBuy}"/>
                                 <p:outputLabel value="#{deepBean.detail.testSell}"/>
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="MaxError" style="font-weight: bold" />
+                                <p:inputNumber value="#{deepBean.detail.trainerMaxError}" />
+
+                                <p:outputLabel value="LearningRate" style="font-weight: bold" />
+                                <p:inputNumber value="#{deepBean.detail.trainerLearningRate}" />
+
+                                <p:outputLabel value="Momentum" style="font-weight: bold" />
+                                <p:inputNumber value="#{deepBean.detail.trainerMomentum}" />
+
+                                <p:outputLabel value="Optimizer Type" style="font-weight: bold" />
+                                <p:selectOneMenu value="#{deepBean.detail.optimizerType}">
+                                    <f:selectItems value="#{deepBean.detail.optimizerTypes}"/>
+                                </p:selectOneMenu>
+
                             </p:panelGrid>
                         </p:panelGrid>
                     </p:panel>

@@ -77,6 +77,8 @@ public class DeepEJB {
                 .addInputLayer(dto.getNumInputs())
                 .addFullyConnectedLayer(50, ActivationType.TANH)
                 .addFullyConnectedLayer(50, ActivationType.TANH)
+                .addFullyConnectedLayer(50, ActivationType.TANH)
+                .addFullyConnectedLayer(9, ActivationType.TANH)
                 .addOutputLayer(dto.getNumOutputs(), ActivationType.SOFTMAX)
                 .lossFunction(LossType.CROSS_ENTROPY)
                 .randomSeed(456)
@@ -84,10 +86,10 @@ public class DeepEJB {
 
         // create and configure instanceof backpropagation trainer
         BackpropagationTrainer trainer = neuralNet.getTrainer();
-        trainer.setMaxError(0.7f);
-        trainer.setLearningRate(0.01f);
-        trainer.setMomentum(0.9f);
-        trainer.setOptimizer(OptimizerType.MOMENTUM);
+        trainer.setMaxError(dto.getTrainerMaxError());
+        trainer.setLearningRate(dto.getTrainerLearningRate());
+        trainer.setMomentum(dto.getTrainerMomentum());
+        trainer.setOptimizer(OptimizerType.valueOf(dto.getOptimizerType()));
 
         neuralNet.train(trainTestSet[0]);
 
