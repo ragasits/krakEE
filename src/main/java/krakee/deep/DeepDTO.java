@@ -52,7 +52,10 @@ public class DeepDTO {
     private int testBuy = 0;
     private int testSell = 0;
 
-    //Trainer
+    //Normalizer
+    private String normalizerType;
+
+    //Trainer   
     private float trainerMaxError = 0.7f;
     private float trainerLearningRate = 0.01f;
     private float trainerMomentum = 0.9f;
@@ -126,7 +129,7 @@ public class DeepDTO {
         this.emRecall = getMetrics(em, "Recall");
         this.emF1Score = getMetrics(em, "F1Score");
     }
-    
+
     /**
      * Get enumList to DropDown
      *
@@ -135,6 +138,11 @@ public class DeepDTO {
     @BsonIgnore
     public OptimizerType[] getOptimizerTypes() {
         return OptimizerType.values();
+    }
+
+    @BsonIgnore
+    public NormalizerType[] getNormalizerTypes() {
+        return NormalizerType.values();
     }
 
     public ObjectId getId() {
@@ -336,4 +344,13 @@ public class DeepDTO {
     public void setOptimizerType(String optimizerType) {
         this.optimizerType = optimizerType;
     }
+
+    public String getNormalizerType() {
+        return normalizerType;
+    }
+
+    public void setNormalizerType(String normalizerType) {
+        this.normalizerType = normalizerType;
+    }
+
 }

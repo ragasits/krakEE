@@ -19,7 +19,10 @@ package krakee.deep;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import deepnetts.data.TabularDataSet;
+import deepnetts.data.norm.DecimalScaleNormalizer;
 import deepnetts.data.norm.MaxNormalizer;
+import deepnetts.data.norm.MinMaxNormalizer;
+import deepnetts.data.norm.Standardizer;
 import deepnetts.eval.ClassifierEvaluator;
 import deepnetts.eval.ConfusionMatrix;
 import deepnetts.net.FeedForwardNetwork;
@@ -32,6 +35,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.visrec.ml.data.DataSet;
+import javax.visrec.ml.data.Normalizer;
 import javax.visrec.ml.eval.EvaluationMetrics;
 import krakee.ConfigEJB;
 import krakee.MyException;
@@ -52,6 +56,29 @@ public class DeepEJB {
     @EJB
     private DeepInputEJB inputEjb;
 
+    private void normalize(DeepDTO dto, TabularDataSet dataSet) {
+        Normalizer normalizer;
+
+        switch (NormalizerType.valueOf(dto.getNormalizerType())) {
+            case DecimalScaleNormalizer:
+                normalizer = new DecimalScaleNormalizer(dataSet);
+                break;
+            case MaxNormalizer:
+                normalizer = new MaxNormalizer(dataSet);
+                break;
+            case MinMaxNormalizer:
+                normalizer = new MinMaxNormalizer(dataSet);
+                break;
+            case Standardizer:
+                normalizer = new Standardizer(dataSet);
+                break;
+            default:
+                return;
+        }
+        normalizer.normalize(dataSet);
+
+    }
+
     /**
      * Learn and test Neural network
      *
@@ -63,9 +90,8 @@ public class DeepEJB {
         TabularDataSet dataSet = inputEjb.fillTabularDataset(dto);
 
         //Normalize data
-        MaxNormalizer norm = new MaxNormalizer(dataSet);
-        norm.normalize(dataSet);
-
+        this.normalize(dto, dataSet);
+        
         DataSet[] trainTestSet = dataSet.split(0.6, 0.4);
 
         //Create statistics

@@ -69,6 +69,11 @@
                                 <p:outputLabel value=""/>
                                 <p:commandButton value="Show" id="inBtn"
                                                  action="#{deepBean.onInput()}"/>
+
+                                <p:outputLabel value="Normalizer" style="font-weight: bold"/>
+                                <p:selectOneMenu value="#{deepBean.detail.normalizerType}">
+                                    <f:selectItems value="#{deepBean.detail.normalizerTypes}"/>
+                                </p:selectOneMenu>
                             </p:panelGrid>
 
                             <p:panelGrid columns="4" >

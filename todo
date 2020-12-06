@@ -1,17 +1,18 @@
-+ GUI: Add Train parameters
++ GUI: Add normalizer
 
 - Add Neural parameters from the GUI
 
 - Implement RSI
 - Review by spotbugs
 
-Future:
---------
-Migrate to JakartaEE9:
+JakartaEE9 Branch
+-----------------
 - The Netbeans doesn't support it yet (JSF, Composite: No library found for namespace)  
 - Bug:  Compilation failure CandleBean.java:[118,48] cannot access javax.faces.event.AjaxBehaviorEvent
 - Change JDK (11LTS?)
 
+Future:
+--------
 - Self learning with Neural networks
 - Optimize mongodb
 - Candle1d (one day) + Simulation
@@ -23,5 +24,4 @@ Optional:
 - EJB timeout exception - Move to Bath processing?
 - Metrics: Prometheus + Grafana
 - Use Primefaces icons (buttons)
-
 
