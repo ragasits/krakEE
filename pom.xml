@@ -48,13 +48,13 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>5.2020.6</version.payara>
+        <version.payara>5.2020.7</version.payara>
     </properties>
     
     <reporting>
         <plugins>
             <plugin>
-                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.1.3:spotbugs -->
+                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.1.4:spotbugs -->
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>4.1.4</version>

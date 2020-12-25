@@ -32,6 +32,7 @@ import javax.servlet.ServletContext;
 import krakee.deep.DeepDTO;
 import krakee.deep.DeepInputDTO;
 import krakee.deep.DeepInputEJB;
+import krakee.deep.input.AllCandleEJB;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -49,10 +50,10 @@ public class DeepInputBean implements Serializable {
     private StreamedContent file;
     private DeepDTO detail;
 
-    public DeepInputBean() {
-    }
     @EJB
     private DeepInputEJB inputEjb;
+    @EJB
+    private AllCandleEJB allCandleEjb;
 
     /**
      * Download values as CSV file
@@ -89,10 +90,22 @@ public class DeepInputBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
     }
 
-    public Float getInputValue(Integer rowIdx, Integer colIdx) {
-        return inputList.get(rowIdx).toValueList().get(colIdx);
+    /**
+     * Get one value
+     *
+     * @param rowIdx
+     * @param colIdx
+     * @return
+     */
+    public Float getInputOutputValue(Integer rowIdx, Integer colIdx) {
+        return this.allCandleEjb.getInputValue(inputList, rowIdx, colIdx);
     }
 
+    /**
+     * Create input list
+     *
+     * @param deep
+     */
     public void fillInputList(DeepDTO deep) {
         this.inputList = inputEjb.get(deep.getDeepName());
     }

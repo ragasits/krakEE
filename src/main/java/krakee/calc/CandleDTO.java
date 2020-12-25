@@ -1,10 +1,8 @@
 package krakee.calc;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import krakee.Common;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
@@ -61,73 +59,7 @@ public class CandleDTO {
         this.bollinger = new BollingerDTO();
         this.calendar = new CalendarDTO(this.startDate);
     }
-
-    /**
-     * Convert Candle values to ArrayList
-     *
-     * @return
-     */
-    public ArrayList<Float> toValueList() {
-        ArrayList<Float> l = new ArrayList<>();
-
-        l.add(this.count.floatValue());
-        l.add(this.countBuy.floatValue());
-        l.add(this.countSell.floatValue());
-        l.add(this.open.floatValue());
-        l.add(this.low.floatValue());
-        l.add(this.high.floatValue());
-        l.add(this.close.floatValue());
-        l.add(this.total.floatValue());
-        l.add(this.totalBuy.floatValue());
-        l.add(this.totalSell.floatValue());
-        l.add(this.volume.floatValue());
-        l.add(this.volumeBuy.floatValue());
-        l.add(this.volumeSell.floatValue());
-
-        l.addAll(this.delta.toValueList());
-        l.addAll(this.bollinger.toValueList());
-        l.addAll(this.calendar.toValueList());
-
-        return l;
-    }
-    
-    /** 
-     * Convert  Candle values to array
-     * @return 
-     */ 
-    public float[] tovalueArray(){
-        return Common.convert(this.toValueList());
-    }
-
-    /**
-     * Get column names
-     *
-     * @return
-     */
-    public ArrayList<String> toColumnNameList() {
-        ArrayList<String> l = new ArrayList<>();
-
-        l.add("count");
-        l.add("countBuy");
-        l.add("countSell");
-        l.add("open");
-        l.add("low");
-        l.add("high");
-        l.add("close");
-        l.add("total");
-        l.add("totalBuy");
-        l.add("totalSell");
-        l.add("volume");
-        l.add("volumeBuy");
-        l.add("volumeSell");
-
-        l.addAll(this.delta.toColumnNameList());
-        l.addAll(this.bollinger.toColumnNameList());
-        l.addAll(this.calendar.toColumnNameList());
-
-        return l;
-    }
-
+  
     /**
      * Calculate stop Date candleDate + 30 minute
      *

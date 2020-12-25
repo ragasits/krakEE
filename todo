@@ -1,7 +1,9 @@
-+ GUI: Add normalizer
++ Refactor input generation to TabularDataSet (for the later multiple inputs)
 
+- Input: Time series (Candle min, max open, close,...)
+- Manage multiple inputs
+- Migrate to MicroProfile 4.0
 - Add Neural parameters from the GUI
-
 - Implement RSI
 - Review by spotbugs
 

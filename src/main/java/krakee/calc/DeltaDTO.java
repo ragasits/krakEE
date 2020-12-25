@@ -6,7 +6,6 @@
 package krakee.calc;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import krakee.Common;
 
 /**
@@ -164,118 +163,6 @@ public class DeltaDTO {
         this.trendCountDown = Common.calcTrendDown(last.getCount(), prev.getCount(), prev.getDelta().trendCountDown);
         this.trendCountBuyDown = Common.calcTrendDown(last.getCountBuy(), prev.getCountBuy(), prev.getDelta().trendCountBuyDown);
         this.trendCountSellDown = Common.calcTrendDown(last.getCountSell(), prev.getCountSell(), prev.getDelta().trendCountSellDown);
-    }
-
-    /**
-     * Convert DTO fields to ArrayList<Float>
-     *
-     * @return
-     */
-    public ArrayList<Float> toValueList() {
-        ArrayList<Float> l = new ArrayList<>();
-
-        l.add(this.deltaCount.floatValue());
-        l.add(this.deltaCountBuy.floatValue());
-        l.add(this.deltaCountSell.floatValue());
-        l.add(this.deltaOpen.floatValue());
-        l.add(this.deltaLow.floatValue());
-        l.add(this.deltaHigh.floatValue());
-        l.add(this.deltaClose.floatValue());
-        l.add(this.deltaTotal.floatValue());
-        l.add(this.deltaTotalBuy.floatValue());
-        l.add(this.deltaTotalSell.floatValue());
-        l.add(this.deltaVolume.floatValue());
-        l.add(this.deltaVolumeBuy.floatValue());
-        l.add(this.deltaVolumeSell.floatValue());
-
-        l.add(this.trendOpenUp.floatValue());
-        l.add(this.trendOpenDown.floatValue());
-        l.add(this.trendHighUp.floatValue());
-        l.add(this.trendHighDown.floatValue());
-        l.add(this.trendLowUp.floatValue());
-        l.add(this.trendLowDown.floatValue());
-        l.add(this.trendCloseUp.floatValue());
-        l.add(this.trendCloseDown.floatValue());
-
-        l.add(this.trendTotalUp.floatValue());
-        l.add(this.trendTotalBuyUp.floatValue());
-        l.add(this.trendTotalSellUp.floatValue());
-        l.add(this.trendVolumeUp.floatValue());
-        l.add(this.trendVolumeBuyUp.floatValue());
-        l.add(this.trendVolumeSellUp.floatValue());
-
-        l.add(this.trendTotalDown.floatValue());
-        l.add(this.trendTotalBuyDown.floatValue());
-        l.add(this.trendTotalSellDown.floatValue());
-        l.add(this.trendVolumeDown.floatValue());
-        l.add(this.trendVolumeBuyDown.floatValue());
-        l.add(this.trendVolumeSellDown.floatValue());
-
-        l.add(this.trendCountUp.floatValue());
-        l.add(this.trendCountBuyUp.floatValue());
-        l.add(this.trendCountSellUp.floatValue());
-
-        l.add(this.trendCountDown.floatValue());
-        l.add(this.trendCountBuyDown.floatValue());
-        l.add(this.trendCountSellDown.floatValue());
-
-        return l;
-    }
-
-    /**
-     * Add Column names
-     *
-     * @return
-     */
-    public ArrayList<String> toColumnNameList() {
-        ArrayList<String> l = new ArrayList<>();
-
-        l.add("deltaCount");
-        l.add("deltaCountBuy");
-        l.add("deltaCountSell");
-        l.add("deltaOpen");
-        l.add("deltaLow");
-        l.add("deltaHigh");
-        l.add("deltaClose");
-        l.add("deltaTotal");
-        l.add("deltaTotalBuy");
-        l.add("deltaTotalSell");
-        l.add("deltaVolume");
-        l.add("deltaVolumeBuy");
-        l.add("deltaVolumeSell");
-
-        l.add("trendOpenUp");
-        l.add("trendOpenDown");
-        l.add("trendHighUp");
-        l.add("trendHighDown");
-        l.add("trendLowUp");
-        l.add("trendLowDown");
-        l.add("trendCloseUp");
-        l.add("trendCloseDown");
-
-        l.add("trendTotalUp");
-        l.add("trendTotalBuyUp");
-        l.add("trendTotalSellUp");
-        l.add("trendVolumeUp");
-        l.add("trendVolumeBuyUp");
-        l.add("trendVolumeSellUp");
-
-        l.add("trendTotalDown");
-        l.add("trendTotalBuyDown");
-        l.add("trendTotalSellDown");
-        l.add("trendVolumeDown");
-        l.add("trendVolumeBuyDown");
-        l.add("trendVolumeSellDown");
-
-        l.add("trendCountUp");
-        l.add("trendCountBuyUp");
-        l.add("trendCountSellUp");
-
-        l.add("trendCountDown");
-        l.add("trendCountBuyDown");
-        l.add("trendCountSellDown");
-
-        return l;
     }
 
     public boolean isCalcDelta() {

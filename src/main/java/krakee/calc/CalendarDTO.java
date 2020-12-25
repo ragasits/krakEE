@@ -16,7 +16,6 @@
  */
 package krakee.calc;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
@@ -127,46 +126,6 @@ public class CalendarDTO {
         // Moon's age in days
         ag = Math.floor(ag) + 1;
         return ag;
-    }
-
-    /**
-     * Convert DTO fields to ArrayList<Float>
-     *
-     * @return
-     */
-    public ArrayList<Float> toValueList() {
-        ArrayList<Float> l = new ArrayList<>();
-
-        l.add((float) season);
-        l.add((float) month);
-        l.add((float) week);
-        l.add((float) day);
-        l.add((float) dayOfWeek);
-        l.add((float) julianDate);
-        l.add((float) moonAge);
-        l.add((float) hour);
-
-        return l;
-    }
-
-    /**
-     * Get column names
-     *
-     * @return
-     */
-    public ArrayList<String> toColumnNameList() {
-        ArrayList<String> l = new ArrayList<>();
-
-        l.add("season");
-        l.add("month");
-        l.add("week");
-        l.add("day");
-        l.add("dayOfWeek");
-        l.add("julianDate");
-        l.add("moonAge");
-        l.add("hour");
-
-        return l;
     }
 
     /**

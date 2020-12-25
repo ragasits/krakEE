@@ -18,7 +18,6 @@ package krakee.deep;
 
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
-import deepnetts.data.TabularDataSet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
@@ -27,6 +26,7 @@ import krakee.ConfigEJB;
 import krakee.MyException;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
+import krakee.deep.input.AllCandleEJB;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 
@@ -44,6 +44,8 @@ public class DeepInputEJB {
     CandleEJB candleEjb;
     @EJB
     ConfigEJB configEjb;
+    @EJB
+    AllCandleEJB allCandleEjb;
 
     /**
      * Convert Values to CSV format
@@ -69,7 +71,11 @@ public class DeepInputEJB {
         ArrayList<DeepInputDTO> inputList = this.get(deep.getDeepName());
         for (DeepInputDTO dto : inputList) {
             sb = new StringBuilder();
-            ArrayList<Float> cols = dto.toValueList();
+
+            ArrayList<Float> cols = new ArrayList<>();
+            cols.addAll(allCandleEjb.inputValueList(dto));
+            cols.addAll(allCandleEjb.outputValueList(dto));
+
             for (Float col : cols) {
                 sb.append(";").append(col);
             }
@@ -90,25 +96,6 @@ public class DeepInputEJB {
                 .find(eq("deepName", deepName))
                 .sort(Sorts.ascending("candle.startDate"))
                 .into(new ArrayList<>());
-    }
-
-    /**
-     * Convert inputs to TabularDataSet
-     *
-     * @param deep
-     * @return
-     */
-    public TabularDataSet fillTabularDataset(DeepDTO deep) {
-        TabularDataSet dataSet = new TabularDataSet(deep.getNumInputs(), deep.getNumOutputs());
-        dataSet.setColumnNames(deep.getColumnNames().toArray(new String[0]));
-
-        ArrayList<DeepInputDTO> dtoList = this.get(deep.getDeepName());
-
-        dtoList.forEach(dto -> {
-            dataSet.add(new TabularDataSet.Item(dto.getCandle().tovalueArray(), dto.getOutputRow()));
-        });
-
-        return dataSet;
     }
 
     /**
@@ -151,9 +138,6 @@ public class DeepInputEJB {
 
         //Save inputs
         configEjb.getDeepInputColl().insertMany(datasetList);
-
-        //Set parameters
-        this.setParameters(deep);
     }
 
     /**
@@ -163,27 +147,5 @@ public class DeepInputEJB {
      */
     public void delete(DeepDTO deep) {
         configEjb.getDeepInputColl().deleteMany(eq("deepName", deep.getDeepName()));
-    }
-
-    /**
-     * Set the parameters
-     *
-     * @param deep
-     */
-    private void setParameters(DeepDTO deep) {
-        DeepInputDTO dto = configEjb.getDeepInputColl()
-                .find(eq("deepName", deep.getDeepName()))
-                .first();
-
-        if (dto != null) {
-            deep.setNumInputs(dto.getCandle().toValueList().size());
-            deep.setNumOutputs(2);
-
-            //Add column names
-            ArrayList<String> columnNames = dto.getCandle().toColumnNameList();
-            columnNames.add("buy");
-            columnNames.add("sell");
-            deep.setColumnNames(columnNames);
-        }
     }
 }

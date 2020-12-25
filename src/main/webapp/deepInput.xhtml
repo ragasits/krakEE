@@ -55,7 +55,7 @@
                         <p:columns var="columnName" value="#{deepBean.detail.columnNames}" 
                                    headerText="#{columnName}" columnIndexVar="colIdx">
 
-                            <ui:repeat value="#{deepInputBean.getInputValue(rowIdx, colIdx)}" var="data">
+                            <ui:repeat value="#{deepInputBean.getInputOutputValue(rowIdx, colIdx)}" var="data">
                                 <h:outputText value="#{data}"/>
                             </ui:repeat>
 

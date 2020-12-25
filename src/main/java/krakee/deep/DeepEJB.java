@@ -39,6 +39,7 @@ import javax.visrec.ml.data.Normalizer;
 import javax.visrec.ml.eval.EvaluationMetrics;
 import krakee.ConfigEJB;
 import krakee.MyException;
+import krakee.deep.input.AllCandleEJB;
 
 /**
  * Manage Deep Learning
@@ -55,7 +56,15 @@ public class DeepEJB {
     private ConfigEJB configEjb;
     @EJB
     private DeepInputEJB inputEjb;
+    @EJB
+    private AllCandleEJB allEjb;
 
+
+    /**
+     * Choose and execute normalization
+     * @param dto
+     * @param dataSet 
+     */
     private void normalize(DeepDTO dto, TabularDataSet dataSet) {
         Normalizer normalizer;
 
@@ -87,7 +96,7 @@ public class DeepEJB {
      */
     public void learnDeep(DeepDTO dto) throws MyException {
         //Get dataset
-        TabularDataSet dataSet = inputEjb.fillTabularDataset(dto);
+        TabularDataSet dataSet = allEjb.fillDataset(dto);
 
         //Normalize data
         this.normalize(dto, dataSet);

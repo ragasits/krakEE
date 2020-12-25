@@ -16,9 +16,7 @@
  */
 package krakee.deep;
 
-import java.util.ArrayList;
 import krakee.calc.CandleDTO;
-import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
 /**
@@ -40,48 +38,6 @@ public class DeepInputDTO {
         this.deepName = deepName;
         this.candle = candle;
         this.trade = trade;
-    }
-
-    /**
-     * Convert output values to float[]
-     * @return
-     */
-    @BsonIgnore
-    public float[] getOutputRow() {
-        float[] out = new float[2];
-
-        if (candle == null) {
-            //Do nothing
-            out[0] = 0f;
-            out[1] = 0f;
-        } else if (this.trade.equals("buy")) {
-            //Buy
-            out[0] = 1f;
-            out[1] = 0f;
-        } else if (this.trade.equals("sell")) {
-            //Sell
-            out[0] = 0f;
-            out[1] = 1f;
-        } else {
-            out[0] = 0f;
-            out[1] = 0f;
-        }
-
-        return out;
-    }
-
-    /**
-     * Convert input/output values to List
-     * @return 
-     */
-    public ArrayList<Float> toValueList() {
-        ArrayList<Float> valueList = this.candle.toValueList();
-        float[] out = this.getOutputRow();
-
-        valueList.add(out[0]);
-        valueList.add(out[1]);
-
-        return valueList;
     }
 
     public ObjectId getId() {
