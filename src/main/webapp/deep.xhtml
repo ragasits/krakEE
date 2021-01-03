@@ -27,7 +27,8 @@
                     <p:panelGrid columns="10">
                         <p:autoComplete value="#{deepBean.selectedDeepName}"
                                         completeMethod="#{deepBean.complete}">
-                            <p:ajax event="itemSelect" listener="#{deepBean.onSelectedDeep}" update="learnList, panel"/>                       
+                            <p:ajax event="itemSelect" listener="#{deepBean.onSelectedDeep}" 
+                                    update="learnList, inputList, panel"/>                       
                         </p:autoComplete>
 
 
@@ -46,6 +47,12 @@
 
                         <p:commandButton value="DataSet"  id="dsBtn" 
                                          action="#{deepBean.onDataset()}" update="panel"/>
+
+                        <p:outputLabel value="Input:"/>  
+                        <p:selectOneMenu value="#{deepBean.selectedInputType}" id="inputList">
+                            <f:selectItems value="#{deepBean.detail.inputTypes}" var="type" 
+                                           itemLabel="#{type}" itemValue="#{type}" />
+                        </p:selectOneMenu>
 
                         <p:commandButton value="Learn"  id="learnBtn" 
                                          action="#{deepBean.onLearn()}" update="panel"/>

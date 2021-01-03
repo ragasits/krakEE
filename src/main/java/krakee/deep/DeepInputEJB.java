@@ -26,7 +26,7 @@ import krakee.ConfigEJB;
 import krakee.MyException;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
-import krakee.deep.input.AllCandleEJB;
+import krakee.deep.input.AllCandleInputEJB;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 
@@ -45,7 +45,20 @@ public class DeepInputEJB {
     @EJB
     ConfigEJB configEjb;
     @EJB
-    AllCandleEJB allCandleEjb;
+    AllCandleInputEJB allCandleEjb;
+
+    /**
+     * Get inputs filter by deepName
+     *
+     * @param deepName
+     * @return
+     */
+    public ArrayList<DeepInputDTO> get(String deepName) {
+        return configEjb.getDeepInputColl()
+                .find(eq("deepName", deepName))
+                .sort(Sorts.ascending("candle.startDate"))
+                .into(new ArrayList<>());
+    }
 
     /**
      * Convert Values to CSV format
@@ -83,19 +96,6 @@ public class DeepInputEJB {
             rowList.add(sb.toString().replaceFirst(";", ""));
         }
         return rowList;
-    }
-
-    /**
-     * Get inputs filter by deepName
-     *
-     * @param deepName
-     * @return
-     */
-    public ArrayList<DeepInputDTO> get(String deepName) {
-        return configEjb.getDeepInputColl()
-                .find(eq("deepName", deepName))
-                .sort(Sorts.ascending("candle.startDate"))
-                .into(new ArrayList<>());
     }
 
     /**

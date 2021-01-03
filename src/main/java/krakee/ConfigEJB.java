@@ -123,7 +123,16 @@ public class ConfigEJB {
 
         this.learnColl = this.database.getCollection("learn", LearnDTO.class);
         this.deepColl = this.database.getCollection("deep", DeepDTO.class);
+
         this.deepInputColl = this.database.getCollection("deepInput", DeepInputDTO.class);
+        if (!this.isIndex(deepInputColl, "deepName_1")) {
+            this.deepInputColl.createIndex(
+                    Indexes.compoundIndex(
+                            Indexes.ascending("deepName"),
+                            Indexes.ascending("candle.startDate")
+                    )
+            );
+        }
     }
 
     /**

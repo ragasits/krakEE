@@ -40,8 +40,6 @@ import org.primefaces.event.SelectEvent;
 public class DeepBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private String selectedLearnName;
-    private String selectedDeepName;
     private DeepDTO detail = new DeepDTO();
     private boolean disableBtn = true;
 
@@ -72,8 +70,6 @@ public class DeepBean implements Serializable {
      */
     public void onDataset() {
         try {
-            detail.setLearnName(this.selectedLearnName);
-            detail.setDeepName(this.selectedDeepName);
             deepInputEjb.fillDataset(this.detail);
             this.disableBtn = false;
         } catch (MyException ex) {
@@ -86,7 +82,7 @@ public class DeepBean implements Serializable {
      *
      */
     public void onSave() {
-        DeepDTO dto = deepEjb.get(this.selectedDeepName);
+        DeepDTO dto = deepEjb.get(this.detail.getDeepName());
 
         if (dto == null) {
             deepEjb.add(this.detail);
@@ -99,12 +95,12 @@ public class DeepBean implements Serializable {
      * Delete Deep item
      */
     public void onDelete() {
-        DeepDTO dto = deepEjb.get(this.selectedDeepName);
+        DeepDTO dto = deepEjb.get(this.detail.getDeepName());
 
         if (dto != null) {
             deepEjb.delete(this.detail);
             this.detail = new DeepDTO();
-            
+
         }
     }
 
@@ -126,11 +122,6 @@ public class DeepBean implements Serializable {
      */
     public void onSelectedDeep(SelectEvent<String> event) {
         this.detail = deepEjb.get(event.getObject());
-
-        if (this.detail != null) {
-            this.selectedLearnName = this.detail.getLearnName();
-        }
-
     }
 
     /**
@@ -147,11 +138,17 @@ public class DeepBean implements Serializable {
     }
 
     public String getSelectedLearnName() {
-        return selectedLearnName;
+        if (detail != null) {
+            return detail.getLearnName();
+        }
+
+        return null;
     }
 
     public void setSelectedLearnName(String selectedLearnName) {
-        this.selectedLearnName = selectedLearnName;
+        if (detail != null) {
+            this.detail.setLearnName(selectedLearnName);
+        }
     }
 
     public DeepDTO getDetail() {
@@ -163,11 +160,16 @@ public class DeepBean implements Serializable {
     }
 
     public String getSelectedDeepName() {
-        return selectedDeepName;
+        if (this.detail!=null){
+            return this.detail.getDeepName();
+        }
+        return null;
     }
 
     public void setSelectedDeepName(String selectedDeepName) {
-        this.selectedDeepName = selectedDeepName;
+        if (this.detail!=null){
+            this.detail.setDeepName(selectedDeepName);
+        }
     }
 
     public boolean isDisableBtn() {
@@ -177,4 +179,18 @@ public class DeepBean implements Serializable {
     public void setDisableBtn(boolean disableBtn) {
         this.disableBtn = disableBtn;
     }
+
+    public String getSelectedInputType() {
+        if (this.detail != null) {
+            return this.detail.getInputType();
+        }
+        return null;
+    }
+
+    public void setSelectedInputType(String selectedInputType) {
+        if (this.detail != null) {
+            this.detail.setInputType(selectedInputType);
+        }
+    }
+
 }

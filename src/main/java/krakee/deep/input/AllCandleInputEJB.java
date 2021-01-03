@@ -16,19 +16,14 @@
  */
 package krakee.deep.input;
 
-import deepnetts.data.TabularDataSet;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import krakee.Common;
 import krakee.calc.BollingerDTO;
 import krakee.calc.CalendarDTO;
 import krakee.calc.CandleDTO;
 import krakee.calc.DeltaDTO;
-import krakee.deep.DeepDTO;
 import krakee.deep.DeepInputDTO;
-import krakee.deep.DeepInputEJB;
 
 /**
  * Transform candle all values into DataSet
@@ -36,61 +31,16 @@ import krakee.deep.DeepInputEJB;
  * @author rgt
  */
 @Stateless
-public class AllCandleEJB {
+public class AllCandleInputEJB extends AbstractInput {
 
-    @EJB
-    DeepInputEJB inputEjb;
-
+ 
     /**
-     * Get one input value
-     *
-     * @param inputList
-     * @param rowIdx
-     * @param colIdx
-     * @return
-     */
-    public Float getInputValue(ArrayList<DeepInputDTO> inputList, Integer rowIdx, Integer colIdx) {
-
-        DeepInputDTO dto = inputList.get(rowIdx);
-        ArrayList<Float> row = new ArrayList<>();
-        row.addAll(this.inputValueList(dto));
-        row.addAll(this.outputValueList(dto));
-
-        return row.get(colIdx);
-    }
-
-    /**
-     * Create Output value list
+     * Convert Candle input values to ArrayList
      *
      * @param dto
      * @return
      */
-    public ArrayList<Float> outputValueList(DeepInputDTO dto) {
-        ArrayList<Float> outputList = new ArrayList<>();
-
-        if (dto.getCandle() == null) {
-            outputList.add(0f);
-            outputList.add(0f);
-        } else if (dto.getTrade().equals("buy")) {
-            outputList.add(1f);
-            outputList.add(0f);
-        } else if (dto.getTrade().equals("sell")) {
-            outputList.add(0f);
-            outputList.add(1f);
-        } else {
-            outputList.add(0f);
-            outputList.add(0f);
-        }
-
-        return outputList;
-
-    }
-
-    /**
-     * Convert Candle input values to ArrayList
-     *
-     * @return
-     */
+    @Override
     public ArrayList<Float> inputValueList(DeepInputDTO dto) {
         CandleDTO candle = dto.getCandle();
         DeltaDTO delta = candle.getDelta();
@@ -194,20 +144,12 @@ public class AllCandleEJB {
     }
 
     /**
-     * Create output column names list
-     *
-     * @return
-     */
-    private ArrayList<String> outputColumnNameList() {
-        return new ArrayList<>(Arrays.asList("buy", "sell"));
-    }
-
-    /**
      * Get input column names
      *
      * @return
      */
-    private ArrayList<String> inputColumnNameList() {
+    @Override
+    public ArrayList<String> inputColumnNameList() {
         return new ArrayList<>(Arrays.asList(
                 "count", "countBuy", "countSell", "open", "low", "high", "close",
                 "total", "totalBuy", "totalSell", "volume", "volumeBuy", "volumeSell",
@@ -234,35 +176,4 @@ public class AllCandleEJB {
                 "hour"
         ));
     }
-
-    /**
-     * Create TabularDataSet
-     *
-     * @param deep
-     * @return
-     */
-    public TabularDataSet fillDataset(DeepDTO deep) {
-
-        deep.setNumInputs(this.inputColumnNameList().size());
-        deep.setNumOutputs(this.outputColumnNameList().size());
-        TabularDataSet dataSet = new TabularDataSet(deep.getNumInputs(), deep.getNumOutputs());
-
-        ArrayList<String> columns = new ArrayList<>();
-        columns.addAll(this.inputColumnNameList());
-        columns.addAll(this.outputColumnNameList());
-        dataSet.setColumnNames(columns.toArray(new String[0]));
-        deep.setColumnNames(columns);
-
-        ArrayList<DeepInputDTO> dtoList = inputEjb.get(deep.getDeepName());
-
-        for (DeepInputDTO dto : dtoList) {
-            dataSet.add(new TabularDataSet.Item(
-                    Common.convert(this.inputValueList(dto)),
-                    Common.convert(this.outputValueList(dto))));
-        }
-
-        return dataSet;
-
-    }
-
 }

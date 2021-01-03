@@ -1,7 +1,10 @@
-+ Refactor input generation to TabularDataSet (for the later multiple inputs)
++ Add Input: Time series (Candle min, max open, close,...) and Normalizer
 
-- Input: Time series (Candle min, max open, close,...)
-- Manage multiple inputs
+
+
+- BUG?: Candle with 0 values
+- Chk: Time Series Normalizer values
+
 - Migrate to MicroProfile 4.0
 - Add Neural parameters from the GUI
 - Implement RSI

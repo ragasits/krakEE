@@ -35,6 +35,7 @@ public class DeepDTO {
     private String deepName;
     private String learnName;
 
+    private String inputType;
     private int numInputs;
     private int numOutputs;
     private ArrayList<String> columnNames;
@@ -143,6 +144,11 @@ public class DeepDTO {
     @BsonIgnore
     public NormalizerType[] getNormalizerTypes() {
         return NormalizerType.values();
+    }
+
+    @BsonIgnore
+    public InputType[] getInputTypes() {
+        return InputType.values();
     }
 
     public ObjectId getId() {
@@ -351,6 +357,14 @@ public class DeepDTO {
 
     public void setNormalizerType(String normalizerType) {
         this.normalizerType = normalizerType;
+    }
+
+    public String getInputType() {
+        return inputType;
+    }
+
+    public void setInputType(String inputType) {
+        this.inputType = inputType;
     }
 
 }

@@ -17,14 +17,10 @@
 package krakee.deep;
 
 /**
- * Normalizer types
+ * Input types
  * @author rgt
  */
-public enum NormalizerType {
-    DecimalScaleNormalizer,
-    MaxNormalizer,
-    MinMaxNormalizer,
-    //RangeNormalizer,
-    Standardizer,
+public enum InputType {
+    AllCandle,
     TimeSeries
 }

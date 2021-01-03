@@ -32,7 +32,7 @@ import javax.servlet.ServletContext;
 import krakee.deep.DeepDTO;
 import krakee.deep.DeepInputDTO;
 import krakee.deep.DeepInputEJB;
-import krakee.deep.input.AllCandleEJB;
+import krakee.deep.input.AllCandleInputEJB;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -53,7 +53,7 @@ public class DeepInputBean implements Serializable {
     @EJB
     private DeepInputEJB inputEjb;
     @EJB
-    private AllCandleEJB allCandleEjb;
+    private AllCandleInputEJB allCandleEjb;
 
     /**
      * Download values as CSV file

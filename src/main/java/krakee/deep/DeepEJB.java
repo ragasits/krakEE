@@ -39,7 +39,9 @@ import javax.visrec.ml.data.Normalizer;
 import javax.visrec.ml.eval.EvaluationMetrics;
 import krakee.ConfigEJB;
 import krakee.MyException;
-import krakee.deep.input.AllCandleEJB;
+import krakee.deep.input.AllCandleInputEJB;
+import krakee.deep.input.TimeSeriesInputEJB;
+import krakee.deep.input.TimeSeriesNormalizer;
 
 /**
  * Manage Deep Learning
@@ -55,15 +57,17 @@ public class DeepEJB {
     @EJB
     private ConfigEJB configEjb;
     @EJB
-    private DeepInputEJB inputEjb;
+    private DeepInputEJB inputEjb;  
     @EJB
-    private AllCandleEJB allEjb;
-
-
+    private AllCandleInputEJB allCandleInputEjb;
+    @EJB
+    private TimeSeriesInputEJB timeSeriesInputEjb;
+    
     /**
      * Choose and execute normalization
+     *
      * @param dto
-     * @param dataSet 
+     * @param dataSet
      */
     private void normalize(DeepDTO dto, TabularDataSet dataSet) {
         Normalizer normalizer;
@@ -81,11 +85,31 @@ public class DeepEJB {
             case Standardizer:
                 normalizer = new Standardizer(dataSet);
                 break;
+            case TimeSeries:
+                normalizer = new TimeSeriesNormalizer();
+                break;
             default:
                 return;
         }
         normalizer.normalize(dataSet);
 
+    }
+
+   /**
+    * Generate dataset from the selected input
+    * @param dto
+    * @return 
+    */
+    private TabularDataSet fillDataset(DeepDTO dto) {
+
+        switch (InputType.valueOf(dto.getInputType())) {
+            case AllCandle:
+                return allCandleInputEjb.fillDataset(dto);
+            case TimeSeries:
+                return timeSeriesInputEjb.fillDataset(dto);
+            default:
+                return null;
+        }
     }
 
     /**
@@ -96,11 +120,11 @@ public class DeepEJB {
      */
     public void learnDeep(DeepDTO dto) throws MyException {
         //Get dataset
-        TabularDataSet dataSet = allEjb.fillDataset(dto);
+        TabularDataSet dataSet = this.fillDataset(dto);
 
         //Normalize data
         this.normalize(dto, dataSet);
-        
+
         DataSet[] trainTestSet = dataSet.split(0.6, 0.4);
 
         //Create statistics
