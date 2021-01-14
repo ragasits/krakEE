@@ -18,8 +18,6 @@
             </h:form>
 
             <h:form id="form1">
-                <p:growl id="growl" showDetail="true" />
-
                 <p:panel>
                     <h:panelGrid columns="4">
                         <p:commandButton value="Query"  id="btn" update="tbl"  
@@ -28,12 +26,10 @@
                         <p:outputLabel value="Limit:"/>
                         <p:spinner value="#{tradeBean.queryLimit}"/>
 
-                        <p:commandButton value="Check" action="#{tradeBean.onTradeChk()}" 
-                                         id="chkBtn" update="growl"/>
                     </h:panelGrid>
                 </p:panel>
 
-                <p:blockUI block="form1" trigger="btn, chkBtn">
+                <p:blockUI block="form1" trigger="btn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>       
 

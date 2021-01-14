@@ -22,6 +22,7 @@ import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
+import krakee.get.TradeEJB;
 import krakee.get.TradePairDTO;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -42,6 +43,8 @@ public class CandleEJB {
     DeltaEJB delta;
     @EJB
     BollingerEJB bollinger;
+    @EJB
+    TradeEJB trade;
 
     private int candleSize = 5000;
 
@@ -56,7 +59,7 @@ public class CandleEJB {
                 .find(eq("startDate", startDate))
                 .first();
     }
-    
+
     /**
      * Get one Candle by ID
      *
@@ -68,14 +71,15 @@ public class CandleEJB {
                 .find(eq("_id", id))
                 .first();
     }
-    
+
     /**
      * Get Candles
+     *
      * @param first
      * @param last
-     * @return 
+     * @return
      */
-    public List<CandleDTO> get(Date first, Date last){
+    public List<CandleDTO> get(Date first, Date last) {
         return config.getCandleColl()
                 .find(and(gte("startDate", first), lte("startDate", last)))
                 .sort(Sorts.ascending("startDate"))
@@ -95,7 +99,7 @@ public class CandleEJB {
                 .limit(limit)
                 .into(new ArrayList<CandleDTO>());
     }
-    
+
     /**
      * Get latest date value from Candle collection
      *
@@ -112,8 +116,8 @@ public class CandleEJB {
         } catch (NullPointerException e) {
             return null;
         }
-    }   
-    
+    }
+
     /**
      * Get first date from the candle collection
      *
@@ -130,8 +134,8 @@ public class CandleEJB {
         } catch (NullPointerException e) {
             return null;
         }
-    }    
-    
+    }
+
     /**
      * Get one day's all Candles
      *
@@ -149,8 +153,8 @@ public class CandleEJB {
                 .sort(Sorts.ascending("startDate"))
                 .into(new ArrayList<>());
 
-    }    
-    
+    }
+
     /**
      * Call candle generation methods
      */
@@ -381,15 +385,15 @@ public class CandleEJB {
     public String toString() {
         return "CandleEJB{" + "config=" + config + ", candleSize=" + candleSize + '}';
     }
-    
-   /**
+
+    /**
      * Check Candle consistency I. Seek missing dates
      *
      * @return
      */
-    public List<Date> chkDates() {
+    public ArrayList<String> chkDates() {
         Calendar cal = Calendar.getInstance();
-        List<Date> list = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
         TradePairDTO dto;
 
         //get first trade date
@@ -414,7 +418,7 @@ public class CandleEJB {
                     .find(eq("startDate", firstDate))
                     .first();
             if (candleDto == null) {
-                list.add(firstDate);
+                list.add(firstDate.toString());
             }
 
             //calc next value
@@ -425,22 +429,22 @@ public class CandleEJB {
 
         System.out.println("chkCandleDates: " + i);
         return list;
-    }    
-    
-   /**
+    }
+
+    /**
      * Check Candle consistency II. Count trades
      *
      * @return
      */
-    public List<String> chkTradeCount() {
-        List<String> list = new ArrayList<>();
+    public ArrayList<String> chkTradeCount() {
+        ArrayList<String> list = new ArrayList<>();
         //Get candles
         List<CandleDTO> candleList = config.getCandleColl()
                 .find()
                 .into(new ArrayList<>());
-        
+
         for (CandleDTO dto : candleList) {
-           //Count trades    
+            //Count trades    
             Document trade = config.getTradePairColl().aggregate(
                     Arrays.asList(
                             Aggregates.match(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate()))),
@@ -458,11 +462,42 @@ public class CandleEJB {
                 if (cnt == null || !cnt.equals(dto.getCount())) {
                     list.add(dto.getStartDate().toString() + " " + cnt + "," + dto.getCount());
                 }
-            } 
+            }
         }
 
         return list;
     }
-    
+
+    /**
+     * Check Open=0 missing trades
+     *
+     * @return
+     */
+    public ArrayList<String> chkZeroOpen() {
+        ArrayList<String> list = new ArrayList<>();
+
+        List<CandleDTO> candleList = config.getCandleColl()
+                .find(eq("open", 0))
+                .sort(Sorts.ascending("timeDate"))
+                .into(new ArrayList<>());
+
+        for (CandleDTO dto : candleList) {
+
+            List<TradePairDTO> tradeList = config.getTradePairColl()
+                    .find(
+                            and(
+                                    gte("timeDate", dto.getStartDate()),
+                                    lt("timeDate", dto.getStopDate())
+                            )
+                    )
+                    .into(new ArrayList<>());
+
+            if (tradeList.isEmpty()) {
+                list.add("Missing trade: " + dto.getStartDate()+ "-"+ dto.getStopDate());
+            }
+        }
+
+        return list;
+    }
 
 }

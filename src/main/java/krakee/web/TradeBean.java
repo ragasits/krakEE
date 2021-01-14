@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import krakee.get.TradeEJB;
 import krakee.get.TradePairDTO;
@@ -26,20 +24,7 @@ public class TradeBean implements Serializable {
     private List<TradePairDTO> tradeList;
     private int queryLimit = 100;
 
-    /**
-     * Consistency checking 
-     */
-    public void onTradeChk() {
-        List<String> list = trade.chkTradePair();
-        FacesMessage msg;
-        if (list == null || list.isEmpty()) {
-            String errorMsg = "Consistency error: " + list.size();
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Trade", errorMsg);
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Trade", "Consistency check: OK");
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
+
 
     /**
      * Get Trade data

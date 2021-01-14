@@ -17,9 +17,7 @@
                 <ez:globalMenu/>
             </h:form>
 
-            <h:form id="form1">
-                <p:growl id="growl" showDetail="true" />
-                
+            <h:form id="form1">              
                 <p:panel>
                     <h:panelGrid columns="4">
                         <p:commandButton value="Query"  id="btn" 
@@ -28,18 +26,14 @@
                         </p:commandButton>
                         <p:outputLabel value="Limit:"/>
                         <p:spinner value="#{candleBean.queryLimit}"/>
-                        
-                        <p:splitButton value="Check" id="chkBtn">
-                            <p:menuitem value="Date check" action="#{candleBean.onDateChk()}" update="growl" id="chkBtn1"/>
-                            <p:menuitem value="Trade check" action="#{candleBean.onCandleTradeCountChk()}" update="growl" id="chkBtn2"/>
-                        </p:splitButton>
+
                     </h:panelGrid>
                 </p:panel>
 
-                <p:blockUI block="form1" trigger="btn, chkBtn1, chkBtn2">
-                    <p:graphicImage value="/resources/ajax-loader.gif" />
+                <p:blockUI block="form1" trigger="btn">
+                           <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
-                
+
                 <p:accordionPanel id="panel1" multiple="true">
                     <p:tab title="Chart">
                         <p:chart type="ohlc" model="#{candleBean.ohlcModel}" id="ohlc" >
@@ -70,7 +64,7 @@
                             <p:column headerText="open">
                                 <p:outputLabel value="#{item.open}"/>
                             </p:column>                            
-                            
+
                             <p:column headerText="high">
                                 <p:outputLabel value="#{item.high}"/>
                             </p:column>                                

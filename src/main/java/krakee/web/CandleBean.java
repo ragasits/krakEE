@@ -1,7 +1,6 @@
 package krakee.web;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -38,36 +37,6 @@ public class CandleBean implements Serializable {
     @PostConstruct
     public void init() {
         this.createOhlcModel();
-    }
-
-    /**
-     * Check Candle count consistency
-     */
-    public void onCandleTradeCountChk() {
-        FacesMessage msg;
-
-        List<String> list = candle.chkTradeCount();
-        if (list.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "TradeCnt check: OK");
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "TradeCnt check: Errors(" + list.size() + ")");
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
-
-    /**
-     * Check Candle date consistency
-     */
-    public void onDateChk() {
-        FacesMessage msg;
-
-        List<Date> list = candle.chkDates();
-        if (list.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Date check: OK");
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Date check: Errors(" + list.size() + ")");
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     /**
@@ -114,7 +83,6 @@ public class CandleBean implements Serializable {
      *
      * @param event
      */
-
     public void candleSelect(ItemSelectEvent event) {
         int id = this.candleList.size() - event.getItemIndex() - 1;
         CandleDTO dto = this.candleList.get(id);
@@ -122,7 +90,7 @@ public class CandleBean implements Serializable {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", dto.getOHLCtMsg());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
-    
+
     public List<CandleDTO> getCandleList() {
         return this.candleList;
     }

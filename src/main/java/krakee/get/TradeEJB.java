@@ -218,7 +218,7 @@ public class TradeEJB {
      *
      * @return
      */
-    public List<String> chkTradePair() {
+    public ArrayList<String> chkTradePair() {
         //Chk last<>max(time)
         MongoCursor<Document> cursor = config.getTradePairColl().aggregate(
                 Arrays.asList(
@@ -226,7 +226,7 @@ public class TradeEJB {
                 ), Document.class
         ).cursor();
 
-        List<String> list = new ArrayList();
+        ArrayList<String> list = new ArrayList();
 
         while (cursor.hasNext()) {
             Document doc = cursor.next();

@@ -1,8 +1,8 @@
-+ Migrate to MicroProfile 4.0
++ GUI: Add checking
++ Checking: Add Candle with 0 value
 
-
-
-- BUG?: Candle with 0 values
+- Error: Trade: Consistency checking
+- Error: Candle: Check Open=0 missing trades
 - Chk: Time Series Normalizer values
 
 - Add Neural parameters from the GUI
