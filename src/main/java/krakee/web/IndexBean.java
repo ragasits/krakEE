@@ -108,5 +108,12 @@ public class IndexBean implements Serializable {
     public ArrayList<String> getResultList() {
         return resultList;
     }
+    
+    public String getResultText(){
+        if (this.resultList==null || this.resultList.isEmpty()){
+            return "Result";
+        }
+        return "Result ("+this.resultList.size()+")";
+    }
 
 }

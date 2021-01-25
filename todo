@@ -1,5 +1,4 @@
-+ GUI: Add checking
-+ Checking: Add Candle with 0 value
++ GUI: Show error counts
 
 - Error: Trade: Consistency checking
 - Error: Candle: Check Open=0 missing trades

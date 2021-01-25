@@ -486,14 +486,19 @@ public class CandleEJB {
             List<TradePairDTO> tradeList = config.getTradePairColl()
                     .find(
                             and(
-                                    gte("timeDate", dto.getStartDate()),
-                                    lt("timeDate", dto.getStopDate())
+                                gte("timeDate", dto.getStartDate()), 
+                                lt("timeDate", dto.getStopDate())
                             )
                     )
                     .into(new ArrayList<>());
 
             if (tradeList.isEmpty()) {
-                list.add("Missing trade: " + dto.getStartDate()+ "-"+ dto.getStopDate());
+                
+                // System.out.println("Missing trade: " + dto.getStartDate() + "-" + dto.getStopDate()
+                //       + " " + dto.getStartDate().getTime() + "-" + dto.getStopDate().getTime());
+                                
+                list.add("Missing trade: " + dto.getStartDate() + "-" + dto.getStopDate()
+                        + " " + dto.getStartDate().getTime() + "-" + dto.getStopDate().getTime());
             }
         }
 

@@ -38,23 +38,23 @@
                         <p:panelGrid columns="2">
                             <p:outputLabel value="Trade: Consistency checking "/>
                             <p:commandButton value="Check" action="#{indexBean.onTradeChk()}" 
-                                             id="chkBtn0" update="growl, result"/>
+                                             id="chkBtn0" update="growl, resultPanel"/>
 
                             <p:outputLabel value="Candle: Check consistency I. Seek missing dates"/>
                             <p:commandButton value="Check" action="#{indexBean.onDateChk()}" 
-                                             id="chkBtn1" update="growl, result"/>
+                                             id="chkBtn1" update="growl, resultPanel"/>
 
                             <p:outputLabel value="Candle: Check Candle consistency II. Count trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onCandleTradeCountChk()}" 
-                                             id="chkBtn2" update="growl, result"/>
+                                             id="chkBtn2" update="growl, resultPanel"/>
 
                             <p:outputLabel value="Candle: Check Open=0 missing trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onZeroOpen()}" 
-                                             id="chkBtn3" update="growl, result"/>
+                                             id="chkBtn3" update="growl, resultPanel"/>
                         </p:panelGrid>
 
-                        <p:panel header="Result">
-                            <p:selectOneListbox  id="result"  style="width: 100% !important"        >
+                        <p:panel header="#{indexBean.resultText}"  id="resultPanel">                         
+                            <p:selectOneListbox   style="width: 100% !important">
                                 <f:selectItems value="#{indexBean.resultList}"/>
                             </p:selectOneListbox>
 
