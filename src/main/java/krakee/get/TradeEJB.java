@@ -30,6 +30,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.ProcessingException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import krakee.ConfigEJB;
 import krakee.MyException;
@@ -192,10 +193,10 @@ public class TradeEJB {
                     .build(KrakenClient.class);
 
             response = krakenClient.getTrade("XBTEUR", last);
-        } catch (NoSuchAlgorithmException | KeyManagementException | ProcessingException ex) {
-            throw new MyException("getRestTrade: " + ex.getMessage());
+        } catch (NoSuchAlgorithmException | KeyManagementException | ProcessingException | WebApplicationException ex) {
+            throw new MyException("getRestTrade: Failed :" + ex.getMessage());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(TradeEJB.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TradeEJB.class.getName()).log(Level.SEVERE, null, ex);     
         }
 
         if (response == null) {

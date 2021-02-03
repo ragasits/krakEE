@@ -1,4 +1,4 @@
-+ GUI: Show error counts
++ BUG: WebApplicationException: Unknown error, status code 503
 
 - Error: Trade: Consistency checking
 - Error: Candle: Check Open=0 missing trades

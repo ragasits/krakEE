@@ -494,8 +494,8 @@ public class CandleEJB {
 
             if (tradeList.isEmpty()) {
                 
-                // System.out.println("Missing trade: " + dto.getStartDate() + "-" + dto.getStopDate()
-                //       + " " + dto.getStartDate().getTime() + "-" + dto.getStopDate().getTime());
+                System.out.println("Missing trade: " + dto.getStartDate() + "-" + dto.getStopDate()
+                       + " " + dto.getStartDate().getTime() + "-" + dto.getStopDate().getTime());
                                 
                 list.add("Missing trade: " + dto.getStartDate() + "-" + dto.getStopDate()
                         + " " + dto.getStartDate().getTime() + "-" + dto.getStopDate().getTime());
