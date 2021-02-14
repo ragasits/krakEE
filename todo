@@ -1,4 +1,4 @@
-+ BUG: WebApplicationException: Unknown error, status code 503
++ Migrate to to Payara Micro 5.2021.1
 
 - Error: Trade: Consistency checking
 - Error: Candle: Check Open=0 missing trades
@@ -7,12 +7,6 @@
 - Add Neural parameters from the GUI
 - Implement RSI
 - Review by spotbugs
-
-JakartaEE9 Branch
------------------
-- The Netbeans doesn't support it yet (JSF, Composite: No library found for namespace)  
-- Bug:  Compilation failure CandleBean.java:[118,48] cannot access javax.faces.event.AjaxBehaviorEvent
-- Change JDK (11LTS?)
 
 Future:
 --------
