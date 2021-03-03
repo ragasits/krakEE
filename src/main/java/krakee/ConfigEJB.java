@@ -73,6 +73,7 @@ public class ConfigEJB {
     private MongoClient client;
     private MongoDatabase database;
     private MongoCollection<TradePairDTO> tradePairColl;
+    private MongoCollection<TradePairDTO> tradePairOldColl;
     private MongoCollection<CandleDTO> candleColl;
     private MongoCollection<ProfitDTO> profitColl;
     private MongoCollection<LearnDTO> learnColl;
@@ -90,14 +91,23 @@ public class ConfigEJB {
             System.setProperty("https.proxyPort", this.proxyPort);
         }
 
-        //Set Mongodb 
+        //Set Mongodb     
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
         this.client = MongoClients.create();
+                
         this.database = this.client.getDatabase("krakEE").withCodecRegistry(pojoCodecRegistry);
 
         this.tradePairColl = this.database.getCollection("tradepair", TradePairDTO.class);
+        if (!this.isIndex(tradePairColl, "last_-1")) {
+            this.tradePairColl.createIndex(Indexes.descending("last"));
+        }
+        if (!this.isIndex(tradePairColl, "timeDate_1")) {
+            this.tradePairColl.createIndex(Indexes.ascending("timeDate"));
+        }
+
+        this.tradePairOldColl = this.database.getCollection("tradepair_1", TradePairDTO.class);
         if (!this.isIndex(tradePairColl, "last_-1")) {
             this.tradePairColl.createIndex(Indexes.descending("last"));
         }
@@ -165,6 +175,10 @@ public class ConfigEJB {
 
     public MongoCollection<TradePairDTO> getTradePairColl() {
         return tradePairColl;
+    }
+
+    public MongoCollection<TradePairDTO> getTradePairOldColl() {
+        return tradePairOldColl;
     }
 
     public MongoCollection<CandleDTO> getCandleColl() {

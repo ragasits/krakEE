@@ -1,8 +1,10 @@
 package krakee.get;
 
+import com.mongodb.MongoInterruptedException;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
+import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.InsertManyResult;
 import java.io.InputStream;
@@ -66,6 +68,7 @@ public class TradeEJB {
                 .limit(limit)
                 .into(new ArrayList<>());
     }
+
 
     /**
      * Get, convert, store trades from Kraken
@@ -196,7 +199,7 @@ public class TradeEJB {
         } catch (NoSuchAlgorithmException | KeyManagementException | ProcessingException | WebApplicationException ex) {
             throw new MyException("getRestTrade: Failed :" + ex.getMessage());
         } catch (URISyntaxException ex) {
-            Logger.getLogger(TradeEJB.class.getName()).log(Level.SEVERE, null, ex);     
+            Logger.getLogger(TradeEJB.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         if (response == null) {
@@ -240,4 +243,65 @@ public class TradeEJB {
         }
         return list;
     }
+ 
+    /**
+     * Search and look missing trades, check duplicates
+     * @param oldDto
+     * @param errorList 
+     */
+    @Asynchronous
+    private void chkCompareTrade(TradePairDTO oldDto, ArrayList<String> errorList) {
+        ArrayList<TradePairDTO> newDtoList = null;
+        try {
+            newDtoList = config.getTradePairColl()
+                    .find(eq("time", oldDto.getTime()))
+                    .into(new ArrayList<>());
+        } catch (MongoInterruptedException e) {
+            System.out.println("MongoInterruptedException: "+e.getMessage());
+            return;
+        }
+
+        if (newDtoList == null || newDtoList.isEmpty()) {
+            //errorList.add("Missing element:" + oldDto.toString());
+            //System.out.println("Missing element:" + oldDto.toString());
+            //numMissing++;
+
+        } else if (newDtoList.size() > 1) {
+            errorList.add("Multiple element:" + newDtoList.size() + ": " + oldDto.getTimeDate() + ": " + oldDto.getTime());
+            System.out.println("Multiple element: " + newDtoList.size() + ": " + oldDto.getTimeDate() + ": " + oldDto.getTime());
+            //numMultipe++;
+        }
+    }
+
+    /**
+     * Looking for missing elements
+     *
+     * @return
+     */
+    public ArrayList<String> chkCompareTrades() {
+        ArrayList<String> errorList = new ArrayList();
+        int numMissing = 0;
+        int numMultipe = 0;
+
+        MongoCursor<TradePairDTO> cursor = config.getTradePairOldColl()
+                .find()
+                //.cursorType(CursorType.Tailable)
+                //.noCursorTimeout(true)
+                //.limit(2000000)
+                .iterator();
+
+        while (cursor.hasNext()) {
+
+            TradePairDTO oldDto = cursor.next();
+
+            this.chkCompareTrade(oldDto, errorList);
+        }
+
+        System.out.println("Done!");
+        
+        //errorList.add("Missing elements:" + numMissing);
+        //errorList.add("Multiple elements:" + numMultipe);
+        return errorList;
+    }
+
 }

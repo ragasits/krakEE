@@ -93,6 +93,21 @@ public class IndexBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    /**
+     * Compare old-new trades
+     */
+    public void onCompareTrades() {
+        this.resultList = trade.chkCompareTrades();
+        FacesMessage msg;
+        if (this.resultList.isEmpty()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Trade", "Consistency check: OK");
+        } else {
+            String errorMsg = "Consistency error: " + this.resultList.size();
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Trade", errorMsg);
+        }
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
     public boolean isRunTrade() {
         return config.isRunTrade();
     }
@@ -108,12 +123,12 @@ public class IndexBean implements Serializable {
     public ArrayList<String> getResultList() {
         return resultList;
     }
-    
-    public String getResultText(){
-        if (this.resultList==null || this.resultList.isEmpty()){
+
+    public String getResultText() {
+        if (this.resultList == null || this.resultList.isEmpty()) {
             return "Result";
         }
-        return "Result ("+this.resultList.size()+")";
+        return "Result (" + this.resultList.size() + ")";
     }
 
 }
