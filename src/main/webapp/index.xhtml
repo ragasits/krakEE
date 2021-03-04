@@ -29,7 +29,7 @@
 
                     <p:growl id="growl" showDetail="true" />
 
-                    <p:blockUI block="form1" trigger="chkBtn0, chkBtn1, chkBtn2, chkBtn3">
+                    <p:blockUI block="form1" trigger="chkBtn0, chkBtn1, chkBtn2, chkBtn3, chkBtn4">
                         <p:graphicImage value="/resources/ajax-loader.gif" />
                     </p:blockUI>    
 
@@ -40,17 +40,21 @@
                             <p:commandButton value="Check" action="#{indexBean.onTradeChk()}" 
                                              id="chkBtn0" update="growl, resultPanel"/>
 
+                            <p:outputLabel value="Trade: Search for duplicates"/>
+                            <p:commandButton value="Check" action="#{indexBean.onTradeDuplicatesChk()}" 
+                                             id="chkBtn1" update="growl, resultPanel"/>
+
                             <p:outputLabel value="Candle: Check consistency I. Seek missing dates"/>
                             <p:commandButton value="Check" action="#{indexBean.onDateChk()}" 
-                                             id="chkBtn1" update="growl, resultPanel"/>
+                                             id="chkBtn2" update="growl, resultPanel"/>
 
                             <p:outputLabel value="Candle: Check Candle consistency II. Count trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onCandleTradeCountChk()}" 
-                                             id="chkBtn2" update="growl, resultPanel"/>
+                                             id="chkBtn3" update="growl, resultPanel"/>
 
                             <p:outputLabel value="Candle: Check Open=0 missing trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onZeroOpen()}" 
-                                             id="chkBtn3" update="growl, resultPanel"/>
+                                             id="chkBtn4" update="growl, resultPanel"/>
                         </p:panelGrid>
 
                         <p:panel header="#{indexBean.resultText}"  id="resultPanel">                         

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rgt</groupId>
     <artifactId>krakEE</artifactId>
-    <version>110</version>
+    <version>120</version>
     <packaging>war</packaging>
     <name>krakEE</name>
 
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.2.0</version>
+            <version>4.2.1</version>
             <type>jar</type>
         </dependency>
         
