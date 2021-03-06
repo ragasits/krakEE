@@ -34,48 +34,44 @@ public class IndexBean implements Serializable {
     CandleEJB candle;
 
     /**
+     * Show check message
+     *
+     * @param type
+     * @param message
+     */
+    private void showResult(String type, String message) {
+        FacesMessage msg;
+
+        if (this.resultList.isEmpty()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, type, message + ": OK");
+        } else {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", message + ": Errors(" + this.resultList.size() + ")");
+        }
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    /**
      * Check Open=0 missing trades
      */
     public void onZeroOpen() {
-        FacesMessage msg;
-
         this.resultList = candle.chkZeroOpen();
-        if (this.resultList.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Open=0 check: OK");
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Open=0 check: Errors(" + this.resultList.size() + ")");
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        this.showResult("Candle", "Open=0 check");
     }
 
     /**
      * Check Candle count consistency
      */
     public void onCandleTradeCountChk() {
-        FacesMessage msg;
-
         this.resultList = candle.chkTradeCount();
-        if (this.resultList.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "TradeCnt check: OK");
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "TradeCnt check: Errors(" + this.resultList.size() + ")");
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        this.showResult("Candle", "TradeCnt check");
     }
 
     /**
      * Check Candle date consistency
      */
     public void onDateChk() {
-        FacesMessage msg;
-
         this.resultList = candle.chkDates();
-        if (this.resultList.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Date check: OK");
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", "Date check: Errors(" + this.resultList.size() + ")");
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        this.showResult("Candle", "Date check");
     }
 
     /**
@@ -83,14 +79,7 @@ public class IndexBean implements Serializable {
      */
     public void onTradeChk() {
         this.resultList = trade.chkTradePair();
-        FacesMessage msg;
-        if (this.resultList.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Trade", "Consistency check: OK");
-        } else {
-            String errorMsg = "Consistency error: " + this.resultList.size();
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Trade", errorMsg);
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        this.showResult("Trade", "Consistency check");
     }
 
     /**
@@ -98,14 +87,7 @@ public class IndexBean implements Serializable {
      */
     public void onTradeDuplicatesChk() {
         this.resultList = trade.chkTradeDuplicates();
-        FacesMessage msg;
-        if (this.resultList.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Trade", "Search for duplicates: OK");
-        } else {
-            String errorMsg = "Search for duplicates: " + this.resultList.size();
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Trade", errorMsg);
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        this.showResult("Trade", "Search for duplicates");
     }
 
     public boolean isRunTrade() {

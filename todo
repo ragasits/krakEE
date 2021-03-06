@@ -1,4 +1,4 @@
-+ Trade: Search for duplicates
++ Refactor IndexBean
 
 - Error: Trade: Consistency checking
 - Error: Candle: Check Open=0 missing trades

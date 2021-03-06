@@ -244,6 +244,10 @@ public class TradeEJB {
         return list;
     }
 
+    /**
+     * Trade: Search for duplicates
+     * @return 
+     */
     public ArrayList<String> chkTradeDuplicates() {
         ArrayList<String> list = new ArrayList();
 
