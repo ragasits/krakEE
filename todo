@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
++ Refactor IndexBean
+
+>>>>>>> master
 - Error: Trade: Consistency checking
 - Error: Candle: Check Open=0 missing trades
 - Chk: Time Series Normalizer values

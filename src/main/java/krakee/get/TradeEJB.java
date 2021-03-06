@@ -4,7 +4,11 @@ import com.mongodb.MongoInterruptedException;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
+<<<<<<< HEAD
 import static com.mongodb.client.model.Filters.eq;
+=======
+import com.mongodb.client.model.Filters;
+>>>>>>> master
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.InsertManyResult;
 import java.io.InputStream;
@@ -17,7 +21,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Asynchronous;
@@ -243,6 +249,7 @@ public class TradeEJB {
         }
         return list;
     }
+<<<<<<< HEAD
  
     /**
      * Search and look missing trades, check duplicates
@@ -304,4 +311,45 @@ public class TradeEJB {
         return errorList;
     }
 
+=======
+
+    /**
+     * Trade: Search for duplicates
+     * @return 
+     */
+    public ArrayList<String> chkTradeDuplicates() {
+        ArrayList<String> list = new ArrayList();
+
+        Map<String, Object> multiIdMap = new HashMap<>();
+        multiIdMap.put("time", "$time");
+        multiIdMap.put("volume", "$volume");
+        multiIdMap.put("price", "$price");
+
+        MongoCursor<Document> cursor = config.getTradePairColl()
+                .aggregate(
+                        Arrays.asList(
+                                Aggregates.group(new Document(multiIdMap), Accumulators.sum("count", 1)),
+                                Aggregates.sort(Sorts.descending("count")),
+                                Aggregates.match(Filters.ne("count", 1)),
+                                Aggregates.limit(100)
+                        ), Document.class
+                )
+                .allowDiskUse(Boolean.TRUE)
+                .iterator();
+
+        while (cursor.hasNext()) {
+            Document doc = cursor.next();
+
+            Document id = (Document) doc.get("_id");
+            BigDecimal time = ((Decimal128) id.get("time")).bigDecimalValue();
+            BigDecimal volume = ((Decimal128) id.get("volume")).bigDecimalValue();
+            BigDecimal price = ((Decimal128) id.get("price")).bigDecimalValue();
+            Integer count = doc.getInteger("count");
+
+            list.add("Time: " + time + " Volume: " + volume +" Price: "+ price + " Count: " + count);
+        }
+
+        return list;
+    }
+>>>>>>> master
 }

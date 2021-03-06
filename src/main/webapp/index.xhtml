@@ -35,10 +35,16 @@
 
 
                     <p:panel header="Check" >
-                        <p:panelGrid columns="2">
+                        <p:panelGrid columns="3">
                             <p:outputLabel value="Trade: Consistency checking "/>
                             <p:commandButton value="Check" action="#{indexBean.onTradeChk()}" 
                                              id="chkBtn0" update="growl, resultPanel"/>
+                            <p:outputLabel value=""/>
+
+                            <p:outputLabel value="Trade: Search for duplicates"/>
+                            <p:commandButton value="Check" action="#{indexBean.onTradeDuplicatesChk()}" 
+                                             id="chkBtn1" update="growl, resultPanel"/>
+                            <p:outputLabel value=""/>
 
                             <p:outputLabel value="Trade: Compare trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onCompareTrades()}" 
@@ -46,16 +52,23 @@
 
                             <p:outputLabel value="Candle: Check consistency I. Seek missing dates"/>
                             <p:commandButton value="Check" action="#{indexBean.onDateChk()}" 
-                                             id="chkBtn1" update="growl, resultPanel"/>
+                                             id="chkBtn2" update="growl, resultPanel"/>
+                            <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check Candle consistency II. Count trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onCandleTradeCountChk()}" 
-                                             id="chkBtn2" update="growl, resultPanel"/>
+                                             id="chkBtn3" update="growl, resultPanel"/>
+                            <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check Open=0 missing trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onZeroOpen()}" 
+<<<<<<< HEAD
                                              id="chkBtn3" update="growl, resultPanel"/>
 
+=======
+                                             id="chkBtn4" update="growl, resultPanel"/>
+                            <p:outputLabel value=""/>
+>>>>>>> master
                         </p:panelGrid>
 
                         <p:panel header="#{indexBean.resultText}"  id="resultPanel">                         
