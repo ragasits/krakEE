@@ -4,12 +4,11 @@ import com.mongodb.MongoInterruptedException;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
-<<<<<<< HEAD
 import static com.mongodb.client.model.Filters.eq;
-=======
 import com.mongodb.client.model.Filters;
->>>>>>> master
+import static com.mongodb.client.model.Filters.expr;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Variable;
 import com.mongodb.client.result.InsertManyResult;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import static java.util.Arrays.asList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +74,6 @@ public class TradeEJB {
                 .limit(limit)
                 .into(new ArrayList<>());
     }
-
 
     /**
      * Get, convert, store trades from Kraken
@@ -249,12 +248,12 @@ public class TradeEJB {
         }
         return list;
     }
-<<<<<<< HEAD
- 
+
     /**
      * Search and look missing trades, check duplicates
+     *
      * @param oldDto
-     * @param errorList 
+     * @param errorList
      */
     @Asynchronous
     private void chkCompareTrade(TradePairDTO oldDto, ArrayList<String> errorList) {
@@ -264,7 +263,7 @@ public class TradeEJB {
                     .find(eq("time", oldDto.getTime()))
                     .into(new ArrayList<>());
         } catch (MongoInterruptedException e) {
-            System.out.println("MongoInterruptedException: "+e.getMessage());
+            System.out.println("MongoInterruptedException: " + e.getMessage());
             return;
         }
 
@@ -273,10 +272,6 @@ public class TradeEJB {
             //System.out.println("Missing element:" + oldDto.toString());
             //numMissing++;
 
-        } else if (newDtoList.size() > 1) {
-            errorList.add("Multiple element:" + newDtoList.size() + ": " + oldDto.getTimeDate() + ": " + oldDto.getTime());
-            System.out.println("Multiple element: " + newDtoList.size() + ": " + oldDto.getTimeDate() + ": " + oldDto.getTime());
-            //numMultipe++;
         }
     }
 
@@ -287,8 +282,6 @@ public class TradeEJB {
      */
     public ArrayList<String> chkCompareTrades() {
         ArrayList<String> errorList = new ArrayList();
-        int numMissing = 0;
-        int numMultipe = 0;
 
         MongoCursor<TradePairDTO> cursor = config.getTradePairOldColl()
                 .find()
@@ -305,17 +298,54 @@ public class TradeEJB {
         }
 
         System.out.println("Done!");
-        
+
         //errorList.add("Missing elements:" + numMissing);
         //errorList.add("Multiple elements:" + numMultipe);
         return errorList;
     }
 
-=======
+    public ArrayList<String> chkCompareTrades1() {
+        ArrayList<String> errorList = new ArrayList();
+
+        MongoCursor<Document> cursor = config.getTradePairOldColl()
+                .aggregate(
+                        Arrays.asList(
+                                Aggregates.lookup("tradepair_1",
+                                        Arrays.asList(
+                                                new Variable("time", "$time"),
+                                                new Variable("volume", "$volume"),
+                                                new Variable("price", "$price")
+                                        ),
+                                        Arrays.asList(
+                                                Aggregates.match(
+                                                        Filters.expr(new Document("$and",
+                                                                Arrays.asList(
+                                                                        new Document("$eq", Arrays.asList("$time", "$$time")),
+                                                                        new Document("$eq", Arrays.asList("$volume", "$$volume")),
+                                                                        new Document("$eq", Arrays.asList("$price", "$$price"))
+                                                                )
+                                                        )))),
+                                        "newtrade"),
+                                //Aggregates.unwind("$newtrade"),
+                                Aggregates.match(Filters.exists("newtrade.time", false)),
+                                Aggregates.limit(100)
+                        ), Document.class
+                ).iterator();
+
+        while (cursor.hasNext()) {
+            Document doc = cursor.next();
+            System.out.println(doc.toString());
+            errorList.add(doc.toString());
+        }
+
+        return errorList;
+
+    }
 
     /**
      * Trade: Search for duplicates
-     * @return 
+     *
+     * @return
      */
     public ArrayList<String> chkTradeDuplicates() {
         ArrayList<String> list = new ArrayList();
@@ -346,10 +376,9 @@ public class TradeEJB {
             BigDecimal price = ((Decimal128) id.get("price")).bigDecimalValue();
             Integer count = doc.getInteger("count");
 
-            list.add("Time: " + time + " Volume: " + volume +" Price: "+ price + " Count: " + count);
+            list.add("Time: " + time + " Volume: " + volume + " Price: " + price + " Count: " + count);
         }
 
         return list;
     }
->>>>>>> master
 }

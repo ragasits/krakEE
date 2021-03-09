@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-+ Refactor IndexBean
-
->>>>>>> master
 - Error: Trade: Consistency checking
 - Error: Candle: Check Open=0 missing trades
 - Chk: Time Series Normalizer values
@@ -13,7 +8,8 @@
 
 CompareMergeTrades
 ------------------
-+ Compare trades
++ Compare trades (aggregates + lookup)
+- Compare trades: very slow >4Hour (aggregates + lookup):  
 
 Future:
 --------

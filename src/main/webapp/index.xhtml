@@ -29,7 +29,7 @@
 
                     <p:growl id="growl" showDetail="true" />
 
-                    <p:blockUI block="form1" trigger="chkBtn0, chkBtn1, chkBtn2, chkBtn3, chkBtn4">
+                    <p:blockUI block="form1" trigger="chkBtn0, chkBtn1, chkBtn2, chkBtn3, chkBtn4, chkBtn5">
                         <p:graphicImage value="/resources/ajax-loader.gif" />
                     </p:blockUI>    
 
@@ -48,34 +48,29 @@
 
                             <p:outputLabel value="Trade: Compare trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onCompareTrades()}" 
-                                             id="chkBtn4" update="growl, resultPanel"/>
+                                             id="chkBtn2" update="growl, resultPanel"/>
+                            <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check consistency I. Seek missing dates"/>
                             <p:commandButton value="Check" action="#{indexBean.onDateChk()}" 
-                                             id="chkBtn2" update="growl, resultPanel"/>
+                                             id="chkBtn3" update="growl, resultPanel"/>
                             <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check Candle consistency II. Count trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onCandleTradeCountChk()}" 
-                                             id="chkBtn3" update="growl, resultPanel"/>
+                                             id="chkBtn4" update="growl, resultPanel"/>
                             <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check Open=0 missing trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onZeroOpen()}" 
-<<<<<<< HEAD
-                                             id="chkBtn3" update="growl, resultPanel"/>
-
-=======
-                                             id="chkBtn4" update="growl, resultPanel"/>
+                                             id="chkBtn5" update="growl, resultPanel"/>
                             <p:outputLabel value=""/>
->>>>>>> master
                         </p:panelGrid>
 
                         <p:panel header="#{indexBean.resultText}"  id="resultPanel">                         
                             <p:selectOneListbox   style="width: 100% !important">
                                 <f:selectItems value="#{indexBean.resultList}"/>
                             </p:selectOneListbox>
-
                         </p:panel>
                     </p:panel>
                 </p:panel>

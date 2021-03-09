@@ -38,7 +38,7 @@ public class TradePairDTO {
         this.last = last;
         this.pair = pair;
     }
-
+    
     /**
      * Convert Time value to Date
      *

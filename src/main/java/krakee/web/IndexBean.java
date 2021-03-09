@@ -94,7 +94,7 @@ public class IndexBean implements Serializable {
      * Compare old-new trades
      */
     public void onCompareTrades() {
-        this.resultList = trade.chkCompareTrades();
+        this.resultList = trade.chkCompareTrades1();
         FacesMessage msg;
         if (this.resultList.isEmpty()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Trade", "Consistency check: OK");
