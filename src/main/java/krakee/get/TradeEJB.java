@@ -6,7 +6,7 @@ import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Filters;
-import static com.mongodb.client.model.Filters.expr;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Variable;
 import com.mongodb.client.result.InsertManyResult;
@@ -20,7 +20,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import static java.util.Arrays.asList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +59,8 @@ public class TradeEJB {
     ConfigEJB config;
 
     private int pairTradeSize = 0;
+    private int missingCount = 0;
+    private int deleteCount = 0;
 
     /**
      * get Last limit size trade pairs
@@ -73,6 +74,35 @@ public class TradeEJB {
                 .sort(Sorts.descending("timeDate"))
                 .limit(limit)
                 .into(new ArrayList<>());
+    }
+
+    /**
+     * Get list of the trade years
+     *
+     * @return
+     */
+    public List<String> getYear() {
+        MongoCursor<Document> cursor = config.getTradePairColl()
+                .aggregate(
+                        Arrays.asList(
+                                Aggregates.project(
+                                        Projections.fields(Projections.excludeId(),
+                                                Projections.computed("year", new Document("$year", "$timeDate")))),
+                                Aggregates.group("year", Accumulators.sum("year", 1))
+                        //Aggregates.sort(Sorts.descending("count")),
+                        //Aggregates.match(Filters.ne("count", 1)),
+                        //Aggregates.limit(100)
+                        ), Document.class
+                )
+                .allowDiskUse(Boolean.TRUE)
+                .iterator();
+
+        while (cursor.hasNext()) {
+            Document doc = cursor.next();
+            System.out.println(doc);
+        }
+
+        return null;
     }
 
     /**
@@ -304,6 +334,11 @@ public class TradeEJB {
         return errorList;
     }
 
+    /**
+     * Compare trades (aggregates + lookup)
+     *
+     * @return
+     */
     public ArrayList<String> chkCompareTrades1() {
         ArrayList<String> errorList = new ArrayList();
 
@@ -340,6 +375,71 @@ public class TradeEJB {
 
         return errorList;
 
+    }
+
+    /**
+     * Delete the old trade when it is the same as the new (time, volume, price)
+     *
+     * @param dto
+     */
+    @Asynchronous
+    private void chkDeleteTheSameTrade(TradePairDTO dto) {
+        try {
+            ArrayList newList = config.getTradePairColl()
+                    .find(Filters.and(Arrays.asList(
+                            Filters.eq("time", dto.getTime()),
+                            Filters.eq("volume", dto.getVolume()),
+                            Filters.eq("price", dto.getPrice())
+                    )))
+                    .into(new ArrayList<>());
+
+            if (newList == null || newList.isEmpty()) {
+                //errorList.add("Missing trade: " + dto.getTime() + ": " + dto.getVolume() + ": " + dto.getPrice());
+                //System.out.println("Missing trade: " + dto.getTime() + ": " + dto.getVolume() + ": " + dto.getPrice());
+                missingCount++;
+            } else {
+                //System.out.println("Delete trade: " + dto.getTime() + ": " + dto.getVolume() + ": " + dto.getPrice());
+
+                //Delete if element exists
+                config.getTradePairOldColl().deleteMany(
+                        Filters.and(Arrays.asList(
+                                Filters.eq("time", dto.getTime()),
+                                Filters.eq("volume", dto.getVolume()),
+                                Filters.eq("price", dto.getPrice()
+                                )))
+                );
+
+                deleteCount++;
+            }
+        } catch (MongoInterruptedException e) {
+            //errorList.add(e.getMessage());
+            System.out.println("MongoInterruptedException: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Compare trades and delete when it is exists
+     *
+     * @return
+     */
+    public ArrayList<String> chkCompareDeleteTrades() {
+        ArrayList<String> errorList = new ArrayList();
+        this.missingCount = 0;
+        this.deleteCount = 0;
+
+        MongoCursor<TradePairDTO> cursor = config.getTradePairOldColl()
+                .find()
+                //.skip(8000000)
+                //.limit(3000000)
+                .iterator();
+
+        while (cursor.hasNext()) {
+            TradePairDTO dto = cursor.next();
+            chkDeleteTheSameTrade(dto);
+        }
+        errorList.add("Done... Missing: " + this.missingCount + " Delete: " + this.deleteCount);
+
+        return errorList;
     }
 
     /**

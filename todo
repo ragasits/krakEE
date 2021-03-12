@@ -8,8 +8,7 @@
 
 CompareMergeTrades
 ------------------
-+ Compare trades (aggregates + lookup)
-- Compare trades: very slow >4Hour (aggregates + lookup):  
++ Delete the old trade when it is the same as the new (time, volume, price)
 
 Future:
 --------

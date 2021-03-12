@@ -94,15 +94,8 @@ public class IndexBean implements Serializable {
      * Compare old-new trades
      */
     public void onCompareTrades() {
-        this.resultList = trade.chkCompareTrades1();
-        FacesMessage msg;
-        if (this.resultList.isEmpty()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Trade", "Consistency check: OK");
-        } else {
-            String errorMsg = "Consistency error: " + this.resultList.size();
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Trade", errorMsg);
-        }
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        this.resultList = trade.chkCompareDeleteTrades();
+        this.showResult("Trade", "Compare trades");
     }
 
     public boolean isRunTrade() {
