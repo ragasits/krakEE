@@ -519,6 +519,57 @@ public class TradeEJB {
     }
 
     /**
+     * Delete the old trade when it is the same (time, volume) and rounded price
+     * @param dto 
+     */
+    private void chkDeleteAlmostSameTradePrice(TradePairDTO dto) {
+        try {
+            ArrayList<TradePairDTO> newList = config.getTradePairColl()
+                    .find(Filters.and(Arrays.asList(
+                            Filters.eq("time", dto.getTime()),
+                            Filters.eq("volume", dto.getVolume())
+                    )))
+                    .into(new ArrayList<>());
+
+            if (newList == null || newList.isEmpty()) {
+                missingCount++;
+            } else {
+                for (TradePairDTO newDto : newList) {
+                    BigDecimal bd = dto.getPrice().subtract(newDto.getPrice()).abs();
+
+                    if (bd.equals(new BigDecimal("0.00001"))) {
+                        /*                        System.out.println("Delete .. Time:" + dto.getTime()
+                        + " Volume:" + dto.getVolume()
+                        + " Price1:" + dto.getPrice()
+                        + " Price2:" + newDto.getPrice());*/
+                        //Delete if element exists
+                        config.getTradePairOldColl().deleteMany(
+                                Filters.and(Arrays.asList(
+                                        Filters.eq("time", dto.getTime()),
+                                        Filters.eq("price", dto.getPrice()
+                                        )))
+                        );
+                        this.deleteCount++;
+
+                        return;
+                    } else {
+                        /*                        System.out.println("Missing .. Time:" + dto.getTime()
+                        + " Volume:" + dto.getVolume()
+                        + " Price1:" + dto.getPrice()
+                        + " Price2:" + newDto.getPrice());*/
+
+                        missingCount++;
+                    }
+                }
+
+            }
+        } catch (MongoInterruptedException e) {
+            //errorList.add(e.getMessage());
+            System.out.println("MongoInterruptedException: " + e.getMessage());
+        }
+    }
+
+    /**
      * Compare trades and delete when it is exists
      *
      * @return
@@ -531,14 +582,15 @@ public class TradeEJB {
         MongoCursor<TradePairDTO> cursor = config.getTradePairOldColl()
                 .find()
                 //.skip(3000000)
-                //.limit(2000000)
+                //.limit(100000)
                 .iterator();
 
         while (cursor.hasNext()) {
             TradePairDTO dto = cursor.next();
             //chkDeleteTheSameTrade(dto);
             //chkDeleteAlmostSameTradeVolume(dto);
-            chkDeleteAlmostSameTradeTime(dto);
+            //chkDeleteAlmostSameTradeTime(dto);
+            chkDeleteAlmostSameTradePrice(dto);
         }
 
         errorList.add("Done... Missing: " + this.missingCount + " Delete: " + this.deleteCount);
