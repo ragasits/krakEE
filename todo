@@ -8,7 +8,7 @@
 
 CompareMergeTrades
 ------------------
-+ Delete the old trade when it is the same (time, volume) and rounded price
++ Delete the old trade when it is the same (price) and rounded time, volume
 
 Future:
 --------
