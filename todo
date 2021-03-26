@@ -8,7 +8,7 @@
 
 CompareMergeTrades
 ------------------
-+ Delete the old trade when it is similar as the new (time, volume, price)
++ Add missing element from old to new tradePair
 
 Future:
 --------

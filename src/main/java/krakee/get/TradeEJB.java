@@ -252,6 +252,7 @@ public class TradeEJB {
 
     /**
      * Delete the old trade when it is similar as the new (time, volume, price)
+     * Add missing trades to the new TradePair
      *
      * @param dto
      */
@@ -282,8 +283,11 @@ public class TradeEJB {
                     .into(new ArrayList<>());
 
             if (newList == null || newList.isEmpty()) {
-                //errorList.add("Missing trade: " + dto.getTime() + ": " + dto.getVolume() + ": " + dto.getPrice());
                 //System.out.println("Missing trade: " + dto.getTime() + ": " + dto.getVolume() + ": " + dto.getPrice());
+                
+                //Add missing element
+                config.getTradePairColl().insertOne(dto);
+                
                 missingCount++;
             } else {
                 //System.out.println("Delete trade: " + dto.getTime() + ": " + dto.getVolume() + ": " + dto.getPrice());
