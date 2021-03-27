@@ -1,4 +1,4 @@
-+ Refactor IndexBean
++ Migrate to Primefaces 10
 
 - Error: Trade: Consistency checking
 - Error: Candle: Check Open=0 missing trades

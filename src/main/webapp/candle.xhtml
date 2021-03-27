@@ -17,7 +17,9 @@
                 <ez:globalMenu/>
             </h:form>
 
-            <h:form id="form1">              
+            <h:form id="form1">    
+                <p:growl id="growl" showDetail="true" />
+
                 <p:panel>
                     <h:panelGrid columns="4">
                         <p:commandButton value="Query"  id="btn" 
@@ -31,7 +33,7 @@
                 </p:panel>
 
                 <p:blockUI block="form1" trigger="btn">
-                           <p:graphicImage value="/resources/ajax-loader.gif" />
+                    <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
 
                 <p:accordionPanel id="panel1" multiple="true">
@@ -48,7 +50,7 @@
                             </p:column>                        
 
                             <p:column headerText="startDate">
-                                <h:commandLink value="#{item.startDate}" action="#{candleBean.showDetail(item)}"/>
+                                <p:outputLabel value="#{item.startDate}"/>
                             </p:column>
 
                             <p:column headerText="count">
