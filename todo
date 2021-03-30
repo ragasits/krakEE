@@ -1,4 +1,4 @@
-+ Migrate to Primefaces 10
++ Add globalDialog
 
 - Error: Trade: Consistency checking
 - Error: Candle: Check Open=0 missing trades

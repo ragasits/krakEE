@@ -15,6 +15,7 @@
         <f:view>
             <h:form id="form1">
                 <ez:globalMenu/>
+                <ez:globalDialog trigger=":form1:chkBtn0 :form1:chkBtn1 :form1:chkBtn2 :form1:chkBtn3 :form1:chkBtn4"/> 
 
                 <p:panel>
                     <p:panelGrid columns="10">
@@ -38,27 +39,39 @@
                         <p:panelGrid columns="3">
                             <p:outputLabel value="Trade: Consistency checking "/>
                             <p:commandButton value="Check" action="#{indexBean.onTradeChk()}" 
-                                             id="chkBtn0" update="growl, resultPanel"/>
+                                             id="chkBtn0" update="growl, resultPanel">
+                                 <p:confirm header="Confirmation" message="Sure?"/>
+                            </p:commandButton>
+                                
+                                
                             <p:outputLabel value=""/>
 
                             <p:outputLabel value="Trade: Search for duplicates"/>
                             <p:commandButton value="Check" action="#{indexBean.onTradeDuplicatesChk()}" 
-                                             id="chkBtn1" update="growl, resultPanel"/>
+                                             id="chkBtn1" update="growl, resultPanel">
+                                 <p:confirm header="Confirmation" message="Sure?"/>
+                            </p:commandButton>
                             <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check consistency I. Seek missing dates"/>
                             <p:commandButton value="Check" action="#{indexBean.onDateChk()}" 
-                                             id="chkBtn2" update="growl, resultPanel"/>
+                                             id="chkBtn2" update="growl, resultPanel">
+                                 <p:confirm header="Confirmation" message="Sure?"/>
+                            </p:commandButton>
                             <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check Candle consistency II. Count trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onCandleTradeCountChk()}" 
-                                             id="chkBtn3" update="growl, resultPanel"/>
+                                             id="chkBtn3" update="growl, resultPanel">
+                                 <p:confirm header="Confirmation" message="Sure?"/>
+                            </p:commandButton>
                             <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check Open=0 missing trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onZeroOpen()}" 
-                                             id="chkBtn4" update="growl, resultPanel"/>
+                                             id="chkBtn4" update="growl, resultPanel">
+                                 <p:confirm header="Confirmation" message="Sure?"/>
+                            </p:commandButton>
                             <p:outputLabel value=""/>
                         </p:panelGrid>
 
