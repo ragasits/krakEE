@@ -94,7 +94,7 @@ public class TradeEJB {
 
             if (!pairList.isEmpty()) {
                 this.pairTradeSize = pairList.size();
-                InsertManyResult insertMany = config.getTradePairColl().insertMany(pairList);
+                config.getTradePairColl().insertMany(pairList);
                 LOGGER.log(Level.INFO, "Trade Fired .... {0} {1}", new Object[]{this.pairTradeSize, pairList.get(0).getLastDate()});
             } else {
                 LOGGER.log(Level.INFO, "Trade Fired .... Error");

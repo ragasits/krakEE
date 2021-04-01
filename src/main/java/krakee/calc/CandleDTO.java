@@ -244,7 +244,7 @@ public class CandleDTO {
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = (Date)startDate.clone();
     }
 
     public void setCalendar(CalendarDTO calendar) {

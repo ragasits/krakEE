@@ -87,11 +87,11 @@ public class ProfitItemDTO {
     }
 
     public Date getStartDate() {
-        return startDate;
+        return (Date)startDate.clone();
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = (Date)startDate.clone();
     }
 
     public String getTrade() {

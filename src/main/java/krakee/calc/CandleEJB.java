@@ -22,6 +22,7 @@ import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
+import krakee.MyException;
 import krakee.get.TradeEJB;
 import krakee.get.TradePairDTO;
 import org.bson.Document;
@@ -304,18 +305,29 @@ public class CandleEJB {
     private void calcDateList() {
 
         Calendar cal = Calendar.getInstance();
-        Date startDate = this.getStartDate();
+        Date startDate;
+        try {
+            startDate = this.getStartDate();
+        } catch (MyException ex) {
+            Logger.getLogger(CandleEJB.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
 
         //Stopdate
         TradePairDTO dto = config.getTradePairColl().find()
                 .sort(Sorts.descending("timeDate"))
                 .first();
 
+        if (dto == null) {
+            Logger.getLogger(CandleEJB.class.getName()).log(Level.SEVERE, null, "Missing: stopDate");
+            return;
+        }
+
         Date stopDate = dto.getTimeDate();
 
         //Store dates
         while (startDate.before(stopDate)) {
-            LOGGER.log(Level.INFO, "calcDateList " + startDate + "-" + stopDate);
+            LOGGER.log(Level.INFO, "calcDateList {0}-{1}", new Object[]{startDate, stopDate});
 
             config.getCandleColl().insertOne(new CandleDTO(startDate));
             cal.setTime(startDate);
@@ -331,13 +343,18 @@ public class CandleEJB {
      *
      * @return
      */
-    private Date getStartDate() {
+    private Date getStartDate() throws MyException {
         Date startDate;
 
         if (config.getCandleColl().countDocuments() > 0) {
             CandleDTO dto = config.getCandleColl().find()
                     .sort(Sorts.descending("startDate"))
                     .first();
+
+            if (dto == null) {
+                throw new MyException("Missing: startDate");
+            }
+
             startDate = dto.getStartDate();
 
             Calendar cal = Calendar.getInstance();
@@ -349,6 +366,11 @@ public class CandleEJB {
             TradePairDTO dto = config.getTradePairColl().find()
                     .sort(Sorts.ascending("timeDate"))
                     .first();
+
+            if (dto == null) {
+                throw new MyException("Missing: startDate");
+            }
+
             startDate = dto.getTimeDate();
         }
         return calcCandel30Min(startDate);
@@ -387,11 +409,12 @@ public class CandleEJB {
     }
 
     /**
-     * Check Candle consistency I. Seek missing dates
+     * Check Candle consistency I.Seek missing dates
      *
      * @return
+     * @throws krakee.MyException
      */
-    public ArrayList<String> chkDates() {
+    public ArrayList<String> chkDates() throws MyException {
         Calendar cal = Calendar.getInstance();
         ArrayList<String> list = new ArrayList<>();
         TradePairDTO dto;
@@ -401,6 +424,11 @@ public class CandleEJB {
                 .find()
                 .sort(Sorts.ascending("timeDate"))
                 .first();
+
+        if (dto == null) {
+            throw new MyException("Missing: first trade");
+        }
+
         Date firstDate = this.calcCandel30Min(dto.getTimeDate());
 
         //Get last trade date
@@ -408,6 +436,11 @@ public class CandleEJB {
                 .find()
                 .sort(Sorts.descending("timeDate"))
                 .first();
+
+        if (dto == null) {
+            throw new MyException("Missing: last trade");
+        }
+
         Date lastDate = dto.getTimeDate();
 
         int i = 0;
@@ -486,17 +519,17 @@ public class CandleEJB {
             List<TradePairDTO> tradeList = config.getTradePairColl()
                     .find(
                             and(
-                                gte("timeDate", dto.getStartDate()), 
-                                lt("timeDate", dto.getStopDate())
+                                    gte("timeDate", dto.getStartDate()),
+                                    lt("timeDate", dto.getStopDate())
                             )
                     )
                     .into(new ArrayList<>());
 
             if (tradeList.isEmpty()) {
-                
+
                 System.out.println("Missing trade: " + dto.getStartDate() + "-" + dto.getStopDate()
-                       + " " + dto.getStartDate().getTime() + "-" + dto.getStopDate().getTime());
-                                
+                        + " " + dto.getStartDate().getTime() + "-" + dto.getStopDate().getTime());
+
                 list.add("Missing trade: " + dto.getStartDate() + "-" + dto.getStopDate()
                         + " " + dto.getStartDate().getTime() + "-" + dto.getStopDate().getTime());
             }

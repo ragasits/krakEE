@@ -2,12 +2,15 @@ package krakee.web;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import krakee.ConfigEJB;
+import krakee.MyException;
 import krakee.TimerEjb;
 import krakee.calc.CandleEJB;
 import krakee.get.TradeEJB;
@@ -70,7 +73,11 @@ public class IndexBean implements Serializable {
      * Check Candle date consistency
      */
     public void onDateChk() {
-        this.resultList = candle.chkDates();
+        try {
+            this.resultList = candle.chkDates();
+        } catch (MyException ex) {
+            this.showResult("Candle", ex.getMessage());
+        }
         this.showResult("Candle", "Date check");
     }
 

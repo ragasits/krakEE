@@ -1,7 +1,5 @@
-+ Add globalDialog
++ Spotbugs: Clean code
 
-- Error: Trade: Consistency checking
-- Error: Candle: Check Open=0 missing trades
 - Chk: Time Series Normalizer values
 
 - Add Neural parameters from the GUI

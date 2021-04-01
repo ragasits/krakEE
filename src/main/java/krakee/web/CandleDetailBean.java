@@ -51,11 +51,11 @@ public class CandleDetailBean implements Serializable {
     }
 
     public Date getSelectedDate() {
-        return selectedDate;
+        return (Date)selectedDate.clone();
     }
 
     public void setSelectedDate(Date selectedDate) {
-        this.selectedDate = selectedDate;
+        this.selectedDate = (Date)selectedDate.clone();
     }
 
     /**

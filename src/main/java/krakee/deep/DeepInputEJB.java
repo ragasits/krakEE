@@ -106,10 +106,10 @@ public class DeepInputEJB {
      * @throws MyException
      */
     public void fillDataset(DeepDTO deep) throws MyException {
-        if (deep == null || deep.getLearnName() == null || deep.getLearnName().isEmpty()) {
+        if (deep.getLearnName() == null || deep.getLearnName().isEmpty()) {
             throw new MyException("Missing: learnname");
         }
-        if (deep == null || deep.getDeepName() == null || deep.getDeepName().isEmpty()) {
+        if (deep.getDeepName() == null || deep.getDeepName().isEmpty()) {
             throw new MyException("Missing: deepname");
         }
 
