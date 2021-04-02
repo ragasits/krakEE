@@ -50,11 +50,11 @@ public final class TimeSeriesNormalizer implements Normalizer<DataSet<MLDataItem
                 }
             }
 
-            rowMax = rowMax / epsilon;
-            rowMin = rowMin * epsilon;
+            rowMax = rowMax * epsilon;
+            rowMin = rowMin / epsilon;
 
             for (int i = 0; i < row.getInput().size(); i++) {
-                float value = (row.getInput().get(i) - rowMin) / (rowMin - rowMax);
+                float value = (row.getInput().get(i) - rowMin) / (rowMax - rowMin);
                 row.getInput().set(i, value);
             }
         }

@@ -57,12 +57,12 @@ public class DeepEJB {
     @EJB
     private ConfigEJB configEjb;
     @EJB
-    private DeepInputEJB inputEjb;  
+    private DeepInputEJB inputEjb;
     @EJB
     private AllCandleInputEJB allCandleInputEjb;
     @EJB
     private TimeSeriesInputEJB timeSeriesInputEjb;
-    
+
     /**
      * Choose and execute normalization
      *
@@ -95,11 +95,12 @@ public class DeepEJB {
 
     }
 
-   /**
-    * Generate dataset from the selected input
-    * @param dto
-    * @return 
-    */
+    /**
+     * Generate dataset from the selected input
+     *
+     * @param dto
+     * @return
+     */
     private TabularDataSet fillDataset(DeepDTO dto) {
 
         switch (InputType.valueOf(dto.getInputType())) {
@@ -128,16 +129,15 @@ public class DeepEJB {
         DataSet[] trainTestSet = dataSet.split(0.6, 0.4);
 
         //Create statistics
+        dto = this.calcSourceCount(dto, dataSet);
         dto = this.calcTrainCount(dto, (TabularDataSet) trainTestSet[0]);
         dto = this.calcTestCount(dto, (TabularDataSet) trainTestSet[1]);
 
         // create instance of multi addLayer percetpron using builder
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
                 .addInputLayer(dto.getNumInputs())
-                .addFullyConnectedLayer(50, ActivationType.TANH)
-                .addFullyConnectedLayer(50, ActivationType.TANH)
-                .addFullyConnectedLayer(50, ActivationType.TANH)
-                .addFullyConnectedLayer(9, ActivationType.TANH)
+                .addFullyConnectedLayer(92+2, ActivationType.TANH)
+                .addFullyConnectedLayer(92*2+1, ActivationType.TANH)
                 .addOutputLayer(dto.getNumOutputs(), ActivationType.SOFTMAX)
                 .lossFunction(LossType.CROSS_ENTROPY)
                 .randomSeed(456)
@@ -198,6 +198,27 @@ public class DeepEJB {
                 dto.incTestBuy();
             } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
                 dto.incTestSell();
+            }
+        }
+        return dto;
+    }
+
+    /**
+     * Count Source data buy/sell
+     *
+     * @param dto
+     * @param dataSet
+     * @return
+     */
+    private DeepDTO calcSourceCount(DeepDTO dto, TabularDataSet dataSet) {
+        List<TabularDataSet.Item> itemList = dataSet.getItems();
+        for (TabularDataSet.Item item : itemList) {
+            dto.incSourceCount();
+
+            if (item.getTargetOutput().get(BUYPOS) > 0f) {
+                dto.incSourceBuy();
+            } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
+                dto.incSourceSell();
             }
         }
         return dto;
