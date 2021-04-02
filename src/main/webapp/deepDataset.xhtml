@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <title>KrakEE</title>
+    </h:head>
+
+    <h:body>
+        <f:view>
+            <h:form>
+                <ez:globalMenu/>
+            </h:form>
+
+            <h:form id="form1">
+                <p:panel>
+                    <p:dataTable var="rowName" value="#{deepDatasetBean.datasetRows}" id="tbl"
+                                 rowIndexVar="rowIdx"
+                                 tableStyle="width:auto" scrollable="true" paginator="true" rows="50"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                 rowsPerPageTemplate="25, 50,100">
+
+                        <p:columns var="columnName" value="#{deepDatasetBean.columnNames}" 
+                                   headerText="#{columnName}" columnIndexVar="colIdx">
+
+                            <ui:repeat value="#{deepDatasetBean.getDatasetValue(rowIdx, colIdx)}" var="data">
+                                <h:outputText value="#{data}"/>
+                            </ui:repeat>
+
+                        </p:columns>
+                    </p:dataTable>
+                </p:panel>      
+            </h:form>
+        </f:view>                
+    </h:body>
+</html>
+
+

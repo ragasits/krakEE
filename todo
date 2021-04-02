@@ -1,5 +1,4 @@
-+ Deep: Count Source data buy/sell
-+ Bug: Time Series Normalizer values
++ deep: Show dataset
 
 - Add Neural parameters from the GUI
 - Implement RSI

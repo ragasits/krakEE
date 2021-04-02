@@ -49,6 +49,8 @@ public class DeepBean implements Serializable {
     private DeepInputEJB deepInputEjb;
     @Inject
     private DeepInputBean inputBean;
+    @Inject
+    private DeepDatasetBean datasetBean;
 
     /**
      * Show input data
@@ -63,6 +65,18 @@ public class DeepBean implements Serializable {
         }
         return null;
 
+    }
+
+    /**
+     * Show input dataset
+     * @return 
+     */
+    public String onShowDataset() {
+        if (this.detail != null) {
+            datasetBean.setDataset(deepEjb.fillDataset(detail));
+            return "deepDataset.xhtml?faces-redirect=true";
+        }
+        return null;
     }
 
     /**
@@ -160,14 +174,14 @@ public class DeepBean implements Serializable {
     }
 
     public String getSelectedDeepName() {
-        if (this.detail!=null){
+        if (this.detail != null) {
             return this.detail.getDeepName();
         }
         return null;
     }
 
     public void setSelectedDeepName(String selectedDeepName) {
-        if (this.detail!=null){
+        if (this.detail != null) {
             this.detail.setDeepName(selectedDeepName);
         }
     }

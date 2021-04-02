@@ -101,7 +101,7 @@ public class DeepEJB {
      * @param dto
      * @return
      */
-    private TabularDataSet fillDataset(DeepDTO dto) {
+    public  TabularDataSet fillDataset(DeepDTO dto) {
 
         switch (InputType.valueOf(dto.getInputType())) {
             case AllCandle:

@@ -23,6 +23,10 @@
                     <p:autoUpdate />
                 </p:messages>
 
+                <p:blockUI block="form1" trigger="inBtn">
+                    <p:graphicImage value="/resources/ajax-loader.gif" />
+                </p:blockUI>   
+
                 <p:panel>
                     <p:panelGrid columns="10">
                         <p:autoComplete value="#{deepBean.selectedDeepName}"
@@ -48,11 +52,15 @@
                         <p:commandButton value="DataSet"  id="dsBtn" 
                                          action="#{deepBean.onDataset()}" update="panel"/>
 
-                        <p:outputLabel value="Input:"/>  
+                        <p:commandLink     value="Input:" id="inBtn" 
+                                           action="#{deepBean.onShowDataset()}"/>
+
                         <p:selectOneMenu value="#{deepBean.selectedInputType}" id="inputList">
                             <f:selectItems value="#{deepBean.detail.inputTypes}" var="type" 
                                            itemLabel="#{type}" itemValue="#{type}" />
                         </p:selectOneMenu>
+
+
 
                         <p:commandButton value="Learn"  id="learnBtn" 
                                          action="#{deepBean.onLearn()}" update="panel"/>
@@ -72,10 +80,6 @@
 
                                 <p:outputLabel value="numOutputs" style="font-weight: bold" />
                                 <p:outputLabel value="#{deepBean.detail.numOutputs}"/>
-
-                                <p:outputLabel value=""/>
-                                <p:commandButton value="Show" id="inBtn"
-                                                 action="#{deepBean.onInput()}"/>
 
                                 <p:outputLabel value="Normalizer" style="font-weight: bold"/>
                                 <p:selectOneMenu value="#{deepBean.detail.normalizerType}">
