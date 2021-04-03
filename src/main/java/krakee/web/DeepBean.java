@@ -48,28 +48,12 @@ public class DeepBean implements Serializable {
     @EJB
     private DeepInputEJB deepInputEjb;
     @Inject
-    private DeepInputBean inputBean;
-    @Inject
     private DeepDatasetBean datasetBean;
 
     /**
-     * Show input data
+     * Show input dataset
      *
      * @return
-     */
-    public String onInput() {
-        if (this.detail != null) {
-            inputBean.fillInputList(detail);
-            inputBean.setDetail(detail);
-            return "deepInput.xhtml?faces-redirect=true";
-        }
-        return null;
-
-    }
-
-    /**
-     * Show input dataset
-     * @return 
      */
     public String onShowDataset() {
         if (this.detail != null) {

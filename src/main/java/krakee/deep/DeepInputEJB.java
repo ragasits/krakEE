@@ -61,44 +61,6 @@ public class DeepInputEJB {
     }
 
     /**
-     * Convert Values to CSV format
-     *
-     * @param deep
-     * @return
-     */
-    public ArrayList<String> inOutValuesToCsv(DeepDTO deep) {
-        ArrayList<String> rowList = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
-
-        //Header
-        ArrayList<String> columns = deep.getColumnNames();
-        for (String column : columns) {
-            if (sb.length() != 0) {
-                sb.append(";");
-            }
-            sb.append(column);
-        }
-        rowList.add(sb.toString());
-
-        //Rows
-        ArrayList<DeepInputDTO> inputList = this.get(deep.getDeepName());
-        for (DeepInputDTO dto : inputList) {
-            sb = new StringBuilder();
-
-            ArrayList<Float> cols = new ArrayList<>();
-            cols.addAll(allCandleEjb.inputValueList(dto));
-            cols.addAll(allCandleEjb.outputValueList(dto));
-
-            for (Float col : cols) {
-                sb.append(";").append(col);
-            }
-
-            rowList.add(sb.toString().replaceFirst(";", ""));
-        }
-        return rowList;
-    }
-
-    /**
      * Create Dataset from the Learn data and store it in the Deep Input
      * collection
      *
