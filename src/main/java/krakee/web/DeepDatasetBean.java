@@ -53,7 +53,7 @@ public class DeepDatasetBean implements Serializable {
     DeepEJB deepEjb;
 
     /**
-     * Download dataset CSV file format
+     * Download dataset in CSV file format
      */
     public void onCSV() {
         ArrayList<String> csvList = new ArrayList<>();

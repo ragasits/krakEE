@@ -28,7 +28,6 @@ import deepnetts.eval.ConfusionMatrix;
 import deepnetts.net.FeedForwardNetwork;
 import deepnetts.net.layers.activation.ActivationType;
 import deepnetts.net.loss.LossType;
-import deepnetts.net.train.BackpropagationTrainer;
 import deepnetts.net.train.opt.OptimizerType;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +67,9 @@ public class DeepEJB {
      *
      * @param dto
      * @param dataSet
+     * @return
      */
-    private void normalize(DeepDTO dto, TabularDataSet dataSet) {
+    public TabularDataSet normalize(DeepDTO dto, TabularDataSet dataSet) {
         Normalizer normalizer;
 
         switch (NormalizerType.valueOf(dto.getNormalizerType())) {
@@ -89,9 +89,11 @@ public class DeepEJB {
                 normalizer = new TimeSeriesNormalizer();
                 break;
             default:
-                return;
+                return null;
         }
         normalizer.normalize(dataSet);
+
+        return dataSet;
 
     }
 
@@ -101,7 +103,7 @@ public class DeepEJB {
      * @param dto
      * @return
      */
-    public  TabularDataSet fillDataset(DeepDTO dto) {
+    public TabularDataSet fillDataset(DeepDTO dto) {
 
         switch (InputType.valueOf(dto.getInputType())) {
             case AllCandle:
@@ -124,7 +126,7 @@ public class DeepEJB {
         TabularDataSet dataSet = this.fillDataset(dto);
 
         //Normalize data
-        this.normalize(dto, dataSet);
+        dataSet = this.normalize(dto, dataSet);
 
         DataSet[] trainTestSet = dataSet.split(0.6, 0.4);
 
@@ -136,19 +138,20 @@ public class DeepEJB {
         // create instance of multi addLayer percetpron using builder
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
                 .addInputLayer(dto.getNumInputs())
-                .addFullyConnectedLayer(92+2, ActivationType.TANH)
-                .addFullyConnectedLayer(92*2+1, ActivationType.TANH)
+                .addFullyConnectedLayer(92 + 2, ActivationType.TANH)
+                .addFullyConnectedLayer(92 * 2 + 1, ActivationType.TANH)
                 .addOutputLayer(dto.getNumOutputs(), ActivationType.SOFTMAX)
                 .lossFunction(LossType.CROSS_ENTROPY)
                 .randomSeed(456)
                 .build();
 
         // create and configure instanceof backpropagation trainer
-        BackpropagationTrainer trainer = neuralNet.getTrainer();
-        trainer.setMaxError(dto.getTrainerMaxError());
-        trainer.setLearningRate(dto.getTrainerLearningRate());
-        trainer.setMomentum(dto.getTrainerMomentum());
-        trainer.setOptimizer(OptimizerType.valueOf(dto.getOptimizerType()));
+        neuralNet.getTrainer()
+                .setMaxError(dto.getTrainerMaxError())
+                .setLearningRate(dto.getTrainerLearningRate())
+                .setMomentum(dto.getTrainerMomentum())
+                .setOptimizer(OptimizerType.valueOf(dto.getOptimizerType()))
+                .setMaxEpochs(10000);
 
         neuralNet.train(trainTestSet[0]);
 

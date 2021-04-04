@@ -23,7 +23,7 @@
                     <p:autoUpdate />
                 </p:messages>
 
-                <p:blockUI block="form1" trigger="inBtn">
+                <p:blockUI block="form1" trigger="inBtn, inBtn1, inBtn2">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>   
 
@@ -42,7 +42,7 @@
                         <p:commandButton value="Delete"  id="deleteBtn" 
                                          action="#{deepBean.onDelete}" update="panel, learnList"/>
 
-                        <p:outputLabel value="Learn:"/>  
+                        <p:outputLabel value="Learn:" style="font-weight: bold" />  
                         <p:selectOneMenu value="#{deepBean.selectedLearnName}" id="learnList">
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{learnBean.learnNameList}" var="names" 
@@ -52,15 +52,13 @@
                         <p:commandButton value="DataSet"  id="dsBtn" 
                                          action="#{deepBean.onDataset()}" update="panel"/>
 
-                        <p:commandLink     value="Input:" id="inBtn" 
-                                           action="#{deepBean.onShowDataset()}"/>
+                        <p:commandLink     value="Input:" id="inBtn" style="font-weight: bold"  
+                                           action="#{deepBean.onShowDataset(1)}"/>
 
                         <p:selectOneMenu value="#{deepBean.selectedInputType}" id="inputList">
                             <f:selectItems value="#{deepBean.detail.inputTypes}" var="type" 
                                            itemLabel="#{type}" itemValue="#{type}" />
                         </p:selectOneMenu>
-
-
 
                         <p:commandButton value="Learn"  id="learnBtn" 
                                          action="#{deepBean.onLearn()}" update="panel"/>
@@ -81,7 +79,8 @@
                                 <p:outputLabel value="numOutputs" style="font-weight: bold" />
                                 <p:outputLabel value="#{deepBean.detail.numOutputs}"/>
 
-                                <p:outputLabel value="Normalizer" style="font-weight: bold"/>
+                                <p:commandLink     value="Normalizer:" id="inBtn1" style="font-weight: bold" 
+                                                   action="#{deepBean.onShowDataset(2)}"/>
                                 <p:selectOneMenu value="#{deepBean.detail.normalizerType}">
                                     <f:selectItems value="#{deepBean.detail.normalizerTypes}"/>
                                 </p:selectOneMenu>
@@ -93,7 +92,8 @@
                                 <p:outputLabel value="Buy" style="font-weight: bold" />
                                 <p:outputLabel value="Sell" style="font-weight: bold" />
 
-                                <p:outputLabel value="Source" style="font-weight: bold" />
+                                <p:commandLink value="Source:" id="inBtn2" style="font-weight: bold"  
+                                                   action="#{deepBean.onShowDataset(1)}"/>
                                 <p:outputLabel value="#{deepBean.detail.sourceCount}"/>
                                 <p:outputLabel value="#{deepBean.detail.sourceBuy}"/>
                                 <p:outputLabel value="#{deepBean.detail.sourceSell}"/>

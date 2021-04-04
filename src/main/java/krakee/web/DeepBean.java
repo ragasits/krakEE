@@ -16,6 +16,7 @@
  */
 package krakee.web;
 
+import deepnetts.data.TabularDataSet;
 import java.io.Serializable;
 import java.util.List;
 import javax.ejb.EJB;
@@ -55,9 +56,14 @@ public class DeepBean implements Serializable {
      *
      * @return
      */
-    public String onShowDataset() {
+    public String onShowDataset(Integer source) {
         if (this.detail != null) {
-            datasetBean.setDataset(deepEjb.fillDataset(detail));
+            if (source == 1) {
+                datasetBean.setDataset(deepEjb.fillDataset(detail));
+            } else if (source == 2) {
+                datasetBean.setDataset(deepEjb.normalize(detail, deepEjb.fillDataset(detail)));
+            }
+
             return "deepDataset.xhtml?faces-redirect=true";
         }
         return null;
