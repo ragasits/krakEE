@@ -138,8 +138,8 @@ public class DeepEJB {
         // create instance of multi addLayer percetpron using builder
         FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
                 .addInputLayer(dto.getNumInputs())
-                .addFullyConnectedLayer(92 + 2, ActivationType.TANH)
-                .addFullyConnectedLayer(92 * 2 + 1, ActivationType.TANH)
+                .addFullyConnectedLayer(140 + 2, ActivationType.TANH)
+                .addFullyConnectedLayer(140 * 2 + 1, ActivationType.TANH)
                 .addOutputLayer(dto.getNumOutputs(), ActivationType.SOFTMAX)
                 .lossFunction(LossType.CROSS_ENTROPY)
                 .randomSeed(456)
@@ -151,7 +151,7 @@ public class DeepEJB {
                 .setLearningRate(dto.getTrainerLearningRate())
                 .setMomentum(dto.getTrainerMomentum())
                 .setOptimizer(OptimizerType.valueOf(dto.getOptimizerType()))
-                .setMaxEpochs(10000);
+                .setMaxEpochs(dto.getTrainerMaxEpochs());
 
         neuralNet.train(trainTestSet[0]);
 

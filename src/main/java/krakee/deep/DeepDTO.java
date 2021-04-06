@@ -61,6 +61,7 @@ public class DeepDTO {
     private float trainerLearningRate = 0.01f;
     private float trainerMomentum = 0.9f;
     private String optimizerType = OptimizerType.MOMENTUM.toString();
+    private int trainerMaxEpochs = 100;
 
     //EvaluationMetrics
     private Float emAccuracy;
@@ -367,4 +368,13 @@ public class DeepDTO {
         this.inputType = inputType;
     }
 
+    public int getTrainerMaxEpochs() {
+        return trainerMaxEpochs;
+    }
+
+    public void setTrainerMaxEpochs(int trainerMaxEpochs) {
+        this.trainerMaxEpochs = trainerMaxEpochs;
+    }
+
+    
 }

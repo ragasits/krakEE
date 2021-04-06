@@ -93,7 +93,7 @@
                                 <p:outputLabel value="Sell" style="font-weight: bold" />
 
                                 <p:commandLink value="Source:" id="inBtn2" style="font-weight: bold"  
-                                                   action="#{deepBean.onShowDataset(1)}"/>
+                                               action="#{deepBean.onShowDataset(1)}"/>
                                 <p:outputLabel value="#{deepBean.detail.sourceCount}"/>
                                 <p:outputLabel value="#{deepBean.detail.sourceBuy}"/>
                                 <p:outputLabel value="#{deepBean.detail.sourceSell}"/>
@@ -109,20 +109,23 @@
                                 <p:outputLabel value="#{deepBean.detail.testSell}"/>
                             </p:panelGrid>
 
-                            <p:panelGrid columns="2" >
-                                <p:outputLabel value="MaxError" style="font-weight: bold" />
-                                <p:inputNumber value="#{deepBean.detail.trainerMaxError}" />
+                            <p:panelGrid columns="4" >
+                                <p:outputLabel value="MaxError:" style="font-weight: bold" />
+                                <p:inputNumber value="#{deepBean.detail.trainerMaxError}" size="10"/>
 
-                                <p:outputLabel value="LearningRate" style="font-weight: bold" />
-                                <p:inputNumber value="#{deepBean.detail.trainerLearningRate}" />
+                                <p:outputLabel value="LearningRate:" style="font-weight: bold" />
+                                <p:inputNumber value="#{deepBean.detail.trainerLearningRate}"  size="10" />
 
-                                <p:outputLabel value="Momentum" style="font-weight: bold" />
-                                <p:inputNumber value="#{deepBean.detail.trainerMomentum}" />
+                                <p:outputLabel value="Momentum:" style="font-weight: bold" />
+                                <p:inputNumber value="#{deepBean.detail.trainerMomentum}"  size="10"/>
 
-                                <p:outputLabel value="Optimizer Type" style="font-weight: bold" />
+                                <p:outputLabel value="Optimizer Type:" style="font-weight: bold" />
                                 <p:selectOneMenu value="#{deepBean.detail.optimizerType}">
                                     <f:selectItems value="#{deepBean.detail.optimizerTypes}"/>
                                 </p:selectOneMenu>
+
+                                <p:outputLabel value="Max Epochs:" style="font-weight: bold" />
+                                <p:inputNumber value="#{deepBean.detail.trainerMaxEpochs}"  size="10"/>
 
                             </p:panelGrid>
                         </p:panelGrid>

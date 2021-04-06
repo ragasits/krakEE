@@ -1,4 +1,4 @@
-+ Download normalized dataset in CSV file format
++ Deep: Add and store trainer Max Epochs parameter 
 
 - Add Neural parameters from the GUI
 - Implement RSI
