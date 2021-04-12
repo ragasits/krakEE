@@ -26,11 +26,13 @@ import deepnetts.data.norm.Standardizer;
 import deepnetts.eval.ClassifierEvaluator;
 import deepnetts.eval.ConfusionMatrix;
 import deepnetts.net.FeedForwardNetwork;
+import deepnetts.net.FeedForwardNetwork.Builder;
 import deepnetts.net.layers.activation.ActivationType;
 import deepnetts.net.loss.LossType;
 import deepnetts.net.train.opt.OptimizerType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.visrec.ml.data.DataSet;
@@ -136,14 +138,22 @@ public class DeepEJB {
         dto = this.calcTestCount(dto, (TabularDataSet) trainTestSet[1]);
 
         // create instance of multi addLayer percetpron using builder
-        FeedForwardNetwork neuralNet = FeedForwardNetwork.builder()
-                .addInputLayer(dto.getNumInputs())
-                .addFullyConnectedLayer(140 + 2, ActivationType.TANH)
-                .addFullyConnectedLayer(140 * 2 + 1, ActivationType.TANH)
+        Builder builder = FeedForwardNetwork.builder()
+                .addInputLayer(dto.getNumInputs());
+
+        ArrayList<DeepLayerDTO> layerList = dto.getDeepLayer();
+        layerList.sort(DeepLayerDTO.getCompByOrder());
+       
+        for (DeepLayerDTO layer : layerList) {
+            builder = builder.addFullyConnectedLayer(layer.getWidths(), ActivationType.valueOf(layer.getActivationType()));
+        }
+
+        builder = builder
                 .addOutputLayer(dto.getNumOutputs(), ActivationType.SOFTMAX)
-                .lossFunction(LossType.CROSS_ENTROPY)
-                .randomSeed(456)
-                .build();
+                .lossFunction(LossType.valueOf(dto.getLossType()))
+                .randomSeed(456);
+
+        FeedForwardNetwork neuralNet = builder.build();
 
         // create and configure instanceof backpropagation trainer
         neuralNet.getTrainer()

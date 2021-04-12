@@ -17,6 +17,7 @@
 package krakee.deep;
 
 import deepnetts.eval.ConfusionMatrix;
+import deepnetts.net.loss.LossType;
 import deepnetts.net.train.opt.OptimizerType;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +56,10 @@ public class DeepDTO {
 
     //Normalizer
     private String normalizerType;
+
+    //NeuralNet
+    private String lossType = LossType.CROSS_ENTROPY.toString();
+    private ArrayList<DeepLayerDTO> deepLayer;
 
     //Trainer   
     private float trainerMaxError = 0.7f;
@@ -150,6 +155,11 @@ public class DeepDTO {
     @BsonIgnore
     public InputType[] getInputTypes() {
         return InputType.values();
+    }
+
+    @BsonIgnore
+    public LossType[] getLossTypes() {
+        return LossType.values();
     }
 
     public ObjectId getId() {
@@ -376,5 +386,19 @@ public class DeepDTO {
         this.trainerMaxEpochs = trainerMaxEpochs;
     }
 
-    
+    public String getLossType() {
+        return lossType;
+    }
+
+    public void setLossType(String lossType) {
+        this.lossType = lossType;
+    }
+
+    public ArrayList<DeepLayerDTO> getDeepLayer() {
+        return deepLayer;
+    }
+
+    public void setDeepLayer(ArrayList<DeepLayerDTO> deepLayer) {
+        this.deepLayer = deepLayer;
+    }
 }

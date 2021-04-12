@@ -18,6 +18,7 @@ package krakee.web;
 
 import deepnetts.data.TabularDataSet;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
@@ -29,6 +30,7 @@ import krakee.MyException;
 import krakee.deep.DeepDTO;
 import krakee.deep.DeepEJB;
 import krakee.deep.DeepInputEJB;
+import krakee.deep.DeepLayerDTO;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -52,16 +54,69 @@ public class DeepBean implements Serializable {
     private DeepDatasetBean datasetBean;
 
     /**
+     * Delete layer
+     *
+     * @param order
+     */
+    public void onDeleteLayer(short order) {
+        ArrayList<DeepLayerDTO> dtoList = this.detail.getDeepLayer();
+        for (DeepLayerDTO dto : dtoList) {
+            if (dto.getOrder() == order) {
+                this.detail.getDeepLayer().remove(dto);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Add new layer
+     */
+    public void onAddLayer() {
+        if (this.detail != null) {
+            if (this.detail.getDeepLayer() == null) {
+                this.detail.setDeepLayer(new ArrayList<>());
+            }
+            this.detail.getDeepLayer().add(new DeepLayerDTO());
+        }
+    }
+
+    /**
      * Show input dataset
      *
      * @return
      */
     public String onShowDataset(Integer source) {
         if (this.detail != null) {
-            if (source == 1) {
-                datasetBean.setDataset(deepEjb.fillDataset(detail));
-            } else if (source == 2) {
-                datasetBean.setDataset(deepEjb.normalize(detail, deepEjb.fillDataset(detail)));
+            if (null != source) {
+                TabularDataSet dataSet;
+                TabularDataSet[] trainTestSet;
+
+                switch (source) {
+                    case 1:
+                         //Input
+                        datasetBean.setDataset(deepEjb.fillDataset(detail));
+                        break;
+                    case 2:
+                        //Normalized
+                        datasetBean.setDataset(deepEjb.normalize(detail, deepEjb.fillDataset(detail)));
+                        break;
+                    case 3:
+                        //Normalized + train
+                        dataSet = deepEjb.fillDataset(detail);
+                        dataSet = deepEjb.normalize(detail, dataSet);
+                        trainTestSet = (TabularDataSet[]) dataSet.split(0.6, 0.4);
+                        datasetBean.setDataset(trainTestSet[0]);
+                        break;
+                    case 4:
+                        //Normalized + test
+                        dataSet = deepEjb.fillDataset(detail);
+                        dataSet = deepEjb.normalize(detail, dataSet);
+                        trainTestSet = (TabularDataSet[]) dataSet.split(0.6, 0.4);
+                        datasetBean.setDataset(trainTestSet[1]);
+                        break;
+                    default:
+                        break;
+                }
             }
 
             return "deepDataset.xhtml?faces-redirect=true";

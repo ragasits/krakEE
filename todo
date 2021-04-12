@@ -1,4 +1,5 @@
-+ Deep: Add and store trainer Max Epochs parameter 
++ Upgade to payara micto 5.2021.2
++ Deep: Manage layers from the GUI
 
 - Add Neural parameters from the GUI
 - Implement RSI

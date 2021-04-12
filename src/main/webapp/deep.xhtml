@@ -23,7 +23,7 @@
                     <p:autoUpdate />
                 </p:messages>
 
-                <p:blockUI block="form1" trigger="inBtn, inBtn1, inBtn2">
+                <p:blockUI block="form1" trigger="inBtn, inBtn1, inBtn2, inBtn3, inBtn4">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>   
 
@@ -62,6 +62,9 @@
 
                         <p:commandButton value="Learn"  id="learnBtn" 
                                          action="#{deepBean.onLearn()}" update="panel"/>
+
+                        <p:commandButton value="+Layer"  id="addLayerBtn" process="@this"
+                                         action="#{deepBean.onAddLayer()}" update="panel"/>
                     </p:panelGrid>
                 </p:panel>   
 
@@ -98,18 +101,26 @@
                                 <p:outputLabel value="#{deepBean.detail.sourceBuy}"/>
                                 <p:outputLabel value="#{deepBean.detail.sourceSell}"/>
 
-                                <p:outputLabel value="Training" style="font-weight: bold" />
+                                <p:commandLink value="Training:" id="inBtn3" style="font-weight: bold" 
+                                               action="#{deepBean.onShowDataset(3)}"/>
                                 <p:outputLabel value="#{deepBean.detail.trainCount}"/>
                                 <p:outputLabel value="#{deepBean.detail.trainBuy}"/>
                                 <p:outputLabel value="#{deepBean.detail.trainSell}"/>
 
-                                <p:outputLabel value="Testing" style="font-weight: bold" />
+
+                                <p:commandLink value="Testing:" id="inBtn4" style="font-weight: bold" 
+                                               action="#{deepBean.onShowDataset(4)}"/>
                                 <p:outputLabel value="#{deepBean.detail.testCount}"/>
                                 <p:outputLabel value="#{deepBean.detail.testBuy}"/>
                                 <p:outputLabel value="#{deepBean.detail.testSell}"/>
                             </p:panelGrid>
 
                             <p:panelGrid columns="4" >
+                                <p:outputLabel value="Loss Function:" style="font-weight: bold" />
+                                <p:selectOneMenu value="#{deepBean.detail.lossType}">
+                                    <f:selectItems value="#{deepBean.detail.lossTypes}"/>
+                                </p:selectOneMenu>
+
                                 <p:outputLabel value="MaxError:" style="font-weight: bold" />
                                 <p:inputNumber value="#{deepBean.detail.trainerMaxError}" size="10"/>
 
@@ -129,6 +140,59 @@
 
                             </p:panelGrid>
                         </p:panelGrid>
+                    </p:panel>
+
+                    <p:panel>
+                        <p:dataTable id="tbl" var="layer" value="#{deepBean.detail.deepLayer}" 
+                                     editable="true" size="small" rowKey="#{layer.order}">
+
+                            <p:column headerText="Order">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{layer.order}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{layer.order}" style="width:100%"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Widths">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{layer.widths}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:inputText value="#{layer.widths}" style="width:100%"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="ActivationType">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{layer.activationType}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu value="#{layer.activationType}">
+                                            <f:selectItems value="#{layer.activationTypes}"/>
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column style="width:6rem">
+                                <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row" />
+                            </p:column>
+
+                            <p:column style="width:6rem">
+                                <p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-flat ui-button-plain" 
+                                                 actionListener="#{deepBean.onDeleteLayer(layer.order)}" update="tbl">
+           
+                                </p:commandButton>
+
+                            </p:column>
+                        </p:dataTable>
                     </p:panel>
 
                     <p:panelGrid columns="2">
