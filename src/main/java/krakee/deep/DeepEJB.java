@@ -32,7 +32,6 @@ import deepnetts.net.loss.LossType;
 import deepnetts.net.train.opt.OptimizerType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.visrec.ml.data.DataSet;
@@ -151,7 +150,7 @@ public class DeepEJB {
         builder = builder
                 .addOutputLayer(dto.getNumOutputs(), ActivationType.SOFTMAX)
                 .lossFunction(LossType.valueOf(dto.getLossType()))
-                .randomSeed(456);
+                .randomSeed(dto.getRandomSeed());
 
         FeedForwardNetwork neuralNet = builder.build();
 

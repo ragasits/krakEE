@@ -116,11 +116,6 @@
                             </p:panelGrid>
 
                             <p:panelGrid columns="4" >
-                                <p:outputLabel value="Loss Function:" style="font-weight: bold" />
-                                <p:selectOneMenu value="#{deepBean.detail.lossType}">
-                                    <f:selectItems value="#{deepBean.detail.lossTypes}"/>
-                                </p:selectOneMenu>
-
                                 <p:outputLabel value="MaxError:" style="font-weight: bold" />
                                 <p:inputNumber value="#{deepBean.detail.trainerMaxError}" size="10"/>
 
@@ -137,12 +132,26 @@
 
                                 <p:outputLabel value="Max Epochs:" style="font-weight: bold" />
                                 <p:inputNumber value="#{deepBean.detail.trainerMaxEpochs}"  size="10"/>
-
                             </p:panelGrid>
                         </p:panelGrid>
                     </p:panel>
 
                     <p:panel>
+                        <p:panelGrid columns="6" >
+                            <p:outputLabel value="Output Activation:" style="font-weight: bold" />
+                            <p:selectOneMenu value="#{deepBean.detail.outputActivationType}">
+                                <f:selectItems value="#{deepBean.detail.outputActivationTypes}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Loss Function:" style="font-weight: bold" />
+                            <p:selectOneMenu value="#{deepBean.detail.lossType}">
+                                <f:selectItems value="#{deepBean.detail.lossTypes}"/>
+                            </p:selectOneMenu>       
+
+                            <p:outputLabel value="Random Seed:" style="font-weight: bold" />
+                            <p:inputNumber value="#{deepBean.detail.randomSeed}"  size="10"/>
+                        </p:panelGrid>
+
                         <p:dataTable id="tbl" var="layer" value="#{deepBean.detail.deepLayer}" 
                                      editable="true" size="small" rowKey="#{layer.order}">
 
@@ -188,7 +197,7 @@
                             <p:column style="width:6rem">
                                 <p:commandButton icon="pi pi-trash" styleClass="rounded-button ui-button-flat ui-button-plain" 
                                                  actionListener="#{deepBean.onDeleteLayer(layer.order)}" update="tbl">
-           
+
                                 </p:commandButton>
 
                             </p:column>
