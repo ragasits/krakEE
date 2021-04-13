@@ -93,7 +93,7 @@ public class DeepBean implements Serializable {
 
                 switch (source) {
                     case 1:
-                         //Input
+                        //Input
                         datasetBean.setDataset(deepEjb.fillDataset(detail));
                         break;
                     case 2:
@@ -168,7 +168,7 @@ public class DeepBean implements Serializable {
      */
     public void onLearn() {
         try {
-            deepEjb.learnDeep(detail);
+            this.detail = deepEjb.learnDeep(detail);
         } catch (MyException ex) {
             this.addMsg(ex.getMessage());
         }
@@ -211,7 +211,7 @@ public class DeepBean implements Serializable {
     }
 
     public DeepDTO getDetail() {
-        return detail;
+        return this.detail;
     }
 
     public void setDetail(DeepDTO detail) {

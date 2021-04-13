@@ -122,7 +122,7 @@ public class DeepEJB {
      * @param dto
      * @throws krakee.MyException
      */
-    public void learnDeep(DeepDTO dto) throws MyException {
+    public DeepDTO learnDeep(DeepDTO dto) throws MyException {
         //Get dataset
         TabularDataSet dataSet = this.fillDataset(dto);
 
@@ -171,6 +171,8 @@ public class DeepEJB {
 
         ConfusionMatrix cm = evaluator.getConfusionMatrix();
         dto.calcConfusionMatrix(cm);
+        
+        return dto;
     }
 
     /**

@@ -214,6 +214,10 @@ public class DeepDTO {
         return sourceCount;
     }
 
+    public void setSourceCount(int sourceCount) {
+        this.sourceCount = sourceCount;
+    }
+
     public void incSourceCount() {
         this.sourceCount++;
     }
@@ -222,12 +226,24 @@ public class DeepDTO {
         return sourceBuy;
     }
 
+    public void setSourceBuy(int sourceBuy) {
+        this.sourceBuy = sourceBuy;
+    }
+
     public void incSourceBuy() {
         this.sourceBuy++;
     }
 
     public int getSourceSell() {
         return sourceSell;
+    }
+
+    public void setTrainCount(int trainCount) {
+        this.trainCount = trainCount;
+    }
+
+    public void setSourceSell(int sourceSell) {
+        this.sourceSell = sourceSell;
     }
 
     public void incSourceSell() {
@@ -426,4 +442,23 @@ public class DeepDTO {
         this.outputActivationType = outputActivationType;
     }
 
+    public void setTrainBuy(int trainBuy) {
+        this.trainBuy = trainBuy;
+    }
+
+    public void setTrainSell(int trainSell) {
+        this.trainSell = trainSell;
+    }
+
+    public void setTestCount(int testCount) {
+        this.testCount = testCount;
+    }
+
+    public void setTestBuy(int testBuy) {
+        this.testBuy = testBuy;
+    }
+
+    public void setTestSell(int testSell) {
+        this.testSell = testSell;
+    }
 }
