@@ -22,5 +22,6 @@ package krakee.deep;
  */
 public enum InputType {
     AllCandle,
-    TimeSeries
+    TimeSeries,
+    Bollinger
 }

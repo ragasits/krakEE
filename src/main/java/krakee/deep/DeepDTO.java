@@ -82,6 +82,23 @@ public class DeepDTO {
     private ArrayList<ArrayList<Integer>> cmValues;
 
     /**
+     * Reset counts
+     */
+    public void resetLearningCounts() {
+        this.sourceCount = 0;
+        this.sourceBuy = 0;
+        this.sourceSell = 0;
+
+        this.trainCount = 0;
+        this.trainBuy = 0;
+        this.trainSell = 0;
+
+        this.testCount = 0;
+        this.testBuy = 0;
+        this.testSell = 0;
+    }
+
+    /**
      * get ConfusionMatrix value
      *
      * @param rowIdx

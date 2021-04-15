@@ -67,18 +67,24 @@
                 </p:dialog>
 
                 <p:panel id="detailPanel">                
-                    <p:panelGrid columns="8">
-                        <p:outputLabel value="StartDate"/>
+                    <p:panelGrid columns="12">
+                        <p:outputLabel value="StartDate:"/>
                         <p:outputLabel value="#{candleDetailBean.detail.startDate}"/>
 
-                        <p:outputLabel value="CalcCandle"/>
+                        <p:outputLabel value="CalcCandle:"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.calcCandle}"/>
 
-                        <p:outputLabel value="CalcDelta"/>
+                        <p:outputLabel value="CalcDelta:"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.delta.calcDelta}"/>                        
 
-                        <p:outputLabel value="CalcBollinger"/>
-                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollinger.calcBollinger}"/>                                                
+                        <p:outputLabel value="CalcBollinger:"/>
+                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollinger.calcBollinger}"/>  
+
+                        <p:outputLabel value="BollingerBuy:"/>
+                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollingerBuy}"/>  
+
+                        <p:outputLabel value="BollingerSell:"/>
+                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollingerSell}"/>  
                     </p:panelGrid>
 
                     <p:panelGrid columns="2" columnClasses="alignTop,alignTop">

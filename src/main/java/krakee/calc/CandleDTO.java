@@ -59,7 +59,25 @@ public class CandleDTO {
         this.bollinger = new BollingerDTO();
         this.calendar = new CalendarDTO(this.startDate);
     }
-  
+
+    /**
+     * Calculate Bollinger Buy
+     * @return 
+     */
+    @BsonIgnore
+    public Boolean getBollingerBuy() {
+        return this.close.compareTo(this.getBollinger().getBollingerLower()) == -1;
+    }
+
+    /**
+     * Calculate Bollinger Sell
+     * @return 
+     */
+    @BsonIgnore
+    public Boolean getBollingerSell() {
+        return this.close.compareTo(this.getBollinger().getBollingerUpper()) == 1;
+    }
+
     /**
      * Calculate stop Date candleDate + 30 minute
      *
@@ -244,7 +262,7 @@ public class CandleDTO {
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = (Date)startDate.clone();
+        this.startDate = (Date) startDate.clone();
     }
 
     public void setCalendar(CalendarDTO calendar) {

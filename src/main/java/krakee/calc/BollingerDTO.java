@@ -101,6 +101,7 @@ public class BollingerDTO {
     /**
      * Calculate trend and delta
      *
+     * @param candle
      * @param prev
      */
     public void calcDeltaAndTrend(CandleDTO candle, BollingerDTO prev) {
@@ -165,7 +166,7 @@ public class BollingerDTO {
         }
         return BigDecimal.ZERO;
     }
-
+    
     public boolean isCalcBollinger() {
         return calcBollinger;
     }

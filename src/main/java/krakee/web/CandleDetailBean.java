@@ -51,11 +51,14 @@ public class CandleDetailBean implements Serializable {
     }
 
     public Date getSelectedDate() {
-        return (Date)selectedDate.clone();
+        if (selectedDate != null) {
+            return (Date) selectedDate.clone();
+        }
+        return null;
     }
 
     public void setSelectedDate(Date selectedDate) {
-        this.selectedDate = (Date)selectedDate.clone();
+        this.selectedDate = (Date) selectedDate.clone();
     }
 
     /**
@@ -70,11 +73,11 @@ public class CandleDetailBean implements Serializable {
         return null;
     }
 
-    
     /**
      * Name list for p:autoComplete
+     *
      * @param query
-     * @return 
+     * @return
      */
     public List<String> complete(String query) {
         return learn.getNames();
@@ -82,7 +85,8 @@ public class CandleDetailBean implements Serializable {
 
     /**
      * Is the candle exists?
-     * @return 
+     *
+     * @return
      */
     public boolean isSelectedCandle() {
         return (this.selectedIdHexa == null || this.selectedIdHexa.isEmpty());
@@ -106,7 +110,8 @@ public class CandleDetailBean implements Serializable {
 
     /**
      * Create a new Learn
-     * @return 
+     *
+     * @return
      */
     public String onNewLearn() {
         this.insertLearn = true;
@@ -115,7 +120,6 @@ public class CandleDetailBean implements Serializable {
         this.learnDetail.setStartDate(this.getDetail().getStartDate());
         return null;
     }
-
 
     /**
      * Save a Learn data
@@ -137,7 +141,8 @@ public class CandleDetailBean implements Serializable {
 
     /**
      * Get the minimum date from the Candle
-     * @return 
+     *
+     * @return
      */
     public Date getMinDate() {
         return candle.getFirstDate();
@@ -145,7 +150,8 @@ public class CandleDetailBean implements Serializable {
 
     /**
      * Get the maximum date from the Candle
-     * @return 
+     *
+     * @return
      */
     public Date getMaxDate() {
         return candle.getLatesDate();

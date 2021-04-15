@@ -40,6 +40,7 @@ import javax.visrec.ml.eval.EvaluationMetrics;
 import krakee.ConfigEJB;
 import krakee.MyException;
 import krakee.deep.input.AllCandleInputEJB;
+import krakee.deep.input.BollingerInputEJB;
 import krakee.deep.input.TimeSeriesInputEJB;
 import krakee.deep.input.TimeSeriesNormalizer;
 
@@ -62,6 +63,8 @@ public class DeepEJB {
     private AllCandleInputEJB allCandleInputEjb;
     @EJB
     private TimeSeriesInputEJB timeSeriesInputEjb;
+    @EJB
+    private BollingerInputEJB bollingerInputEJB;
 
     /**
      * Choose and execute normalization
@@ -111,6 +114,8 @@ public class DeepEJB {
                 return allCandleInputEjb.fillDataset(dto);
             case TimeSeries:
                 return timeSeriesInputEjb.fillDataset(dto);
+            case Bollinger:
+                return bollingerInputEJB.fillDataset(dto);
             default:
                 return null;
         }
@@ -120,6 +125,7 @@ public class DeepEJB {
      * Learn and test Neural network
      *
      * @param dto
+     * @return
      * @throws krakee.MyException
      */
     public DeepDTO learnDeep(DeepDTO dto) throws MyException {
@@ -132,6 +138,7 @@ public class DeepEJB {
         DataSet[] trainTestSet = dataSet.split(0.6, 0.4);
 
         //Create statistics
+        dto.resetLearningCounts();
         dto = this.calcSourceCount(dto, dataSet);
         dto = this.calcTrainCount(dto, (TabularDataSet) trainTestSet[0]);
         dto = this.calcTestCount(dto, (TabularDataSet) trainTestSet[1]);
@@ -142,7 +149,7 @@ public class DeepEJB {
 
         ArrayList<DeepLayerDTO> layerList = dto.getDeepLayer();
         layerList.sort(DeepLayerDTO.getCompByOrder());
-       
+
         for (DeepLayerDTO layer : layerList) {
             builder = builder.addFullyConnectedLayer(layer.getWidths(), ActivationType.valueOf(layer.getActivationType()));
         }
@@ -171,7 +178,7 @@ public class DeepEJB {
 
         ConfusionMatrix cm = evaluator.getConfusionMatrix();
         dto.calcConfusionMatrix(cm);
-        
+
         return dto;
     }
 

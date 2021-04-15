@@ -144,6 +144,7 @@ public class DeepBean implements Serializable {
         DeepDTO dto = deepEjb.get(this.detail.getDeepName());
 
         if (dto == null) {
+            this.detail.setId(null);
             deepEjb.add(this.detail);
         } else {
             deepEjb.update(this.detail);
