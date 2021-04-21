@@ -104,14 +104,14 @@ public class DeepBean implements Serializable {
                         //Normalized + train
                         dataSet = deepEjb.fillDataset(detail);
                         dataSet = deepEjb.normalize(detail, dataSet);
-                        trainTestSet = (TabularDataSet[]) dataSet.split(0.6, 0.4);
+                        trainTestSet = (TabularDataSet[]) dataSet.split(this.detail.getLearnTestRatio(), 1 - this.detail.getLearnTestRatio());
                         datasetBean.setDataset(trainTestSet[0]);
                         break;
                     case 4:
                         //Normalized + test
                         dataSet = deepEjb.fillDataset(detail);
                         dataSet = deepEjb.normalize(detail, dataSet);
-                        trainTestSet = (TabularDataSet[]) dataSet.split(0.6, 0.4);
+                        trainTestSet = (TabularDataSet[]) dataSet.split(this.detail.getLearnTestRatio(), 1 - this.detail.getLearnTestRatio());
                         datasetBean.setDataset(trainTestSet[1]);
                         break;
                     default:

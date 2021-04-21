@@ -1,4 +1,5 @@
-+ Deep: Add Bollinger dataset
++ Deep: Add Learn/Test ratio
++ Deep: Add dataset - Bollinger from the all candles 
 
 - Implement RSI
 

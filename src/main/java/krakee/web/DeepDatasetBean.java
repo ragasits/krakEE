@@ -141,11 +141,11 @@ public class DeepDatasetBean implements Serializable {
      * @return
      */
     public Float getDatasetValue(Integer rowIdx, Integer colIdx) {
-        if (dataset.getNumInputs() > colIdx) {
-            return ((TabularDataSet.Item) dataset.get(rowIdx)).getInput().get(colIdx);
-        } else {
-            return ((TabularDataSet.Item) dataset.get(rowIdx)).getTargetOutput().get(colIdx - dataset.getNumInputs());
-        }
+            if (dataset.getNumInputs() > colIdx) {
+                return ((TabularDataSet.Item) dataset.get(rowIdx)).getInput().get(colIdx);
+            } else {
+                return ((TabularDataSet.Item) dataset.get(rowIdx)).getTargetOutput().get(colIdx - dataset.getNumInputs());
+            }
     }
 
     /**

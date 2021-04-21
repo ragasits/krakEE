@@ -43,6 +43,8 @@ public class DeepDTO {
     private ArrayList<String> columnNames;
 
     //Learning data
+    private double learnTestRatio = 0.6;
+    
     private int sourceCount = 0;
     private int sourceBuy = 0;
     private int sourceSell = 0;
@@ -478,4 +480,14 @@ public class DeepDTO {
     public void setTestSell(int testSell) {
         this.testSell = testSell;
     }
+
+    public double getLearnTestRatio() {
+        return learnTestRatio;
+    }
+
+    public void setLearnTestRatio(double learnTestRatio) {
+        this.learnTestRatio = learnTestRatio;
+    }
+    
+    
 }
