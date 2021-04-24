@@ -30,9 +30,7 @@ public class CandleDTO {
     private BigDecimal volumeSell;
     private boolean calcCandle;
 
-    private DeltaDTO delta;
     private BollingerDTO bollinger;
-    private CalendarDTO calendar;
 
     public CandleDTO() {
     }
@@ -55,23 +53,23 @@ public class CandleDTO {
         this.volumeSell = BigDecimal.ZERO;
         this.calcCandle = false;
 
-        this.delta = new DeltaDTO();
         this.bollinger = new BollingerDTO();
-        this.calendar = new CalendarDTO(this.startDate);
     }
 
     /**
      * Calculate Bollinger Buy
-     * @return 
+     *
+     * @return
      */
     @BsonIgnore
     public Boolean getBollingerBuy() {
         return this.close.compareTo(this.getBollinger().getBollingerLower()) == -1;
     }
-
+    
     /**
      * Calculate Bollinger Sell
-     * @return 
+     *
+     * @return
      */
     @BsonIgnore
     public Boolean getBollingerSell() {
@@ -237,14 +235,6 @@ public class CandleDTO {
         return "CandleDTO{" + "id=" + id + ", startDate=" + startDate + ", count=" + count + ", countBuy=" + countBuy + ", countSell=" + countSell + ", open=" + open + ", low=" + low + ", high=" + high + ", close=" + close + ", total=" + total + ", totalBuy=" + totalBuy + ", totalSell=" + totalSell + ", volume=" + volume + ", volumeBuy=" + volumeBuy + ", volumeSell=" + volumeSell + ", calcCandle=" + calcCandle + '}';
     }
 
-    public DeltaDTO getDelta() {
-        return delta;
-    }
-
-    public void setDelta(DeltaDTO delta) {
-        this.delta = delta;
-    }
-
     public BollingerDTO getBollinger() {
         return bollinger;
     }
@@ -253,20 +243,12 @@ public class CandleDTO {
         this.bollinger = bollinger;
     }
 
-    public CalendarDTO getCalendar() {
-        return calendar;
-    }
-
     public void setId(ObjectId id) {
         this.id = id;
     }
 
     public void setStartDate(Date startDate) {
         this.startDate = (Date) startDate.clone();
-    }
-
-    public void setCalendar(CalendarDTO calendar) {
-        this.calendar = calendar;
     }
 
 }

@@ -105,6 +105,7 @@ public class CandleDetailBean implements Serializable {
     }
 
     public void showLearnDetail(LearnDTO dto) {
+        this.insertLearn= false;
         this.learnDetail = dto;
     }
 

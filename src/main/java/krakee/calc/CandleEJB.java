@@ -41,8 +41,6 @@ public class CandleEJB {
     @EJB
     ConfigEJB config;
     @EJB
-    DeltaEJB delta;
-    @EJB
     BollingerEJB bollinger;
     @EJB
     TradeEJB trade;
@@ -165,7 +163,6 @@ public class CandleEJB {
         this.setLastCandleCalcToFalse();
         this.calcDateList();
         this.calcCandle();
-        delta.calculateDelta();
         bollinger.calculateBollinger();
         config.setRunCandle(true);
     }
@@ -196,7 +193,6 @@ public class CandleEJB {
         //If the tradePair is newer then Candle - Reset
         if (trade.getTimeDate().after(candle.getStartDate())) {
             candle.setCalcCandle(false);
-            candle.getDelta().setCalcDelta(false);
             candle.getBollinger().setCalcBollinger(false);
 
             //Update last Candle
