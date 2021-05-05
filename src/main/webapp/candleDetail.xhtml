@@ -76,6 +76,9 @@
 
                         <p:outputLabel value="CalcBollinger:"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollinger.calcBollinger}"/>  
+
+                        <p:outputLabel value="CalcRSI:"/>
+                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.rsi.calcRsi}"/>  
                     </p:panelGrid>
 
                     <p:accordionPanel id="panel1" multiple="true">
@@ -132,8 +135,39 @@
                             </h:panelGrid>
                         </p:tab>
 
-                        <p:tab title="Bollinger">
-                            <p:panelGrid columns="6">
+                        <p:tab title="RSI - 14">
+                            <p:panelGrid columns="18">
+                                <p:outputLabel value="Change:" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.rsi.change}"/>
+
+                                <p:outputLabel value="Gain:" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.rsi.gain}"/>
+
+                                <p:outputLabel value="Loss:" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.rsi.loss}"/>
+
+                                <p:outputLabel value="avgGain:" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.rsi.avgGain}"/>
+
+                                <p:outputLabel value="avgLoss:" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.rsi.avgLoss}"/>
+
+                                <p:outputLabel value="RS:" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.rsi.rs}"/>
+
+                                <p:outputLabel value="RSI:" style="font-weight: bold"/>
+                                <p:outputLabel value="#{candleDetailBean.detail.rsi.rsi}"/>
+
+                                <p:outputLabel value="Buy:" style="font-weight: bold"/>
+                                <p:selectBooleanCheckbox value="#{candleDetailBean.detail.rsi.rsiBuy}"/>  
+
+                                <p:outputLabel value="Sell:" style="font-weight: bold"/>
+                                <p:selectBooleanCheckbox value="#{candleDetailBean.detail.rsi.rsiSell}"/>  
+                            </p:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Bollinger - 20">
+                            <p:panelGrid columns="10">
                                 <p:outputLabel value="Simple Moving Average (Close20)" style="font-weight: bold"/>
                                 <p:outputLabel value="#{candleDetailBean.detail.bollinger.sma}"/>
 

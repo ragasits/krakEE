@@ -44,6 +44,8 @@ public class CandleEJB {
     BollingerEJB bollinger;
     @EJB
     TradeEJB trade;
+    @EJB
+    RsiEJB rsi;
 
     private int candleSize = 5000;
 
@@ -163,8 +165,20 @@ public class CandleEJB {
         this.setLastCandleCalcToFalse();
         this.calcDateList();
         this.calcCandle();
+        this.deleteEmptyCandles();
         bollinger.calculateBollinger();
+        rsi.calculateRsi();
         config.setRunCandle(true);
+    }
+
+    private void deleteEmptyCandles() {
+        config.getCandleColl()
+                .deleteMany(
+                        and(
+                                eq("calcCandle", true),
+                                eq("open", 0)
+                        )
+                );
     }
 
     /**
@@ -209,6 +223,7 @@ public class CandleEJB {
 
         List<CandleDTO> candleList = config.getCandleColl()
                 .find(eq("calcCandle", false))
+                .sort(Sorts.ascending("startDate"))
                 .limit(5000)
                 .into(new ArrayList<>());
 

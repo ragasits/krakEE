@@ -1,14 +1,11 @@
-+ Deep: Add Learn/Test ratio
-+ Deep: Add dataset - Bollinger from the all candles 
-
-- Implement RSI
++ Candle: Implement RSI
 
 Future:
 --------
+- Migrate to JakartaEE 9
 - Self learning with Neural networks
 - Optimize mongodb
 - Candle1d (one day) + Simulation
-- calc: get national bank holidays (https://holidaydata.io/) and calculate distances
 
 Optional:
 ---------

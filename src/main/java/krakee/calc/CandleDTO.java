@@ -31,6 +31,7 @@ public class CandleDTO {
     private boolean calcCandle;
 
     private BollingerDTO bollinger;
+    private RsiDTO rsi;
 
     public CandleDTO() {
     }
@@ -54,6 +55,7 @@ public class CandleDTO {
         this.calcCandle = false;
 
         this.bollinger = new BollingerDTO();
+        this.rsi = new RsiDTO();
     }
 
     /**
@@ -251,4 +253,12 @@ public class CandleDTO {
         this.startDate = (Date) startDate.clone();
     }
 
+    public RsiDTO getRsi() {
+        return rsi;
+    }
+
+    public void setRsi(RsiDTO rsi) {
+        this.rsi = rsi;
+    }
+        
 }
