@@ -12,6 +12,7 @@ import javax.inject.Named;
 import krakee.ConfigEJB;
 import krakee.MyException;
 import krakee.TimerEjb;
+import krakee.calc.BollingerEJB;
 import krakee.calc.CandleEJB;
 import krakee.get.TradeEJB;
 
@@ -35,6 +36,8 @@ public class IndexBean implements Serializable {
     TradeEJB trade;
     @EJB
     CandleEJB candle;
+    @EJB
+    BollingerEJB bollinger;
 
     /**
      * Show check message
@@ -51,6 +54,14 @@ public class IndexBean implements Serializable {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Candle", message + ": Errors(" + this.resultList.size() + ")");
         }
         FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    /**
+     * Check Bollinger errors
+     */
+    public void onBollinger() {
+        this.resultList = bollinger.chkBollinger();
+        this.showResult("Candle", "Bollinger");
     }
 
     /**

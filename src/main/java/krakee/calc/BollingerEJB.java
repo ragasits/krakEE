@@ -7,8 +7,8 @@ package krakee.calc;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.lt;
 import static com.mongodb.client.model.Filters.lte;
+import static com.mongodb.client.model.Filters.ne;
 import com.mongodb.client.model.Sorts;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -39,7 +39,6 @@ public class BollingerEJB {
      */
     public void calculateBollinger() {
         List<CandleDTO> candleList;
-        CandleDTO prev;
         BollingerDTO bollinger;
 
         //Get the candles
@@ -55,21 +54,39 @@ public class BollingerEJB {
             bollinger.setBollingerUpper(bollinger.getSma().add(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));
             bollinger.setBollingerLower(bollinger.getSma().subtract(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));
 
-            //Get the prev candle
-            prev = config.getCandleColl()
-                    .find(lt("startDate", candle.getStartDate()))
-                    .sort(Sorts.descending("startDate"))
-                    .first();
+            bollinger.setBollingerBandWidth(bollinger.getBollingerUpper().subtract(bollinger.getBollingerLower()));
 
-            //Calc Delta + Trend
-            if (prev != null) {
-                bollinger.calcDeltaAndTrend(candle, prev.getBollinger());
-            }
+            // Calculate trade upper value
+            bollinger.setTradeUpper(calcTradeUpper(candle.getClose(), bollinger.getBollingerUpper()));
+
+            //Calculate trade lower value
+            bollinger.setTradeLower(calcTradeLower(candle.getClose(), bollinger.getBollingerLower()));
+
+            //Calculate Buy / Sell
+            bollinger.setBollingerSell(bollinger.getTradeUpper().compareTo(BigDecimal.ZERO) != 0);
+            bollinger.setBollingerBuy(bollinger.getTradeLower().compareTo(BigDecimal.ZERO) != 0);
 
             //Save candle
-            config.getCandleColl()
-                    .replaceOne(eq("_id", candle.getId()), candle);
+            config.getCandleColl().replaceOne(eq("_id", candle.getId()), candle);
 
+        }
+    }
+
+    //Calculate trade lower value
+    private BigDecimal calcTradeLower(BigDecimal close, BigDecimal lower) {
+        if (close.compareTo(lower) == -1) {
+            return lower.subtract(close);
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    // Calculate trade upper value
+    private BigDecimal calcTradeUpper(BigDecimal close, BigDecimal upper) {
+        if (close.compareTo(upper) == 1) {
+            return close.subtract(upper);
+        } else {
+            return BigDecimal.ZERO;
         }
     }
 
@@ -128,6 +145,52 @@ public class BollingerEJB {
             return close.divide(BigDecimal.valueOf(i), 5, RoundingMode.HALF_UP);
         }
         return BigDecimal.ZERO;
+    }
+
+    /**
+     * Check Bollinger calculation
+     * - Trade upper + lower in the same row
+     * - Upper, Lower calculation error
+     * @return 
+     */
+    public ArrayList<String> chkBollinger() {
+        ArrayList<String> list = new ArrayList<>();
+        List<CandleDTO> candleList;
+
+        //Trade upper + lower in the same row
+        candleList = config.getCandleColl()
+                .find(
+                        and(
+                                ne("bollinger.tradeUpper", 0),
+                                ne("bollinger.tradeLower", 0)
+                        )
+                )
+                .into(new ArrayList<>());
+
+        if (candleList.size() > 0) {
+            list.add("tradeUpper + tradeLower");
+        }
+
+        //Upper, Lower calculation error
+        candleList = config.getCandleColl()
+                .find()
+                .into(new ArrayList<>());
+
+        for (CandleDTO dto : candleList) {
+            BigDecimal upper = calcTradeUpper(dto.getClose(), dto.getBollinger().getBollingerUpper());
+            BigDecimal lower = calcTradeLower(dto.getClose(), dto.getBollinger().getBollingerLower());
+
+            if (upper.compareTo(dto.getBollinger().getTradeUpper()) != 0) {
+                list.add("Wrong upper: " + upper + " " + dto.getBollinger().getTradeUpper());
+            }
+
+            if (lower.compareTo(dto.getBollinger().getTradeLower()) != 0) {
+                list.add("Wrong lower: " + lower + " " + dto.getBollinger().getTradeLower());
+            }
+        }
+
+        return list;
+
     }
 
 }

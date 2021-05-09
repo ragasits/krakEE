@@ -30,47 +30,54 @@
 
                     <p:growl id="growl" showDetail="true" />
 
-                    <p:blockUI block="form1" trigger="chkBtn0, chkBtn1, chkBtn2, chkBtn3, chkBtn4">
+                    <p:blockUI block="form1" trigger="chkBtn0, chkBtn1, chkBtn2, chkBtn3, chkBtn4, chkBtn5">
                         <p:graphicImage value="/resources/ajax-loader.gif" />
                     </p:blockUI>    
 
 
                     <p:panel header="Check" >
-                        <p:panelGrid columns="3">
+                        <p:panelGrid columns="6">
                             <p:outputLabel value="Trade: Consistency checking "/>
                             <p:commandButton value="Check" action="#{indexBean.onTradeChk()}" 
                                              id="chkBtn0" update="growl, resultPanel">
-                                 <p:confirm header="Confirmation" message="Sure?"/>
+                                <p:confirm header="Confirmation" message="Sure?"/>
                             </p:commandButton>
-                                
-                                
+
+
                             <p:outputLabel value=""/>
 
                             <p:outputLabel value="Trade: Search for duplicates"/>
                             <p:commandButton value="Check" action="#{indexBean.onTradeDuplicatesChk()}" 
                                              id="chkBtn1" update="growl, resultPanel">
-                                 <p:confirm header="Confirmation" message="Sure?"/>
+                                <p:confirm header="Confirmation" message="Sure?"/>
                             </p:commandButton>
                             <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check consistency I. Seek missing dates"/>
                             <p:commandButton value="Check" action="#{indexBean.onDateChk()}" 
                                              id="chkBtn2" update="growl, resultPanel">
-                                 <p:confirm header="Confirmation" message="Sure?"/>
+                                <p:confirm header="Confirmation" message="Sure?"/>
                             </p:commandButton>
                             <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check Candle consistency II. Count trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onCandleTradeCountChk()}" 
                                              id="chkBtn3" update="growl, resultPanel">
-                                 <p:confirm header="Confirmation" message="Sure?"/>
+                                <p:confirm header="Confirmation" message="Sure?"/>
                             </p:commandButton>
                             <p:outputLabel value=""/>
 
                             <p:outputLabel value="Candle: Check Open=0 missing trades"/>
                             <p:commandButton value="Check" action="#{indexBean.onZeroOpen()}" 
                                              id="chkBtn4" update="growl, resultPanel">
-                                 <p:confirm header="Confirmation" message="Sure?"/>
+                                <p:confirm header="Confirmation" message="Sure?"/>
+                            </p:commandButton>
+                            <p:outputLabel value=""/>
+
+                            <p:outputLabel value="Candle: Check Bollinger"/>
+                            <p:commandButton value="Check" action="#{indexBean.onBollinger()}" 
+                                             id="chkBtn5" update="growl, resultPanel">
+                                <p:confirm header="Confirmation" message="Sure?"/>
                             </p:commandButton>
                             <p:outputLabel value=""/>
                         </p:panelGrid>

@@ -47,7 +47,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>5.2021.2</version.payara>
+        <version.payara>5.2021.3</version.payara>
     </properties>
     
     <reporting>

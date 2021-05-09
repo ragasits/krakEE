@@ -31,6 +31,7 @@ import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 
 /**
+ * Calculate Relative Strength Index (RSI) indicator
  *
  * @author rgt
  */
@@ -40,13 +41,15 @@ public class RsiEJB {
     static final BigDecimal RSIDAY = BigDecimal.valueOf(14);
     static final BigDecimal RSIUP = BigDecimal.valueOf(70);
     static final BigDecimal RSIDOWN = BigDecimal.valueOf(30);
-    
-    
+
     static final Logger LOGGER = Logger.getLogger(RsiEJB.class.getCanonicalName());
 
     @EJB
     ConfigEJB config;
 
+    /**
+     * Calculate RSI
+     */
     public void calculateRsi() {
         List<CandleDTO> candleList;
         CandleDTO prev;
@@ -139,15 +142,15 @@ public class RsiEJB {
                 rsi.setRsi(hundred);
             } else {
                 BigDecimal b = BigDecimal.ONE.add(rsi.getRs());
-                b = hundred.divide(b,2,RoundingMode.HALF_UP);
+                b = hundred.divide(b, 2, RoundingMode.HALF_UP);
                 b = hundred.subtract(b);
                 rsi.setRsi(b);
             }
-            
+
             //Buy, Sell
-            if (rsi.getRsi().compareTo(this.RSIUP)>0){
+            if (rsi.getRsi().compareTo(RsiEJB.RSIUP) > 0) {
                 rsi.setRsiSell(true);
-            } else if(rsi.getRsi().compareTo(RSIDOWN)<0){
+            } else if (rsi.getRsi().compareTo(RSIDOWN) < 0) {
                 rsi.setRsiBuy(true);
             }
 
@@ -159,6 +162,11 @@ public class RsiEJB {
         }
     }
 
+    /**
+     * Update RSI
+     *
+     * @param candle
+     */
     private void saveRsi(CandleDTO candle) {
         candle.getRsi().setCalcRsi(true);
 

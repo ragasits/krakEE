@@ -74,10 +74,10 @@ public class BollingerAllInputEJB extends AbstractInput {
         if (dto == null) {
             outputList.add(0f);
             outputList.add(0f);
-        } else if (dto.getBollingerBuy()) {
+        } else if (dto.getBollinger().isBollingerBuy()) {
             outputList.add(1f);
             outputList.add(0f);
-        } else if (dto.getBollingerSell()) {
+        } else if (dto.getBollinger().isBollingerSell()) {
             outputList.add(0f);
             outputList.add(1f);
         } else {

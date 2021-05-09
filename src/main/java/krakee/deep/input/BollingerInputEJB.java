@@ -73,10 +73,10 @@ public class BollingerInputEJB extends AbstractInput {
         if (dto.getCandle() == null) {
             outputList.add(0f);
             outputList.add(0f);
-        } else if (dto.getCandle().getBollingerBuy()) {
+        } else if (dto.getCandle().getBollinger().isBollingerBuy()) {
             outputList.add(1f);
             outputList.add(0f);
-        } else if (dto.getCandle().getBollingerSell()) {
+        } else if (dto.getCandle().getBollinger().isBollingerSell()) {
             outputList.add(0f);
             outputList.add(1f);
         } else {

@@ -58,10 +58,10 @@
 
                     <p:panel>        
                         <p:commandButton value="Delete" action="#{candleDetailBean.onDeleteLearn()}" 
-                                         oncomplete="PF('dlg').hide()" update="panel1:tbl"
+                                         oncomplete="PF('dlg').hide()" update="tbl"
                                          disabled="#{candleDetailBean.insertLearn}" />
                         <p:commandButton value="Save" action="#{candleDetailBean.onSaveLearn()}" 
-                                         oncomplete="PF('dlg').hide()" update="panel1:tbl"/>
+                                         oncomplete="PF('dlg').hide()" update="tbl"/>
                         <p:commandButton value="Close" oncomplete="PF('dlg').hide()"/>
                     </p:panel>
                 </p:dialog>
@@ -81,26 +81,26 @@
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.rsi.calcRsi}"/>  
                     </p:panelGrid>
 
-                    <p:accordionPanel id="panel1" multiple="true">
-                        <p:tab title="Trade">
-                            <h:panelGrid columns="2">
-                                <p:panelGrid columns="5">
-                                    <p:outputLabel value="" style="font-weight: bold"/>
+                    <p:panelGrid columns="2" columnClasses="alignTop,alignTop">
+                        <p:panel header="Trade">
+                            <h:panelGrid columns="2" columnClasses="alignTop,alignTop">
+                                <p:panelGrid columns="4">
                                     <p:outputLabel value="Open" style="font-weight: bold"/>
-                                    <p:outputLabel value="Low" style="font-weight: bold"/>
-                                    <p:outputLabel value="High" style="font-weight: bold"/>
-                                    <p:outputLabel value="Close" style="font-weight: bold"/>
+                                    <p:outputLabel value="#{candleDetailBean.detail.open}"/> 
 
-                                    <p:outputLabel value="Trade" style="font-weight: bold"/>
-                                    <p:outputLabel value="#{candleDetailBean.detail.open}"/>               
-                                    <p:outputLabel value="#{candleDetailBean.detail.low}"/>                 
+                                    <p:outputLabel value="Low" style="font-weight: bold"/>
+                                    <p:outputLabel value="#{candleDetailBean.detail.low}"/>   
+
+                                    <p:outputLabel value="High" style="font-weight: bold"/>
                                     <p:outputLabel value="#{candleDetailBean.detail.high}"/>
+
+                                    <p:outputLabel value="Close" style="font-weight: bold"/>
                                     <p:outputLabel value="#{candleDetailBean.detail.close}"/>
                                 </p:panelGrid>
 
                                 <p:panelGrid columns="4">
                                     <p:outputLabel value="" style="font-weight: bold"/>
-                                    <p:outputLabel value="" style="font-weight: bold"/>
+                                    <p:outputLabel value="Total" style="font-weight: bold"/>
                                     <p:outputLabel value="Buy" style="font-weight: bold"/>
                                     <p:outputLabel value="Sell" style="font-weight: bold"/>
 
@@ -133,71 +133,9 @@
                                 </p:panelGrid>
 
                             </h:panelGrid>
-                        </p:tab>
+                        </p:panel>
 
-                        <p:tab title="RSI - 14">
-                            <p:panelGrid columns="18">
-                                <p:outputLabel value="Change:" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.rsi.change}"/>
-
-                                <p:outputLabel value="Gain:" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.rsi.gain}"/>
-
-                                <p:outputLabel value="Loss:" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.rsi.loss}"/>
-
-                                <p:outputLabel value="avgGain:" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.rsi.avgGain}"/>
-
-                                <p:outputLabel value="avgLoss:" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.rsi.avgLoss}"/>
-
-                                <p:outputLabel value="RS:" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.rsi.rs}"/>
-
-                                <p:outputLabel value="RSI:" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.rsi.rsi}"/>
-
-                                <p:outputLabel value="Buy:" style="font-weight: bold"/>
-                                <p:selectBooleanCheckbox value="#{candleDetailBean.detail.rsi.rsiBuy}"/>  
-
-                                <p:outputLabel value="Sell:" style="font-weight: bold"/>
-                                <p:selectBooleanCheckbox value="#{candleDetailBean.detail.rsi.rsiSell}"/>  
-                            </p:panelGrid>
-                        </p:tab>
-
-                        <p:tab title="Bollinger - 20">
-                            <p:panelGrid columns="10">
-                                <p:outputLabel value="Simple Moving Average (Close20)" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.bollinger.sma}"/>
-
-                                <p:outputLabel value="Standard Deviation" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.bollinger.stDev}"/>
-
-                                <p:outputLabel value="Bollinger Upper" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.bollinger.bollingerUpper}"/>                 
-
-                                <p:outputLabel value="Bollinger Lower" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.bollinger.bollingerLower}"/>
-
-                                <p:outputLabel value="Bollinger Banndwidth" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.bollinger.bollingerBandWidth}"/>
-
-                                <p:outputLabel value="Trade Upper" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.bollinger.tradeUpper}"/>
-
-                                <p:outputLabel value="Trade Lower" style="font-weight: bold"/>
-                                <p:outputLabel value="#{candleDetailBean.detail.bollinger.tradeLower}"/>
-
-                                <p:outputLabel value="Buy:" style="font-weight: bold"/>
-                                <p:selectBooleanCheckbox value="@{candleDetailBean.detail.bollingerBuy}"/>  
-
-                                <p:outputLabel value="Sell:" style="font-weight: bold"/>
-                                <p:selectBooleanCheckbox value="@{candleDetailBean.detail.bollingerSell}"/>  
-                            </p:panelGrid>
-                        </p:tab>
-
-                        <p:tab title="Learn" id="learnTab">
+                        <p:panel header="Learn" id="learnTab">
                             <p:dataTable tableStyle="width:auto" id="tbl" value="#{candleDetailBean.learnList}" 
                                          var="item" editable="true">
                                 <p:column headerText="Name">
@@ -210,9 +148,74 @@
                                     <p:outputLabel value="#{item.trade}"/>  
                                 </p:column>  
                             </p:dataTable>                            
-                        </p:tab>
-                    </p:accordionPanel>
-                </p:panel> 
+                        </p:panel>
+
+                    </p:panelGrid>
+
+                    <p:panel header="RSI - 14">
+                        <p:panelGrid columns="18">
+                            <p:outputLabel value="Change:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.rsi.change}"/>
+
+                            <p:outputLabel value="Gain:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.rsi.gain}"/>
+
+                            <p:outputLabel value="Loss:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.rsi.loss}"/>
+
+                            <p:outputLabel value="avgGain:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.rsi.avgGain}"/>
+
+                            <p:outputLabel value="avgLoss:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.rsi.avgLoss}"/>
+
+                            <p:outputLabel value="RS:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.rsi.rs}"/>
+
+                            <p:outputLabel value="RSI:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.rsi.rsi}"/>
+
+                            <p:outputLabel value="Buy:" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.rsi.rsiBuy}"/>  
+
+                            <p:outputLabel value="Sell:" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.rsi.rsiSell}"/>  
+                        </p:panelGrid>
+                    </p:panel>
+
+                    <p:panel header="Bollinger - 20">
+                        <p:panelGrid columns="10">
+                            <p:outputLabel value="Simple Moving Average (Close20)" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.bollinger.sma}"/>
+
+                            <p:outputLabel value="Standard Deviation" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.bollinger.stDev}"/>
+
+                            <p:outputLabel value="Bollinger Upper" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.bollinger.bollingerUpper}"/>                 
+
+                            <p:outputLabel value="Bollinger Lower" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.bollinger.bollingerLower}"/>
+
+                            <p:outputLabel value="Bollinger Banndwidth" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.bollinger.bollingerBandWidth}"/>
+
+                            <p:outputLabel value="Trade Upper" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.bollinger.tradeUpper}"/>
+
+                            <p:outputLabel value="Trade Lower" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.bollinger.tradeLower}"/>
+
+                            <p:outputLabel value="Buy:" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollinger.bollingerBuy}"/>  
+
+                            <p:outputLabel value="Sell:" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollinger.bollingerSell}"/>  
+                        </p:panelGrid>
+                    </p:panel>
+
+
+                </p:panel>
             </h:form>
         </f:view>                
     </h:body>

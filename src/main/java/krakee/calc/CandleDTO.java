@@ -59,26 +59,6 @@ public class CandleDTO {
     }
 
     /**
-     * Calculate Bollinger Buy
-     *
-     * @return
-     */
-    @BsonIgnore
-    public Boolean getBollingerBuy() {
-        return this.close.compareTo(this.getBollinger().getBollingerLower()) == -1;
-    }
-    
-    /**
-     * Calculate Bollinger Sell
-     *
-     * @return
-     */
-    @BsonIgnore
-    public Boolean getBollingerSell() {
-        return this.close.compareTo(this.getBollinger().getBollingerUpper()) == 1;
-    }
-
-    /**
      * Calculate stop Date candleDate + 30 minute
      *
      * @return

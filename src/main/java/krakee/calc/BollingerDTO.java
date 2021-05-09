@@ -14,74 +14,24 @@ import java.math.BigDecimal;
  */
 public class BollingerDTO {
 
-    private boolean calcBollinger;
+    private boolean calcBollinger = false;
     //Single Moving Average
-    private BigDecimal sma;
+    private BigDecimal sma = BigDecimal.ZERO;
 
     //Standard Deviation
-    private BigDecimal stDev;
+    private BigDecimal stDev = BigDecimal.ZERO;
 
     //Bollinger
-    private BigDecimal bollingerUpper;
-    private BigDecimal bollingerLower;
-    private BigDecimal bollingerBandWidth;
+    private BigDecimal bollingerUpper = BigDecimal.ZERO;
+    private BigDecimal bollingerLower = BigDecimal.ZERO;
+    private BigDecimal bollingerBandWidth = BigDecimal.ZERO;
 
     //Trade positions
-    private BigDecimal tradeUpper;
-    private BigDecimal tradeLower;
+    private BigDecimal tradeUpper = BigDecimal.ZERO;
+    private BigDecimal tradeLower = BigDecimal.ZERO;
 
-    public BollingerDTO() {
-        this.calcBollinger = false;
-        this.sma = BigDecimal.ZERO;
-        this.stDev = BigDecimal.ZERO;
-        this.bollingerUpper = BigDecimal.ZERO;
-        this.bollingerLower = BigDecimal.ZERO;
-        this.bollingerBandWidth = BigDecimal.ZERO;
-        this.tradeUpper = BigDecimal.ZERO;
-        this.tradeLower = BigDecimal.ZERO;
-        this.tradeUpper = BigDecimal.ZERO;
-    }
-
-    /**
-     * Calculate trend and delta
-     *
-     * @param candle
-     * @param prev
-     */
-    public void calcDeltaAndTrend(CandleDTO candle, BollingerDTO prev) {
-        this.bollingerBandWidth = this.bollingerUpper.subtract(this.bollingerLower);
-        this.tradeUpper = this.calcTradeUpper(this.bollingerUpper, candle.getHigh());
-        this.tradeLower = this.calcTradeLower(this.bollingerLower, candle.getLow());
-    }
-
-    /**
-     * Calculate trade upper value The Candle High value more then bollinger
-     * upper
-     *
-     * @param bl - Boolinger upper
-     * @param high - Candle high
-     * @return
-     */
-    private BigDecimal calcTradeUpper(BigDecimal bl, BigDecimal high) {
-        if (high.compareTo(bl) == 1) {
-            return high.subtract(bl);
-        }
-        return BigDecimal.ZERO;
-    }
-
-    /**
-     * Calculate trade lower value The candle lower is less then bollinger lower
-     *
-     * @param bl - Bollinger lower
-     * @param low candle.low
-     * @return
-     */
-    private BigDecimal calcTradeLower(BigDecimal bl, BigDecimal low) {
-        if (low.compareTo(bl) == -1) {
-            return bl.subtract(low);
-        }
-        return BigDecimal.ZERO;
-    }
+    private boolean bollingerBuy = false;
+    private boolean bollingerSell = false;
 
     public boolean isCalcBollinger() {
         return calcBollinger;
@@ -145,6 +95,22 @@ public class BollingerDTO {
 
     public void setTradeLower(BigDecimal tradeLower) {
         this.tradeLower = tradeLower;
+    }
+
+    public boolean isBollingerBuy() {
+        return bollingerBuy;
+    }
+
+    public void setBollingerBuy(boolean bollingerBuy) {
+        this.bollingerBuy = bollingerBuy;
+    }
+
+    public boolean isBollingerSell() {
+        return bollingerSell;
+    }
+
+    public void setBollingerSell(boolean bollingerSell) {
+        this.bollingerSell = bollingerSell;
     }
 
 }
