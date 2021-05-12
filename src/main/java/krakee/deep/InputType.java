@@ -18,11 +18,13 @@ package krakee.deep;
 
 /**
  * Input types
+ *
  * @author rgt
  */
 public enum InputType {
     AllCandle,
     TimeSeries,
     Bollinger,
-    BollingerAll
+    BollingerAll,
+    BollingerRSI
 }

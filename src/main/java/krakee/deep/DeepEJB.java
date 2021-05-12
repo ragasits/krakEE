@@ -42,6 +42,7 @@ import krakee.MyException;
 import krakee.deep.input.AllCandleInputEJB;
 import krakee.deep.input.BollingerAllInputEJB;
 import krakee.deep.input.BollingerInputEJB;
+import krakee.deep.input.BollingerRsiInputEJB;
 import krakee.deep.input.TimeSeriesInputEJB;
 import krakee.deep.input.TimeSeriesNormalizer;
 
@@ -68,6 +69,8 @@ public class DeepEJB {
     private BollingerInputEJB bollingerInputEJB;
     @EJB
     private BollingerAllInputEJB bollingerAllInputEJB;
+    @EJB
+    private BollingerRsiInputEJB bollingerRsiInputEJB;
 
     /**
      * Choose and execute normalization
@@ -121,6 +124,8 @@ public class DeepEJB {
                 return bollingerInputEJB.fillDataset(dto);
             case BollingerAll:
                 return bollingerAllInputEJB.fillDataset(dto);
+            case BollingerRSI:
+                return bollingerRsiInputEJB.fillDataset(dto);
             default:
                 return null;
         }
