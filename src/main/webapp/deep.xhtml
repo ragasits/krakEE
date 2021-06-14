@@ -28,11 +28,11 @@
                 </p:blockUI>   
 
                 <p:panel>
-                    <p:panelGrid columns="10">
+                    <p:panelGrid columns="11">
                         <p:autoComplete value="#{deepBean.selectedDeepName}"
                                         completeMethod="#{deepBean.complete}">
                             <p:ajax event="itemSelect" listener="#{deepBean.onSelectedDeep}" 
-                                    update="learnList, inputList, panel"/>                       
+                                    update="learnList, inputList, panel, duplicationBox"/>                       
                         </p:autoComplete>
 
 
@@ -59,6 +59,9 @@
                             <f:selectItems value="#{deepBean.detail.inputTypes}" var="type" 
                                            itemLabel="#{type}" itemValue="#{type}" />
                         </p:selectOneMenu>
+
+                        <p:selectBooleanCheckbox value="#{deepBean.detail.deleteDuplications}"
+                                                 title="Delete duplications" id="duplicationBox"/>
 
                         <p:commandButton value="Learn"  id="learnBtn" 
                                          action="#{deepBean.onLearn()}" update="panel"/>

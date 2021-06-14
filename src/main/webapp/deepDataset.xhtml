@@ -36,19 +36,21 @@
             </p:dialog>
 
             <h:form id="form1">
-                <p:panel>
-                    <p:commandLink actionListener="#{deepDatasetBean.onCSV}"
-                                   onclick="PrimeFaces.monitorDownload(start, stop);"
-                                   ajax="false">
-                        <p:graphicImage name="csv.png" width="24"/>
-                        <p:fileDownload value="#{deepDatasetBean.file}" />
-                    </p:commandLink>
+                <p:panel id="panel">
+                    <p:panelGrid columns="10">
+                        <p:commandButton value="ToCsv"
+                                         actionListener="#{deepDatasetBean.onCSV}"
+                                         onclick="PrimeFaces.monitorDownload(start, stop);"
+                                         ajax="false">
+                            <p:fileDownload value="#{deepDatasetBean.file}" />
+                        </p:commandButton>
+                    </p:panelGrid>                    
                 </p:panel>
-                
+
                 <p:panel>
                     <p:dataTable var="rowName" value="#{deepDatasetBean.datasetRows}" id="tbl"
                                  rowIndexVar="rowIdx"
-                                 tableStyle="width:auto" scrollable="true" paginator="true" rows="50"
+                                 tableStyle="width:auto" scrollable="true" paginator="true" rows="25"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                  rowsPerPageTemplate="25, 50,100">

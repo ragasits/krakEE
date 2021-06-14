@@ -106,7 +106,7 @@ public abstract class AbstractInput {
 
     /**
      * Create TabularDataSet
-     *
+     *      
      * @param deep
      * @return
      */
@@ -124,15 +124,38 @@ public abstract class AbstractInput {
         deep.setColumnNames(columns);
 
         ArrayList<DeepInputDTO> dtoList = inputEjb.get(deep.getDeepName());
+        ArrayList<String> uniqueList = new ArrayList<>();
 
         for (DeepInputDTO dto : dtoList) {
 
             ArrayList<Float> inputList = this.inputValueList(dto);
             ArrayList<Float> outputList = this.outputValueList(dto);
+            int count = 0;
 
-            dataSet.add(new TabularDataSet.Item(
-                    Common.convert(inputList),
-                    Common.convert(outputList)));          
+            if (deep.isDeleteDuplications()) {
+                //ignore duplicates
+
+                for (String s : uniqueList) {
+                    if (s.equals(inputList.toString())) {
+                        count++;
+                        break;
+                    }
+                }
+
+                if (count == 0) {
+                    uniqueList.add(inputList.toString());
+
+                    dataSet.add(new TabularDataSet.Item(
+                            Common.convert(inputList),
+                            Common.convert(outputList)));
+                }
+
+            } else {
+                dataSet.add(new TabularDataSet.Item(
+                        Common.convert(inputList),
+                        Common.convert(outputList)));
+            }
+
         }
 
         return dataSet;

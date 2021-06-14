@@ -41,10 +41,11 @@ public class DeepDTO {
     private int numInputs;
     private int numOutputs;
     private ArrayList<String> columnNames;
+    private boolean deleteDuplications = false;
 
     //Learning data
     private double learnTestRatio = 0.6;
-    
+
     private int sourceCount = 0;
     private int sourceBuy = 0;
     private int sourceSell = 0;
@@ -487,6 +488,14 @@ public class DeepDTO {
 
     public void setLearnTestRatio(double learnTestRatio) {
         this.learnTestRatio = learnTestRatio;
+    }
+
+    public boolean isDeleteDuplications() {
+        return deleteDuplications;
+    }
+
+    public void setDeleteDuplications(boolean deleteDuplications) {
+        this.deleteDuplications = deleteDuplications;
     }
     
     
