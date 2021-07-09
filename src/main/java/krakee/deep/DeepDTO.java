@@ -41,7 +41,13 @@ public class DeepDTO {
     private int numInputs;
     private int numOutputs;
     private ArrayList<String> columnNames;
+    
     private boolean deleteDuplications = false;
+    //Add limits
+    private boolean inputLimits = false;
+    private int inputBuyLimit = 0;
+    private int inputSellLimit = 0;
+    private int inputNoneLimit = 0;
 
     //Learning data
     private double learnTestRatio = 0.6;
@@ -189,7 +195,7 @@ public class DeepDTO {
     public ActivationType[] getOutputActivationTypes() {
         return ActivationType.values();
     }
-
+    
     public ObjectId getId() {
         return id;
     }
@@ -497,6 +503,39 @@ public class DeepDTO {
     public void setDeleteDuplications(boolean deleteDuplications) {
         this.deleteDuplications = deleteDuplications;
     }
+
+    public int getInputBuyLimit() {
+        return inputBuyLimit;
+    }
+
+    public void setInputBuyLimit(int inputBuyLimit) {
+        this.inputBuyLimit = inputBuyLimit;
+    }
+
+    public int getInputSellLimit() {
+        return inputSellLimit;
+    }
+
+    public void setInputSellLimit(int inputSellLimit) {
+        this.inputSellLimit = inputSellLimit;
+    }
+
+    public int getInputNoneLimit() {
+        return inputNoneLimit;
+    }
+
+    public void setInputNoneLimit(int inputNoneLimit) {
+        this.inputNoneLimit = inputNoneLimit;
+    }
+
+    public boolean isInputLimits() {
+        return inputLimits;
+    }
+
+    public void setInputLimits(boolean inputLimits) {
+        this.inputLimits = inputLimits;
+    }
+    
     
     
 }

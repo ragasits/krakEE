@@ -32,7 +32,7 @@
                         <p:autoComplete value="#{deepBean.selectedDeepName}"
                                         completeMethod="#{deepBean.complete}">
                             <p:ajax event="itemSelect" listener="#{deepBean.onSelectedDeep}" 
-                                    update="learnList, inputList, panel, duplicationBox"/>                       
+                                    update="learnList, inputList, panel"/>                       
                         </p:autoComplete>
 
 
@@ -42,32 +42,12 @@
                         <p:commandButton value="Delete"  id="deleteBtn" 
                                          action="#{deepBean.onDelete}" update="panel, learnList"/>
 
-                        <p:outputLabel value="Learn:" style="font-weight: bold" />  
-                        <p:selectOneMenu value="#{deepBean.selectedLearnName}" id="learnList">
-                            <f:selectItem itemLabel="-" itemValue=""/>
-                            <f:selectItems value="#{learnBean.learnNameList}" var="names" 
-                                           itemLabel="#{names}" itemValue="#{names}" />
-                        </p:selectOneMenu>
-
-                        <p:commandButton value="DataSet"  id="dsBtn" 
-                                         action="#{deepBean.onDataset()}" update="panel"/>
-
-                        <p:commandLink     value="Input:" id="inBtn" style="font-weight: bold"  
-                                           action="#{deepBean.onShowDataset(1)}"/>
-
-                        <p:selectOneMenu value="#{deepBean.selectedInputType}" id="inputList">
-                            <f:selectItems value="#{deepBean.detail.inputTypes}" var="type" 
-                                           itemLabel="#{type}" itemValue="#{type}" />
-                        </p:selectOneMenu>
-
-                        <p:selectBooleanCheckbox value="#{deepBean.detail.deleteDuplications}"
-                                                 title="Delete duplications" id="duplicationBox"/>
-
                         <p:commandButton value="Learn"  id="learnBtn" 
                                          action="#{deepBean.onLearn()}" update="panel"/>
 
                         <p:commandButton value="+Layer"  id="addLayerBtn" process="@this"
                                          action="#{deepBean.onAddLayer()}" update="panel"/>
+
                     </p:panelGrid>
                 </p:panel>   
 
@@ -76,7 +56,46 @@
                 </p:blockUI>    
 
                 <p:panel id="panel">
-                    <p:panel header="Input">
+                    <p:panel>
+                        <p:panelGrid columns="16">
+                            <p:outputLabel value="Learn:" style="font-weight: bold" />  
+                            <p:selectOneMenu value="#{deepBean.selectedLearnName}" id="learnList">
+                                <f:selectItem itemLabel="-" itemValue=""/>
+                                <f:selectItems value="#{learnBean.learnNameList}" var="names" 
+                                               itemLabel="#{names}" itemValue="#{names}" />
+                            </p:selectOneMenu>
+
+                            <p:commandButton value="DataSet"  id="dsBtn" 
+                                             action="#{deepBean.onDataset()}" update="panel"/>
+
+                            <p:commandLink     value="Input:" id="inBtn" style="font-weight: bold"  
+                                               action="#{deepBean.onShowDataset(1)}"/>
+
+                            <p:selectOneMenu value="#{deepBean.selectedInputType}" id="inputList">
+                                <f:selectItems value="#{deepBean.detail.inputTypes}" var="type" 
+                                               itemLabel="#{type}" itemValue="#{type}" />
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Unique:" style="font-weight: bold" />  
+                            <p:selectBooleanCheckbox value="#{deepBean.detail.deleteDuplications}"
+                                                     title="Delete duplications"/>
+
+                            <p:outputLabel value="Limit:" style="font-weight: bold" />  
+                            <p:selectBooleanCheckbox value="#{deepBean.detail.inputLimits}">
+                                <p:ajax event="change" update="panel"/>             
+                            </p:selectBooleanCheckbox>
+
+                            <p:outputLabel value="Buy:" style="font-weight: bold" />  
+                            <p:inputNumber value="#{deepBean.detail.inputBuyLimit}" size="5" 
+                                           disabled="#{!deepBean.detail.inputLimits}"/>
+                            <p:outputLabel value="Sell:" style="font-weight: bold" />  
+                            <p:inputNumber value="#{deepBean.detail.inputSellLimit}" size="5"
+                                           disabled="#{!deepBean.detail.inputLimits}"/>
+                            <p:outputLabel value="None:" style="font-weight: bold" />  
+                            <p:inputNumber value="#{deepBean.detail.inputNoneLimit}" size="5"
+                                           disabled="#{!deepBean.detail.inputLimits}"/>
+                        </p:panelGrid>
+
                         <p:panelGrid columns="3">
                             <p:panelGrid columns="2" >
                                 <p:outputLabel value="numInputs:" style="font-weight: bold"/>

@@ -19,6 +19,7 @@ package krakee.deep.input;
 import deepnetts.data.TabularDataSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import javax.ejb.EJB;
 import krakee.Common;
 import krakee.deep.DeepDTO;
@@ -105,8 +106,21 @@ public abstract class AbstractInput {
     public abstract ArrayList<String> inputColumnNameList();
 
     /**
+     * Add item to Dataset
+     *
+     * @param dataSet
+     * @param inputList
+     * @param outputList
+     */
+    private void addDataset(TabularDataSet dataSet, ArrayList<Float> inputList, ArrayList<Float> outputList) {
+        dataSet.add(new TabularDataSet.Item(
+                Common.convert(inputList),
+                Common.convert(outputList)));
+    }
+
+    /**
      * Create TabularDataSet
-     *      
+     *
      * @param deep
      * @return
      */
@@ -126,7 +140,15 @@ public abstract class AbstractInput {
         ArrayList<DeepInputDTO> dtoList = inputEjb.get(deep.getDeepName());
         ArrayList<String> uniqueList = new ArrayList<>();
 
-        for (DeepInputDTO dto : dtoList) {
+        int cntBuy = deep.getInputBuyLimit();
+        int cntSell = deep.getInputSellLimit();
+        int cntNone = deep.getInputNoneLimit();
+        boolean isLimit = true;
+
+        Iterator iterator = dtoList.iterator();
+        //for (DeepInputDTO dto : dtoList) {
+        while (iterator.hasNext() && isLimit) {
+            DeepInputDTO dto = (DeepInputDTO) iterator.next();
 
             ArrayList<Float> inputList = this.inputValueList(dto);
             ArrayList<Float> outputList = this.outputValueList(dto);
@@ -145,20 +167,51 @@ public abstract class AbstractInput {
                 if (count == 0) {
                     uniqueList.add(inputList.toString());
 
-                    dataSet.add(new TabularDataSet.Item(
-                            Common.convert(inputList),
-                            Common.convert(outputList)));
+                    //Use limits
+                    if (deep.isInputLimits()) {
+                        if (outputList.get(0) == 1f && cntBuy > 0) {
+                            addDataset(dataSet, inputList, outputList);
+                            cntBuy--;
+                        } else if (outputList.get(1) == 1f && cntSell > 0) {
+                            addDataset(dataSet, inputList, outputList);
+                            cntSell--;
+                        } else if (outputList.get(0) == 0f && outputList.get(1) == 0f && cntNone > 0) {
+                            addDataset(dataSet, inputList, outputList);
+                            cntNone--;
+                        }
+
+                        isLimit = !((cntBuy + cntSell + cntNone) == 0);
+
+                    } else {
+                        addDataset(dataSet, inputList, outputList);
+                    }
                 }
 
             } else {
-                dataSet.add(new TabularDataSet.Item(
-                        Common.convert(inputList),
-                        Common.convert(outputList)));
+                //Add Duplicates
+                //Use limits
+                if (deep.isInputLimits()) {
+                    if (outputList.get(0) == 1f && cntBuy > 0) {
+                        addDataset(dataSet, inputList, outputList);
+                        cntBuy--;
+                    } else if (outputList.get(1) == 1f && cntSell > 0) {
+                        addDataset(dataSet, inputList, outputList);
+                        cntSell--;
+                    } else if (outputList.get(0) == 0f && outputList.get(1) == 0f && cntNone > 0) {
+                        addDataset(dataSet, inputList, outputList);
+                        cntNone--;
+                    }
+
+                    isLimit = !((cntBuy + cntSell + cntNone) == 0);
+
+                } else {
+                    addDataset(dataSet, inputList, outputList);
+                }
             }
 
         }
 
         return dataSet;
-
     }
+
 }
