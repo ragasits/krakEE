@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rgt</groupId>
     <artifactId>krakEE</artifactId>
-    <version>130</version>
+    <version>140</version>
     <packaging>war</packaging>
     <name>krakEE</name>
 
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>com.deepnetts</groupId>
             <artifactId>deepnetts-core</artifactId>
-            <version>1.12</version>
+            <version>1.13.1</version>
         </dependency>
     </dependencies>
     
