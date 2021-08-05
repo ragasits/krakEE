@@ -112,7 +112,7 @@ public abstract class AbstractInput {
      * @param inputList
      * @param outputList
      */
-    private void addDataset(TabularDataSet dataSet, ArrayList<Float> inputList, ArrayList<Float> outputList) {
+    public void addDataset(TabularDataSet dataSet, ArrayList<Float> inputList, ArrayList<Float> outputList) {
         dataSet.add(new TabularDataSet.Item(
                 Common.convert(inputList),
                 Common.convert(outputList)));

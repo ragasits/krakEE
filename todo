@@ -1,7 +1,12 @@
-+ Migrate to deepnetts 1.13.1
++ Add reference neural network: Iris
++ Revert to deepnetts 1.12 (1.13.1 is buggy)
+
+
+
 
 Future:
 --------
+- Migrate to deepnetts 1.13.1
 - Migrate to JakartaEE 9
 - Self learning with Neural networks
 - Optimize mongodb

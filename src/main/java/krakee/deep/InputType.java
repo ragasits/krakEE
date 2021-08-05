@@ -26,5 +26,6 @@ public enum InputType {
     TimeSeries,
     Bollinger,
     BollingerAll,
-    BollingerRSI
+    BollingerRSI,
+    Iris
 }

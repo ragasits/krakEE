@@ -19,10 +19,10 @@ package krakee.deep;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import deepnetts.data.TabularDataSet;
-import deepnetts.data.preprocessing.scale.DecimalScaler;
-import deepnetts.data.preprocessing.scale.MaxScaler;
-import deepnetts.data.preprocessing.scale.MinMaxScaler;
-import deepnetts.data.preprocessing.scale.Standardizer;
+import deepnetts.data.norm.DecimalScaleNormalizer;
+import deepnetts.data.norm.MaxNormalizer;
+import deepnetts.data.norm.MinMaxNormalizer;
+import deepnetts.data.norm.Standardizer;
 import deepnetts.eval.ClassifierEvaluator;
 import deepnetts.eval.ConfusionMatrix;
 import deepnetts.net.FeedForwardNetwork;
@@ -35,7 +35,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.visrec.ml.data.DataSet;
-import javax.visrec.ml.data.preprocessing.Scaler;
+import javax.visrec.ml.data.Normalizer;
 import javax.visrec.ml.eval.EvaluationMetrics;
 import krakee.ConfigEJB;
 import krakee.MyException;
@@ -43,6 +43,7 @@ import krakee.deep.input.AllCandleInputEJB;
 import krakee.deep.input.BollingerAllInputEJB;
 import krakee.deep.input.BollingerInputEJB;
 import krakee.deep.input.BollingerRsiInputEJB;
+import krakee.deep.input.IrisInputEJB;
 import krakee.deep.input.TimeSeriesInputEJB;
 import krakee.deep.input.TimeSeriesNormalizer;
 
@@ -71,6 +72,8 @@ public class DeepEJB {
     private BollingerAllInputEJB bollingerAllInputEJB;
     @EJB
     private BollingerRsiInputEJB bollingerRsiInputEJB;
+    @EJB
+    private IrisInputEJB irisInputEJB;
 
     /**
      * Choose and execute normalization
@@ -80,17 +83,17 @@ public class DeepEJB {
      * @return
      */
     public TabularDataSet normalize(DeepDTO dto, TabularDataSet dataSet) {
-        Scaler normalizer;
+        Normalizer normalizer;
 
         switch (NormalizerType.valueOf(dto.getNormalizerType())) {
             case DecimalScaleNormalizer:
-                normalizer = new DecimalScaler(dataSet);
+                normalizer = new DecimalScaleNormalizer(dataSet);
                 break;
             case MaxNormalizer:
-                normalizer = new MaxScaler(dataSet);
+                normalizer = new MaxNormalizer(dataSet);
                 break;
             case MinMaxNormalizer:
-                normalizer = new MinMaxScaler(dataSet);
+                normalizer = new MinMaxNormalizer(dataSet);
                 break;
             case Standardizer:
                 normalizer = new Standardizer(dataSet);
@@ -101,7 +104,7 @@ public class DeepEJB {
             default:
                 return null;
         }
-        normalizer.apply(dataSet);
+        normalizer.normalize(dataSet);
 
         return dataSet;
 
@@ -126,6 +129,8 @@ public class DeepEJB {
                 return bollingerAllInputEJB.fillDataset(dto);
             case BollingerRSI:
                 return bollingerRsiInputEJB.fillDataset(dto);
+            case Iris:
+                return irisInputEJB.fillDataset(dto);
             default:
                 return null;
         }
@@ -165,7 +170,7 @@ public class DeepEJB {
         }
 
         builder = builder
-                .addOutputLayer(dto.getNumOutputs(), ActivationType.SOFTMAX)
+                .addOutputLayer(dto.getNumOutputs(), ActivationType.valueOf(dto.getOutputActivationType()))
                 .lossFunction(LossType.valueOf(dto.getLossType()))
                 .randomSeed(dto.getRandomSeed());
 
@@ -193,64 +198,76 @@ public class DeepEJB {
     }
 
     /**
-     * Count Train data buy/sell
+     * Count Train data buy/sell (except Iris)
      *
      * @param dto
      * @param dataSet
      * @return
      */
     private DeepDTO calcTrainCount(DeepDTO dto, TabularDataSet dataSet) {
+
         List<TabularDataSet.Item> itemList = dataSet.getItems();
         for (TabularDataSet.Item item : itemList) {
             dto.incTrainCount();
 
-            if (item.getTargetOutput().get(BUYPOS) > 0f) {
-                dto.incTrainBuy();
-            } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
-                dto.incTrainSell();
+            if (InputType.valueOf(dto.getInputType()) != InputType.Iris) {
+                if (item.getTargetOutput().get(BUYPOS) > 0f) {
+                    dto.incTrainBuy();
+                } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
+                    dto.incTrainSell();
+                }
             }
+
         }
         return dto;
     }
 
     /**
-     * Count Test data buy/sell
+     * Count Test data buy/sell (except Iris)
      *
      * @param dto
      * @param dataSet
      * @return
      */
     private DeepDTO calcTestCount(DeepDTO dto, TabularDataSet dataSet) {
+
         List<TabularDataSet.Item> itemList = dataSet.getItems();
         for (TabularDataSet.Item item : itemList) {
             dto.incTestCount();
 
-            if (item.getTargetOutput().get(BUYPOS) > 0f) {
-                dto.incTestBuy();
-            } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
-                dto.incTestSell();
+            if (InputType.valueOf(dto.getInputType()) != InputType.Iris) {
+                if (item.getTargetOutput().get(BUYPOS) > 0f) {
+                    dto.incTestBuy();
+                } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
+                    dto.incTestSell();
+                }
             }
+
         }
         return dto;
     }
 
     /**
-     * Count Source data buy/sell
+     * Count Source data buy/sell (except Iris)
      *
      * @param dto
      * @param dataSet
      * @return
      */
     private DeepDTO calcSourceCount(DeepDTO dto, TabularDataSet dataSet) {
+
         List<TabularDataSet.Item> itemList = dataSet.getItems();
         for (TabularDataSet.Item item : itemList) {
             dto.incSourceCount();
 
-            if (item.getTargetOutput().get(BUYPOS) > 0f) {
-                dto.incSourceBuy();
-            } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
-                dto.incSourceSell();
+            if (InputType.valueOf(dto.getInputType()) != InputType.Iris) {
+                if (item.getTargetOutput().get(BUYPOS) > 0f) {
+                    dto.incSourceBuy();
+                } else if (item.getTargetOutput().get(SELLPOS) > 0f) {
+                    dto.incSourceSell();
+                }
             }
+
         }
         return dto;
     }
