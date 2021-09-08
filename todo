@@ -1,8 +1,8 @@
-+ Add reference neural network: Iris
-+ Revert to deepnetts 1.12 (1.13.1 is buggy)
++ Format large Profit.EUR values
 
 
-
+- Add MACD indicator
+- Try reinforcement learning
 
 Future:
 --------
@@ -19,3 +19,12 @@ Optional:
 - Metrics: Prometheus + Grafana
 - Use Primefaces icons (buttons)
 
+Caused by: java.lang.ArrayIndexOutOfBoundsException: 1
+	at deepnetts.eval.ConfusionMatrix.inc(ConfusionMatrix.java:98)
+	at deepnetts.eval.ClassifierEvaluator.processResult(ClassifierEvaluator.java:181)
+	at deepnetts.eval.ClassifierEvaluator.evaluate(ClassifierEvaluator.java:101)
+	at deepnetts.eval.ClassifierEvaluator.evaluate(ClassifierEvaluator.java:39)
+	at deepnetts.net.train.BackpropagationTrainer.calculateAccuracy(BackpropagationTrainer.java:635)
+	at deepnetts.net.train.BackpropagationTrainer.train(BackpropagationTrainer.java:314)
+	at deepnetts.net.NeuralNetwork.train(NeuralNetwork.java:133)
+	at krakee.deep.DeepEJB.learnDeep(DeepEJB.java:187)

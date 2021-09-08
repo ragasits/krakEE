@@ -19,10 +19,10 @@ package krakee.deep;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import deepnetts.data.TabularDataSet;
-import deepnetts.data.norm.DecimalScaleNormalizer;
-import deepnetts.data.norm.MaxNormalizer;
-import deepnetts.data.norm.MinMaxNormalizer;
-import deepnetts.data.norm.Standardizer;
+import deepnetts.data.preprocessing.scale.DecimalScaler;
+import deepnetts.data.preprocessing.scale.MaxScaler;
+import deepnetts.data.preprocessing.scale.MinMaxScaler;
+import deepnetts.data.preprocessing.scale.Standardizer;
 import deepnetts.eval.ClassifierEvaluator;
 import deepnetts.eval.ConfusionMatrix;
 import deepnetts.net.FeedForwardNetwork;
@@ -35,7 +35,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.visrec.ml.data.DataSet;
-import javax.visrec.ml.data.Normalizer;
+import javax.visrec.ml.data.preprocessing.Scaler;
 import javax.visrec.ml.eval.EvaluationMetrics;
 import krakee.ConfigEJB;
 import krakee.MyException;
@@ -83,17 +83,17 @@ public class DeepEJB {
      * @return
      */
     public TabularDataSet normalize(DeepDTO dto, TabularDataSet dataSet) {
-        Normalizer normalizer;
+        Scaler normalizer;
 
         switch (NormalizerType.valueOf(dto.getNormalizerType())) {
             case DecimalScaleNormalizer:
-                normalizer = new DecimalScaleNormalizer(dataSet);
+                normalizer = new DecimalScaler(dataSet);
                 break;
             case MaxNormalizer:
-                normalizer = new MaxNormalizer(dataSet);
+                normalizer = new MaxScaler(dataSet);
                 break;
             case MinMaxNormalizer:
-                normalizer = new MinMaxNormalizer(dataSet);
+                normalizer = new MinMaxScaler(dataSet);
                 break;
             case Standardizer:
                 normalizer = new Standardizer(dataSet);
@@ -104,7 +104,7 @@ public class DeepEJB {
             default:
                 return null;
         }
-        normalizer.normalize(dataSet);
+        normalizer.apply(dataSet);
 
         return dataSet;
 

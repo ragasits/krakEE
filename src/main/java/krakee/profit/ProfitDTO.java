@@ -16,6 +16,8 @@
  */
 package krakee.profit;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 import org.bson.types.ObjectId;
 
@@ -36,17 +38,15 @@ public class ProfitDTO {
     private String learnName;
     private double eur;
     private List<ProfitItemDTO> items;
-    
 
     public ProfitDTO() {
     }
-    
+
     public ProfitDTO(Long testNum, double eur, List<ProfitItemDTO> items) {
         this.testNum = testNum;
         this.eur = eur;
         this.items = items;
     }
-    
 
     public ProfitDTO(String learnName, Long testNum, double eur, List<ProfitItemDTO> items) {
         this.testNum = testNum;
@@ -77,6 +77,18 @@ public class ProfitDTO {
 
     public void setEur(double eur) {
         this.eur = eur;
+    }
+
+    /**
+     * Format large  EUR value to readable
+     * @return 
+     */
+    public String getEurFormat() {
+        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+        decimalFormatSymbols.setDecimalSeparator('.');
+        decimalFormatSymbols.setGroupingSeparator(',');
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0.00", decimalFormatSymbols);
+        return decimalFormat.format(this.eur);
     }
 
     public List<ProfitItemDTO> getItems() {

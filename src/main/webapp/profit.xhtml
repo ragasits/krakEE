@@ -29,10 +29,10 @@
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Best:"/>  
-                        <p:selectOneMenu value="#{profitBean.selectedTest}" id="testList">
+                        <p:selectOneMenu value="#{profitBean.selectedTest}" id="testList" >
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{profitBean.bestList}" var="best" 
-                                           itemLabel="#{best.eur}" itemValue="#{best.testNum}" />
+                                           itemLabel="#{best.eurFormat}" itemValue="#{best.testNum}" />
                             <p:ajax event="itemSelect"  update="tbl, profitPanel"/>
                         </p:selectOneMenu>
 
@@ -46,14 +46,16 @@
                 <p:blockUI block="form1" trigger="calcBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
-                
+
                 <p:panel id="profitPanel">
                     <p:panelGrid columns="4">
-                         <p:outputLabel value="TestNum:"/>  
-                         <p:outputLabel value="#{profitBean.profit.testNum}"/>  
-                         
-                         <p:outputLabel value="EUR:"/>  
-                         <p:outputLabel value="#{profitBean.profit.eur}"/>                           
+                        <p:outputLabel value="TestNum:"/>  
+                        <p:outputLabel value="#{profitBean.profit.testNum}"/>  
+
+                        <p:outputLabel value="EUR:"/>  
+                        <p:outputLabel value="#{profitBean.profit.eur}">
+                            <f:convertNumber maxFractionDigits="2" groupingUsed="true" />
+                        </p:outputLabel>                           
                     </p:panelGrid>
                 </p:panel>    
 
@@ -70,12 +72,12 @@
                         </p:column>
                         <p:column headerText="eur">
                             <p:outputLabel value="#{item.eur}">
-                                <f:convertNumber maxFractionDigits="10" groupingUsed="false" />
+                                <f:convertNumber maxFractionDigits="2" groupingUsed="true" />
                             </p:outputLabel>
                         </p:column>
                         <p:column headerText="btc">
                             <p:outputLabel value="#{item.btc}">
-                                <f:convertNumber maxFractionDigits="10" groupingUsed="false" />
+                                <f:convertNumber maxFractionDigits="10" groupingUsed="true" />
                             </p:outputLabel>
                         </p:column>
                         <p:column headerText="fee">

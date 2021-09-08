@@ -19,14 +19,14 @@ package krakee.deep.input;
 import deepnetts.data.MLDataItem;
 import java.io.Serializable;
 import javax.visrec.ml.data.DataSet;
-import javax.visrec.ml.data.Normalizer;
+import javax.visrec.ml.data.preprocessing.Scaler;
 
 /**
  * Own TimeSeries Normalizer for Deep Nets
  *
  * @author rgt
  */
-public final class TimeSeriesNormalizer implements Normalizer<DataSet<MLDataItem>>, Serializable {
+public final class TimeSeriesNormalizer implements Scaler<DataSet<MLDataItem>>, Serializable {
 
     /**
      * Row level normalization
@@ -34,7 +34,7 @@ public final class TimeSeriesNormalizer implements Normalizer<DataSet<MLDataItem
      * @param dataSet
      */
     @Override
-    public void normalize(DataSet<MLDataItem> dataSet) {
+    public void apply(DataSet<MLDataItem> dataSet) {
         float epsilon = 1.01f;
 
         for (MLDataItem row : dataSet) {
