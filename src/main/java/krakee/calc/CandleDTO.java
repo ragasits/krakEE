@@ -30,6 +30,7 @@ public class CandleDTO {
     private BigDecimal volumeSell;
     private boolean calcCandle;
 
+    private MovingAverageDTO movingAverage;
     private BollingerDTO bollinger;
     private RsiDTO rsi;
 
@@ -56,6 +57,7 @@ public class CandleDTO {
 
         this.bollinger = new BollingerDTO();
         this.rsi = new RsiDTO();
+        this.movingAverage = new MovingAverageDTO();
     }
 
     /**
@@ -240,5 +242,15 @@ public class CandleDTO {
     public void setRsi(RsiDTO rsi) {
         this.rsi = rsi;
     }
-        
+
+    public MovingAverageDTO getMovingAverage() {
+        return movingAverage;
+    }
+
+    public void setMovingAverage(MovingAverageDTO movingAverage) {
+        this.movingAverage = movingAverage;
+    }
+    
+    
+
 }

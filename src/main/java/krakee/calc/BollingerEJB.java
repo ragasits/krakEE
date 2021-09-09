@@ -31,7 +31,7 @@ public class BollingerEJB {
     static final Logger LOGGER = Logger.getLogger(BollingerEJB.class.getCanonicalName());
 
     @EJB
-    ConfigEJB config;
+    ConfigEJB configEjb;
 
     /**
      * Calculate Bollinger values + Delta + Trend
@@ -42,17 +42,17 @@ public class BollingerEJB {
         BollingerDTO bollinger;
 
         //Get the candles
-        candleList = config.getCandleColl()
+        candleList = configEjb.getCandleColl()
                 .find(and(eq("calcCandle", true), eq("bollinger.calcBollinger", false)))
                 .into(new ArrayList<>());
 
         for (CandleDTO candle : candleList) {
             bollinger = candle.getBollinger();
             bollinger.setCalcBollinger(true);
-            bollinger.setSma(this.calcSMA(candle));
             bollinger.setStDev(this.calcStDev(candle));
-            bollinger.setBollingerUpper(bollinger.getSma().add(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));
-            bollinger.setBollingerLower(bollinger.getSma().subtract(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));
+
+            bollinger.setBollingerUpper(candle.getMovingAverage().getSma20().add(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));
+            bollinger.setBollingerLower(candle.getMovingAverage().getSma20().subtract(bollinger.getStDev().multiply(BigDecimal.valueOf(2))));
 
             bollinger.setBollingerBandWidth(bollinger.getBollingerUpper().subtract(bollinger.getBollingerLower()));
 
@@ -67,7 +67,7 @@ public class BollingerEJB {
             bollinger.setBollingerBuy(bollinger.getTradeLower().compareTo(BigDecimal.ZERO) != 0);
 
             //Save candle
-            config.getCandleColl().replaceOne(eq("_id", candle.getId()), candle);
+            configEjb.getCandleColl().replaceOne(eq("_id", candle.getId()), candle);
 
         }
     }
@@ -101,7 +101,7 @@ public class BollingerEJB {
         int i = 0;
 
         //Get the candles
-        List<CandleDTO> candleList = config.getCandleColl()
+        List<CandleDTO> candleList = configEjb.getCandleColl()
                 .find(lte("startDate", dto.getStartDate()))
                 .sort(Sorts.descending("startDate"))
                 .limit(20)
@@ -109,7 +109,7 @@ public class BollingerEJB {
 
         for (CandleDTO candle : candleList) {
             //Standard Deviation
-            stdev = stdev.add(candle.getClose().subtract(dto.getBollinger().getSma()).pow(2));
+            stdev = stdev.add(candle.getClose().subtract(dto.getMovingAverage().getSma20()).pow(2));
             i++;
         }
 
@@ -120,45 +120,17 @@ public class BollingerEJB {
     }
 
     /**
-     * Calculate Standard Moving Average
+     * Check Bollinger calculation - Trade upper + lower in the same row -
+     * Upper, Lower calculation error
      *
-     * @param dto
      * @return
-     */
-    private BigDecimal calcSMA(CandleDTO dto) {
-        BigDecimal close = BigDecimal.ZERO;
-        int i = 0;
-
-        //Get the candles
-        List<CandleDTO> candleList = config.getCandleColl()
-                .find(lte("startDate", dto.getStartDate()))
-                .sort(Sorts.descending("startDate"))
-                .limit(20)
-                .into(new ArrayList<>());
-
-        for (CandleDTO candle : candleList) {
-            close = close.add(candle.getClose());
-            i++;
-        }
-
-        if (i > 0) {
-            return close.divide(BigDecimal.valueOf(i), 5, RoundingMode.HALF_UP);
-        }
-        return BigDecimal.ZERO;
-    }
-
-    /**
-     * Check Bollinger calculation
-     * - Trade upper + lower in the same row
-     * - Upper, Lower calculation error
-     * @return 
      */
     public ArrayList<String> chkBollinger() {
         ArrayList<String> list = new ArrayList<>();
         List<CandleDTO> candleList;
 
         //Trade upper + lower in the same row
-        candleList = config.getCandleColl()
+        candleList = configEjb.getCandleColl()
                 .find(
                         and(
                                 ne("bollinger.tradeUpper", 0),
@@ -172,7 +144,7 @@ public class BollingerEJB {
         }
 
         //Upper, Lower calculation error
-        candleList = config.getCandleColl()
+        candleList = configEjb.getCandleColl()
                 .find()
                 .into(new ArrayList<>());
 

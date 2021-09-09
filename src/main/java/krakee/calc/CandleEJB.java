@@ -46,6 +46,8 @@ public class CandleEJB {
     TradeEJB tradeEjb;
     @EJB
     RsiEJB rsiEjb;
+    @EJB
+    MovingAverageEJB maEjb;
 
     private int candleSize = 5000;
 
@@ -166,6 +168,7 @@ public class CandleEJB {
         this.calcDateList();
         this.calcCandle();
         this.deleteEmptyCandles();
+        maEjb.calculateMovingAverage();
         bollingerEjb.calculateBollinger();
         rsiEjb.calculateRsi();
         configEjb.setRunCandle(true);

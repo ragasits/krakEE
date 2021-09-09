@@ -185,9 +185,6 @@
 
                     <p:panel header="Bollinger - 20">
                         <p:panelGrid columns="10">
-                            <p:outputLabel value="Simple Moving Average (Close20)" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.bollinger.sma}"/>
-
                             <p:outputLabel value="Standard Deviation" style="font-weight: bold"/>
                             <p:outputLabel value="#{candleDetailBean.detail.bollinger.stDev}"/>
 
@@ -214,7 +211,23 @@
                         </p:panelGrid>
                     </p:panel>
 
+                    <p:panel header="Moving averages">
+                        <p:panelGrid columns="10">
 
+                            <p:outputLabel value="SMA 20" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.movingAverage.sma20}"/>
+
+                            <p:outputLabel value="EMA 9" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.movingAverage.ema9}"/>
+
+                            <p:outputLabel value="EMA 12" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.movingAverage.ema12}"/>
+
+                            <p:outputLabel value="EMA 26" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.movingAverage.ema26}"/>
+
+                        </p:panelGrid>
+                    </p:panel>
                 </p:panel>
             </h:form>
         </f:view>                

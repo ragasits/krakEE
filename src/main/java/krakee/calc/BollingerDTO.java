@@ -15,8 +15,6 @@ import java.math.BigDecimal;
 public class BollingerDTO {
 
     private boolean calcBollinger = false;
-    //Single Moving Average
-    private BigDecimal sma = BigDecimal.ZERO;
 
     //Standard Deviation
     private BigDecimal stDev = BigDecimal.ZERO;
@@ -39,14 +37,6 @@ public class BollingerDTO {
 
     public void setCalcBollinger(boolean calcBollinger) {
         this.calcBollinger = calcBollinger;
-    }
-
-    public BigDecimal getSma() {
-        return sma;
-    }
-
-    public void setSma(BigDecimal sma) {
-        this.sma = sma;
     }
 
     public BigDecimal getStDev() {

@@ -56,14 +56,17 @@ public class AllCandleInputEJB extends AbstractInput {
                 candle.getVolume().floatValue(),
                 candle.getVolumeBuy().floatValue(),
                 candle.getVolumeSell().floatValue(),
-                boll.getSma().floatValue(),
                 boll.getStDev().floatValue(),
                 boll.getBollingerUpper().floatValue(),
                 boll.getBollingerLower().floatValue(),
                 boll.getBollingerBandWidth().floatValue(),
                 boll.getTradeUpper().floatValue(),
                 boll.getTradeLower().floatValue(),
-                boll.getTradeUpper().floatValue()
+                boll.getTradeUpper().floatValue(),
+                candle.getMovingAverage().getSma20().floatValue(),
+                candle.getMovingAverage().getEma9().floatValue(),
+                candle.getMovingAverage().getEma12().floatValue(),
+                candle.getMovingAverage().getEma26().floatValue()
         ));
     }
 
@@ -77,8 +80,8 @@ public class AllCandleInputEJB extends AbstractInput {
         return new ArrayList<>(Arrays.asList(
                 "count", "countBuy", "countSell", "open", "low", "high", "close",
                 "total", "totalBuy", "totalSell", "volume", "volumeBuy", "volumeSell",
-                "sma", "stDev", "bollingerUpper", "bollingerLower", "bollingerBandWith", 
-                "tradeUpper", "tradeLower", "tradeUpper"
+                "stDev", "bollingerUpper", "bollingerLower", "bollingerBandWith",
+                "tradeUpper", "tradeLower", "tradeUpper", "sma20", "ema9", "ema12", "ema26"
         ));
     }
 }

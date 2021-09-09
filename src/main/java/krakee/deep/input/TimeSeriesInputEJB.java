@@ -60,13 +60,11 @@ public class TimeSeriesInputEJB extends AbstractInput {
             outList.add(input.getLow().floatValue());
             outList.add(input.getHigh().floatValue());
             outList.add(input.getClose().floatValue());
-            outList.add(input.getBollinger().getSma().floatValue());
             outList.add(input.getBollinger().getBollingerUpper().floatValue());
             outList.add(input.getBollinger().getBollingerLower().floatValue());
         }
-        
-        //System.out.println(dto.getCandle().getStartDate()+": "+ outList.toString());
 
+        //System.out.println(dto.getCandle().getStartDate()+": "+ outList.toString());
         return outList;
     }
 
@@ -84,7 +82,6 @@ public class TimeSeriesInputEJB extends AbstractInput {
             cols.add("low_" + i);
             cols.add("high_" + i);
             cols.add("close_" + i);
-            cols.add("sma_" + i);
             cols.add("bollingerUpper_" + i);
             cols.add("bollingerLower_" + i);
         }
