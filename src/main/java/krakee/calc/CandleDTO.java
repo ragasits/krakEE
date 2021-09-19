@@ -33,6 +33,7 @@ public class CandleDTO {
     private MovingAverageDTO movingAverage;
     private BollingerDTO bollinger;
     private RsiDTO rsi;
+    private MacdDTO macd;
 
     public CandleDTO() {
     }
@@ -58,6 +59,7 @@ public class CandleDTO {
         this.bollinger = new BollingerDTO();
         this.rsi = new RsiDTO();
         this.movingAverage = new MovingAverageDTO();
+        this.macd = new MacdDTO();
     }
 
     /**
@@ -249,6 +251,14 @@ public class CandleDTO {
 
     public void setMovingAverage(MovingAverageDTO movingAverage) {
         this.movingAverage = movingAverage;
+    }
+
+    public MacdDTO getMacd() {
+        return macd;
+    }
+
+    public void setMacd(MacdDTO macd) {
+        this.macd = macd;
     }
     
     

@@ -48,6 +48,8 @@ public class CandleEJB {
     RsiEJB rsiEjb;
     @EJB
     MovingAverageEJB maEjb;
+    @EJB
+    MacdEJB macdEjb;
 
     private int candleSize = 5000;
 
@@ -171,6 +173,7 @@ public class CandleEJB {
         maEjb.calculateMovingAverage();
         bollingerEjb.calculateBollinger();
         rsiEjb.calculateRsi();
+        macdEjb.calculateMacd();
         configEjb.setRunCandle(true);
     }
 

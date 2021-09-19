@@ -42,7 +42,9 @@ public class MovingAverageEJB {
     static final Logger LOGGER = Logger.getLogger(MovingAverageEJB.class.getCanonicalName());
 
     @EJB
-    ConfigEJB configEjb;
+    private ConfigEJB configEjb;
+
+    private final MathContext mc = new MathContext(5, RoundingMode.HALF_UP);
 
     /**
      * Calculate Moving Average values
@@ -54,17 +56,18 @@ public class MovingAverageEJB {
         //Get the candles
         candleList = configEjb.getCandleColl()
                 .find(and(eq("calcCandle", true), eq("movingAverage.calcMovingAverage", false)))
+                .sort(Sorts.ascending("startDate"))
                 .into(new ArrayList<>());
 
         for (CandleDTO candle : candleList) {
             ma = candle.getMovingAverage();
             ma.setCalcMovingAverage(true);
 
-            ma.setSma20(this.calcSMA(candle, 20));
+            ma.setSma20(this.calcSMA(candle, 20, true));
 
-            ma.setEma9(this.calcEMA(candle, 9));
-            ma.setEma12(this.calcEMA(candle, 12));
-            ma.setEma26(this.calcEMA(candle, 26));
+            ma.setEma9(this.calcEMA(candle, 9, true));
+            ma.setEma12(this.calcEMA(candle, 12, true));
+            ma.setEma26(this.calcEMA(candle, 26, true));
 
             //Save candle
             configEjb.getCandleColl().replaceOne(eq("_id", candle.getId()), candle);
@@ -79,8 +82,8 @@ public class MovingAverageEJB {
      * @param limit
      * @return
      */
-    private BigDecimal calcSMA(CandleDTO dto, int limit) {
-        BigDecimal close = BigDecimal.ZERO;
+    private BigDecimal calcSMA(CandleDTO dto, int limit, boolean isClose) {
+        BigDecimal sum = BigDecimal.ZERO;
         int i = 0;
 
         //Get the candles
@@ -91,12 +94,20 @@ public class MovingAverageEJB {
                 .into(new ArrayList<>());
 
         for (CandleDTO candle : candleList) {
-            close = close.add(candle.getClose());
+
+            if (isClose) {
+                //SUM from the Candle.Close
+                sum = sum.add(candle.getClose());
+            } else {
+                //SUM from the MAXD Line
+                sum = sum.add(candle.getMacd().getMacdLine());
+            }
+
             i++;
         }
 
         if (i > 0) {
-            return close.divide(BigDecimal.valueOf(i), 5, RoundingMode.HALF_UP);
+            return sum.divide(BigDecimal.valueOf(i), mc);
         }
         return BigDecimal.ZERO;
     }
@@ -106,10 +117,10 @@ public class MovingAverageEJB {
      *
      * @param dto
      * @param limit
+     * @param isClose
      * @return
      */
-    private BigDecimal calcEMA(CandleDTO dto, int limit) {
-        MathContext mc = new MathContext(5, RoundingMode.HALF_UP);
+    public BigDecimal calcEMA(CandleDTO dto, int limit, boolean isClose) {
 
         List<CandleDTO> candleList = configEjb.getCandleColl()
                 .find(lte("startDate", dto.getStartDate()))
@@ -125,20 +136,61 @@ public class MovingAverageEJB {
                     .sort(Sorts.descending("startDate"))
                     .first();
 
-            if (prev.getMovingAverage().getEMA(limit).equals(BigDecimal.ZERO)) {
-                //First element
-                return this.calcSMA(dto, limit);
+            if (isClose) {
+                //from Candle clsoe
+                return this.calcEMAClose(dto, prev, limit, isClose);
             } else {
-                //Next elements
-                BigDecimal smooth = BigDecimal.valueOf(2).divide(
-                        BigDecimal.valueOf(limit).add(BigDecimal.ONE), mc);
-                BigDecimal prevEma = prev.getMovingAverage().getEMA(limit);
-
-                return smooth.multiply(
-                        dto.getClose().subtract(prevEma), mc).add(prevEma);
+                //from MACD Line
+                return this.calcEMAMacd(dto, prev, limit, isClose);
             }
-        }
 
+        }
         return BigDecimal.ZERO;
+    }
+
+    /**
+     * Sub calculation from the Candle.Close
+     * @param dto
+     * @param prev
+     * @param limit
+     * @param isClose
+     * @return 
+     */
+    private BigDecimal calcEMAClose(CandleDTO dto, CandleDTO prev, int limit, boolean isClose) {
+        if (prev.getMovingAverage().getEMA(limit).equals(BigDecimal.ZERO)) {
+            //First element
+            return this.calcSMA(dto, limit, isClose);
+        } else {
+            //Next elements
+            BigDecimal smooth = BigDecimal.valueOf(2).divide(
+                    BigDecimal.valueOf(limit).add(BigDecimal.ONE), mc);
+            BigDecimal prevEma = prev.getMovingAverage().getEMA(limit);
+
+            return smooth.multiply(
+                    dto.getClose().subtract(prevEma), mc).add(prevEma, mc);
+        }
+    }
+
+    /**
+     * Sub calculation from the MACD.MACDLine
+     * @param dto
+     * @param prev
+     * @param limit
+     * @param isClose
+     * @return 
+     */
+    private BigDecimal calcEMAMacd(CandleDTO dto, CandleDTO prev, int limit, boolean isClose) {
+        if (prev.getMacd().getSignalLine().equals(BigDecimal.ZERO)) {
+            //First element
+            return this.calcSMA(dto, limit, isClose);
+        } else {
+            //Next elements
+            BigDecimal smooth = BigDecimal.valueOf(2).divide(
+                    BigDecimal.valueOf(limit).add(BigDecimal.ONE), mc);
+            BigDecimal prevEma = prev.getMacd().getSignalLine();
+
+            return smooth.multiply(
+                    dto.getMacd().getMacdLine().subtract(prevEma), mc).add(prevEma, mc);
+        }
     }
 }

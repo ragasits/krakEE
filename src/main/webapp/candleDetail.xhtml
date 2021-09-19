@@ -74,11 +74,17 @@
                         <p:outputLabel value="CalcCandle:"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.calcCandle}"/>
 
+                        <p:outputLabel value="CalcMovingAverage"/>
+                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.movingAverage.calcMovingAverage}"/> 
+
                         <p:outputLabel value="CalcBollinger:"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.bollinger.calcBollinger}"/>  
 
                         <p:outputLabel value="CalcRSI:"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.rsi.calcRsi}"/>  
+
+                        <p:outputLabel value="CalcMacd"/>
+                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.macd.calcMacd}"/>  
                     </p:panelGrid>
 
                     <p:panelGrid columns="2" columnClasses="alignTop,alignTop">
@@ -151,6 +157,19 @@
                         </p:panel>
 
                     </p:panelGrid>
+
+                    <p:panel header="MACD (Moving Average Convergence/Divergence Oscillator)">
+                        <p:panelGrid columns="18">
+                            <p:outputLabel value="MACD Line:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.macd.macdLine}"/>
+
+                            <p:outputLabel value="Signal Line:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.macd.signalLine}"/>
+
+                            <p:outputLabel value="MACD Histogram:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.macd.macdHistogram}"/>                                                
+                        </p:panelGrid>
+                    </p:panel>
 
                     <p:panel header="RSI - 14">
                         <p:panelGrid columns="18">
