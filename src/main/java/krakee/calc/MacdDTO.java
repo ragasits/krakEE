@@ -29,6 +29,10 @@ public class MacdDTO {
     private BigDecimal macdLine = BigDecimal.ZERO;
     private BigDecimal signalLine = BigDecimal.ZERO;
     private BigDecimal macdHistogram = BigDecimal.ZERO;
+    
+    private boolean bullMarket = false;
+    private boolean bearMarket = false; 
+    private boolean crossover = false;
 
     public boolean isCalcMacd() {
         return calcMacd;
@@ -60,5 +64,32 @@ public class MacdDTO {
 
     public void setMacdHistogram(BigDecimal macdHistogram) {
         this.macdHistogram = macdHistogram;
-    }     
+    }  
+
+    public boolean isBullMarket() {
+        return bullMarket;
+    }
+
+    public void setBullMarket(boolean bullMarket) {
+        this.bullMarket = bullMarket;
+    }
+
+    public boolean isBearMarket() {
+        return bearMarket;
+    }
+
+    public void setBearMarket(boolean bearMarket) {
+        this.bearMarket = bearMarket;
+    }
+
+    public boolean isCrossover() {
+        return crossover;
+    }
+
+    public void setCrossover(boolean crossover) {
+        this.crossover = crossover;
+    }
+
+    
+    
 }

@@ -44,8 +44,6 @@ public class MovingAverageEJB {
     @EJB
     private ConfigEJB configEjb;
 
-    private final MathContext mc = new MathContext(5, RoundingMode.HALF_UP);
-
     /**
      * Calculate Moving Average values
      */
@@ -63,11 +61,11 @@ public class MovingAverageEJB {
             ma = candle.getMovingAverage();
             ma.setCalcMovingAverage(true);
 
-            ma.setSma20(this.calcSMA(candle, 20, true));
+            ma.setSma20(this.calcSMA(candle, 20, true).setScale(5, RoundingMode.HALF_UP));
 
-            ma.setEma9(this.calcEMA(candle, 9, true));
-            ma.setEma12(this.calcEMA(candle, 12, true));
-            ma.setEma26(this.calcEMA(candle, 26, true));
+            ma.setEma9(this.calcEMA(candle, 9, true).setScale(5, RoundingMode.HALF_UP));
+            ma.setEma12(this.calcEMA(candle, 12, true).setScale(5, RoundingMode.HALF_UP));
+            ma.setEma26(this.calcEMA(candle, 26, true).setScale(5, RoundingMode.HALF_UP));
 
             //Save candle
             configEjb.getCandleColl().replaceOne(eq("_id", candle.getId()), candle);
@@ -85,7 +83,7 @@ public class MovingAverageEJB {
     private BigDecimal calcSMA(CandleDTO dto, int limit, boolean isClose) {
         BigDecimal sum = BigDecimal.ZERO;
         int i = 0;
-
+        
         //Get the candles
         List<CandleDTO> candleList = configEjb.getCandleColl()
                 .find(lte("startDate", dto.getStartDate()))
@@ -107,7 +105,7 @@ public class MovingAverageEJB {
         }
 
         if (i > 0) {
-            return sum.divide(BigDecimal.valueOf(i), mc);
+            return sum.divide(BigDecimal.valueOf(i), RoundingMode.HALF_UP);
         }
         return BigDecimal.ZERO;
     }
@@ -163,11 +161,12 @@ public class MovingAverageEJB {
         } else {
             //Next elements
             BigDecimal smooth = BigDecimal.valueOf(2).divide(
-                    BigDecimal.valueOf(limit).add(BigDecimal.ONE), mc);
+                    BigDecimal.valueOf(limit).add(BigDecimal.ONE),  MathContext.DECIMAL128);
+            
             BigDecimal prevEma = prev.getMovingAverage().getEMA(limit);
 
             return smooth.multiply(
-                    dto.getClose().subtract(prevEma), mc).add(prevEma, mc);
+                    dto.getClose().subtract(prevEma)).add(prevEma);
         }
     }
 
@@ -186,11 +185,11 @@ public class MovingAverageEJB {
         } else {
             //Next elements
             BigDecimal smooth = BigDecimal.valueOf(2).divide(
-                    BigDecimal.valueOf(limit).add(BigDecimal.ONE), mc);
+                    BigDecimal.valueOf(limit).add(BigDecimal.ONE));
             BigDecimal prevEma = prev.getMacd().getSignalLine();
 
             return smooth.multiply(
-                    dto.getMacd().getMacdLine().subtract(prevEma), mc).add(prevEma, mc);
+                    dto.getMacd().getMacdLine().subtract(prevEma)).add(prevEma);
         }
     }
 }

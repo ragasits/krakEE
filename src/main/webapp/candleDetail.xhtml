@@ -158,7 +158,7 @@
 
                     </p:panelGrid>
 
-                    <p:panel header="MACD (Moving Average Convergence/Divergence Oscillator)">
+                    <p:panel header="MACD 12 26 close 9 EMA EMA">
                         <p:panelGrid columns="18">
                             <p:outputLabel value="MACD Line:" style="font-weight: bold"/>
                             <p:outputLabel value="#{candleDetailBean.detail.macd.macdLine}"/>
@@ -167,7 +167,16 @@
                             <p:outputLabel value="#{candleDetailBean.detail.macd.signalLine}"/>
 
                             <p:outputLabel value="MACD Histogram:" style="font-weight: bold"/>
-                            <p:outputLabel value="#{candleDetailBean.detail.macd.macdHistogram}"/>                                                
+                            <p:outputLabel value="#{candleDetailBean.detail.macd.macdHistogram}"/>   
+
+                            <p:outputLabel value="Bear market:" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.macd.bearMarket}"/>  
+
+                            <p:outputLabel value="Bull marker" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.macd.bullMarket}"/> 
+
+                            <p:outputLabel value="Crossover" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.macd.crossover}"/> 
                         </p:panelGrid>
                     </p:panel>
 

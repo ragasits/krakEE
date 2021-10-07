@@ -20,8 +20,9 @@ public class Common {
 
     /**
      * Convert ArrayList<Float> to float[]
+     *
      * @param list
-     * @return 
+     * @return
      */
     public static float[] convert(ArrayList<Float> list) {
         float[] out = new float[list.size()];

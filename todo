@@ -1,4 +1,4 @@
-+ Add MACD indicator
++ BUG: FIX rounding and scale errors (EMA, SMA, MACD)
 
 - Try reinforcement learning
 
