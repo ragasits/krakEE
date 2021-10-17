@@ -25,7 +25,6 @@ public enum InputType {
     AllCandle,
     TimeSeries,
     Bollinger,
-    BollingerAll,
-    BollingerRSI,
+    AllFlag,
     Iris
 }

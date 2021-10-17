@@ -66,7 +66,17 @@ public class AllCandleInputEJB extends AbstractInput {
                 candle.getMovingAverage().getSma20().floatValue(),
                 candle.getMovingAverage().getEma9().floatValue(),
                 candle.getMovingAverage().getEma12().floatValue(),
-                candle.getMovingAverage().getEma26().floatValue()
+                candle.getMovingAverage().getEma26().floatValue(),
+                candle.getMacd().getMacdLine().floatValue(),
+                candle.getMacd().getSignalLine().floatValue(),
+                candle.getMacd().getMacdHistogram().floatValue(),
+                candle.getRsi().getChange().floatValue(),
+                candle.getRsi().getGain().floatValue(),
+                candle.getRsi().getLoss().floatValue(),
+                candle.getRsi().getAvgGain().floatValue(),
+                candle.getRsi().getAvgLoss().floatValue(),
+                candle.getRsi().getRs().floatValue(),
+                candle.getRsi().getRsi().floatValue()
         ));
     }
 
@@ -81,7 +91,9 @@ public class AllCandleInputEJB extends AbstractInput {
                 "count", "countBuy", "countSell", "open", "low", "high", "close",
                 "total", "totalBuy", "totalSell", "volume", "volumeBuy", "volumeSell",
                 "stDev", "bollingerUpper", "bollingerLower", "bollingerBandWith",
-                "tradeUpper", "tradeLower", "tradeUpper", "sma20", "ema9", "ema12", "ema26"
+                "tradeUpper", "tradeLower", "tradeUpper", "sma20", "ema9", "ema12", "ema26",
+                "macdLine", "signalLine", "macdHistogram",
+                "change", "gain", "loss", "avgGain", "avgLoss", "rs", "rsi"
         ));
     }
 }

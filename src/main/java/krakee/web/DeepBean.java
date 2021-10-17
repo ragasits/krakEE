@@ -89,34 +89,39 @@ public class DeepBean implements Serializable {
     public String onShowDataset(Integer source) {
         if (this.detail != null) {
             if (null != source) {
-                TabularDataSet dataSet;
-                TabularDataSet[] trainTestSet;
+                try {
+                    TabularDataSet dataSet;
+                    TabularDataSet[] trainTestSet;
 
-                switch (source) {
-                    case 1:
-                        //Input
-                        datasetBean.setDataset(deepEjb.fillDataset(detail));
-                        break;
-                    case 2:
-                        //Normalized
-                        datasetBean.setDataset(deepEjb.normalize(detail, deepEjb.fillDataset(detail)));
-                        break;
-                    case 3:
-                        //Normalized + train
-                        dataSet = deepEjb.fillDataset(detail);
-                        dataSet = deepEjb.normalize(detail, dataSet);
-                        trainTestSet = (TabularDataSet[]) dataSet.split(this.detail.getLearnTestRatio(), 1 - this.detail.getLearnTestRatio());
-                        datasetBean.setDataset(trainTestSet[0]);
-                        break;
-                    case 4:
-                        //Normalized + test
-                        dataSet = deepEjb.fillDataset(detail);
-                        dataSet = deepEjb.normalize(detail, dataSet);
-                        trainTestSet = (TabularDataSet[]) dataSet.split(this.detail.getLearnTestRatio(), 1 - this.detail.getLearnTestRatio());
-                        datasetBean.setDataset(trainTestSet[1]);
-                        break;
-                    default:
-                        break;
+                    switch (source) {
+                        case 1:
+                            //Input
+                            datasetBean.setDataset(deepEjb.fillDataset(detail));
+                            break;
+                        case 2:
+                            //Normalized
+                            datasetBean.setDataset(deepEjb.normalize(detail, deepEjb.fillDataset(detail)));
+                            break;
+                        case 3:
+                            //Normalized + train
+                            dataSet = deepEjb.fillDataset(detail);
+                            dataSet = deepEjb.normalize(detail, dataSet);
+                            trainTestSet = (TabularDataSet[]) dataSet.split(this.detail.getLearnTestRatio(), 1 - this.detail.getLearnTestRatio());
+                            datasetBean.setDataset(trainTestSet[0]);
+                            break;
+                        case 4:
+                            //Normalized + test
+                            dataSet = deepEjb.fillDataset(detail);
+                            dataSet = deepEjb.normalize(detail, dataSet);
+                            trainTestSet = (TabularDataSet[]) dataSet.split(this.detail.getLearnTestRatio(), 1 - this.detail.getLearnTestRatio());
+                            datasetBean.setDataset(trainTestSet[1]);
+                            break;
+                        default:
+                            break;
+                    }
+                } catch (MyException ex) {
+                    this.addMsg(ex.getMessage());
+                    return null;
                 }
             }
 

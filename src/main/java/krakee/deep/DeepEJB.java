@@ -40,9 +40,8 @@ import javax.visrec.ml.eval.EvaluationMetrics;
 import krakee.ConfigEJB;
 import krakee.MyException;
 import krakee.deep.input.AllCandleInputEJB;
-import krakee.deep.input.BollingerAllInputEJB;
 import krakee.deep.input.BollingerInputEJB;
-import krakee.deep.input.BollingerRsiInputEJB;
+import krakee.deep.input.AllFlagInputEJB;
 import krakee.deep.input.IrisInputEJB;
 import krakee.deep.input.TimeSeriesInputEJB;
 import krakee.deep.input.TimeSeriesNormalizer;
@@ -69,9 +68,7 @@ public class DeepEJB {
     @EJB
     private BollingerInputEJB bollingerInputEJB;
     @EJB
-    private BollingerAllInputEJB bollingerAllInputEJB;
-    @EJB
-    private BollingerRsiInputEJB bollingerRsiInputEJB;
+    private AllFlagInputEJB allFlagInputEJB;
     @EJB
     private IrisInputEJB irisInputEJB;
 
@@ -115,8 +112,9 @@ public class DeepEJB {
      *
      * @param dto
      * @return
+     * @throws krakee.MyException
      */
-    public TabularDataSet fillDataset(DeepDTO dto) {
+    public TabularDataSet fillDataset(DeepDTO dto) throws MyException {
 
         switch (InputType.valueOf(dto.getInputType())) {
             case AllCandle:
@@ -125,14 +123,12 @@ public class DeepEJB {
                 return timeSeriesInputEjb.fillDataset(dto);
             case Bollinger:
                 return bollingerInputEJB.fillDataset(dto);
-            case BollingerAll:
-                return bollingerAllInputEJB.fillDataset(dto);
-            case BollingerRSI:
-                return bollingerRsiInputEJB.fillDataset(dto);
+            case AllFlag:
+                return allFlagInputEJB.fillDataset(dto);
             case Iris:
                 return irisInputEJB.fillDataset(dto);
             default:
-                return null;
+                throw new MyException("Intenal error: Wrong InputType");
         }
     }
 

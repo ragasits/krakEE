@@ -27,10 +27,11 @@ import krakee.deep.DeepInputDTO;
 
 /**
  * Bollinger + RSI input
+ *
  * @author rgt
  */
 @Stateless
-public class BollingerRsiInputEJB extends AbstractInput {
+public class AllFlagInputEJB extends AbstractInput {
 
     private final static short COUNT = 20;
 
@@ -52,6 +53,9 @@ public class BollingerRsiInputEJB extends AbstractInput {
             outList.add(candle.getBollinger().isBollingerSell() ? 1f : 0f);
             outList.add(candle.getRsi().isRsiBuy() ? 1f : 0f);
             outList.add(candle.getRsi().isRsiSell() ? 1f : 0f);
+            outList.add(candle.getMacd().isBearMarket() ? 1f : 0f);
+            outList.add(candle.getMacd().isBullMarket() ? 1f : 0f);
+            outList.add(candle.getMacd().isCrossover() ? 1f : 0f);
         }
 
         return outList;
@@ -66,6 +70,9 @@ public class BollingerRsiInputEJB extends AbstractInput {
             cols.add("bollingerSell_" + i);
             cols.add("rsiBuy_" + i);
             cols.add("rsiSell_" + i);
+            cols.add("macdBullMarket_" + i);
+            cols.add("macdBearMarket_" + i);
+            cols.add("macdCrossover_" + i);
         }
 
         return cols;

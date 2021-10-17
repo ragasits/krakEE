@@ -1,12 +1,15 @@
-+ BUG: FIX rounding and scale errors (EMA, SMA, MACD)
++ Migrate to deepnetts 1.13.2
++ DEEP:Add new fields to inputs
++ Rename BollingerRsiInput to AllFlagInput
++ BUG: Empty inputs
 
-- Try reinforcement learning
+- deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values
+- Try reinforcement learning 
 
 Future:
 --------
-- Migrate to deepnetts 1.13.1
+- 
 - Migrate to JakartaEE 9
-- Self learning with Neural networks
 - Optimize mongodb
 - Candle1d (one day) + Simulation
 
@@ -16,13 +19,3 @@ Optional:
 - EJB timeout exception - Move to Bath processing?
 - Metrics: Prometheus + Grafana
 - Use Primefaces icons (buttons)
-
-Caused by: java.lang.ArrayIndexOutOfBoundsException: 1
-	at deepnetts.eval.ConfusionMatrix.inc(ConfusionMatrix.java:98)
-	at deepnetts.eval.ClassifierEvaluator.processResult(ClassifierEvaluator.java:181)
-	at deepnetts.eval.ClassifierEvaluator.evaluate(ClassifierEvaluator.java:101)
-	at deepnetts.eval.ClassifierEvaluator.evaluate(ClassifierEvaluator.java:39)
-	at deepnetts.net.train.BackpropagationTrainer.calculateAccuracy(BackpropagationTrainer.java:635)
-	at deepnetts.net.train.BackpropagationTrainer.train(BackpropagationTrainer.java:314)
-	at deepnetts.net.NeuralNetwork.train(NeuralNetwork.java:133)
-	at krakee.deep.DeepEJB.learnDeep(DeepEJB.java:187)
