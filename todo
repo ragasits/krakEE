@@ -1,14 +1,10 @@
-+ Migrate to deepnetts 1.13.2
-+ DEEP:Add new fields to inputs
-+ Rename BollingerRsiInput to AllFlagInput
-+ BUG: Empty inputs
++ Learn: Link row to candleDetail page
 
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values
 - Try reinforcement learning 
 
 Future:
 --------
-- 
 - Migrate to JakartaEE 9
 - Optimize mongodb
 - Candle1d (one day) + Simulation

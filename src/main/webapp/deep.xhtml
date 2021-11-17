@@ -45,9 +45,6 @@
                         <p:commandButton value="Learn"  id="learnBtn" 
                                          action="#{deepBean.onLearn()}" update="panel"/>
 
-                        <p:commandButton value="+Layer"  id="addLayerBtn" process="@this"
-                                         action="#{deepBean.onAddLayer()}" update="panel"/>
-
                     </p:panelGrid>
                 </p:panel>   
 
@@ -145,7 +142,7 @@
                                 <p:inputNumber value="#{deepBean.detail.trainerMaxError}" size="10"/>
 
                                 <p:outputLabel value="LearningRate:" style="font-weight: bold" />
-                                <p:inputNumber value="#{deepBean.detail.trainerLearningRate}"/>
+                                <p:inputNumber value="#{deepBean.detail.trainerLearningRate}" decimalPlaces="4"/>
 
                                 <p:outputLabel value="Momentum:" style="font-weight: bold" />
                                 <p:inputNumber value="#{deepBean.detail.trainerMomentum}"  size="10"/>
@@ -162,7 +159,10 @@
                     </p:panel>
 
                     <p:panel>
-                        <p:panelGrid columns="6" >
+                        <p:panelGrid columns="8" >
+                            <p:commandButton value="+Layer"  id="addLayerBtn" process="@this"
+                                             action="#{deepBean.onAddLayer()}" update="panel"/>                            
+
                             <p:outputLabel value="Output Activation:" style="font-weight: bold" />
                             <p:selectOneMenu value="#{deepBean.detail.outputActivationType}">
                                 <f:selectItems value="#{deepBean.detail.outputActivationTypes}"/>

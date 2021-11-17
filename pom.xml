@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.3.2</version>
+            <version>4.4.0</version>
             <type>jar</type>
         </dependency>
         
@@ -47,16 +47,16 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>5.2021.7</version.payara>
+        <version.payara>5.2021.9</version.payara>
     </properties>
     
     <reporting>
         <plugins>
             <plugin>
-                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.2.3:spotbugs -->
+                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.4.2.2:spotbugs -->
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.4.1</version>
+                <version>4.4.2.2</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
                     <xmlOutputDirectory>target/site</xmlOutputDirectory>

@@ -25,7 +25,7 @@
                         </p:column>
 
                         <p:column headerText="startDate">
-                            <p:outputLabel value="#{item.startDate}"/>
+                            <p:commandLink value="#{item.startDate}" action="#{learnBean.showDetail(item)}"/>
                         </p:column>
 
                         <p:column headerText="trade">

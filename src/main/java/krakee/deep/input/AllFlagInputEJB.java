@@ -33,7 +33,7 @@ import krakee.deep.DeepInputDTO;
 @Stateless
 public class AllFlagInputEJB extends AbstractInput {
 
-    private final static short COUNT = 20;
+    private final static short COUNT = 5;
 
     @EJB
     private ConfigEJB config;

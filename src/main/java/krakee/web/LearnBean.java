@@ -9,7 +9,10 @@ import java.io.Serializable;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
+import krakee.calc.CandleDTO;
+import krakee.calc.CandleEJB;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 
@@ -26,6 +29,11 @@ public class LearnBean implements Serializable {
 
     @EJB
     LearnEJB learn;
+    @EJB
+    CandleEJB candle;
+
+    @Inject
+    CandleDetailBean candleBean;
 
     /**
      * Get all Learn
@@ -35,12 +43,31 @@ public class LearnBean implements Serializable {
     public List<LearnDTO> getLearnList() {
         return learn.get();
     }
-    
+
     /**
      * Get Names (Distinct)
+     *
+     * @return
+     */
+    public List<String> getLearnNameList() {
+        return learn.getNames();
+    }
+
+    /**
+     * Link to candleDetail
+     * @param learn
      * @return 
      */
-    public List<String> getLearnNameList(){
-        return learn.getNames();
+    public String showDetail(LearnDTO learn) {
+
+        if (learn != null) {
+            candleBean.setSelectedDate(learn.getStartDate());
+            
+            CandleDTO dto = candle.get(learn.getStartDate());
+            candleBean.setSelectedIdHexa(dto.getIdHexa());
+            
+            return "candleDetail?faces-redirect=true";
+        }
+        return null;
     }
 }
