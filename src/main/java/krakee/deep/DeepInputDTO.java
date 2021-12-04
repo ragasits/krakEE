@@ -27,15 +27,15 @@ import org.bson.types.ObjectId;
 public class DeepInputDTO {
 
     private ObjectId id;
-    private String deepName;
+    private String learnName;
     private CandleDTO candle;
     private String trade;
 
     public DeepInputDTO() {
     }
 
-    public DeepInputDTO(String deepName, CandleDTO candle, String trade) {
-        this.deepName = deepName;
+    public DeepInputDTO(String learnName, CandleDTO candle, String trade) {
+        this.learnName = learnName;
         this.candle = candle;
         this.trade = trade;
     }
@@ -64,12 +64,12 @@ public class DeepInputDTO {
         this.trade = trade;
     }
 
-    public String getDeepName() {
-        return deepName;
+    public String getLearnName() {
+        return learnName;
     }
 
-    public void setDeepName(String deepName) {
-        this.deepName = deepName;
+    public void setLearnName(String learnName) {
+        this.learnName = learnName;
     }
 
 }

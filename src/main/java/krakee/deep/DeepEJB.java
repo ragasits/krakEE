@@ -39,11 +39,6 @@ import javax.visrec.ml.data.preprocessing.Scaler;
 import javax.visrec.ml.eval.EvaluationMetrics;
 import krakee.ConfigEJB;
 import krakee.MyException;
-import krakee.deep.input.AllCandleInputEJB;
-import krakee.deep.input.BollingerInputEJB;
-import krakee.deep.input.AllFlagInputEJB;
-import krakee.deep.input.IrisInputEJB;
-import krakee.deep.input.TimeSeriesInputEJB;
 import krakee.deep.input.TimeSeriesNormalizer;
 
 /**
@@ -60,17 +55,8 @@ public class DeepEJB {
     @EJB
     private ConfigEJB configEjb;
     @EJB
-    private DeepInputEJB inputEjb;
-    @EJB
-    private AllCandleInputEJB allCandleInputEjb;
-    @EJB
-    private TimeSeriesInputEJB timeSeriesInputEjb;
-    @EJB
-    private BollingerInputEJB bollingerInputEJB;
-    @EJB
-    private AllFlagInputEJB allFlagInputEJB;
-    @EJB
-    private IrisInputEJB irisInputEJB;
+    private DeepRowEJB deepRowEjb;
+
 
     /**
      * Choose and execute normalization
@@ -108,28 +94,14 @@ public class DeepEJB {
     }
 
     /**
-     * Generate dataset from the selected input
+     * Generate TabularDataSet from the selected input
      *
      * @param dto
      * @return
      * @throws krakee.MyException
      */
     public TabularDataSet fillDataset(DeepDTO dto) throws MyException {
-
-        switch (InputType.valueOf(dto.getInputType())) {
-            case AllCandle:
-                return allCandleInputEjb.fillDataset(dto);
-            case TimeSeries:
-                return timeSeriesInputEjb.fillDataset(dto);
-            case Bollinger:
-                return bollingerInputEJB.fillDataset(dto);
-            case AllFlag:
-                return allFlagInputEJB.fillDataset(dto);
-            case Iris:
-                return irisInputEJB.fillDataset(dto);
-            default:
-                throw new MyException("Intenal error: Wrong InputType");
-        }
+        return deepRowEjb.fillDataset(dto.getLearnName(), dto.getInputType());
     }
 
     /**
@@ -328,8 +300,6 @@ public class DeepEJB {
      * @param dto
      */
     public void delete(DeepDTO dto) {
-        //Delete inputs
-        inputEjb.delete(dto);
         //Delete item
         configEjb.getDeepColl().deleteOne(eq("_id", dto.getId()));
     }

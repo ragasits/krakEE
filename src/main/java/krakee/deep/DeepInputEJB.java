@@ -26,7 +26,6 @@ import krakee.ConfigEJB;
 import krakee.MyException;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
-import krakee.deep.input.AllCandleInputEJB;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 
@@ -44,70 +43,63 @@ public class DeepInputEJB {
     CandleEJB candleEjb;
     @EJB
     ConfigEJB configEjb;
-    @EJB
-    AllCandleInputEJB allCandleEjb;
 
     /**
      * Get inputs filter by deepName
      *
-     * @param deepName
+     * @param learnName
      * @return
      */
-    public ArrayList<DeepInputDTO> get(String deepName) {
+    public ArrayList<DeepInputDTO> getByLearnName(String learnName) {
         return configEjb.getDeepInputColl()
-                .find(eq("deepName", deepName))
+                .find(eq("learnName", learnName))
                 .sort(Sorts.ascending("candle.startDate"))
                 .into(new ArrayList<>());
     }
 
     /**
-     * Create Dataset from the Learn data and store it in the Deep Input
-     * collection
+     * Delete inputs by deepName
      *
-     * @param deep
+     * @param learnName
+     */
+    public void delete(String learnName) {
+        configEjb.getDeepInputColl().deleteMany(eq("learnName", learnName));
+    }
+
+    /**
+     * Fill Input row from learn
+     *
+     * @param learnName
      * @throws MyException
      */
-    public void fillDataset(DeepDTO deep) throws MyException {
-        if (deep.getLearnName() == null || deep.getLearnName().isEmpty()) {
+    public void fillDeepInput(String learnName) throws MyException {
+        if (learnName == null || learnName.isEmpty()) {
             throw new MyException("Missing: learnname");
-        }
-        if (deep.getDeepName() == null || deep.getDeepName().isEmpty()) {
-            throw new MyException("Missing: deepname");
         }
 
         //Delete old inputs
-        this.delete(deep);
+        this.delete(learnName);
 
         ArrayList<DeepInputDTO> datasetList = new ArrayList<>();
 
         //Get Learning data
-        LearnDTO firstLearn = learnEjb.getFirst(deep.getLearnName());
-        LearnDTO lastLearn = learnEjb.getLast(deep.getLearnName());
+        LearnDTO firstLearn = learnEjb.getFirst(learnName);
+        LearnDTO lastLearn = learnEjb.getLast(learnName);
 
         //Get Candles
         List<CandleDTO> candleList = candleEjb.get(firstLearn.getStartDate(), lastLearn.getStartDate());
         for (CandleDTO candleDTO : candleList) {
-            LearnDTO learnDto = learnEjb.get(deep.getLearnName(), candleDTO.getStartDate());
+            LearnDTO learnDto = learnEjb.get(learnName, candleDTO.getStartDate());
 
             String trade = "";
             if (learnDto != null) {
                 trade = learnDto.getTrade();
             }
 
-            datasetList.add(new DeepInputDTO(deep.getDeepName(), candleDTO, trade));
+            datasetList.add(new DeepInputDTO(learnName, candleDTO, trade));
 
         }
-
         //Save inputs
         configEjb.getDeepInputColl().insertMany(datasetList);
-    }
-
-    /**
-     * Delete inputs by deepName
-     *
-     * @param deep
-     */
-    public void delete(DeepDTO deep) {
-        configEjb.getDeepInputColl().deleteMany(eq("deepName", deep.getDeepName()));
     }
 }

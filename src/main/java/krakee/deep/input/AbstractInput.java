@@ -16,13 +16,9 @@
  */
 package krakee.deep.input;
 
-import deepnetts.data.TabularDataSet;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import javax.ejb.EJB;
-import krakee.Common;
-import krakee.deep.DeepDTO;
 import krakee.deep.DeepInputDTO;
 import krakee.deep.DeepInputEJB;
 
@@ -104,114 +100,5 @@ public abstract class AbstractInput {
      * @return
      */
     public abstract ArrayList<String> inputColumnNameList();
-
-    /**
-     * Add item to Dataset
-     *
-     * @param dataSet
-     * @param inputList
-     * @param outputList
-     */
-    public void addDataset(TabularDataSet dataSet, ArrayList<Float> inputList, ArrayList<Float> outputList) {
-        dataSet.add(new TabularDataSet.Item(
-                Common.convert(inputList),
-                Common.convert(outputList)));
-    }
-
-    /**
-     * Create TabularDataSet
-     *
-     * @param deep
-     * @return
-     */
-    public TabularDataSet fillDataset(DeepDTO deep) {
-
-        deep.setNumInputs(this.inputColumnNameList().size());
-        deep.setNumOutputs(this.outputColumnNameList().size());
-        TabularDataSet dataSet = new TabularDataSet(deep.getNumInputs(), deep.getNumOutputs());
-
-        ArrayList<String> columns = new ArrayList<>();
-        columns.addAll(this.inputColumnNameList());
-        columns.addAll(this.outputColumnNameList());
-
-        dataSet.setColumnNames(columns.toArray(new String[0]));
-        deep.setColumnNames(columns);
-
-        ArrayList<DeepInputDTO> dtoList = inputEjb.get(deep.getDeepName());
-        ArrayList<String> uniqueList = new ArrayList<>();
-
-        int cntBuy = deep.getInputBuyLimit();
-        int cntSell = deep.getInputSellLimit();
-        int cntNone = deep.getInputNoneLimit();
-        boolean isLimit = true;
-
-        Iterator iterator = dtoList.iterator();
-        //for (DeepInputDTO dto : dtoList) {
-        while (iterator.hasNext() && isLimit) {
-            DeepInputDTO dto = (DeepInputDTO) iterator.next();
-
-            ArrayList<Float> inputList = this.inputValueList(dto);
-            ArrayList<Float> outputList = this.outputValueList(dto);
-            int count = 0;
-
-            if (deep.isDeleteDuplications()) {
-                //ignore duplicates
-
-                for (String s : uniqueList) {
-                    if (s.equals(inputList.toString())) {
-                        count++;
-                        break;
-                    }
-                }
-
-                if (count == 0) {
-                    uniqueList.add(inputList.toString());
-
-                    //Use limits
-                    if (deep.isInputLimits()) {
-                        if (outputList.get(0) == 1f && cntBuy > 0) {
-                            addDataset(dataSet, inputList, outputList);
-                            cntBuy--;
-                        } else if (outputList.get(1) == 1f && cntSell > 0) {
-                            addDataset(dataSet, inputList, outputList);
-                            cntSell--;
-                        } else if (outputList.get(0) == 0f && outputList.get(1) == 0f && cntNone > 0) {
-                            addDataset(dataSet, inputList, outputList);
-                            cntNone--;
-                        }
-
-                        isLimit = !((cntBuy + cntSell + cntNone) == 0);
-
-                    } else {
-                        addDataset(dataSet, inputList, outputList);
-                    }
-                }
-
-            } else {
-                //Add Duplicates
-                //Use limits
-                if (deep.isInputLimits()) {
-                    if (outputList.get(0) == 1f && cntBuy > 0) {
-                        addDataset(dataSet, inputList, outputList);
-                        cntBuy--;
-                    } else if (outputList.get(1) == 1f && cntSell > 0) {
-                        addDataset(dataSet, inputList, outputList);
-                        cntSell--;
-                    } else if (outputList.get(0) == 0f && outputList.get(1) == 0f && cntNone > 0) {
-                        addDataset(dataSet, inputList, outputList);
-                        cntNone--;
-                    }
-
-                    isLimit = !((cntBuy + cntSell + cntNone) == 0);
-
-                } else {
-                    addDataset(dataSet, inputList, outputList);
-                }
-            }
-
-        }
-
-        return dataSet;
-    }
 
 }

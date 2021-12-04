@@ -16,11 +16,9 @@
  */
 package krakee.deep.input;
 
-import deepnetts.data.TabularDataSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.ejb.Stateless;
-import krakee.deep.DeepDTO;
 import krakee.deep.DeepInputDTO;
 
 /**
@@ -125,36 +123,12 @@ public class IrisInputEJB extends AbstractInput {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public TabularDataSet fillDataset(DeepDTO deep) {
-
-        deep.setNumInputs(this.inputColumnNameList().size());
-        deep.setNumOutputs(this.outputColumnNameList().size());
-        TabularDataSet dataSet = new TabularDataSet(deep.getNumInputs(), deep.getNumOutputs());
-
-        ArrayList<String> columns = new ArrayList<>();
-        columns.addAll(this.inputColumnNameList());
-        columns.addAll(this.outputColumnNameList());
-
-        dataSet.setColumnNames(columns.toArray(new String[0]));
-        deep.setColumnNames(columns);
-
-        for (float[] irisRow : irisArr) {
-            ArrayList<Float> inputList = new ArrayList<>();
-            inputList.add(irisRow[0]);
-            inputList.add(irisRow[1]);
-            inputList.add(irisRow[2]);
-            inputList.add(irisRow[3]);
-
-            ArrayList<Float> outputList = new ArrayList<>();
-            outputList.add(irisRow[4]);
-            outputList.add(irisRow[5]);
-            outputList.add(irisRow[6]);
-
-            addDataset(dataSet, inputList, outputList);
-        }
-
-        return dataSet;
+    /**
+     * Iris Data
+     *
+     * @return
+     */
+    public static float[][] getIrisArr() {
+        return irisArr;
     }
-
 }

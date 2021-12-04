@@ -28,7 +28,7 @@
                 </p:blockUI>   
 
                 <p:panel>
-                    <p:panelGrid columns="11">
+                    <p:panelGrid columns="15">
                         <p:autoComplete value="#{deepBean.selectedDeepName}"
                                         completeMethod="#{deepBean.complete}">
                             <p:ajax event="itemSelect" listener="#{deepBean.onSelectedDeep}" 
@@ -45,34 +45,32 @@
                         <p:commandButton value="Learn"  id="learnBtn" 
                                          action="#{deepBean.onLearn()}" update="panel"/>
 
+                        <p:outputLabel value="Learn:" style="font-weight: bold" />  
+                        <p:selectOneMenu value="#{deepBean.selectedLearnName}" id="learnList">
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{learnBean.learnNameList}" var="names" 
+                                           itemLabel="#{names}" itemValue="#{names}" />
+                            <p:ajax event="itemSelect"  update="inputList"/>
+                        </p:selectOneMenu>      
+
+                        <p:commandLink value="Input:" id="inBtn" style="font-weight: bold"  
+                                       action="#{deepBean.onShowDataset(1)}"/>
+
+                        <p:selectOneMenu value="#{deepBean.selectedInputType}" id="inputList">
+                            <f:selectItems value="#{deepBean.inputTypeList}" var="type" 
+                                           itemLabel="#{type}" itemValue="#{type}" />
+                        </p:selectOneMenu>                        
+
                     </p:panelGrid>
                 </p:panel>   
 
-                <p:blockUI block="form1" trigger="dsBtn, saveBtn, learnBtn, deleteBtn">
+                <p:blockUI block="form1" trigger="saveBtn, learnBtn, deleteBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
 
                 <p:panel id="panel">
                     <p:panel>
                         <p:panelGrid columns="16">
-                            <p:outputLabel value="Learn:" style="font-weight: bold" />  
-                            <p:selectOneMenu value="#{deepBean.selectedLearnName}" id="learnList">
-                                <f:selectItem itemLabel="-" itemValue=""/>
-                                <f:selectItems value="#{learnBean.learnNameList}" var="names" 
-                                               itemLabel="#{names}" itemValue="#{names}" />
-                            </p:selectOneMenu>
-
-                            <p:commandButton value="DataSet"  id="dsBtn" 
-                                             action="#{deepBean.onDataset()}" update="panel"/>
-
-                            <p:commandLink     value="Input:" id="inBtn" style="font-weight: bold"  
-                                               action="#{deepBean.onShowDataset(1)}"/>
-
-                            <p:selectOneMenu value="#{deepBean.selectedInputType}" id="inputList">
-                                <f:selectItems value="#{deepBean.detail.inputTypes}" var="type" 
-                                               itemLabel="#{type}" itemValue="#{type}" />
-                            </p:selectOneMenu>
-
                             <p:outputLabel value="Unique:" style="font-weight: bold" />  
                             <p:selectBooleanCheckbox value="#{deepBean.detail.deleteDuplications}"
                                                      title="Delete duplications"/>

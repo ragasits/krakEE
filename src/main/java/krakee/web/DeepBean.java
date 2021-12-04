@@ -29,8 +29,8 @@ import javax.inject.Named;
 import krakee.MyException;
 import krakee.deep.DeepDTO;
 import krakee.deep.DeepEJB;
-import krakee.deep.DeepInputEJB;
 import krakee.deep.DeepLayerDTO;
+import krakee.deep.DeepRowEJB;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -49,7 +49,7 @@ public class DeepBean implements Serializable {
     @EJB
     private DeepEJB deepEjb;
     @EJB
-    private DeepInputEJB deepInputEjb;
+    private DeepRowEJB deepRowEjb;
     @Inject
     private DeepDatasetBean datasetBean;
 
@@ -131,18 +131,6 @@ public class DeepBean implements Serializable {
     }
 
     /**
-     * Fill data set
-     */
-    public void onDataset() {
-        try {
-            deepInputEjb.fillDataset(this.detail);
-            this.disableBtn = false;
-        } catch (MyException ex) {
-            addMsg(ex.getMessage());
-        }
-    }
-
-    /**
      * Save (Insert / update) Deep item
      *
      */
@@ -201,6 +189,14 @@ public class DeepBean implements Serializable {
 
     public List<String> complete(String query) {
         return deepEjb.getDeepNames();
+    }
+
+    /**
+     * Get list of the used InputTypes 
+     * @return 
+     */
+    public ArrayList<String> getInputTypeList() {
+        return deepRowEjb.getInputTypes(this.getSelectedLearnName());
     }
 
     public String getSelectedLearnName() {
