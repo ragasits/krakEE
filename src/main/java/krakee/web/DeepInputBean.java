@@ -17,6 +17,7 @@
 package krakee.web;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -24,6 +25,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import krakee.MyException;
 import krakee.deep.DeepInputEJB;
+import krakee.deep.DeepRowDTO;
 import krakee.deep.DeepRowEJB;
 import krakee.deep.InputType;
 
@@ -56,7 +58,7 @@ public class DeepInputBean implements Serializable {
             addMsg(ex.getMessage());
         }
     }
-    
+
     public void onRow() {
         try {
             deepRowEjb.fillRow(selectedLearnName, selectedInputType);
@@ -64,11 +66,52 @@ public class DeepInputBean implements Serializable {
             addMsg(ex.getMessage());
         }
     }
-    
-    
+
+    /**
+     * Get rows from DeepRow
+     *
+     * @return
+     */
+    public ArrayList<DeepRowDTO> getDeepRows() {
+        return deepRowEjb.get(this.selectedLearnName, this.selectedInputType);
+
+    }
+
+    /**
+     * Get inputType names
+     * @return 
+     */
     public InputType[] getInputTypes() {
         return InputType.values();
-    }    
+    }
+    
+    /**
+     * Get column names
+     * @return 
+     */
+    public ArrayList<String> getColumnNames(){
+        try {
+            return deepRowEjb.getColumnNames(selectedInputType);
+        } catch (MyException ex) {
+            this.addMsg("getColumnList error: "+ex.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Get value from InputRow
+     *
+     * @param rowIdx
+     * @param colIdx
+     * @return
+     */
+    public Float getRowValue(Integer rowIdx, Integer colIdx, DeepRowDTO row) {
+        if (row.getInputRow().size() > colIdx){
+            return row.getInputRow().get(colIdx);
+        } else {
+            return row.getOutputRow().get(colIdx - row.getInputRow().size());
+        }
+    }       
 
     public String getSelectedLearnName() {
         return selectedLearnName;

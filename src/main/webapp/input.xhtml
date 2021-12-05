@@ -5,7 +5,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
     <h:head>
         <title>KrakEE</title>
@@ -16,7 +17,7 @@
             <h:form id="form1">
                 <ez:globalMenu/>
 
-                <p:blockUI block="form1" trigger="dsBtn, rowBtn">
+                <p:blockUI block="form1" trigger="dsBtn, rowBtn, inputList, learnList">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>                    
 
@@ -27,6 +28,7 @@
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{learnBean.learnNameList}" var="names" 
                                            itemLabel="#{names}" itemValue="#{names}" />
+                            <p:ajax update="panel" event="itemSelect"/>
                         </p:selectOneMenu>
 
                         <p:commandButton value="DataSet"  id="dsBtn" 
@@ -37,17 +39,30 @@
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{deepInputBean.inputTypes}" var="type" 
                                            itemLabel="#{type}" itemValue="#{type}" />
+                            <p:ajax update="panel" event="itemSelect"/>
                         </p:selectOneMenu>                        
 
                         <p:commandButton value="Row"  id="rowBtn" 
                                          action="#{deepInputBean.onRow()}" update="panel"/>
-
-
                     </p:panelGrid>
                 </p:panel>
 
                 <p:panel id="panel">
+                    <p:dataTable var="rowName" value="#{deepInputBean.deepRows}" id="tbl"
+                                 rowIndexVar="rowIdx"
+                                 tableStyle="width:auto" scrollable="true" paginator="true" rows="25"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                 rowsPerPageTemplate="25, 50,100">
 
+                        <p:columns var="columnName" value="#{deepInputBean.columnNames}" 
+                                   headerText="#{columnName}" columnIndexVar="colIdx">
+
+                            <ui:repeat value="#{deepInputBean.getRowValue(rowIdx, colIdx, rowName)}" var="data">
+                                <h:outputText value="#{data}"/>
+                            </ui:repeat>
+                        </p:columns>
+                    </p:dataTable>                    
                 </p:panel>
             </h:form>
         </f:view>

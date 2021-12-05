@@ -61,7 +61,7 @@ public class DeepRowEJB {
      * @param inputType
      * @return
      */
-    private ArrayList<DeepRowDTO> get(String learnName, String inputType) {
+    public ArrayList<DeepRowDTO> get(String learnName, String inputType) {
         return configEjb.getDeepRowColl()
                 .find(
                         and(eq("learnName", learnName), eq("inputType", inputType))
@@ -69,7 +69,7 @@ public class DeepRowEJB {
                 .into(new ArrayList<>());
 
     }
-
+    
     /**
      * Get used input types to the DropBoxes
      *
@@ -80,6 +80,25 @@ public class DeepRowEJB {
         return configEjb.getDeepRowColl()
                 .distinct("inputType", String.class)
                 .into(new ArrayList<>());
+    }
+
+    /**
+     * Get Column names from the current dataset
+     * @param inputType
+     * @return
+     * @throws MyException 
+     */
+    public ArrayList<String> getColumnNames(String inputType) throws MyException {
+        
+        if (inputType == null || inputType.isEmpty()){
+            return null;
+        }
+        
+        InputType type = InputType.valueOf(inputType);
+        ArrayList<String> cols = this.selectDatasetEjb(type).inputColumnNameList();
+        cols.addAll(this.selectDatasetEjb(type).outputColumnNameList());
+        
+        return cols;
     }
 
     /**
@@ -189,9 +208,10 @@ public class DeepRowEJB {
 
     /**
      * Add element to TabularDataSet
+     *
      * @param dataSet
      * @param inputList
-     * @param outputList 
+     * @param outputList
      */
     private void addDataset(TabularDataSet dataSet, ArrayList<Float> inputList, ArrayList<Float> outputList) {
         dataSet.add(new TabularDataSet.Item(
@@ -201,10 +221,11 @@ public class DeepRowEJB {
 
     /**
      * Create TabularDataSet from deepRows
+     *
      * @param learnName
      * @param inputType
      * @return
-     * @throws MyException 
+     * @throws MyException
      */
     public TabularDataSet fillDataset(String learnName, String inputType) throws MyException {
         ArrayList<DeepRowDTO> rowList = this.get(learnName, inputType);
