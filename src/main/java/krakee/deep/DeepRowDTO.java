@@ -17,10 +17,12 @@
 package krakee.deep;
 
 import java.util.ArrayList;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
 /**
  * Store Core Row elements
+ *
  * @author rgt
  */
 public class DeepRowDTO {
@@ -28,17 +30,36 @@ public class DeepRowDTO {
     private ObjectId id;
     private String learnName;
     private String inputType;
+
+    private ArrayList<String> inputColumnNames;
+    private ArrayList<String> outputColumnNames;
+
     private ArrayList<Float> inputRow;
     private ArrayList<Float> outputRow;
 
     public DeepRowDTO() {
     }
 
-    public DeepRowDTO(String learnName, String inputType, ArrayList<Float> inputRow, ArrayList<Float> outputRow) {
+    public DeepRowDTO(String learnName, String inputType, ArrayList<String> inputColumnNames, ArrayList<String> outputColumnNames, ArrayList<Float> inputRow, ArrayList<Float> outputRow) {
         this.learnName = learnName;
         this.inputType = inputType;
+        this.inputColumnNames = inputColumnNames;
+        this.outputColumnNames = outputColumnNames;
         this.inputRow = inputRow;
         this.outputRow = outputRow;
+    }
+
+    /**
+     * Get column names 
+     * Add input + output columns
+     * @return 
+     */
+    @BsonIgnore
+    public ArrayList<String> getColumnNames() {
+        ArrayList<String> names = new ArrayList<>();
+        names.addAll(this.getInputColumnNames());
+        names.addAll(this.getOutputColumnNames());
+        return names;
     }
 
     public String getInputType() {
@@ -80,4 +101,21 @@ public class DeepRowDTO {
     public void setLearnName(String learnName) {
         this.learnName = learnName;
     }
+
+    public ArrayList<String> getInputColumnNames() {
+        return inputColumnNames;
+    }
+
+    public void setInputColumnNames(ArrayList<String> inputColumnNames) {
+        this.inputColumnNames = inputColumnNames;
+    }
+
+    public ArrayList<String> getOutputColumnNames() {
+        return outputColumnNames;
+    }
+
+    public void setOutputColumnNames(ArrayList<String> outputColumnNames) {
+        this.outputColumnNames = outputColumnNames;
+    }
+
 }

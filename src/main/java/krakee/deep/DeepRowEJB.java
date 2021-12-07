@@ -48,11 +48,11 @@ public class DeepRowEJB {
     @EJB
     private TimeSeriesInputEJB timeSeriesInputEjb;
     @EJB
-    private BollingerInputEJB bollingerInputEJB;
+    private BollingerInputEJB bollingerInputEjb;
     @EJB
-    private AllFlagInputEJB allFlagInputEJB;
+    private AllFlagInputEJB allFlagInputEjb;
     @EJB
-    private IrisInputEJB irisInputEJB;
+    private IrisInputEJB irisInputEjb;
 
     /**
      * Get items from the deep row filter by learnName, inputType
@@ -69,7 +69,21 @@ public class DeepRowEJB {
                 .into(new ArrayList<>());
 
     }
-    
+
+    /**
+     * Get first row
+     * @param learnName
+     * @param inputType
+     * @return 
+     */
+    public DeepRowDTO getFirst(String learnName, String inputType) {
+        return configEjb.getDeepRowColl()
+                .find(
+                        and(eq("learnName", learnName), eq("inputType", inputType))
+                )
+                .first();
+    }
+
     /**
      * Get used input types to the DropBoxes
      *
@@ -80,25 +94,6 @@ public class DeepRowEJB {
         return configEjb.getDeepRowColl()
                 .distinct("inputType", String.class)
                 .into(new ArrayList<>());
-    }
-
-    /**
-     * Get Column names from the current dataset
-     * @param inputType
-     * @return
-     * @throws MyException 
-     */
-    public ArrayList<String> getColumnNames(String inputType) throws MyException {
-        
-        if (inputType == null || inputType.isEmpty()){
-            return null;
-        }
-        
-        InputType type = InputType.valueOf(inputType);
-        ArrayList<String> cols = this.selectDatasetEjb(type).inputColumnNameList();
-        cols.addAll(this.selectDatasetEjb(type).outputColumnNameList());
-        
-        return cols;
     }
 
     /**
@@ -128,11 +123,11 @@ public class DeepRowEJB {
             case TimeSeries:
                 return timeSeriesInputEjb;
             case Bollinger:
-                return bollingerInputEJB;
+                return bollingerInputEjb;
             case AllFlag:
-                return allFlagInputEJB;
+                return allFlagInputEjb;
             case Iris:
-                return irisInputEJB;
+                return irisInputEjb;
             default:
                 throw new MyException("Intenal error: Wrong InputType");
         }
@@ -153,8 +148,10 @@ public class DeepRowEJB {
         for (DeepInputDTO dto : inputList) {
             ArrayList<Float> inputRow = dataset.inputValueList(dto);
             ArrayList<Float> outputRow = dataset.outputValueList(dto);
+            ArrayList<String> inputColumnNames = dataset.inputColumnNameList();
+            ArrayList<String> outputColumnNames = dataset.outputColumnNameList();
 
-            DeepRowDTO row = new DeepRowDTO(learnName, inputType, inputRow, outputRow);
+            DeepRowDTO row = new DeepRowDTO(learnName, inputType, inputColumnNames, outputColumnNames, inputRow, outputRow);
             configEjb.getDeepRowColl().insertOne(row);
         }
     }
@@ -183,9 +180,13 @@ public class DeepRowEJB {
             outputRow.add(irisRow[5]);
             outputRow.add(irisRow[6]);
 
-            DeepRowDTO row = new DeepRowDTO(learnName, inputType, inputRow, outputRow);
-            configEjb.getDeepRowColl().insertOne(row);
+            //Add Column names
+            ArrayList<String> inputColumnNames = irisInputEjb.inputColumnNameList();
+            ArrayList<String> outputColumnNames = irisInputEjb.outputColumnNameList();
 
+            //Store row
+            DeepRowDTO row = new DeepRowDTO(learnName, inputType, inputColumnNames, outputColumnNames, inputRow, outputRow);
+            configEjb.getDeepRowColl().insertOne(row);
         }
     }
 

@@ -40,7 +40,6 @@ public class DeepDTO {
     private String inputType;
     private int numInputs;
     private int numOutputs;
-    private ArrayList<String> columnNames;
     
     private boolean deleteDuplications = false;
     //Add limits
@@ -322,14 +321,6 @@ public class DeepDTO {
 
     public void incTestSell() {
         this.testSell++;
-    }
-
-    public ArrayList<String> getColumnNames() {
-        return columnNames;
-    }
-
-    public void setColumnNames(ArrayList<String> columnNames) {
-        this.columnNames = columnNames;
     }
 
     public Float getEmAccuracy() {

@@ -28,13 +28,13 @@ public class LearnBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @EJB
-    LearnEJB learn;
+    private LearnEJB learn;
     @EJB
-    CandleEJB candle;
+    private CandleEJB candle;
 
     @Inject
-    CandleDetailBean candleBean;
-
+    private CandleDetailBean candleBean;
+    
     /**
      * Get all Learn
      *

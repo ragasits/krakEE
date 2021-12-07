@@ -16,6 +16,11 @@
  */
 package krakee.web;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import javax.ejb.EJB;
@@ -23,11 +28,14 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import krakee.MyException;
 import krakee.deep.DeepInputEJB;
 import krakee.deep.DeepRowDTO;
 import krakee.deep.DeepRowEJB;
 import krakee.deep.InputType;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -38,19 +46,29 @@ import krakee.deep.InputType;
 public class DeepInputBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final String FILENAME = "deepRow.csv";
 
     @EJB
     private DeepInputEJB deepInputEjb;
     @EJB
     private DeepRowEJB deepRowEjb;
 
+    private ArrayList<DeepRowDTO> rowList;
     private String selectedLearnName;
     private String selectedInputType;
+    private StreamedContent file;
 
+    /**
+     * Show messages
+     * @param msg 
+     */
     private void addMsg(String msg) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
     }
 
+    /**
+     * Fill DeepInput collection
+     */
     public void onDataset() {
         try {
             deepInputEjb.fillDeepInput(selectedLearnName);
@@ -59,6 +77,9 @@ public class DeepInputBean implements Serializable {
         }
     }
 
+    /**
+     * Fill DeepRow collection
+     */
     public void onRow() {
         try {
             deepRowEjb.fillRow(selectedLearnName, selectedInputType);
@@ -68,36 +89,120 @@ public class DeepInputBean implements Serializable {
     }
 
     /**
+     * Get rows
+     * filter by learnName and inputType
+     */
+    public void onGetRows() {
+        this.rowList = deepRowEjb.get(this.selectedLearnName, this.selectedInputType);
+    }
+
+    /**
+     * Download rows in CSV file format
+     */
+    public void onCSV() {
+
+        ArrayList<String> csvList = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+
+        //Header
+        DeepRowDTO dto = this.rowList.get(0);
+        ArrayList columns = dto.getColumnNames();
+        for (Object column : columns) {
+            if (sb.length() != 0) {
+                sb.append(";");
+            }
+            sb.append(column);
+        }
+        csvList.add(sb.toString());
+
+        //Rows
+        ArrayList<DeepRowDTO> rowList = this.rowList;
+        for (DeepRowDTO row : rowList) {
+            sb = new StringBuilder();
+            //Input
+            for (Float input : row.getInputRow()) {
+                if (sb.length() != 0) {
+                    sb.append(";");
+                }
+                sb.append(input);
+            }
+
+            //Output
+            for (Float output : row.getOutputRow()) {
+                if (sb.length() != 0) {
+                    sb.append(";");
+                }
+                sb.append(output);
+            }
+
+            csvList.add(sb.toString());
+        }
+
+        //Create file
+        ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        String realPath = ctx.getRealPath("/WEB-INF/").concat("/" + FILENAME);
+
+        //Save to file
+        try {
+            OutputStream fout = new FileOutputStream(realPath);
+            OutputStream bout = new BufferedOutputStream(fout);
+            try (OutputStreamWriter out = new OutputStreamWriter(bout, "ISO-8859-2")) {
+                for (String s : csvList) {
+                    out.write(s + "\n");
+                }
+            }
+        } catch (IOException ex) {
+            this.addMsg("Error: " + ex.getMessage());
+            return;
+        }
+
+        this.file = DefaultStreamedContent.builder()
+                .name(FILENAME)
+                .contentType("application/csv")
+                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/" + FILENAME))
+                .build();
+    }
+
+    /**
+     * Disable toCSV button
+     * @return 
+     */
+    public boolean isDisableToCSVbtn() {
+        return this.rowList == null || this.rowList.isEmpty();
+    }
+
+    /**
      * Get rows from DeepRow
      *
      * @return
      */
     public ArrayList<DeepRowDTO> getDeepRows() {
-        return deepRowEjb.get(this.selectedLearnName, this.selectedInputType);
+        return this.rowList;
 
     }
 
     /**
      * Get inputType names
-     * @return 
+     *
+     * @return
      */
     public InputType[] getInputTypes() {
         return InputType.values();
     }
-    
+
     /**
      * Get column names
-     * @return 
+     *
+     * @return
      */
-    public ArrayList<String> getColumnNames(){
-        try {
-            return deepRowEjb.getColumnNames(selectedInputType);
-        } catch (MyException ex) {
-            this.addMsg("getColumnList error: "+ex.getMessage());
-            return null;
+    public ArrayList<String> getColumnNames() {
+        DeepRowDTO dto = deepRowEjb.getFirst(this.selectedLearnName, this.selectedInputType);
+        if (dto != null) {
+            return dto.getColumnNames();
         }
+        return null;
     }
-    
+
     /**
      * Get value from InputRow
      *
@@ -106,12 +211,12 @@ public class DeepInputBean implements Serializable {
      * @return
      */
     public Float getRowValue(Integer rowIdx, Integer colIdx, DeepRowDTO row) {
-        if (row.getInputRow().size() > colIdx){
+        if (row.getInputRow().size() > colIdx) {
             return row.getInputRow().get(colIdx);
         } else {
             return row.getOutputRow().get(colIdx - row.getInputRow().size());
         }
-    }       
+    }
 
     public String getSelectedLearnName() {
         return selectedLearnName;
@@ -135,5 +240,9 @@ public class DeepInputBean implements Serializable {
 
     public void setSelectedInputType(String selectedInputType) {
         this.selectedInputType = selectedInputType;
+    }
+
+    public StreamedContent getFile() {
+        return file;
     }
 }

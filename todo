@@ -1,6 +1,6 @@
-+ Show DeepRow 
++ Move column names to DeepRow
++ Add CSV export to DeepRow
 
-- Export DeepRow  to CSV fromat 
 - Delete DeepDataset (replaced by DeepRow)
 - Create statistics from rows (min, max values, duplicates)
 
