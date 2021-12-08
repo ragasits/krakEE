@@ -60,7 +60,8 @@ public class DeepInputBean implements Serializable {
 
     /**
      * Show messages
-     * @param msg 
+     *
+     * @param msg
      */
     private void addMsg(String msg) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
@@ -89,8 +90,7 @@ public class DeepInputBean implements Serializable {
     }
 
     /**
-     * Get rows
-     * filter by learnName and inputType
+     * Get rows filter by learnName and inputType
      */
     public void onGetRows() {
         this.rowList = deepRowEjb.get(this.selectedLearnName, this.selectedInputType);
@@ -116,8 +116,8 @@ public class DeepInputBean implements Serializable {
         csvList.add(sb.toString());
 
         //Rows
-        ArrayList<DeepRowDTO> rowList = this.rowList;
-        for (DeepRowDTO row : rowList) {
+        ArrayList<DeepRowDTO> rows = this.rowList;
+        for (DeepRowDTO row : rows) {
             sb = new StringBuilder();
             //Input
             for (Float input : row.getInputRow()) {
@@ -165,10 +165,35 @@ public class DeepInputBean implements Serializable {
 
     /**
      * Disable toCSV button
-     * @return 
+     *
+     * @return
      */
     public boolean isDisableToCSVbtn() {
         return this.rowList == null || this.rowList.isEmpty();
+    }
+
+    /**
+     * Calculate input columns
+     * @return 
+     */
+    public Integer getNumInputs() {
+        if (this.rowList == null || this.rowList.isEmpty()) {
+            return null;
+        } else {
+            return this.rowList.get(0).getInputRow().size();
+        }
+    }
+
+    /**
+     * Calculate output columns
+     * @return 
+     */
+    public Integer getNumOutputs() {
+        if (this.rowList == null || this.rowList.isEmpty()) {
+            return null;
+        } else {
+            return this.rowList.get(0).getOutputRow().size();
+        }
     }
 
     /**

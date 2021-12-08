@@ -36,10 +36,7 @@ public class DeepDTO {
     private ObjectId id;
     private String deepName;
     private String learnName;
-
     private String inputType;
-    private int numInputs;
-    private int numOutputs;
     
     private boolean deleteDuplications = false;
     //Add limits
@@ -217,22 +214,6 @@ public class DeepDTO {
 
     public void setDeepName(String deepName) {
         this.deepName = deepName;
-    }
-
-    public int getNumInputs() {
-        return numInputs;
-    }
-
-    public void setNumInputs(int numInputs) {
-        this.numInputs = numInputs;
-    }
-
-    public int getNumOutputs() {
-        return numOutputs;
-    }
-
-    public void setNumOutputs(int numOutputs) {
-        this.numOutputs = numOutputs;
     }
 
     public int getSourceCount() {
@@ -526,7 +507,4 @@ public class DeepDTO {
     public void setInputLimits(boolean inputLimits) {
         this.inputLimits = inputLimits;
     }
-    
-    
-    
 }

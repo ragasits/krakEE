@@ -1,15 +1,23 @@
-+ Move column names to DeepRow
-+ Add CSV export to DeepRow
++ Move input, output counts from deep
+
+
+Create statistics from rows:
+- Create DTO, EJB, GUI
+- Identify Columns That Contain a Single Value
+- Delete Columns That Contain a Single Value
+- Consider Columns That Have Very Few Values
+- Remove Columns That Have A Low Variance
+- Identify Rows that Contain Duplicate Data
+- Delete Rows that Contain Duplicate Data
 
 - Delete DeepDataset (replaced by DeepRow)
-- Create statistics from rows (min, max values, duplicates)
-
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values
 - Try reinforcement learning 
 
 Future:
 --------
-- Migrate to JakartaEE 9
+- Migrate to JakartaEE 9.1
+- Migrate to Eclipse Microprofile 5
 - Optimize mongodb
 - Candle1d (one day) + Simulation
 

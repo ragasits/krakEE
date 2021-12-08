@@ -57,7 +57,6 @@ public class DeepEJB {
     @EJB
     private DeepRowEJB deepRowEjb;
 
-
     /**
      * Choose and execute normalization
      *
@@ -126,9 +125,14 @@ public class DeepEJB {
         dto = this.calcTrainCount(dto, (TabularDataSet) trainTestSet[0]);
         dto = this.calcTestCount(dto, (TabularDataSet) trainTestSet[1]);
 
+        //counts input,output 
+        DeepRowDTO row = deepRowEjb.getFirst(dto.getLearnName(), dto.getInputType());
+        int numInputs = row.getInputColumnNames().size();
+        int numOutputs = row.getOutputColumnNames().size();
+
         // create instance of multi addLayer percetpron using builder
         Builder builder = FeedForwardNetwork.builder()
-                .addInputLayer(dto.getNumInputs());
+                .addInputLayer(numInputs);
 
         ArrayList<DeepLayerDTO> layerList = dto.getDeepLayer();
         layerList.sort(DeepLayerDTO.getCompByOrder());
@@ -138,7 +142,7 @@ public class DeepEJB {
         }
 
         builder = builder
-                .addOutputLayer(dto.getNumOutputs(), ActivationType.valueOf(dto.getOutputActivationType()))
+                .addOutputLayer(numOutputs, ActivationType.valueOf(dto.getOutputActivationType()))
                 .lossFunction(LossType.valueOf(dto.getLossType()))
                 .randomSeed(dto.getRandomSeed());
 
