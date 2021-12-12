@@ -33,7 +33,7 @@ import krakee.deep.input.IrisInputEJB;
 import krakee.deep.input.TimeSeriesInputEJB;
 
 /**
- *
+ * Manage input rows
  * @author rgt
  */
 @Stateless
@@ -240,7 +240,7 @@ public class DeepRowEJB {
         columns.addAll(input.inputColumnNameList());
         columns.addAll(input.outputColumnNameList());
 
-        dataSet.setColumnNames(columns.toArray(new String[0]));
+        dataSet.setColumnNames(columns.toArray(String[]::new));
 
         for (DeepRowDTO row : rowList) {
             addDataset(dataSet, row.getInputRow(), row.getOutputRow());

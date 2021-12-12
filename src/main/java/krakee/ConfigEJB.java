@@ -17,6 +17,7 @@ import krakee.calc.CandleDTO;
 import krakee.deep.DeepDTO;
 import krakee.deep.DeepInputDTO;
 import krakee.deep.DeepRowDTO;
+import krakee.deep.DeepStatDTO;
 import krakee.get.TradePairDTO;
 import krakee.learn.LearnDTO;
 import krakee.profit.ProfitDTO;
@@ -80,6 +81,7 @@ public class ConfigEJB {
     private MongoCollection<DeepDTO> deepColl;
     private MongoCollection<DeepInputDTO> deepInputColl;
     private MongoCollection<DeepRowDTO> deepRowColl;
+    private MongoCollection<DeepStatDTO> deepStatColl;
 
     /**
      * Initiate: - Set proxy - MongoDB Create collections and missing indexes
@@ -135,8 +137,19 @@ public class ConfigEJB {
                     )
             );
         }
-        
+
         this.deepRowColl = this.database.getCollection("deepRow", DeepRowDTO.class);
+
+        this.deepStatColl = this.database.getCollection("deepStat", DeepStatDTO.class);
+        if (!this.isIndex(deepInputColl, "learnName_1_inputType_1")) {
+            this.deepStatColl.createIndex(
+                    Indexes.compoundIndex(
+                            Indexes.ascending("learnName"),
+                            Indexes.ascending("inputType")
+                    )
+            );
+        }
+
     }
 
     /**
@@ -193,6 +206,10 @@ public class ConfigEJB {
 
     public MongoCollection<DeepRowDTO> getDeepRowColl() {
         return deepRowColl;
+    }
+
+    public MongoCollection<DeepStatDTO> getDeepStatColl() {
+        return deepStatColl;
     }
 
     public String getKrakenURL() {

@@ -1,9 +1,10 @@
-+ Move input, output counts from deep
++ Migrate to Promefaces 11
++ BUG Candle: DataTable#rowKey must be defined for component form1:panel1:tbl
++ Identify Columns That Contain a Single Value
+
 
 
 Create statistics from rows:
-- Create DTO, EJB, GUI
-- Identify Columns That Contain a Single Value
 - Delete Columns That Contain a Single Value
 - Consider Columns That Have Very Few Values
 - Remove Columns That Have A Low Variance

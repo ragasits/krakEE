@@ -17,7 +17,7 @@
             <h:form id="form1">
                 <ez:globalMenu/>
 
-                <p:blockUI block="form1" trigger="dsBtn, rowBtn, inputList, learnList, csvBtn">
+                <p:blockUI block="form1" trigger="dsBtn, rowBtn, inputList, learnList, csvBtn, statBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>  
 
@@ -26,25 +26,25 @@
                 </p:messages>                
 
                 <p:panel>
-                    <p:panelGrid columns="11">
+                    <p:panelGrid columns="12">
                         <p:outputLabel value="Learn:" style="font-weight: bold" />  
                         <p:selectOneMenu value="#{deepInputBean.selectedLearnName}" id="learnList">
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{learnBean.learnNameList}" var="names" 
                                            itemLabel="#{names}" itemValue="#{names}" />
-                            <p:ajax update="panel,csvBtn, numInputs, numOutputs" 
+                            <p:ajax update="panel,csvBtn, numInputs, numOutputs, statBtn" 
                                     event="itemSelect" listener="#{deepInputBean.onGetRows()}"/>
                         </p:selectOneMenu>
 
                         <p:commandButton value="DataSet"  id="dsBtn" 
                                          action="#{deepInputBean.onDataset()}" update="panel"/>
 
-                        <p:outputLabel     value="Input:" id="inBtn" style="font-weight: bold"/>
+                        <p:outputLabel value="Input:" style="font-weight: bold"/>
                         <p:selectOneMenu value="#{deepInputBean.selectedInputType}" id="inputList">
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{deepInputBean.inputTypes}" var="type" 
                                            itemLabel="#{type}" itemValue="#{type}" />
-                            <p:ajax update="panel,csvBtn, numInputs, numOutputs" 
+                            <p:ajax update="panel,csvBtn, numInputs, numOutputs, statBtn" 
                                     event="itemSelect" listener="#{deepInputBean.onGetRows()}"/>
                         </p:selectOneMenu>                        
 
@@ -52,12 +52,18 @@
                                          action="#{deepInputBean.onRow()}" update="panel"/>
 
                         <p:commandButton value="ToCsv" id="csvBtn"
-                                         disabled="#{deepInputBean.disableToCSVbtn}"
+                                         disabled="#{deepInputBean.disableButtons}"
                                          actionListener="#{deepInputBean.onCSV}"
                                          onclick="PrimeFaces.monitorDownload(start, stop);"
                                          ajax="false">
                             <p:fileDownload value="#{deepInputBean.file}" />
-                        </p:commandButton>       
+                        </p:commandButton>      
+                        
+
+                        <p:commandButton value="ToStat"  id="statBtn" 
+                                         disabled="#{deepInputBean.disableButtons}" 
+                                         action="#{deepInputBean.onDeepStat()}"/>
+                        
 
                         <p:outputLabel value="numInputs:" style="font-weight: bold"/>
                         <p:outputLabel value="#{deepInputBean.numInputs}" id="numInputs"/>

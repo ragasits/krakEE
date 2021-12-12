@@ -27,6 +27,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import krakee.MyException;
@@ -52,6 +53,8 @@ public class DeepInputBean implements Serializable {
     private DeepInputEJB deepInputEjb;
     @EJB
     private DeepRowEJB deepRowEjb;
+    @Inject
+    private DeepStatBean deepStatBean;
 
     private ArrayList<DeepRowDTO> rowList;
     private String selectedLearnName;
@@ -94,6 +97,16 @@ public class DeepInputBean implements Serializable {
      */
     public void onGetRows() {
         this.rowList = deepRowEjb.get(this.selectedLearnName, this.selectedInputType);
+    }
+
+    /**
+     * Navigate to stat page
+     * @return 
+     */
+    public String onDeepStat() {
+        deepStatBean.setLearnName(this.selectedLearnName);
+        deepStatBean.setInputType(this.selectedInputType);
+        return "deepStat.xhtml?faces-redirect=true";
     }
 
     /**
@@ -164,17 +177,18 @@ public class DeepInputBean implements Serializable {
     }
 
     /**
-     * Disable toCSV button
+     * Disable toCSV, stat button
      *
      * @return
      */
-    public boolean isDisableToCSVbtn() {
+    public boolean isDisableButtons() {
         return this.rowList == null || this.rowList.isEmpty();
     }
 
     /**
      * Calculate input columns
-     * @return 
+     *
+     * @return
      */
     public Integer getNumInputs() {
         if (this.rowList == null || this.rowList.isEmpty()) {
@@ -186,7 +200,8 @@ public class DeepInputBean implements Serializable {
 
     /**
      * Calculate output columns
-     * @return 
+     *
+     * @return
      */
     public Integer getNumOutputs() {
         if (this.rowList == null || this.rowList.isEmpty()) {

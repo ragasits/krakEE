@@ -19,6 +19,10 @@
 
             <h:form id="form1">    
                 <p:growl id="growl" showDetail="true" />
+                
+                <p:blockUI block="form1" trigger="btn">
+                    <p:graphicImage value="/resources/ajax-loader.gif" />
+                </p:blockUI>                    
 
                 <p:panel>
                     <h:panelGrid columns="4">
@@ -32,10 +36,6 @@
                     </h:panelGrid>
                 </p:panel>
 
-                <p:blockUI block="form1" trigger="btn">
-                    <p:graphicImage value="/resources/ajax-loader.gif" />
-                </p:blockUI>    
-
                 <p:accordionPanel id="panel1" multiple="true">
                     <p:tab title="Chart">
                         <p:chart type="ohlc" model="#{candleBean.ohlcModel}" id="ohlc" >
@@ -44,7 +44,8 @@
                     </p:tab>
 
                     <p:tab title="Data">
-                        <p:dataTable value="#{candleBean.candleList}" var="item" tableStyle="width:auto" id="tbl">
+                        <p:dataTable value="#{candleBean.candleList}" var="item" tableStyle="width:auto" 
+                                     id="tbl" rowKey="#{item.startDate}">
                             <p:column headerText="calc">
                                 <p:selectBooleanCheckbox value="#{item.calcCandle}" disabled="true"/>
                             </p:column>                        

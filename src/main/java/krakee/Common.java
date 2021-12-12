@@ -6,7 +6,6 @@
 package krakee;
 
 import java.math.BigDecimal;
-import static java.math.BigDecimal.ROUND_HALF_UP;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 

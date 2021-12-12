@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <h:head>
+        <title>KrakEE</title>
+    </h:head>
+
+    <h:body>
+        <f:view>
+            <h:form id="form1">
+                <ez:globalMenu/>
+
+                <p:blockUI block="form1" trigger="colBtn, anBtn">
+                    <p:graphicImage value="/resources/ajax-loader.gif" />
+                </p:blockUI>  
+
+                <p:messages id="msgs" showDetail="false" >
+                    <p:autoUpdate />
+                </p:messages>                
+
+                <p:panel>
+                    <p:panelGrid columns="6">
+                        <p:outputLabel value="Learn:" style="font-weight: bold" />  
+                        <p:outputLabel value="#{deepStatBean.learnName}" />  
+
+                        <p:outputLabel value="Input:" style="font-weight: bold"/>                        
+                        <p:outputLabel value="#{deepStatBean.inputType}" />     
+
+                        <p:commandButton value="Column"  id="colBtn" 
+                                         action="#{deepStatBean.onFillColumns()}" update="panel"/>
+
+                        <p:commandButton value="Analyze"  id="anBtn"
+                                         action="#{deepStatBean.onAnalyzeColumns()}" update="panel"/>
+
+                    </p:panelGrid>
+                </p:panel>
+
+                <p:panel id="panel">
+                    <p:dataTable value="#{deepStatBean.columnList}" var="item" tableStyle="width:auto" 
+                                 id="tbl" rowKey="#{item.columnId}">>
+                        <p:column headerText="ID">
+                            <p:outputLabel value="#{item.columnId}"/>
+                        </p:column>
+
+                        <p:column headerText="Name">
+                            <p:outputLabel value="#{item.columnName}"/>
+                        </p:column>                        
+                        
+                        <p:column headerText="Unique">
+                            <p:outputLabel value="#{item.uniqueCount}"/>
+                        </p:column>                           
+
+                        <p:column style="width:16px">
+                            <p:rowToggler/>
+                        </p:column>   
+                        
+                        <p:ajax event="rowToggle" listener="#{deepStatBean.onRowToggle(item.columnId)}" />                        
+
+                        <p:rowExpansion>
+                            <p:panelGrid columns="3">
+                                <p:dataTable value="#{deepStatBean.getUniqueList(item.columnId)}" var="uniq" 
+                                             tableStyle="width:auto" scrollHeight="150" scrollable="true">
+                                    <p:column headerText="Value" sortBy="#{uniq.value}">
+                                        <p:outputLabel value="#{uniq.value}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Count" sortBy="#{uniq.count}">
+                                        <p:outputLabel value="#{uniq.count}"/>
+                                    </p:column>                                    
+                                </p:dataTable>
+                            </p:panelGrid>
+                        </p:rowExpansion>                        
+
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </f:view>
+    </h:body>
+</html>
+
