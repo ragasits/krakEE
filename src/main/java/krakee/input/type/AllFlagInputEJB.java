@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep.input;
+package krakee.input.type;
 
+import krakee.input.type.AbstractInput;
 import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
@@ -23,23 +24,23 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.calc.CandleDTO;
-import krakee.deep.DeepInputDTO;
+import krakee.input.InputDTO;
 
 /**
- * Transform Bollinger values to Dataset
+ * Bollinger + RSI input
  *
  * @author rgt
  */
 @Stateless
-public class BollingerInputEJB extends AbstractInput {
+public class AllFlagInputEJB extends AbstractInput {
 
-    private final static short COUNT = 20;
+    private final static short COUNT = 5;
 
     @EJB
     private ConfigEJB config;
 
     @Override
-    public ArrayList<Float> inputValueList(DeepInputDTO dto) {
+    public ArrayList<Float> inputValueList(InputDTO dto) {
         ArrayList<Float> outList = new ArrayList<>();
 
         ArrayList<CandleDTO> timeList = config.getCandleColl()
@@ -48,9 +49,15 @@ public class BollingerInputEJB extends AbstractInput {
                 .limit(COUNT)
                 .into(new ArrayList<>());
 
-        timeList.forEach(input -> {
-            outList.add(input.getClose().floatValue());
-        });
+        for (CandleDTO candle : timeList) {
+            outList.add(candle.getBollinger().isBollingerBuy() ? 1f : 0f);
+            outList.add(candle.getBollinger().isBollingerSell() ? 1f : 0f);
+            outList.add(candle.getRsi().isRsiBuy() ? 1f : 0f);
+            outList.add(candle.getRsi().isRsiSell() ? 1f : 0f);
+            outList.add(candle.getMacd().isBearMarket() ? 1f : 0f);
+            outList.add(candle.getMacd().isBullMarket() ? 1f : 0f);
+            outList.add(candle.getMacd().isCrossover() ? 1f : 0f);
+        }
 
         return outList;
     }
@@ -59,33 +66,17 @@ public class BollingerInputEJB extends AbstractInput {
     public ArrayList<String> inputColumnNameList() {
         ArrayList<String> cols = new ArrayList<>();
 
-        for (int i = 0; i < BollingerInputEJB.COUNT; i++) {
-            cols.add("close_" + i);
+        for (int i = 0; i < COUNT; i++) {
+            cols.add("bollingerBuy_" + i);
+            cols.add("bollingerSell_" + i);
+            cols.add("rsiBuy_" + i);
+            cols.add("rsiSell_" + i);
+            cols.add("macdBullMarket_" + i);
+            cols.add("macdBearMarket_" + i);
+            cols.add("macdCrossover_" + i);
         }
 
         return cols;
-    }
-
-    @Override
-    public ArrayList<Float> outputValueList(DeepInputDTO dto) {
-        ArrayList<Float> outputList = new ArrayList<>();
-
-        if (dto.getCandle() == null) {
-            outputList.add(0f);
-            outputList.add(0f);
-        } else if (dto.getCandle().getBollinger().isBollingerBuy()) {
-            outputList.add(1f);
-            outputList.add(0f);
-        } else if (dto.getCandle().getBollinger().isBollingerSell()) {
-            outputList.add(0f);
-            outputList.add(1f);
-        } else {
-            outputList.add(0f);
-            outputList.add(0f);
-        }
-
-        return outputList;
-
     }
 
 }

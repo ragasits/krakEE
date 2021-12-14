@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep;
+package krakee.input;
 
+import krakee.input.InputDTO;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import krakee.learn.LearnEJB;
  * @author rgt
  */
 @Stateless
-public class DeepInputEJB {
+public class InputEJB {
 
     @EJB
     LearnEJB learnEjb;
@@ -50,8 +51,8 @@ public class DeepInputEJB {
      * @param learnName
      * @return
      */
-    public ArrayList<DeepInputDTO> getByLearnName(String learnName) {
-        return configEjb.getDeepInputColl()
+    public ArrayList<InputDTO> getByLearnName(String learnName) {
+        return configEjb.getInputColl()
                 .find(eq("learnName", learnName))
                 .sort(Sorts.ascending("candle.startDate"))
                 .into(new ArrayList<>());
@@ -63,7 +64,7 @@ public class DeepInputEJB {
      * @param learnName
      */
     public void delete(String learnName) {
-        configEjb.getDeepInputColl().deleteMany(eq("learnName", learnName));
+        configEjb.getInputColl().deleteMany(eq("learnName", learnName));
     }
 
     /**
@@ -80,7 +81,7 @@ public class DeepInputEJB {
         //Delete old inputs
         this.delete(learnName);
 
-        ArrayList<DeepInputDTO> datasetList = new ArrayList<>();
+        ArrayList<InputDTO> datasetList = new ArrayList<>();
 
         //Get Learning data
         LearnDTO firstLearn = learnEjb.getFirst(learnName);
@@ -96,10 +97,10 @@ public class DeepInputEJB {
                 trade = learnDto.getTrade();
             }
 
-            datasetList.add(new DeepInputDTO(learnName, candleDTO, trade));
+            datasetList.add(new InputDTO(learnName, candleDTO, trade));
 
         }
         //Save inputs
-        configEjb.getDeepInputColl().insertMany(datasetList);
+        configEjb.getInputColl().insertMany(datasetList);
     }
 }

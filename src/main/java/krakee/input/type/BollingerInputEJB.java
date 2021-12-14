@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 rgt
+ * Copyright (C) 2021 rgt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep.input;
+package krakee.input.type;
 
+import krakee.input.type.AbstractInput;
 import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
@@ -23,30 +24,23 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.calc.CandleDTO;
-import krakee.deep.DeepInputDTO;
+import krakee.input.InputDTO;
 
 /**
- * Transform candle trade values into DataSet
+ * Transform Bollinger values to Dataset
  *
  * @author rgt
  */
 @Stateless
-public class TimeSeriesInputEJB extends AbstractInput {
+public class BollingerInputEJB extends AbstractInput {
 
-    private final static short COUNT = 7;
+    private final static short COUNT = 20;
 
     @EJB
     private ConfigEJB config;
 
-    /**
-     * Convert Candle input values to ArrayList
-     *
-     * @param dto
-     * @return
-     */
     @Override
-    public ArrayList<Float> inputValueList(DeepInputDTO dto) {
-
+    public ArrayList<Float> inputValueList(InputDTO dto) {
         ArrayList<Float> outList = new ArrayList<>();
 
         ArrayList<CandleDTO> timeList = config.getCandleColl()
@@ -55,37 +49,44 @@ public class TimeSeriesInputEJB extends AbstractInput {
                 .limit(COUNT)
                 .into(new ArrayList<>());
 
-        for (CandleDTO input : timeList) {
-            outList.add(input.getOpen().floatValue());
-            outList.add(input.getLow().floatValue());
-            outList.add(input.getHigh().floatValue());
+        timeList.forEach(input -> {
             outList.add(input.getClose().floatValue());
-            outList.add(input.getBollinger().getBollingerUpper().floatValue());
-            outList.add(input.getBollinger().getBollingerLower().floatValue());
-        }
+        });
 
-        //System.out.println(dto.getCandle().getStartDate()+": "+ outList.toString());
         return outList;
     }
 
-    /**
-     * Get input column names
-     *
-     * @return
-     */
     @Override
     public ArrayList<String> inputColumnNameList() {
         ArrayList<String> cols = new ArrayList<>();
 
-        for (int i = 0; i < TimeSeriesInputEJB.COUNT; i++) {
-            cols.add("open_" + i);
-            cols.add("low_" + i);
-            cols.add("high_" + i);
+        for (int i = 0; i < BollingerInputEJB.COUNT; i++) {
             cols.add("close_" + i);
-            cols.add("bollingerUpper_" + i);
-            cols.add("bollingerLower_" + i);
         }
 
         return cols;
     }
+
+    @Override
+    public ArrayList<Float> outputValueList(InputDTO dto) {
+        ArrayList<Float> outputList = new ArrayList<>();
+
+        if (dto.getCandle() == null) {
+            outputList.add(0f);
+            outputList.add(0f);
+        } else if (dto.getCandle().getBollinger().isBollingerBuy()) {
+            outputList.add(1f);
+            outputList.add(0f);
+        } else if (dto.getCandle().getBollinger().isBollingerSell()) {
+            outputList.add(0f);
+            outputList.add(1f);
+        } else {
+            outputList.add(0f);
+            outputList.add(0f);
+        }
+
+        return outputList;
+
+    }
+
 }

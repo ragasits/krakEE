@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep;
+package krakee.input;
 
 import krakee.calc.CandleDTO;
 import org.bson.types.ObjectId;
@@ -24,17 +24,17 @@ import org.bson.types.ObjectId;
  *
  * @author rgt
  */
-public class DeepInputDTO {
+public class InputDTO {
 
     private ObjectId id;
     private String learnName;
     private CandleDTO candle;
     private String trade;
 
-    public DeepInputDTO() {
+    public InputDTO() {
     }
 
-    public DeepInputDTO(String learnName, CandleDTO candle, String trade) {
+    public InputDTO(String learnName, CandleDTO candle, String trade) {
         this.learnName = learnName;
         this.candle = candle;
         this.trade = trade;

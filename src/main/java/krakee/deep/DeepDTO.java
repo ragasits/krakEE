@@ -16,6 +16,7 @@
  */
 package krakee.deep;
 
+import krakee.input.type.InputType;
 import deepnetts.eval.ConfusionMatrix;
 import deepnetts.net.layers.activation.ActivationType;
 import deepnetts.net.loss.LossType;

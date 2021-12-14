@@ -15,9 +15,9 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import krakee.calc.CandleDTO;
 import krakee.deep.DeepDTO;
-import krakee.deep.DeepInputDTO;
-import krakee.deep.DeepRowDTO;
-import krakee.deep.DeepStatDTO;
+import krakee.input.InputDTO;
+import krakee.input.InputRowDTO;
+import krakee.input.InputStatDTO;
 import krakee.get.TradePairDTO;
 import krakee.learn.LearnDTO;
 import krakee.profit.ProfitDTO;
@@ -79,9 +79,9 @@ public class ConfigEJB {
     private MongoCollection<ProfitDTO> profitColl;
     private MongoCollection<LearnDTO> learnColl;
     private MongoCollection<DeepDTO> deepColl;
-    private MongoCollection<DeepInputDTO> deepInputColl;
-    private MongoCollection<DeepRowDTO> deepRowColl;
-    private MongoCollection<DeepStatDTO> deepStatColl;
+    private MongoCollection<InputDTO> inputColl;
+    private MongoCollection<InputRowDTO> inputRowColl;
+    private MongoCollection<InputStatDTO> inputStatColl;
 
     /**
      * Initiate: - Set proxy - MongoDB Create collections and missing indexes
@@ -128,9 +128,9 @@ public class ConfigEJB {
         this.learnColl = this.database.getCollection("learn", LearnDTO.class);
         this.deepColl = this.database.getCollection("deep", DeepDTO.class);
 
-        this.deepInputColl = this.database.getCollection("deepInput", DeepInputDTO.class);
-        if (!this.isIndex(deepInputColl, "deepName_1")) {
-            this.deepInputColl.createIndex(
+        this.inputColl = this.database.getCollection("input", InputDTO.class);
+        if (!this.isIndex(inputColl, "deepName_1")) {
+            this.inputColl.createIndex(
                     Indexes.compoundIndex(
                             Indexes.ascending("deepName"),
                             Indexes.ascending("candle.startDate")
@@ -138,11 +138,11 @@ public class ConfigEJB {
             );
         }
 
-        this.deepRowColl = this.database.getCollection("deepRow", DeepRowDTO.class);
+        this.inputRowColl = this.database.getCollection("inputRow", InputRowDTO.class);
 
-        this.deepStatColl = this.database.getCollection("deepStat", DeepStatDTO.class);
-        if (!this.isIndex(deepInputColl, "learnName_1_inputType_1")) {
-            this.deepStatColl.createIndex(
+        this.inputStatColl = this.database.getCollection("inputStat", InputStatDTO.class);
+        if (!this.isIndex(inputColl, "learnName_1_inputType_1")) {
+            this.inputStatColl.createIndex(
                     Indexes.compoundIndex(
                             Indexes.ascending("learnName"),
                             Indexes.ascending("inputType")
@@ -200,16 +200,16 @@ public class ConfigEJB {
         return deepColl;
     }
 
-    public MongoCollection<DeepInputDTO> getDeepInputColl() {
-        return deepInputColl;
+    public MongoCollection<InputDTO> getInputColl() {
+        return inputColl;
     }
 
-    public MongoCollection<DeepRowDTO> getDeepRowColl() {
-        return deepRowColl;
+    public MongoCollection<InputRowDTO> getInputRowColl() {
+        return inputRowColl;
     }
 
-    public MongoCollection<DeepStatDTO> getDeepStatColl() {
-        return deepStatColl;
+    public MongoCollection<InputStatDTO> getInputStatColl() {
+        return inputStatColl;
     }
 
     public String getKrakenURL() {

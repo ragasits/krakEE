@@ -31,10 +31,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import krakee.MyException;
-import krakee.deep.DeepInputEJB;
-import krakee.deep.DeepRowDTO;
-import krakee.deep.DeepRowEJB;
-import krakee.deep.InputType;
+import krakee.input.InputEJB;
+import krakee.input.InputRowDTO;
+import krakee.input.InputRowEJB;
+import krakee.input.type.InputType;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -50,13 +50,13 @@ public class DeepInputBean implements Serializable {
     private static final String FILENAME = "deepRow.csv";
 
     @EJB
-    private DeepInputEJB deepInputEjb;
+    private InputEJB deepInputEjb;
     @EJB
-    private DeepRowEJB deepRowEjb;
+    private InputRowEJB deepRowEjb;
     @Inject
     private DeepStatBean deepStatBean;
 
-    private ArrayList<DeepRowDTO> rowList;
+    private ArrayList<InputRowDTO> rowList;
     private String selectedLearnName;
     private String selectedInputType;
     private StreamedContent file;
@@ -118,7 +118,7 @@ public class DeepInputBean implements Serializable {
         StringBuilder sb = new StringBuilder();
 
         //Header
-        DeepRowDTO dto = this.rowList.get(0);
+        InputRowDTO dto = this.rowList.get(0);
         ArrayList columns = dto.getColumnNames();
         for (Object column : columns) {
             if (sb.length() != 0) {
@@ -129,8 +129,8 @@ public class DeepInputBean implements Serializable {
         csvList.add(sb.toString());
 
         //Rows
-        ArrayList<DeepRowDTO> rows = this.rowList;
-        for (DeepRowDTO row : rows) {
+        ArrayList<InputRowDTO> rows = this.rowList;
+        for (InputRowDTO row : rows) {
             sb = new StringBuilder();
             //Input
             for (Float input : row.getInputRow()) {
@@ -216,7 +216,7 @@ public class DeepInputBean implements Serializable {
      *
      * @return
      */
-    public ArrayList<DeepRowDTO> getDeepRows() {
+    public ArrayList<InputRowDTO> getDeepRows() {
         return this.rowList;
 
     }
@@ -236,7 +236,7 @@ public class DeepInputBean implements Serializable {
      * @return
      */
     public ArrayList<String> getColumnNames() {
-        DeepRowDTO dto = deepRowEjb.getFirst(this.selectedLearnName, this.selectedInputType);
+        InputRowDTO dto = deepRowEjb.getFirst(this.selectedLearnName, this.selectedInputType);
         if (dto != null) {
             return dto.getColumnNames();
         }
@@ -250,7 +250,7 @@ public class DeepInputBean implements Serializable {
      * @param colIdx
      * @return
      */
-    public Float getRowValue(Integer rowIdx, Integer colIdx, DeepRowDTO row) {
+    public Float getRowValue(Integer rowIdx, Integer colIdx, InputRowDTO row) {
         if (row.getInputRow().size() > colIdx) {
             return row.getInputRow().get(colIdx);
         } else {
@@ -266,11 +266,11 @@ public class DeepInputBean implements Serializable {
         this.selectedLearnName = selectedLearnName;
     }
 
-    public DeepInputEJB getDeepInputEjb() {
+    public InputEJB getDeepInputEjb() {
         return deepInputEjb;
     }
 
-    public void setDeepInputEjb(DeepInputEJB deepInputEjb) {
+    public void setDeepInputEjb(InputEJB deepInputEjb) {
         this.deepInputEjb = deepInputEjb;
     }
 

@@ -30,7 +30,7 @@ import krakee.MyException;
 import krakee.deep.DeepDTO;
 import krakee.deep.DeepEJB;
 import krakee.deep.DeepLayerDTO;
-import krakee.deep.DeepRowEJB;
+import krakee.input.InputRowEJB;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -49,7 +49,7 @@ public class DeepBean implements Serializable {
     @EJB
     private DeepEJB deepEjb;
     @EJB
-    private DeepRowEJB deepRowEjb;
+    private InputRowEJB deepRowEjb;
     @Inject
     private DeepDatasetBean datasetBean;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 rgt
+ * Copyright (C) 2021 rgt
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,17 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep;
+package krakee.input;
 
 /**
- * Input types
- *
+ * Store information about values
  * @author rgt
  */
-public enum InputType {
-    AllCandle,
-    TimeSeries,
-    Bollinger,
-    AllFlag,
-    Iris
+public class InputStatCountDTO {
+    private Float value;
+    private Integer count;
+
+    public InputStatCountDTO() {
+    }
+
+    public InputStatCountDTO(Float value, Integer count) {
+        this.value = value;
+        this.count = count;
+    }
+    
+    public Float getValue() {
+        return value;
+    }
+
+    public void setValue(Float value) {
+        this.value = value;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+    
 }

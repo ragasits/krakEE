@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep;
+package krakee.input;
 
+import krakee.input.InputStatCountDTO;
 import java.util.ArrayList;
 import org.bson.types.ObjectId;
 
@@ -24,7 +25,7 @@ import org.bson.types.ObjectId;
  *
  * @author rgt
  */
-public class DeepStatDTO {
+public class InputStatDTO {
 
     private ObjectId id;
     private String learnName;
@@ -32,13 +33,13 @@ public class DeepStatDTO {
 
     private Integer columnId;
     private String columnName;
-    private ArrayList<DeepStatCountDTO> valueCounts;
+    private ArrayList<InputStatCountDTO> valueCounts;
     private Integer uniqueCount;
 
-    public DeepStatDTO() {
+    public InputStatDTO() {
     }
 
-    public DeepStatDTO(String learnName, String inputType, Integer columnId, String columnName) {
+    public InputStatDTO(String learnName, String inputType, Integer columnId, String columnName) {
         this.learnName = learnName;
         this.inputType = inputType;
         this.columnId = columnId;
@@ -85,11 +86,11 @@ public class DeepStatDTO {
         this.columnName = columnName;
     }
 
-    public ArrayList<DeepStatCountDTO> getValueCounts() {
+    public ArrayList<InputStatCountDTO> getValueCounts() {
         return valueCounts;
     }
 
-    public void setValueCounts(ArrayList<DeepStatCountDTO> valueCounts) {
+    public void setValueCounts(ArrayList<InputStatCountDTO> valueCounts) {
         this.valueCounts = valueCounts;
     }
 

@@ -14,8 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep;
+package krakee.input;
 
+import krakee.input.type.InputType;
+import krakee.input.InputEJB;
+import krakee.input.InputRowDTO;
+import krakee.input.InputDTO;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import deepnetts.data.TabularDataSet;
@@ -25,12 +29,12 @@ import javax.ejb.Stateless;
 import krakee.Common;
 import krakee.ConfigEJB;
 import krakee.MyException;
-import krakee.deep.input.AbstractInput;
-import krakee.deep.input.AllCandleInputEJB;
-import krakee.deep.input.AllFlagInputEJB;
-import krakee.deep.input.BollingerInputEJB;
-import krakee.deep.input.IrisInputEJB;
-import krakee.deep.input.TimeSeriesInputEJB;
+import krakee.input.type.AbstractInput;
+import krakee.input.type.AllCandleInputEJB;
+import krakee.input.type.AllFlagInputEJB;
+import krakee.input.type.BollingerInputEJB;
+import krakee.input.type.IrisInputEJB;
+import krakee.input.type.TimeSeriesInputEJB;
 
 /**
  * Manage input rows
@@ -38,12 +42,12 @@ import krakee.deep.input.TimeSeriesInputEJB;
  * @author rgt
  */
 @Stateless
-public class DeepRowEJB {
+public class InputRowEJB {
 
     @EJB
     ConfigEJB configEjb;
     @EJB
-    DeepInputEJB deepInputEjb;
+    InputEJB deepInputEjb;
     @EJB
     private AllCandleInputEJB allCandleInputEjb;
     @EJB
@@ -62,8 +66,8 @@ public class DeepRowEJB {
      * @param inputType
      * @return
      */
-    public ArrayList<DeepRowDTO> get(String learnName, String inputType) {
-        return configEjb.getDeepRowColl()
+    public ArrayList<InputRowDTO> get(String learnName, String inputType) {
+        return configEjb.getInputRowColl()
                 .find(
                         and(eq("learnName", learnName), eq("inputType", inputType))
                 )
@@ -78,8 +82,8 @@ public class DeepRowEJB {
      * @param inputType
      * @return
      */
-    public DeepRowDTO getFirst(String learnName, String inputType) {
-        return configEjb.getDeepRowColl()
+    public InputRowDTO getFirst(String learnName, String inputType) {
+        return configEjb.getInputRowColl()
                 .find(
                         and(eq("learnName", learnName), eq("inputType", inputType))
                 )
@@ -93,7 +97,7 @@ public class DeepRowEJB {
      * @return
      */
     public ArrayList<String> getInputTypes(String learnName) {
-        return configEjb.getDeepRowColl()
+        return configEjb.getInputRowColl()
                 .distinct("inputType", String.class)
                 .into(new ArrayList<>());
     }
@@ -105,14 +109,14 @@ public class DeepRowEJB {
      * @param inputType
      */
     private void delete(String learnName, String inputType) {
-        configEjb.getDeepRowColl().deleteMany(
+        configEjb.getInputRowColl().deleteMany(
                 and(eq("learnName", learnName), eq("inputType", inputType))
         );
     }
 
     public void deleteColumn(String learnName, String inputType, Integer columnId) {
-        ArrayList<DeepRowDTO> dtoList = this.get(learnName, inputType);
-        for (DeepRowDTO dto : dtoList) {
+        ArrayList<InputRowDTO> dtoList = this.get(learnName, inputType);
+        for (InputRowDTO dto : dtoList) {
             //Delete from inputColumnNames
             dto.getInputColumnNames().remove(columnId.intValue());
 
@@ -120,7 +124,7 @@ public class DeepRowEJB {
             dto.getInputRow().remove(columnId.intValue());
             
             //Write changes
-            configEjb.getDeepRowColl().replaceOne(eq("_id", dto.getId()), dto);
+            configEjb.getInputRowColl().replaceOne(eq("_id", dto.getId()), dto);
         }
         
         
@@ -161,17 +165,17 @@ public class DeepRowEJB {
      */
     private void fillRowFromLearn(String learnName, String inputType) throws MyException {
         this.delete(learnName, inputType);
-        ArrayList<DeepInputDTO> inputList = deepInputEjb.getByLearnName(learnName);
+        ArrayList<InputDTO> inputList = deepInputEjb.getByLearnName(learnName);
         AbstractInput dataset = this.selectDatasetEjb(InputType.valueOf(inputType));
 
-        for (DeepInputDTO dto : inputList) {
+        for (InputDTO dto : inputList) {
             ArrayList<Float> inputRow = dataset.inputValueList(dto);
             ArrayList<Float> outputRow = dataset.outputValueList(dto);
             ArrayList<String> inputColumnNames = dataset.inputColumnNameList();
             ArrayList<String> outputColumnNames = dataset.outputColumnNameList();
 
-            DeepRowDTO row = new DeepRowDTO(learnName, inputType, inputColumnNames, outputColumnNames, inputRow, outputRow);
-            configEjb.getDeepRowColl().insertOne(row);
+            InputRowDTO row = new InputRowDTO(learnName, inputType, inputColumnNames, outputColumnNames, inputRow, outputRow);
+            configEjb.getInputRowColl().insertOne(row);
         }
     }
 
@@ -204,8 +208,8 @@ public class DeepRowEJB {
             ArrayList<String> outputColumnNames = irisInputEjb.outputColumnNameList();
 
             //Store row
-            DeepRowDTO row = new DeepRowDTO(learnName, inputType, inputColumnNames, outputColumnNames, inputRow, outputRow);
-            configEjb.getDeepRowColl().insertOne(row);
+            InputRowDTO row = new InputRowDTO(learnName, inputType, inputColumnNames, outputColumnNames, inputRow, outputRow);
+            configEjb.getInputRowColl().insertOne(row);
         }
     }
 
@@ -248,7 +252,7 @@ public class DeepRowEJB {
      * @throws MyException
      */
     public TabularDataSet fillDataset(String learnName, String inputType) throws MyException {
-        ArrayList<DeepRowDTO> rowList = this.get(learnName, inputType);
+        ArrayList<InputRowDTO> rowList = this.get(learnName, inputType);
 
         int numInputs = rowList.get(0).getInputRow().size();
         int numOutputs = rowList.get(0).getOutputRow().size();
@@ -261,7 +265,7 @@ public class DeepRowEJB {
 
         dataSet.setColumnNames(columns.toArray(String[]::new));
 
-        for (DeepRowDTO row : rowList) {
+        for (InputRowDTO row : rowList) {
             addDataset(dataSet, row.getInputRow(), row.getOutputRow());
         }
 

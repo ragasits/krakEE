@@ -23,9 +23,9 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
-import krakee.deep.DeepStatCountDTO;
-import krakee.deep.DeepStatDTO;
-import krakee.deep.DeepStatEJB;
+import krakee.input.InputStatCountDTO;
+import krakee.input.InputStatDTO;
+import krakee.input.InputStatEJB;
 
 /**
  *
@@ -36,7 +36,7 @@ import krakee.deep.DeepStatEJB;
 public class DeepStatBean implements Serializable {
 
     @EJB
-    private DeepStatEJB deepStatEjb;
+    private InputStatEJB deepStatEjb;
 
     private static final long serialVersionUID = 1L;
     private String learnName;
@@ -58,7 +58,7 @@ public class DeepStatBean implements Serializable {
         deepStatEjb.deleteColumn(this.learnName, this.inputType, columnId);
     }
 
-    public ArrayList<DeepStatDTO> getColumnList() {
+    public ArrayList<InputStatDTO> getColumnList() {
         return deepStatEjb.get(this.learnName, this.inputType);
     }
 
@@ -84,8 +84,8 @@ public class DeepStatBean implements Serializable {
      * @param columnId
      * @return
      */
-    public ArrayList<DeepStatCountDTO> getUniqueList(Integer columnId) {
-        DeepStatDTO dto = deepStatEjb.get(this.learnName, this.inputType, columnId);
+    public ArrayList<InputStatCountDTO> getUniqueList(Integer columnId) {
+        InputStatDTO dto = deepStatEjb.get(this.learnName, this.inputType, columnId);
         return dto.getValueCounts();
     }
 

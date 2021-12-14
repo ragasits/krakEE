@@ -16,6 +16,9 @@
  */
 package krakee.deep;
 
+import krakee.input.type.InputType;
+import krakee.input.InputRowEJB;
+import krakee.input.InputRowDTO;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import deepnetts.data.TabularDataSet;
@@ -39,7 +42,6 @@ import javax.visrec.ml.data.preprocessing.Scaler;
 import javax.visrec.ml.eval.EvaluationMetrics;
 import krakee.ConfigEJB;
 import krakee.MyException;
-import krakee.deep.input.TimeSeriesNormalizer;
 
 /**
  * Manage Deep Learning
@@ -55,7 +57,7 @@ public class DeepEJB {
     @EJB
     private ConfigEJB configEjb;
     @EJB
-    private DeepRowEJB deepRowEjb;
+    private InputRowEJB deepRowEjb;
 
     /**
      * Choose and execute normalization
@@ -126,7 +128,7 @@ public class DeepEJB {
         dto = this.calcTestCount(dto, (TabularDataSet) trainTestSet[1]);
 
         //counts input,output 
-        DeepRowDTO row = deepRowEjb.getFirst(dto.getLearnName(), dto.getInputType());
+        InputRowDTO row = deepRowEjb.getFirst(dto.getLearnName(), dto.getInputType());
         int numInputs = row.getInputColumnNames().size();
         int numOutputs = row.getOutputColumnNames().size();
 

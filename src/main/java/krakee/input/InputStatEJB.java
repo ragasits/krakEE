@@ -14,8 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep;
+package krakee.input;
 
+import krakee.input.InputStatDTO;
+import krakee.input.InputStatCountDTO;
+import krakee.input.InputRowEJB;
+import krakee.input.InputRowDTO;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -36,12 +40,12 @@ import org.bson.Document;
  * @author rgt
  */
 @Stateless
-public class DeepStatEJB {
+public class InputStatEJB {
 
     @EJB
     ConfigEJB configEjb;
     @EJB
-    DeepRowEJB deepRowEjb;
+    InputRowEJB deepRowEjb;
 
     /**
      * get stats
@@ -50,8 +54,8 @@ public class DeepStatEJB {
      * @param inputType
      * @return
      */
-    public ArrayList<DeepStatDTO> get(String learnName, String inputType) {
-        return configEjb.getDeepStatColl()
+    public ArrayList<InputStatDTO> get(String learnName, String inputType) {
+        return configEjb.getInputStatColl()
                 .find(
                         and(eq("learnName", learnName), eq("inputType", inputType))
                 )
@@ -66,8 +70,8 @@ public class DeepStatEJB {
      * @param columnId
      * @return
      */
-    public DeepStatDTO get(String learnName, String inputType, Integer columnId) {
-        return configEjb.getDeepStatColl()
+    public InputStatDTO get(String learnName, String inputType, Integer columnId) {
+        return configEjb.getInputStatColl()
                 .find(
                         and(eq("learnName", learnName), eq("inputType", inputType), eq("columnId", columnId))
                 )
@@ -81,15 +85,15 @@ public class DeepStatEJB {
      * @param inputType
      */
     private void delete(String learnName, String inputType) {
-        configEjb.getDeepStatColl().deleteMany(
+        configEjb.getInputStatColl().deleteMany(
                 and(eq("learnName", learnName), eq("inputType", inputType))
         );
     }
 
     public void deleteColumn(String learnName, String inputType, Integer columnId) {
         //Delete from stat
-        DeepStatDTO stat = this.get(learnName, inputType, columnId);
-        configEjb.getDeepStatColl().deleteOne(eq("_id", stat.getId()));
+        InputStatDTO stat = this.get(learnName, inputType, columnId);
+        configEjb.getInputStatColl().deleteOne(eq("_id", stat.getId()));
 
         //Delete from row
         deepRowEjb.deleteColumn(learnName, inputType, columnId);
@@ -104,17 +108,17 @@ public class DeepStatEJB {
     public void fillColumns(String learnname, String inputType) {
         this.delete(learnname, inputType);
 
-        DeepRowDTO firstRow = deepRowEjb.getFirst(learnname, inputType);
+        InputRowDTO firstRow = deepRowEjb.getFirst(learnname, inputType);
         ArrayList<String> columnList = firstRow.getInputColumnNames();
 
-        ArrayList<DeepStatDTO> dtoList = new ArrayList<>();
+        ArrayList<InputStatDTO> dtoList = new ArrayList<>();
 
         for (int i = 0; i < columnList.size(); i++) {
-            DeepStatDTO dto = new DeepStatDTO(learnname, inputType, i, columnList.get(i));
+            InputStatDTO dto = new InputStatDTO(learnname, inputType, i, columnList.get(i));
             dtoList.add(dto);
         }
 
-        configEjb.getDeepStatColl().insertMany(dtoList);
+        configEjb.getInputStatColl().insertMany(dtoList);
     }
 
     /**
@@ -126,7 +130,7 @@ public class DeepStatEJB {
      */
     private void uniqueColumn(String learnname, String inputType, Integer columnId) {
         // Identify Columns That Contain a Single Value
-        MongoCursor<Document> cursor = configEjb.getDeepRowColl()
+        MongoCursor<Document> cursor = configEjb.getInputRowColl()
                 .aggregate(
                         Arrays.asList(
                                 //Basic filter
@@ -151,7 +155,7 @@ public class DeepStatEJB {
                 .iterator();
 
         //Read result
-        ArrayList<DeepStatCountDTO> countList = new ArrayList<>();
+        ArrayList<InputStatCountDTO> countList = new ArrayList<>();
         int uniqueCount = 0;
 
         while (cursor.hasNext()) {
@@ -161,15 +165,15 @@ public class DeepStatEJB {
 
             Float value = doc.getDouble("_id").floatValue();
             Integer count = doc.getInteger("count");
-            countList.add(new DeepStatCountDTO(value, count));
+            countList.add(new InputStatCountDTO(value, count));
             uniqueCount++;
         }
 
         //Store result        
-        DeepStatDTO dto = this.get(learnname, inputType, columnId);
+        InputStatDTO dto = this.get(learnname, inputType, columnId);
         dto.setValueCounts(countList);
         dto.setUniqueCount(uniqueCount);
-        configEjb.getDeepStatColl().replaceOne(eq("_id", dto.getId()), dto);
+        configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);
     }
 
     /**
@@ -179,8 +183,8 @@ public class DeepStatEJB {
      * @param inputType
      */
     public void analyzeColumns(String learnname, String inputType) {
-        ArrayList<DeepStatDTO> colList = this.get(learnname, inputType);
-        for (DeepStatDTO dto : colList) {
+        ArrayList<InputStatDTO> colList = this.get(learnname, inputType);
+        for (InputStatDTO dto : colList) {
             this.uniqueColumn(learnname, inputType, dto.getColumnId());
         }
 

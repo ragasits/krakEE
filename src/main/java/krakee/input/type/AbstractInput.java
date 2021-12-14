@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep.input;
+package krakee.input.type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.ejb.EJB;
-import krakee.deep.DeepInputDTO;
-import krakee.deep.DeepInputEJB;
+import krakee.input.InputDTO;
+import krakee.input.InputEJB;
 
 /**
  * Transform candle all values into DataSet
@@ -30,7 +30,7 @@ import krakee.deep.DeepInputEJB;
 public abstract class AbstractInput {
 
     @EJB
-    DeepInputEJB inputEjb;
+    InputEJB inputEjb;
 
     /**
      * Get one input value
@@ -40,9 +40,9 @@ public abstract class AbstractInput {
      * @param colIdx
      * @return
      */
-    public Float getInputValue(ArrayList<DeepInputDTO> inputList, Integer rowIdx, Integer colIdx) {
+    public Float getInputValue(ArrayList<InputDTO> inputList, Integer rowIdx, Integer colIdx) {
 
-        DeepInputDTO dto = inputList.get(rowIdx);
+        InputDTO dto = inputList.get(rowIdx);
         ArrayList<Float> row = new ArrayList<>();
         row.addAll(this.inputValueList(dto));
         row.addAll(this.outputValueList(dto));
@@ -56,7 +56,7 @@ public abstract class AbstractInput {
      * @param dto
      * @return
      */
-    public ArrayList<Float> outputValueList(DeepInputDTO dto) {
+    public ArrayList<Float> outputValueList(InputDTO dto) {
         ArrayList<Float> outputList = new ArrayList<>();
 
         if (dto.getCandle() == null) {
@@ -83,7 +83,7 @@ public abstract class AbstractInput {
      * @param dto
      * @return
      */
-    public abstract ArrayList<Float> inputValueList(DeepInputDTO dto);
+    public abstract ArrayList<Float> inputValueList(InputDTO dto);
 
     /**
      * Create output column names list

@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep.input;
+package krakee.input.type;
 
+import krakee.input.type.AbstractInput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.ejb.Stateless;
-import krakee.deep.DeepInputDTO;
+import krakee.input.InputDTO;
 
 /**
  * Iris reference data
@@ -119,7 +120,7 @@ public class IrisInputEJB extends AbstractInput {
     }
 
     @Override
-    public ArrayList<Float> inputValueList(DeepInputDTO dto) {
+    public ArrayList<Float> inputValueList(InputDTO dto) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

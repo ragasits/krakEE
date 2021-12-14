@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package krakee.deep;
+package krakee.input;
 
 import java.util.ArrayList;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
@@ -25,7 +25,7 @@ import org.bson.types.ObjectId;
  *
  * @author rgt
  */
-public class DeepRowDTO {
+public class InputRowDTO {
 
     private ObjectId id;
     private String learnName;
@@ -37,10 +37,10 @@ public class DeepRowDTO {
     private ArrayList<Float> inputRow;
     private ArrayList<Float> outputRow;
 
-    public DeepRowDTO() {
+    public InputRowDTO() {
     }
 
-    public DeepRowDTO(String learnName, String inputType, ArrayList<String> inputColumnNames, ArrayList<String> outputColumnNames, ArrayList<Float> inputRow, ArrayList<Float> outputRow) {
+    public InputRowDTO(String learnName, String inputType, ArrayList<String> inputColumnNames, ArrayList<String> outputColumnNames, ArrayList<Float> inputRow, ArrayList<Float> outputRow) {
         this.learnName = learnName;
         this.inputType = inputType;
         this.inputColumnNames = inputColumnNames;

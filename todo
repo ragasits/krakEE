@@ -1,5 +1,8 @@
-+ Delete Columns That Contain a Single Value
-
+Refactoring:
++ Move input classes to krakee.input
++ Rename collection from deepInput to Input
++ Rename collection from deepRow to InputRow
++ Rename collection from deepStat to InputStat
 
 
 Create statistics from rows:
@@ -16,6 +19,7 @@ Future:
 --------
 - Migrate to JakartaEE 9.1
 - Migrate to Eclipse Microprofile 5
+- Migrate to JDK17
 - Optimize mongodb
 - Candle1d (one day) + Simulation
 
