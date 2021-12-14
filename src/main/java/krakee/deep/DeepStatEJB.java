@@ -86,6 +86,15 @@ public class DeepStatEJB {
         );
     }
 
+    public void deleteColumn(String learnName, String inputType, Integer columnId) {
+        //Delete from stat
+        DeepStatDTO stat = this.get(learnName, inputType, columnId);
+        configEjb.getDeepStatColl().deleteOne(eq("_id", stat.getId()));
+
+        //Delete from row
+        deepRowEjb.deleteColumn(learnName, inputType, columnId);
+    }
+
     /**
      * Fill collection with columns as rows
      *

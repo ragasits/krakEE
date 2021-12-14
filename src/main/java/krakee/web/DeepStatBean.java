@@ -54,6 +54,10 @@ public class DeepStatBean implements Serializable {
         deepStatEjb.analyzeColumns(this.learnName, this.inputType);
     }
 
+    public void oneleteColumn(Integer columnId) {
+        deepStatEjb.deleteColumn(this.learnName, this.inputType, columnId);
+    }
+
     public ArrayList<DeepStatDTO> getColumnList() {
         return deepStatEjb.get(this.learnName, this.inputType);
     }

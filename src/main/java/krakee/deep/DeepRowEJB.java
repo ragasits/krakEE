@@ -34,6 +34,7 @@ import krakee.deep.input.TimeSeriesInputEJB;
 
 /**
  * Manage input rows
+ *
  * @author rgt
  */
 @Stateless
@@ -72,9 +73,10 @@ public class DeepRowEJB {
 
     /**
      * Get first row
+     *
      * @param learnName
      * @param inputType
-     * @return 
+     * @return
      */
     public DeepRowDTO getFirst(String learnName, String inputType) {
         return configEjb.getDeepRowColl()
@@ -106,6 +108,23 @@ public class DeepRowEJB {
         configEjb.getDeepRowColl().deleteMany(
                 and(eq("learnName", learnName), eq("inputType", inputType))
         );
+    }
+
+    public void deleteColumn(String learnName, String inputType, Integer columnId) {
+        ArrayList<DeepRowDTO> dtoList = this.get(learnName, inputType);
+        for (DeepRowDTO dto : dtoList) {
+            //Delete from inputColumnNames
+            dto.getInputColumnNames().remove(columnId.intValue());
+
+            //Delete From inputRow            
+            dto.getInputRow().remove(columnId.intValue());
+            
+            //Write changes
+            configEjb.getDeepRowColl().replaceOne(eq("_id", dto.getId()), dto);
+        }
+        
+        
+        
     }
 
     /**

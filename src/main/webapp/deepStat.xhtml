@@ -51,15 +51,22 @@
                         <p:column headerText="Name">
                             <p:outputLabel value="#{item.columnName}"/>
                         </p:column>                        
-                        
+
                         <p:column headerText="Unique">
                             <p:outputLabel value="#{item.uniqueCount}"/>
                         </p:column>                           
 
+                        <p:column headerText="Action">
+                            <p:commandButton value="Delete column"
+                                             action="#{deepStatBean.oneleteColumn(item.columnId)}" update="form1:panel"/>
+
+                        </p:column>                           
+
+
                         <p:column style="width:16px">
                             <p:rowToggler/>
                         </p:column>   
-                        
+
                         <p:ajax event="rowToggle" listener="#{deepStatBean.onRowToggle(item.columnId)}" />                        
 
                         <p:rowExpansion>
