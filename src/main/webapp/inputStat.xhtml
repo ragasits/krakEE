@@ -27,22 +27,22 @@
                 <p:panel>
                     <p:panelGrid columns="6">
                         <p:outputLabel value="Learn:" style="font-weight: bold" />  
-                        <p:outputLabel value="#{deepStatBean.learnName}" />  
+                        <p:outputLabel value="#{inputStatBean.learnName}" />  
 
                         <p:outputLabel value="Input:" style="font-weight: bold"/>                        
-                        <p:outputLabel value="#{deepStatBean.inputType}" />     
+                        <p:outputLabel value="#{inputStatBean.inputType}" />     
 
                         <p:commandButton value="Column"  id="colBtn" 
-                                         action="#{deepStatBean.onFillColumns()}" update="panel"/>
+                                         action="#{inputStatBean.onFillColumns()}" update="panel"/>
 
                         <p:commandButton value="Analyze"  id="anBtn"
-                                         action="#{deepStatBean.onAnalyzeColumns()}" update="panel"/>
+                                         action="#{inputStatBean.onAnalyzeColumns()}" update="panel"/>
 
                     </p:panelGrid>
                 </p:panel>
 
                 <p:panel id="panel">
-                    <p:dataTable value="#{deepStatBean.columnList}" var="item" tableStyle="width:auto" 
+                    <p:dataTable value="#{inputStatBean.columnList}" var="item" tableStyle="width:auto" 
                                  id="tbl" rowKey="#{item.columnId}">>
                         <p:column headerText="ID">
                             <p:outputLabel value="#{item.columnId}"/>
@@ -56,22 +56,19 @@
                             <p:outputLabel value="#{item.uniqueCount}"/>
                         </p:column>                           
 
-                        <p:column headerText="Action">
-                            <p:commandButton value="Delete column"
-                                             action="#{deepStatBean.oneleteColumn(item.columnId)}" update="form1:panel"/>
-
+                        <p:column headerText="Variance">
+                            <p:outputLabel value="#{item.variance}"/>
                         </p:column>                           
-
 
                         <p:column style="width:16px">
                             <p:rowToggler/>
                         </p:column>   
 
-                        <p:ajax event="rowToggle" listener="#{deepStatBean.onRowToggle(item.columnId)}" />                        
+                        <p:ajax event="rowToggle"/>                        
 
                         <p:rowExpansion>
                             <p:panelGrid columns="3">
-                                <p:dataTable value="#{deepStatBean.getUniqueList(item.columnId)}" var="uniq" 
+                                <p:dataTable value="#{inputStatBean.getUniqueList(item.columnId)}" var="uniq" 
                                              tableStyle="width:auto" scrollHeight="150" scrollable="true">
                                     <p:column headerText="Value" sortBy="#{uniq.value}">
                                         <p:outputLabel value="#{uniq.value}"/>
@@ -81,9 +78,12 @@
                                         <p:outputLabel value="#{uniq.count}"/>
                                     </p:column>                                    
                                 </p:dataTable>
+
+                                <p:commandButton value="Delete column"
+                                                 action="#{inputStatBean.oneleteColumn(item.columnId)}" update="form1:panel"/>
+
                             </p:panelGrid>
                         </p:rowExpansion>                        
-
                     </p:dataTable>
                 </p:panel>
             </h:form>

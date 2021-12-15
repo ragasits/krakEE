@@ -1,12 +1,7 @@
-Refactoring:
-+ Move input classes to krakee.input
-+ Rename collection from deepInput to Input
-+ Rename collection from deepRow to InputRow
-+ Rename collection from deepStat to InputStat
-
++ Consider Columns That Have Very Few Values
++ Migrate to Payara 5.2021.10
 
 Create statistics from rows:
-- Consider Columns That Have Very Few Values
 - Remove Columns That Have A Low Variance
 - Identify Rows that Contain Duplicate Data
 - Delete Rows that Contain Duplicate Data

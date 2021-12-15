@@ -47,5 +47,5 @@ public class InputStatCountDTO {
     public void setCount(Integer count) {
         this.count = count;
     }
-    
+ 
 }

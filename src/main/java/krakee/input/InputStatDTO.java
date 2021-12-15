@@ -16,7 +16,6 @@
  */
 package krakee.input;
 
-import krakee.input.InputStatCountDTO;
 import java.util.ArrayList;
 import org.bson.types.ObjectId;
 
@@ -35,6 +34,7 @@ public class InputStatDTO {
     private String columnName;
     private ArrayList<InputStatCountDTO> valueCounts;
     private Integer uniqueCount;
+    private Float variance;
 
     public InputStatDTO() {
     }
@@ -101,4 +101,13 @@ public class InputStatDTO {
     public void setUniqueCount(Integer uniqueCount) {
         this.uniqueCount = uniqueCount;
     }
+
+    public Float getVariance() {
+        return variance;
+    }
+
+    public void setVariance(Float variance) {
+        this.variance = variance;
+    }
+
 }

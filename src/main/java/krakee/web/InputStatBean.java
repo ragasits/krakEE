@@ -32,8 +32,8 @@ import krakee.input.InputStatEJB;
  * @author rgt
  */
 @SessionScoped
-@Named(value = "deepStatBean")
-public class DeepStatBean implements Serializable {
+@Named(value = "inputStatBean")
+public class InputStatBean implements Serializable {
 
     @EJB
     private InputStatEJB deepStatEjb;
@@ -41,10 +41,6 @@ public class DeepStatBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private String learnName;
     private String inputType;
-
-    public void onRowToggle(Integer columnId) {
-        return;
-    }
 
     public void onFillColumns() {
         deepStatEjb.fillColumns(this.learnName, this.inputType);

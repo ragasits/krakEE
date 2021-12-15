@@ -43,8 +43,8 @@ import org.primefaces.model.StreamedContent;
  * @author rgt
  */
 @SessionScoped
-@Named(value = "deepInputBean")
-public class DeepInputBean implements Serializable {
+@Named(value = "inputBean")
+public class InputBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final String FILENAME = "deepRow.csv";
@@ -54,7 +54,7 @@ public class DeepInputBean implements Serializable {
     @EJB
     private InputRowEJB deepRowEjb;
     @Inject
-    private DeepStatBean deepStatBean;
+    private InputStatBean deepStatBean;
 
     private ArrayList<InputRowDTO> rowList;
     private String selectedLearnName;
@@ -106,7 +106,7 @@ public class DeepInputBean implements Serializable {
     public String onDeepStat() {
         deepStatBean.setLearnName(this.selectedLearnName);
         deepStatBean.setInputType(this.selectedInputType);
-        return "deepStat.xhtml?faces-redirect=true";
+        return "inputStat.xhtml?faces-redirect=true";
     }
 
     /**

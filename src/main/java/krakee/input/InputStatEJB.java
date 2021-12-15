@@ -16,10 +16,6 @@
  */
 package krakee.input;
 
-import krakee.input.InputStatDTO;
-import krakee.input.InputStatCountDTO;
-import krakee.input.InputRowEJB;
-import krakee.input.InputRowDTO;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
@@ -45,7 +41,7 @@ public class InputStatEJB {
     @EJB
     ConfigEJB configEjb;
     @EJB
-    InputRowEJB deepRowEjb;
+    InputRowEJB inputRowEjb;
 
     /**
      * get stats
@@ -90,13 +86,19 @@ public class InputStatEJB {
         );
     }
 
+    /**
+     * Delete column from Inputstat, InputRowEJB
+     * @param learnName
+     * @param inputType
+     * @param columnId 
+     */
     public void deleteColumn(String learnName, String inputType, Integer columnId) {
         //Delete from stat
         InputStatDTO stat = this.get(learnName, inputType, columnId);
         configEjb.getInputStatColl().deleteOne(eq("_id", stat.getId()));
 
         //Delete from row
-        deepRowEjb.deleteColumn(learnName, inputType, columnId);
+        inputRowEjb.deleteColumn(learnName, inputType, columnId);
     }
 
     /**
@@ -108,7 +110,7 @@ public class InputStatEJB {
     public void fillColumns(String learnname, String inputType) {
         this.delete(learnname, inputType);
 
-        InputRowDTO firstRow = deepRowEjb.getFirst(learnname, inputType);
+        InputRowDTO firstRow = inputRowEjb.getFirst(learnname, inputType);
         ArrayList<String> columnList = firstRow.getInputColumnNames();
 
         ArrayList<InputStatDTO> dtoList = new ArrayList<>();
@@ -129,6 +131,9 @@ public class InputStatEJB {
      * @param columnId
      */
     private void uniqueColumn(String learnname, String inputType, Integer columnId) {
+        //get row number
+        int rowNum = inputRowEjb.get(learnname, inputType).size();
+        
         // Identify Columns That Contain a Single Value
         MongoCursor<Document> cursor = configEjb.getInputRowColl()
                 .aggregate(
@@ -161,18 +166,21 @@ public class InputStatEJB {
         while (cursor.hasNext()) {
             Document doc = cursor.next();
 
-            System.out.println(doc);
-
             Float value = doc.getDouble("_id").floatValue();
             Integer count = doc.getInteger("count");
             countList.add(new InputStatCountDTO(value, count));
             uniqueCount++;
         }
 
-        //Store result        
+        //Store result      
         InputStatDTO dto = this.get(learnname, inputType, columnId);
+        //Consider Columns That Have Very Few Values
+        float variance = ((float)uniqueCount/rowNum)*100;
+
+        dto.setVariance(variance);
         dto.setValueCounts(countList);
-        dto.setUniqueCount(uniqueCount);
+        dto.setUniqueCount(uniqueCount);        
+
         configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);
     }
 

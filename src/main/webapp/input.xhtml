@@ -28,63 +28,63 @@
                 <p:panel>
                     <p:panelGrid columns="12">
                         <p:outputLabel value="Learn:" style="font-weight: bold" />  
-                        <p:selectOneMenu value="#{deepInputBean.selectedLearnName}" id="learnList">
+                        <p:selectOneMenu value="#{inputBean.selectedLearnName}" id="learnList">
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{learnBean.learnNameList}" var="names" 
                                            itemLabel="#{names}" itemValue="#{names}" />
                             <p:ajax update="panel,csvBtn, numInputs, numOutputs, statBtn" 
-                                    event="itemSelect" listener="#{deepInputBean.onGetRows()}"/>
+                                    event="itemSelect" listener="#{inputBean.onGetRows()}"/>
                         </p:selectOneMenu>
 
                         <p:commandButton value="DataSet"  id="dsBtn" 
-                                         action="#{deepInputBean.onDataset()}" update="panel"/>
+                                         action="#{inputBean.onDataset()}" update="panel"/>
 
                         <p:outputLabel value="Input:" style="font-weight: bold"/>
-                        <p:selectOneMenu value="#{deepInputBean.selectedInputType}" id="inputList">
+                        <p:selectOneMenu value="#{inputBean.selectedInputType}" id="inputList">
                             <f:selectItem itemLabel="-" itemValue=""/>
-                            <f:selectItems value="#{deepInputBean.inputTypes}" var="type" 
+                            <f:selectItems value="#{inputBean.inputTypes}" var="type" 
                                            itemLabel="#{type}" itemValue="#{type}" />
                             <p:ajax update="panel,csvBtn, numInputs, numOutputs, statBtn" 
-                                    event="itemSelect" listener="#{deepInputBean.onGetRows()}"/>
+                                    event="itemSelect" listener="#{inputBean.onGetRows()}"/>
                         </p:selectOneMenu>                        
 
                         <p:commandButton value="Row"  id="rowBtn" 
-                                         action="#{deepInputBean.onRow()}" update="panel"/>
+                                         action="#{inputBean.onRow()}" update="panel"/>
 
                         <p:commandButton value="ToCsv" id="csvBtn"
-                                         disabled="#{deepInputBean.disableButtons}"
-                                         actionListener="#{deepInputBean.onCSV}"
+                                         disabled="#{inputBean.disableButtons}"
+                                         actionListener="#{inputBean.onCSV}"
                                          onclick="PrimeFaces.monitorDownload(start, stop);"
                                          ajax="false">
-                            <p:fileDownload value="#{deepInputBean.file}" />
+                            <p:fileDownload value="#{inputBean.file}" />
                         </p:commandButton>      
                         
 
                         <p:commandButton value="ToStat"  id="statBtn" 
-                                         disabled="#{deepInputBean.disableButtons}" 
-                                         action="#{deepInputBean.onDeepStat()}"/>
+                                         disabled="#{inputBean.disableButtons}" 
+                                         action="#{inputBean.onDeepStat()}"/>
                         
 
                         <p:outputLabel value="numInputs:" style="font-weight: bold"/>
-                        <p:outputLabel value="#{deepInputBean.numInputs}" id="numInputs"/>
+                        <p:outputLabel value="#{inputBean.numInputs}" id="numInputs"/>
 
                         <p:outputLabel value="numOutputs:" style="font-weight: bold" />
-                        <p:outputLabel value="#{deepInputBean.numOutputs}" id="numOutputs"/>                        
+                        <p:outputLabel value="#{inputBean.numOutputs}" id="numOutputs"/>                        
                     </p:panelGrid>
                 </p:panel>
 
                 <p:panel id="panel">
-                    <p:dataTable var="rowName" value="#{deepInputBean.deepRows}" id="tbl"
+                    <p:dataTable var="rowName" value="#{inputBean.deepRows}" id="tbl"
                                  rowIndexVar="rowIdx"
                                  tableStyle="width:auto" scrollable="true" paginator="true" rows="25"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                                  rowsPerPageTemplate="25, 50,100">
 
-                        <p:columns var="columnName" value="#{deepInputBean.columnNames}" 
+                        <p:columns var="columnName" value="#{inputBean.columnNames}" 
                                    headerText="#{columnName}" columnIndexVar="colIdx">
 
-                            <ui:repeat value="#{deepInputBean.getRowValue(rowIdx, colIdx, rowName)}" var="data">
+                            <ui:repeat value="#{inputBean.getRowValue(rowIdx, colIdx, rowName)}" var="data">
                                 <h:outputText value="#{data}"/>
                             </ui:repeat>
                         </p:columns>
