@@ -23,13 +23,15 @@ package krakee.input;
 public class InputStatCountDTO {
     private Float value;
     private Integer count;
+    private Float percent;
 
     public InputStatCountDTO() {
     }
 
-    public InputStatCountDTO(Float value, Integer count) {
+    public InputStatCountDTO(Float value, Integer count, Float percent) {
         this.value = value;
         this.count = count;
+        this.percent = percent;
     }
     
     public Float getValue() {
@@ -47,5 +49,12 @@ public class InputStatCountDTO {
     public void setCount(Integer count) {
         this.count = count;
     }
- 
+
+    public Float getPercent() {
+        return percent;
+    }
+
+    public void setPercent(Float percent) {
+        this.percent = percent;
+    }
 }

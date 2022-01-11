@@ -16,7 +16,6 @@
  */
 package krakee.input.type;
 
-import krakee.input.type.AbstractInput;
 import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
