@@ -16,7 +16,6 @@
  */
 package krakee.input.type;
 
-import krakee.input.type.AbstractInput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.ejb.Stateless;

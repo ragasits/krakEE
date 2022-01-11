@@ -1,7 +1,7 @@
-+ Consider Columns That Have Very Few Values
-+ Migrate to Payara 5.2021.10
++ Add oil-spill dataset
 
 Create statistics from rows:
+- Show Variance threshold
 - Remove Columns That Have A Low Variance
 - Identify Rows that Contain Duplicate Data
 - Delete Rows that Contain Duplicate Data

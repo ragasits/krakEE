@@ -17,9 +17,6 @@
 package krakee.input;
 
 import krakee.input.type.InputType;
-import krakee.input.InputEJB;
-import krakee.input.InputRowDTO;
-import krakee.input.InputDTO;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import deepnetts.data.TabularDataSet;
@@ -34,6 +31,8 @@ import krakee.input.type.AllCandleInputEJB;
 import krakee.input.type.AllFlagInputEJB;
 import krakee.input.type.BollingerInputEJB;
 import krakee.input.type.IrisInputEJB;
+import krakee.input.type.OilSpillDTO;
+import krakee.input.type.OilSpillEJB;
 import krakee.input.type.TimeSeriesInputEJB;
 
 /**
@@ -58,6 +57,8 @@ public class InputRowEJB {
     private AllFlagInputEJB allFlagInputEjb;
     @EJB
     private IrisInputEJB irisInputEjb;
+    @EJB
+    private OilSpillEJB oilSpillEjb;
 
     /**
      * Get items from the deep row filter by learnName, inputType
@@ -122,13 +123,11 @@ public class InputRowEJB {
 
             //Delete From inputRow            
             dto.getInputRow().remove(columnId.intValue());
-            
+
             //Write changes
             configEjb.getInputRowColl().replaceOne(eq("_id", dto.getId()), dto);
         }
-        
-        
-        
+
     }
 
     /**
@@ -151,6 +150,8 @@ public class InputRowEJB {
                 return allFlagInputEjb;
             case Iris:
                 return irisInputEjb;
+            case OilSpill:
+                return oilSpillEjb;
             default:
                 throw new MyException("Intenal error: Wrong InputType");
         }
@@ -214,6 +215,31 @@ public class InputRowEJB {
     }
 
     /**
+     * Fill rows from the OilSpill data
+     * @param learnName
+     * @param inputType
+     * @throws MyException 
+     */
+    private void fillRowFromOilSpill(String learnName, String inputType) throws MyException {
+        this.delete(learnName, inputType);
+
+        ArrayList<OilSpillDTO> dtoList = oilSpillEjb.get();
+        for (OilSpillDTO dto : dtoList) {
+            ArrayList<Float> inputRow = dto.inputValueList();
+            ArrayList<Float> outputRow = new ArrayList<>();
+
+            //Add Column names
+            ArrayList<String> inputColumnNames = oilSpillEjb.inputColumnNameList();
+            ArrayList<String> outputColumnNames = new ArrayList<>();
+
+            //Store row
+            InputRowDTO row = new InputRowDTO(learnName, inputType, inputColumnNames, outputColumnNames, inputRow, outputRow);
+            configEjb.getInputRowColl().insertOne(row);
+
+        }
+    }
+
+    /**
      * Fill row elements
      *
      * @param learnName
@@ -223,10 +249,16 @@ public class InputRowEJB {
     public void fillRow(String learnName, String inputType) throws MyException {
         this.delete(learnName, inputType);
 
-        if ((InputType.Iris.equals(InputType.valueOf(inputType)))) {
-            this.fillRowFromIris(learnName, inputType);
-        } else {
-            this.fillRowFromLearn(learnName, inputType);
+        switch (InputType.valueOf(inputType)) {
+            case Iris:
+                this.fillRowFromIris(learnName, inputType);
+                break;
+            case OilSpill:
+                this.fillRowFromOilSpill(learnName, inputType);
+                break;
+            default:
+                this.fillRowFromLearn(learnName, inputType);
+                break;
         }
     }
 

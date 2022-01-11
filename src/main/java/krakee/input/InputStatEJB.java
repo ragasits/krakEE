@@ -168,7 +168,9 @@ public class InputStatEJB {
 
             Float value = doc.getDouble("_id").floatValue();
             Integer count = doc.getInteger("count");
-            countList.add(new InputStatCountDTO(value, count));
+            Float percent = ((float) count / rowNum)*100;
+            
+            countList.add(new InputStatCountDTO(value, count, percent));
             uniqueCount++;
         }
 

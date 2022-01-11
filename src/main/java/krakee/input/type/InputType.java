@@ -26,5 +26,6 @@ public enum InputType {
     TimeSeries,
     Bollinger,
     AllFlag,
-    Iris
+    Iris,
+    OilSpill
 }

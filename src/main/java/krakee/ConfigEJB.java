@@ -19,6 +19,7 @@ import krakee.input.InputDTO;
 import krakee.input.InputRowDTO;
 import krakee.input.InputStatDTO;
 import krakee.get.TradePairDTO;
+import krakee.input.type.OilSpillDTO;
 import krakee.learn.LearnDTO;
 import krakee.profit.ProfitDTO;
 import org.bson.Document;
@@ -82,6 +83,7 @@ public class ConfigEJB {
     private MongoCollection<InputDTO> inputColl;
     private MongoCollection<InputRowDTO> inputRowColl;
     private MongoCollection<InputStatDTO> inputStatColl;
+    private MongoCollection<OilSpillDTO> oilSpillColl;
 
     /**
      * Initiate: - Set proxy - MongoDB Create collections and missing indexes
@@ -150,6 +152,7 @@ public class ConfigEJB {
             );
         }
 
+        this.oilSpillColl = this.database.getCollection("oil-spill", OilSpillDTO.class);
     }
 
     /**
@@ -210,6 +213,10 @@ public class ConfigEJB {
 
     public MongoCollection<InputStatDTO> getInputStatColl() {
         return inputStatColl;
+    }
+
+    public MongoCollection<OilSpillDTO> getOilSpillColl() {
+        return oilSpillColl;
     }
 
     public String getKrakenURL() {

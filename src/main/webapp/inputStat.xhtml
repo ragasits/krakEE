@@ -76,7 +76,11 @@
 
                                     <p:column headerText="Count" sortBy="#{uniq.count}">
                                         <p:outputLabel value="#{uniq.count}"/>
-                                    </p:column>                                    
+                                    </p:column>             
+
+                                    <p:column headerText="%" sortBy="#{uniq.percent}">
+                                        <p:outputLabel value="#{uniq.percent}"/>
+                                    </p:column>     
                                 </p:dataTable>
 
                                 <p:commandButton value="Delete column"
