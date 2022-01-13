@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.4.0</version>
+            <version>4.4.1</version>
             <type>jar</type>
         </dependency>
         
@@ -53,10 +53,10 @@
     <reporting>
         <plugins>
             <plugin>
-                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.5.0.0:spotbugs -->
+                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.5.3.0:spotbugs -->
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.5.2.0</version>
+                <version>4.5.3.0</version>
                 <configuration>
                     <xmlOutput>true</xmlOutput>
                     <xmlOutputDirectory>target/site</xmlOutputDirectory>

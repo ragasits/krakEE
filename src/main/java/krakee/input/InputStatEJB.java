@@ -88,9 +88,10 @@ public class InputStatEJB {
 
     /**
      * Delete column from Inputstat, InputRowEJB
+     *
      * @param learnName
      * @param inputType
-     * @param columnId 
+     * @param columnId
      */
     public void deleteColumn(String learnName, String inputType, Integer columnId) {
         //Delete from stat
@@ -133,7 +134,7 @@ public class InputStatEJB {
     private void uniqueColumn(String learnname, String inputType, Integer columnId) {
         //get row number
         int rowNum = inputRowEjb.get(learnname, inputType).size();
-        
+
         // Identify Columns That Contain a Single Value
         MongoCursor<Document> cursor = configEjb.getInputRowColl()
                 .aggregate(
@@ -168,20 +169,30 @@ public class InputStatEJB {
 
             Float value = doc.getDouble("_id").floatValue();
             Integer count = doc.getInteger("count");
-            Float percent = ((float) count / rowNum)*100;
-            
+            Float percent = ((float) count / rowNum) * 100;
+
             countList.add(new InputStatCountDTO(value, count, percent));
             uniqueCount++;
         }
 
         //Store result      
         InputStatDTO dto = this.get(learnname, inputType, columnId);
-        //Consider Columns That Have Very Few Values
-        float variance = ((float)uniqueCount/rowNum)*100;
 
-        dto.setVariance(variance);
         dto.setValueCounts(countList);
-        dto.setUniqueCount(uniqueCount);        
+        dto.setUniqueCount(uniqueCount);
+
+        //Identify Columns That Contain a Single Value
+        if (dto.getUniqueCount().equals(1)) {
+            dto.getResultList().add("Column contains a Single Value");
+        }
+
+        //Consider Columns That Have Very Few Values
+        float uPercent = ((float) uniqueCount / rowNum) * 100;
+        dto.setUniquePercent(uPercent);
+
+        if (uPercent < 1) {
+            dto.getResultList().add("Column have very few values");
+        }
 
         configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);
     }
@@ -197,7 +208,5 @@ public class InputStatEJB {
         for (InputStatDTO dto : colList) {
             this.uniqueColumn(learnname, inputType, dto.getColumnId());
         }
-
     }
-
 }

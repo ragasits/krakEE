@@ -34,7 +34,8 @@ public class InputStatDTO {
     private String columnName;
     private ArrayList<InputStatCountDTO> valueCounts;
     private Integer uniqueCount;
-    private Float variance;
+    private Float uniquePercent;
+    private ArrayList<String> resultList;            
 
     public InputStatDTO() {
     }
@@ -44,6 +45,7 @@ public class InputStatDTO {
         this.inputType = inputType;
         this.columnId = columnId;
         this.columnName = columnName;
+        this.resultList = new ArrayList<>();
     }
 
     public ObjectId getId() {
@@ -102,12 +104,19 @@ public class InputStatDTO {
         this.uniqueCount = uniqueCount;
     }
 
-    public Float getVariance() {
-        return variance;
+    public Float getUniquePercent() {
+        return uniquePercent;
     }
 
-    public void setVariance(Float variance) {
-        this.variance = variance;
+    public void setUniquePercent(Float uniquePercent) {
+        this.uniquePercent = uniquePercent;
     }
 
+    public ArrayList<String> getResultList() {
+        return resultList;
+    }
+
+    public void setResultList(ArrayList<String> resultList) {
+        this.resultList = resultList;
+    }
 }

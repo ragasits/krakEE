@@ -20,7 +20,7 @@ import krakee.calc.CandleDTO;
 import org.bson.types.ObjectId;
 
 /**
- * Deep Learning input
+ * Deep Learning input from candle
  *
  * @author rgt
  */

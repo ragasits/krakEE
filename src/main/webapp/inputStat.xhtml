@@ -56,9 +56,15 @@
                             <p:outputLabel value="#{item.uniqueCount}"/>
                         </p:column>                           
 
-                        <p:column headerText="Variance">
-                            <p:outputLabel value="#{item.variance}"/>
-                        </p:column>                           
+                        <p:column headerText="Unique%">
+                            <p:outputLabel value="#{item.uniquePercent}">
+                                <f:convertNumber pattern="#.#"/>
+                            </p:outputLabel>
+                        </p:column>      
+                        
+                        <p:column headerText="result">
+                            <p:outputLabel value="#{item.resultList}"/>
+                        </p:column>
 
                         <p:column style="width:16px">
                             <p:rowToggler/>
