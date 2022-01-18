@@ -104,9 +104,7 @@ public class InputBean implements Serializable {
      * @return 
      */
     public String onDeepStat() {
-        deepStatBean.setLearnName(this.selectedLearnName);
-        deepStatBean.setInputType(this.selectedInputType);
-        return "inputStat.xhtml?faces-redirect=true";
+        return deepStatBean.onShow(this.selectedLearnName, this.selectedInputType);
     }
 
     /**

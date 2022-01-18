@@ -33,6 +33,9 @@ public class InputStatDTO {
     private Integer columnId;
     private String columnName;
     private ArrayList<InputStatCountDTO> valueCounts;
+    private Float valueAvg;
+    private Float variance;
+    
     private Integer uniqueCount;
     private Float uniquePercent;
     private ArrayList<String> resultList;            
@@ -119,4 +122,22 @@ public class InputStatDTO {
     public void setResultList(ArrayList<String> resultList) {
         this.resultList = resultList;
     }
+
+    public Float getValueAvg() {
+        return valueAvg;
+    }
+
+    public void setValueAvg(Float valueAvg) {
+        this.valueAvg = valueAvg;
+    }
+
+    public Float getVariance() {
+        return variance;
+    }
+
+    public void setVariance(Float variance) {
+        this.variance = variance;
+    }
+    
+    
 }

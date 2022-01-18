@@ -1,8 +1,9 @@
-+ Add Analyze results
++ Add: InputStatHead collection
++ Calculate Variance, Variance Threshold
++ Add chart to inputStat: Variance Threshold Versus Number of Selected Features
 
 Create statistics from rows:
-- Show Variance threshold
-- Remove Columns That Have A Low Variance
+
 - Identify Rows that Contain Duplicate Data
 - Delete Rows that Contain Duplicate Data
 

@@ -25,7 +25,7 @@
                 </p:messages>                
 
                 <p:panel>
-                    <p:panelGrid columns="6">
+                    <p:panelGrid columns="7">
                         <p:outputLabel value="Learn:" style="font-weight: bold" />  
                         <p:outputLabel value="#{inputStatBean.learnName}" />  
 
@@ -38,10 +38,19 @@
                         <p:commandButton value="Analyze"  id="anBtn"
                                          action="#{inputStatBean.onAnalyzeColumns()}" update="panel"/>
 
+                        <p:commandButton value="Chart"  id="chartBtn"
+                                         action="#{inputStatBean.createLineModel()}" update="headPanel"/>                        
+
                     </p:panelGrid>
                 </p:panel>
 
+                <p:panel id="headPanel">
+                    <p:lineChart model="#{inputStatBean.lineModel}"/>
+                </p:panel> 
+
+
                 <p:panel id="panel">
+
                     <p:dataTable value="#{inputStatBean.columnList}" var="item" tableStyle="width:auto" 
                                  id="tbl" rowKey="#{item.columnId}">>
                         <p:column headerText="ID">
@@ -61,7 +70,17 @@
                                 <f:convertNumber pattern="#.#"/>
                             </p:outputLabel>
                         </p:column>      
-                        
+
+                        <p:column headerText="Avg">
+                            <p:outputLabel value="#{item.valueAvg}">
+                                <f:convertNumber pattern="#.#"/>
+                            </p:outputLabel>
+                        </p:column>                           
+
+                        <p:column headerText="Variance">
+                            <p:outputLabel value="#{item.variance}"/>
+                        </p:column>                           
+
                         <p:column headerText="result">
                             <p:outputLabel value="#{item.resultList}"/>
                         </p:column>
@@ -90,8 +109,7 @@
                                 </p:dataTable>
 
                                 <p:commandButton value="Delete column"
-                                                 action="#{inputStatBean.oneleteColumn(item.columnId)}" update="form1:panel"/>
-
+                                                 action="#{inputStatBean.onDeleteColumn(item.columnId)}" update="form1:panel"/>
                             </p:panelGrid>
                         </p:rowExpansion>                        
                     </p:dataTable>

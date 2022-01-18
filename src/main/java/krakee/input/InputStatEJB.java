@@ -127,27 +127,25 @@ public class InputStatEJB {
     /**
      * Create stat from the unique values
      *
-     * @param learnname
-     * @param inputType
-     * @param columnId
+     * @param dto
      */
-    private void uniqueColumn(String learnname, String inputType, Integer columnId) {
+    private void calcUniqueColumn(InputStatDTO dto) {
         //get row number
-        int rowNum = inputRowEjb.get(learnname, inputType).size();
+        int rowNum = inputRowEjb.get(dto.getLearnName(), dto.getInputType()).size();
 
         // Identify Columns That Contain a Single Value
         MongoCursor<Document> cursor = configEjb.getInputRowColl()
                 .aggregate(
                         Arrays.asList(
                                 //Basic filter
-                                Aggregates.match(and(eq("learnName", learnname), eq("inputType", inputType))),
+                                Aggregates.match(and(eq("learnName", dto.getLearnName()), eq("inputType", dto.getInputType()))),
                                 //Create new column form array
                                 Aggregates.project(
                                         Projections.fields(
                                                 Projections.excludeId(),
                                                 Projections.computed(
                                                         "elem",
-                                                        new Document("$arrayElemAt", Arrays.asList("$inputRow", columnId))
+                                                        new Document("$arrayElemAt", Arrays.asList("$inputRow", dto.getColumnId()))
                                                 )
                                         )
                                 ),
@@ -176,8 +174,6 @@ public class InputStatEJB {
         }
 
         //Store result      
-        InputStatDTO dto = this.get(learnname, inputType, columnId);
-
         dto.setValueCounts(countList);
         dto.setUniqueCount(uniqueCount);
 
@@ -196,6 +192,43 @@ public class InputStatEJB {
 
         configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);
     }
+    
+    /**
+     * Calculate AVG,  variance
+     * @param dto 
+     */
+    private void calcVariance(InputStatDTO dto){
+        ArrayList<InputRowDTO> rowList = inputRowEjb.get(dto.getLearnName(), dto.getInputType());
+        
+        //Calc AVG
+        int count = 0;
+        float sum = 0;
+        for (InputRowDTO row : rowList) {
+            float value = row.getInputRow().get(dto.getColumnId());
+            sum = sum + value;
+            count++;
+        }
+        
+        float avg = sum/count;
+        float var = 0;
+        
+        dto.setValueAvg(avg);
+        
+        //Calc Variance
+        for (InputRowDTO row : rowList) {
+            float value = row.getInputRow().get(dto.getColumnId());
+
+            var = var + (float)Math.pow(value-avg, 2);
+        }        
+        var = var / count;
+        dto.setVariance(var);
+        
+        if (var < 0.16f){
+            dto.getResultList().add("Variance less than 80%(0.16)");
+        }
+
+        configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);        
+    }
 
     /**
      * Analyze all columns
@@ -206,7 +239,9 @@ public class InputStatEJB {
     public void analyzeColumns(String learnname, String inputType) {
         ArrayList<InputStatDTO> colList = this.get(learnname, inputType);
         for (InputStatDTO dto : colList) {
-            this.uniqueColumn(learnname, inputType, dto.getColumnId());
+            this.calcUniqueColumn(dto);
+            this.calcVariance(dto);
+
         }
     }
 }
