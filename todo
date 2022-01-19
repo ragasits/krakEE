@@ -1,10 +1,6 @@
-+ Add: InputStatHead collection
-+ Calculate Variance, Variance Threshold
-+ Add chart to inputStat: Variance Threshold Versus Number of Selected Features
++ Identify Rows that Contain Duplicate Data
 
 Create statistics from rows:
-
-- Identify Rows that Contain Duplicate Data
 - Delete Rows that Contain Duplicate Data
 
 - Delete DeepDataset (replaced by DeepRow)

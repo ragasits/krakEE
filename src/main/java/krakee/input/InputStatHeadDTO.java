@@ -30,6 +30,7 @@ public class InputStatHeadDTO {
     private String inputType;
     
     private ArrayList<ThresholdDTO> thresholds;
+    private ArrayList<InputRowDTO> inputRows;
 
     public InputStatHeadDTO() {
     }
@@ -70,4 +71,14 @@ public class InputStatHeadDTO {
     public void setThresholds(ArrayList<ThresholdDTO> thresholds) {
         this.thresholds = thresholds;
     }
+
+    public ArrayList<InputRowDTO> getInputRows() {
+        return inputRows;
+    }
+
+    public void setInputRows(ArrayList<InputRowDTO> inputRows) {
+        this.inputRows = inputRows;
+    }
+    
+    
 }

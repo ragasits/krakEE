@@ -19,6 +19,7 @@ package krakee.input;
 import krakee.input.type.InputType;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.Sorts;
 import deepnetts.data.TabularDataSet;
 import java.util.ArrayList;
 import javax.ejb.EJB;
@@ -75,6 +76,23 @@ public class InputRowEJB {
                 .into(new ArrayList<>());
 
     }
+    
+    /**
+     *  Get items from the deep row filter by learnName, inputType
+     * Order by InputRow
+     * @param learnName
+     * @param inputType
+     * @return 
+     */
+    public ArrayList<InputRowDTO> getByInputRow(String learnName, String inputType) {
+        return configEjb.getInputRowColl()
+                .find(
+                        and(eq("learnName", learnName), eq("inputType", inputType))
+                )
+                .sort(Sorts.ascending("inputRow"))
+                .into(new ArrayList<>());
+
+    }    
 
     /**
      * Get first row

@@ -7,3 +7,4 @@
 /micro/root
 /logs
 /micro/logs/*.log
+/github.token

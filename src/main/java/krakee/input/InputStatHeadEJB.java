@@ -35,6 +35,8 @@ public class InputStatHeadEJB {
     ConfigEJB configEjb;
     @EJB
     InputStatEJB inputStatEjb;
+    @EJB
+    InputRowEJB inputRowEjb;
 
     /**
      * get header
@@ -91,6 +93,32 @@ public class InputStatHeadEJB {
     }
 
     /**
+     * Identify Rows that Contain Duplicate Data
+     *
+     * @param learnname
+     * @param inputType
+     */
+    private void findDuplicates(String learnname, String inputType) {
+        ArrayList<InputRowDTO> rowList = inputRowEjb.getByInputRow(learnname, inputType);
+        ArrayList<InputRowDTO> resultList = new ArrayList<>();
+        InputRowDTO prevDto = null;
+
+        for (InputRowDTO dto : rowList) {
+            if (prevDto != null) {
+                if (dto.getInputRow().toString().equals(prevDto.getInputRow().toString())) {
+                    resultList.add(dto);
+                }
+            }
+
+            prevDto = dto;
+        }
+
+        InputStatHeadDTO headDto = this.get(learnname, inputType);
+        headDto.setInputRows(resultList);
+        configEjb.getInputStatHeadColl().replaceOne(eq("_id", headDto.getId()), headDto);
+    }
+
+    /**
      * Analyze head
      *
      * @param learnname
@@ -99,5 +127,6 @@ public class InputStatHeadEJB {
     public void analyzeHead(String learnname, String inputType) {
         this.delete(learnname, inputType);
         this.calcVarianceThershold(learnname, inputType);
+        this.findDuplicates(learnname, inputType);
     }
 }

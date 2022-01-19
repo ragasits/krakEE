@@ -24,6 +24,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import krakee.input.InputRowDTO;
 import krakee.input.InputStatCountDTO;
 import krakee.input.InputStatDTO;
 import krakee.input.InputStatEJB;
@@ -56,9 +57,10 @@ public class InputStatBean implements Serializable {
 
     /**
      * Show stat page
+     *
      * @param learName
      * @param inputType
-     * @return 
+     * @return
      */
     public String onShow(String learName, String inputType) {
         this.learnName = learName;
@@ -79,12 +81,20 @@ public class InputStatBean implements Serializable {
      */
     public void onAnalyzeColumns() {
         deepStatEjb.analyzeColumns(this.learnName, this.inputType);
+    }
+
+    /**
+     * Analyze head + create chart
+     */
+    public void onAnalyzeHead() {
         inputStatHeadEjb.analyzeHead(this.learnName, this.inputType);
+        this.createLineModel();
     }
 
     /**
      * Delete selected column
-     * @param columnId 
+     *
+     * @param columnId
      */
     public void onDeleteColumn(Integer columnId) {
         deepStatEjb.deleteColumn(this.learnName, this.inputType, columnId);
@@ -138,6 +148,18 @@ public class InputStatBean implements Serializable {
 
     public ArrayList<InputStatDTO> getColumnList() {
         return deepStatEjb.get(this.learnName, this.inputType);
+    }
+
+    /**
+     * Get duplicates from head
+     * @return 
+     */
+    public ArrayList<InputRowDTO> getDuplicates() {
+        InputStatHeadDTO dto = inputStatHeadEjb.get(this.learnName, this.inputType);
+        if (dto != null) {
+            return dto.getInputRows();
+        }
+        return null;
     }
 
     public String getLearnName() {

@@ -16,7 +16,7 @@
             <h:form id="form1">
                 <ez:globalMenu/>
 
-                <p:blockUI block="form1" trigger="colBtn, anBtn">
+                <p:blockUI block="form1" trigger="colBtn, anBtn, headBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>  
 
@@ -32,25 +32,32 @@
                         <p:outputLabel value="Input:" style="font-weight: bold"/>                        
                         <p:outputLabel value="#{inputStatBean.inputType}" />     
 
-                        <p:commandButton value="Column"  id="colBtn" 
+                        <p:commandButton value="Init"  id="colBtn" 
                                          action="#{inputStatBean.onFillColumns()}" update="panel"/>
 
-                        <p:commandButton value="Analyze"  id="anBtn"
+                        <p:commandButton value="Column"  id="anBtn"
                                          action="#{inputStatBean.onAnalyzeColumns()}" update="panel"/>
 
-                        <p:commandButton value="Chart"  id="chartBtn"
-                                         action="#{inputStatBean.createLineModel()}" update="headPanel"/>                        
+                        <p:commandButton value="Head"  id="headBtn"
+                                         action="#{inputStatBean.onAnalyzeHead()}" update="headPanel"/>                        
 
                     </p:panelGrid>
                 </p:panel>
 
                 <p:panel id="headPanel">
-                    <p:lineChart model="#{inputStatBean.lineModel}"/>
+                    <p:panelGrid columns="2">
+                        <p:lineChart model="#{inputStatBean.lineModel}"/>
+
+                        <p:dataTable value="#{inputStatBean.duplicates}" var="item1" tableStyle="width:auto">
+                            <p:column headerText="inputRow">
+                                <p:outputLabel value="#{item1.inputRow}"/>
+                            </p:column> 
+                        </p:dataTable>
+                    </p:panelGrid>
                 </p:panel> 
 
 
                 <p:panel id="panel">
-
                     <p:dataTable value="#{inputStatBean.columnList}" var="item" tableStyle="width:auto" 
                                  id="tbl" rowKey="#{item.columnId}">>
                         <p:column headerText="ID">
