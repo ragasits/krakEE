@@ -52,6 +52,11 @@
                             <p:column headerText="inputRow">
                                 <p:outputLabel value="#{item1.inputRow}"/>
                             </p:column> 
+
+                            <p:column>
+                                <p:commandButton value="Delete" update=":form1:headPanel"
+                                                 action="#{inputStatBean.onDeleteDuplicateRow(item1)}"/>
+                            </p:column>
                         </p:dataTable>
                     </p:panelGrid>
                 </p:panel> 

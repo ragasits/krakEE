@@ -17,6 +17,7 @@
 package krakee.input;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
@@ -118,4 +119,25 @@ public class InputRowDTO {
         this.outputColumnNames = outputColumnNames;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 71 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final InputRowDTO other = (InputRowDTO) obj;
+        return Objects.equals(this.id, other.id);
+    }
 }

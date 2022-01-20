@@ -66,6 +66,20 @@ public class InputStatHeadEJB {
     }
 
     /**
+     * Delete one duplicate row
+     *
+     * @param learnName
+     * @param inputType
+     * @param row
+     */
+    public void DeleteDuplicateRow(String learnName, String inputType, InputRowDTO row) {
+        InputStatHeadDTO head = this.get(learnName, inputType);
+        head.getInputRows().remove(row);
+        configEjb.getInputStatHeadColl().replaceOne(eq("_id", head.getId()), head);
+        inputRowEjb.deleteRow(row);
+    }
+
+    /**
      * Calculate Variance threshold
      *
      * @param learnname

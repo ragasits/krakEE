@@ -1,7 +1,4 @@
-+ Identify Rows that Contain Duplicate Data
-
-Create statistics from rows:
-- Delete Rows that Contain Duplicate Data
++ Delete Rows that Contain Duplicate Data
 
 - Delete DeepDataset (replaced by DeepRow)
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values

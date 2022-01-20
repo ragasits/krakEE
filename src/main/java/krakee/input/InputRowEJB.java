@@ -76,13 +76,14 @@ public class InputRowEJB {
                 .into(new ArrayList<>());
 
     }
-    
+
     /**
-     *  Get items from the deep row filter by learnName, inputType
-     * Order by InputRow
+     * Get items from the deep row filter by learnName, inputType Order by
+     * InputRow
+     *
      * @param learnName
      * @param inputType
-     * @return 
+     * @return
      */
     public ArrayList<InputRowDTO> getByInputRow(String learnName, String inputType) {
         return configEjb.getInputRowColl()
@@ -92,7 +93,7 @@ public class InputRowEJB {
                 .sort(Sorts.ascending("inputRow"))
                 .into(new ArrayList<>());
 
-    }    
+    }
 
     /**
      * Get first row
@@ -133,6 +134,22 @@ public class InputRowEJB {
         );
     }
 
+    /**
+     * Delete one row
+     *
+     * @param row
+     */
+    public void deleteRow(InputRowDTO row) {
+        configEjb.getInputRowColl().deleteOne(eq("_id", row.getId()));
+    }
+
+    /**
+     * Delete one column
+     *
+     * @param learnName
+     * @param inputType
+     * @param columnId
+     */
     public void deleteColumn(String learnName, String inputType, Integer columnId) {
         ArrayList<InputRowDTO> dtoList = this.get(learnName, inputType);
         for (InputRowDTO dto : dtoList) {
@@ -234,9 +251,10 @@ public class InputRowEJB {
 
     /**
      * Fill rows from the OilSpill data
+     *
      * @param learnName
      * @param inputType
-     * @throws MyException 
+     * @throws MyException
      */
     private void fillRowFromOilSpill(String learnName, String inputType) throws MyException {
         this.delete(learnName, inputType);

@@ -46,7 +46,7 @@ import org.primefaces.model.charts.optionconfig.title.Title;
 public class InputStatBean implements Serializable {
 
     @EJB
-    private InputStatEJB deepStatEjb;
+    private InputStatEJB inputStatEjb;
     @EJB
     private InputStatHeadEJB inputStatHeadEjb;
 
@@ -73,14 +73,14 @@ public class InputStatBean implements Serializable {
      * Fill columns with default values
      */
     public void onFillColumns() {
-        deepStatEjb.fillColumns(this.learnName, this.inputType);
+        inputStatEjb.fillColumns(this.learnName, this.inputType);
     }
 
     /**
      * Analyze + store columns
      */
     public void onAnalyzeColumns() {
-        deepStatEjb.analyzeColumns(this.learnName, this.inputType);
+        inputStatEjb.analyzeColumns(this.learnName, this.inputType);
     }
 
     /**
@@ -97,7 +97,16 @@ public class InputStatBean implements Serializable {
      * @param columnId
      */
     public void onDeleteColumn(Integer columnId) {
-        deepStatEjb.deleteColumn(this.learnName, this.inputType, columnId);
+        inputStatEjb.deleteColumn(this.learnName, this.inputType, columnId);
+    }
+
+    /**
+     * Delete one duplicate row
+     *
+     * @param row
+     */
+    public void onDeleteDuplicateRow(InputRowDTO row) {
+        inputStatHeadEjb.DeleteDuplicateRow(this.learnName, this.inputType, row);
     }
 
     /**
@@ -147,12 +156,13 @@ public class InputStatBean implements Serializable {
     }
 
     public ArrayList<InputStatDTO> getColumnList() {
-        return deepStatEjb.get(this.learnName, this.inputType);
+        return inputStatEjb.get(this.learnName, this.inputType);
     }
 
     /**
      * Get duplicates from head
-     * @return 
+     *
+     * @return
      */
     public ArrayList<InputRowDTO> getDuplicates() {
         InputStatHeadDTO dto = inputStatHeadEjb.get(this.learnName, this.inputType);
@@ -189,7 +199,7 @@ public class InputStatBean implements Serializable {
      * @return
      */
     public ArrayList<InputStatCountDTO> getUniqueList(Integer columnId) {
-        InputStatDTO dto = deepStatEjb.get(this.learnName, this.inputType, columnId);
+        InputStatDTO dto = inputStatEjb.get(this.learnName, this.inputType, columnId);
         return dto.getValueCounts();
     }
 

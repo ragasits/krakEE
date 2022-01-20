@@ -141,8 +141,12 @@ public class ConfigEJB {
                     )
             );
         }
+        if (!this.isIndex(inputColl, "candle.startDate_1")) {
+            this.inputColl.createIndex(Indexes.ascending("candle.startDate"), new IndexOptions().unique(true));
+        }
 
         this.inputRowColl = this.database.getCollection("inputRow", InputRowDTO.class);
+        
 
         this.inputStatColl = this.database.getCollection("inputStat", InputStatDTO.class);
         if (!this.isIndex(inputColl, "learnName_1_inputType_1")) {
