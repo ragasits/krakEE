@@ -38,8 +38,16 @@ public class InputStatDTO {
     
     private Integer uniqueCount;
     private Float uniquePercent;
-    private ArrayList<String> resultList;            
-
+    private ArrayList<String> resultList;      
+    
+    //Outliers - std
+    private Float mean;
+    private Float std;
+    private Float cutOff;
+    private Float lower;
+    private Float upper;
+    private String outliers;
+    
     public InputStatDTO() {
     }
 
@@ -138,6 +146,55 @@ public class InputStatDTO {
     public void setVariance(Float variance) {
         this.variance = variance;
     }
+
+    public Float getMean() {
+        return mean;
+    }
+
+    public void setMean(Float mean) {
+        this.mean = mean;
+    }
+
+    public Float getStd() {
+        return std;
+    }
+
+    public void setStd(Float std) {
+        this.std = std;
+    }
+
+    public Float getCutOff() {
+        return cutOff;
+    }
+
+    public void setCutOff(Float cutOff) {
+        this.cutOff = cutOff;
+    }
+
+    public Float getLower() {
+        return lower;
+    }
+
+    public void setLower(Float lower) {
+        this.lower = lower;
+    }
+
+    public Float getUpper() {
+        return upper;
+    }
+
+    public void setUpper(Float upper) {
+        this.upper = upper;
+    }
+
+    public String getOutliers() {
+        return outliers;
+    }
+
+    public void setOutliers(String outliers) {
+        this.outliers = outliers;
+    }
+
     
-    
+   
 }

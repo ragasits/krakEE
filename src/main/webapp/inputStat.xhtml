@@ -104,9 +104,9 @@
                         <p:ajax event="rowToggle"/>                        
 
                         <p:rowExpansion>
-                            <p:panelGrid columns="3">
+                            <p:panelGrid columns="3" >
                                 <p:dataTable value="#{inputStatBean.getUniqueList(item.columnId)}" var="uniq" 
-                                             tableStyle="width:auto" scrollHeight="150" scrollable="true">
+                                             tableStyle="width:auto" scrollHeight="340" scrollable="true">
                                     <p:column headerText="Value" sortBy="#{uniq.value}">
                                         <p:outputLabel value="#{uniq.value}"/>
                                     </p:column>
@@ -119,6 +119,29 @@
                                         <p:outputLabel value="#{uniq.percent}"/>
                                     </p:column>     
                                 </p:dataTable>
+
+                                <p:panel header="Outliers (std)">
+                                    <p:panelGrid columns="2">
+                                        <p:outputLabel value="Mean" style="font-weight: bold"/>
+                                        <p:outputLabel value="#{item.mean}"/>
+
+                                        <p:outputLabel value="Std" style="font-weight: bold"/>
+                                        <p:outputLabel value="#{item.std}"/>                                        
+
+                                        <p:outputLabel value="CutOff" style="font-weight: bold"/>
+                                        <p:outputLabel value="#{item.cutOff}"/>   
+
+                                        <p:outputLabel value="Lover" style="font-weight: bold"/>
+                                        <p:outputLabel value="#{item.lower}"/>   
+
+                                        <p:outputLabel value="Upper" style="font-weight: bold"/>
+                                        <p:outputLabel value="#{item.upper}"/>                                           
+
+                                        <p:outputLabel value="Outliers" style="font-weight: bold"/>
+                                        <p:outputLabel value="#{item.outliers}"/>                                                                                   
+                                    </p:panelGrid>
+
+                                </p:panel>
 
                                 <p:commandButton value="Delete column"
                                                  action="#{inputStatBean.onDeleteColumn(item.columnId)}" update="form1:panel"/>

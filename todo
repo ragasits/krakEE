@@ -1,6 +1,5 @@
-+ Delete Rows that Contain Duplicate Data
++ Looking for Outliers - Standard Deviation Method
 
-- Delete DeepDataset (replaced by DeepRow)
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values
 - Try reinforcement learning 
 

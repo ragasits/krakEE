@@ -192,14 +192,15 @@ public class InputStatEJB {
 
         configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);
     }
-    
+
     /**
-     * Calculate AVG,  variance
-     * @param dto 
+     * Calculate AVG, variance
+     *
+     * @param dto
      */
-    private void calcVariance(InputStatDTO dto){
+    private void calcVariance(InputStatDTO dto) {
         ArrayList<InputRowDTO> rowList = inputRowEjb.get(dto.getLearnName(), dto.getInputType());
-        
+
         //Calc AVG
         int count = 0;
         float sum = 0;
@@ -208,26 +209,82 @@ public class InputStatEJB {
             sum = sum + value;
             count++;
         }
-        
-        float avg = sum/count;
+
+        float avg = sum / count;
         float var = 0;
-        
+
         dto.setValueAvg(avg);
-        
+
         //Calc Variance
         for (InputRowDTO row : rowList) {
             float value = row.getInputRow().get(dto.getColumnId());
 
-            var = var + (float)Math.pow(value-avg, 2);
-        }        
+            var = var + (float) Math.pow(value - avg, 2);
+        }
         var = var / count;
         dto.setVariance(var);
-        
-        if (var < 0.16f){
+
+        if (var < 0.16f) {
             dto.getResultList().add("Variance less than 80%(0.16)");
         }
 
-        configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);        
+        configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);
+    }
+
+    /**
+     * Looking for outliners - Std
+     *
+     * @param dto
+     */
+    private void calcOutliners(InputStatDTO dto) {
+        ArrayList<InputRowDTO> inputList = this.inputRowEjb.get(dto.getLearnName(), dto.getInputType());
+        double mean = 0d;
+        double stdev = 0d;
+
+        //calculate summary statistics
+        //Mean - Average
+        for (InputRowDTO input : inputList) {
+            mean = mean + input.getInputRow().get(dto.getColumnId());
+
+        }
+        mean = mean / inputList.size();
+
+        //Stdev
+        for (InputRowDTO input : inputList) {
+            // stdev = stdev.add(candle.getClose().subtract(dto.getMovingAverage().getSma20()).pow(2));            
+            double x = input.getInputRow().get(dto.getColumnId()).doubleValue();
+            stdev = stdev + Math.pow(x - mean, 2);
+        }
+        stdev = stdev / inputList.size();
+        stdev = Math.sqrt(stdev);
+
+        //define outliers
+        double cutOff = stdev * 3;
+        double lower = mean - cutOff;
+        double upper = mean + cutOff;
+
+        //identify outliers        
+        int outliers = 0;
+        StringBuilder sb = new StringBuilder();
+        for (InputRowDTO input : inputList) {
+            float value = input.getInputRow().get(dto.getColumnId());
+            if (value < lower || value > upper) {
+                outliers++;
+                sb.append(value).append(";");
+            }
+        }
+
+        dto.setMean((float) mean);
+        dto.setStd((float) stdev);
+        dto.setCutOff((float) cutOff);
+        dto.setLower((float) lower);
+        dto.setUpper((float) upper);
+        dto.setOutliers(sb.toString());
+        
+        if (outliers>0){
+            dto.getResultList().add("Identified outliers");
+        }
+        configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);
     }
 
     /**
@@ -241,6 +298,7 @@ public class InputStatEJB {
         for (InputStatDTO dto : colList) {
             this.calcUniqueColumn(dto);
             this.calcVariance(dto);
+            this.calcOutliners(dto);
 
         }
     }
