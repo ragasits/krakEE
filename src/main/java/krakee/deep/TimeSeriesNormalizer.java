@@ -28,6 +28,7 @@ import javax.visrec.ml.data.preprocessing.Scaler;
  */
 public final class TimeSeriesNormalizer implements Scaler<DataSet<MLDataItem>>, Serializable {
 
+    private static final long serialVersionUID = 1L;
     /**
      * Row level normalization
      *

@@ -106,7 +106,7 @@ public class InputStatBean implements Serializable {
      * @param row
      */
     public void onDeleteDuplicateRow(InputRowDTO row) {
-        inputStatHeadEjb.DeleteDuplicateRow(this.learnName, this.inputType, row);
+        inputStatHeadEjb.deleteDuplicateRow(this.learnName, this.inputType, row);
     }
 
     /**

@@ -16,12 +16,16 @@
  */
 package krakee.input;
 
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Aggregates;
 import krakee.input.type.InputType;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import deepnetts.data.TabularDataSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.Common;
@@ -34,7 +38,9 @@ import krakee.input.type.BollingerInputEJB;
 import krakee.input.type.IrisInputEJB;
 import krakee.input.type.OilSpillDTO;
 import krakee.input.type.OilSpillEJB;
+import krakee.input.type.TimeDiffInputEJB;
 import krakee.input.type.TimeSeriesInputEJB;
+import org.bson.Document;
 
 /**
  * Manage input rows
@@ -60,6 +66,8 @@ public class InputRowEJB {
     private IrisInputEJB irisInputEjb;
     @EJB
     private OilSpillEJB oilSpillEjb;
+    @EJB
+    private TimeDiffInputEJB timeDiffEjb;
 
     /**
      * Get items from the deep row filter by learnName, inputType
@@ -93,6 +101,49 @@ public class InputRowEJB {
                 .sort(Sorts.ascending("inputRow"))
                 .into(new ArrayList<>());
 
+    }
+
+    /**
+     * Get selected element from the inputRow and order by ascending
+     *
+     * @param learnName
+     * @param inputType
+     * @param columnId
+     * @return
+     */
+    public ArrayList<Float> getInputRowElementBy(String learnName, String inputType, Integer columnId) {
+        MongoCursor<Document> cursor = configEjb.getInputRowColl()
+                .aggregate(
+                        Arrays.asList(
+                                //Basic filter
+                                Aggregates.match(and(eq("learnName", learnName), eq("inputType", inputType))),
+                                //Create new column form array
+                                Aggregates.project(
+                                        Projections.fields(
+                                                //Get columnId value from array
+                                                Projections.computed(
+                                                        "item",
+                                                        new Document("$arrayElemAt", Arrays.asList("$inputRow", columnId))
+                                                ),
+                                                //Delete unused fields
+                                                Projections.excludeId()
+                                        )
+                                ),
+                                //Order by 
+                                Aggregates.sort(Sorts.ascending("item"))
+                        ), Document.class
+                )
+                .allowDiskUse(Boolean.TRUE)
+                .iterator();
+
+        ArrayList<Float> itemList = new ArrayList<>();
+        while (cursor.hasNext()) {
+            Document doc = cursor.next();
+            Float item = doc.getDouble("item").floatValue();
+            itemList.add(item);
+        }
+
+        return itemList;
     }
 
     /**
@@ -187,6 +238,8 @@ public class InputRowEJB {
                 return irisInputEjb;
             case OilSpill:
                 return oilSpillEjb;
+            case TimeDiffSeries:
+                return timeDiffEjb;
             default:
                 throw new MyException("Intenal error: Wrong InputType");
         }

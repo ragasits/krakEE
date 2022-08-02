@@ -41,12 +41,21 @@ public class InputStatDTO {
     private ArrayList<String> resultList;      
     
     //Outliers - std
-    private Float mean;
+    private Float meanStd;
     private Float std;
-    private Float cutOff;
-    private Float lower;
-    private Float upper;
-    private String outliers;
+    private Float cutOffStd;
+    private Float lowerStd;
+    private Float upperStd;
+    private ArrayList<Float> outliersStd;
+    
+    //Outliers - Interquartile Range Method
+    private Float q25Iqr;
+    private Float q75Iqr;
+    private Float irqIqr;
+    private Float cutOffIqr;
+    private Float lowerIqr;
+    private Float upperIqr;
+    private ArrayList<Float> outliersIqr;    
     
     public InputStatDTO() {
     }
@@ -107,6 +116,22 @@ public class InputStatDTO {
         this.valueCounts = valueCounts;
     }
 
+    public Float getValueAvg() {
+        return valueAvg;
+    }
+
+    public void setValueAvg(Float valueAvg) {
+        this.valueAvg = valueAvg;
+    }
+
+    public Float getVariance() {
+        return variance;
+    }
+
+    public void setVariance(Float variance) {
+        this.variance = variance;
+    }
+
     public Integer getUniqueCount() {
         return uniqueCount;
     }
@@ -131,28 +156,12 @@ public class InputStatDTO {
         this.resultList = resultList;
     }
 
-    public Float getValueAvg() {
-        return valueAvg;
+    public Float getMeanStd() {
+        return meanStd;
     }
 
-    public void setValueAvg(Float valueAvg) {
-        this.valueAvg = valueAvg;
-    }
-
-    public Float getVariance() {
-        return variance;
-    }
-
-    public void setVariance(Float variance) {
-        this.variance = variance;
-    }
-
-    public Float getMean() {
-        return mean;
-    }
-
-    public void setMean(Float mean) {
-        this.mean = mean;
+    public void setMeanStd(Float meanStd) {
+        this.meanStd = meanStd;
     }
 
     public Float getStd() {
@@ -163,38 +172,91 @@ public class InputStatDTO {
         this.std = std;
     }
 
-    public Float getCutOff() {
-        return cutOff;
+    public Float getCutOffStd() {
+        return cutOffStd;
     }
 
-    public void setCutOff(Float cutOff) {
-        this.cutOff = cutOff;
+    public void setCutOffStd(Float cutOffStd) {
+        this.cutOffStd = cutOffStd;
     }
 
-    public Float getLower() {
-        return lower;
+    public Float getLowerStd() {
+        return lowerStd;
     }
 
-    public void setLower(Float lower) {
-        this.lower = lower;
+    public void setLowerStd(Float lowerStd) {
+        this.lowerStd = lowerStd;
     }
 
-    public Float getUpper() {
-        return upper;
+    public Float getUpperStd() {
+        return upperStd;
     }
 
-    public void setUpper(Float upper) {
-        this.upper = upper;
+    public void setUpperStd(Float upperStd) {
+        this.upperStd = upperStd;
     }
 
-    public String getOutliers() {
-        return outliers;
+    public ArrayList<Float> getOutliersStd() {
+        return outliersStd;
     }
 
-    public void setOutliers(String outliers) {
-        this.outliers = outliers;
+    public void setOutliersStd(ArrayList<Float> outliersStd) {
+        this.outliersStd = outliersStd;
     }
 
-    
-   
+    public Float getQ25Iqr() {
+        return q25Iqr;
+    }
+
+    public void setQ25Iqr(Float q25Iqr) {
+        this.q25Iqr = q25Iqr;
+    }
+
+    public Float getQ75Iqr() {
+        return q75Iqr;
+    }
+
+    public void setQ75Iqr(Float q75Iqr) {
+        this.q75Iqr = q75Iqr;
+    }
+
+    public Float getIrqIqr() {
+        return irqIqr;
+    }
+
+    public void setIrqIqr(Float irqIqr) {
+        this.irqIqr = irqIqr;
+    }
+
+    public Float getCutOffIqr() {
+        return cutOffIqr;
+    }
+
+    public void setCutOffIqr(Float cutOffIqr) {
+        this.cutOffIqr = cutOffIqr;
+    }
+
+    public Float getLowerIqr() {
+        return lowerIqr;
+    }
+
+    public void setLowerIqr(Float lowerIqr) {
+        this.lowerIqr = lowerIqr;
+    }
+
+    public Float getUpperIqr() {
+        return upperIqr;
+    }
+
+    public void setUpperIqr(Float upperIqr) {
+        this.upperIqr = upperIqr;
+    }
+
+    public ArrayList<Float> getOutliersIqr() {
+        return outliersIqr;
+    }
+
+    public void setOutliersIqr(ArrayList<Float> outliersIqr) {
+        this.outliersIqr = outliersIqr;
+    }
 }

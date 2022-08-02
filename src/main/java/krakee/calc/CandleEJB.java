@@ -111,16 +111,15 @@ public class CandleEJB {
      * @return
      */
     public Date getLatesDate() {
-        try {
-            CandleDTO dto = configEjb.getCandleColl()
-                    .find()
-                    .sort(Sorts.descending("startDate"))
-                    .first();
+        CandleDTO dto = configEjb.getCandleColl()
+                .find()
+                .sort(Sorts.descending("startDate"))
+                .first();
 
-            return dto.getStartDate();
-        } catch (NullPointerException e) {
+        if (dto == null) {
             return null;
         }
+        return dto.getStartDate();
     }
 
     /**
@@ -129,16 +128,16 @@ public class CandleEJB {
      * @return
      */
     public Date getFirstDate() {
-        try {
-            CandleDTO dto = configEjb.getCandleColl()
-                    .find()
-                    .sort(Sorts.ascending("startDate"))
-                    .first();
+        CandleDTO dto = configEjb.getCandleColl()
+                .find()
+                .sort(Sorts.ascending("startDate"))
+                .first();
 
-            return dto.getStartDate();
-        } catch (NullPointerException e) {
+        if (dto == null) {
             return null;
         }
+
+        return dto.getStartDate();
     }
 
     /**

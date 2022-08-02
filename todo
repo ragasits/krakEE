@@ -1,4 +1,5 @@
-+ Looking for Outliers - Standard Deviation Method
++ Looking for Outliers - Interquartile Range Method
+
 
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values
 - Try reinforcement learning 

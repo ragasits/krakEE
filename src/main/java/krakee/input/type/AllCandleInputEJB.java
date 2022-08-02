@@ -62,7 +62,6 @@ public class AllCandleInputEJB extends AbstractInput {
                 boll.getBollingerBandWidth().floatValue(),
                 boll.getTradeUpper().floatValue(),
                 boll.getTradeLower().floatValue(),
-                boll.getTradeUpper().floatValue(),
                 candle.getMovingAverage().getSma20().floatValue(),
                 candle.getMovingAverage().getEma9().floatValue(),
                 candle.getMovingAverage().getEma12().floatValue(),
@@ -91,7 +90,7 @@ public class AllCandleInputEJB extends AbstractInput {
                 "count", "countBuy", "countSell", "open", "low", "high", "close",
                 "total", "totalBuy", "totalSell", "volume", "volumeBuy", "volumeSell",
                 "stDev", "bollingerUpper", "bollingerLower", "bollingerBandWith",
-                "tradeUpper", "tradeLower", "tradeUpper", "sma20", "ema9", "ema12", "ema26",
+                "tradeUpper", "tradeLower", "sma20", "ema9", "ema12", "ema26",
                 "macdLine", "signalLine", "macdHistogram",
                 "change", "gain", "loss", "avgGain", "avgLoss", "rs", "rsi"
         ));

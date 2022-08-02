@@ -25,6 +25,8 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
@@ -236,7 +238,7 @@ public class InputStatEJB {
      *
      * @param dto
      */
-    private void calcOutliners(InputStatDTO dto) {
+    private void calcOutlinersStd(InputStatDTO dto) {
         ArrayList<InputRowDTO> inputList = this.inputRowEjb.get(dto.getLearnName(), dto.getInputType());
         double mean = 0d;
         double stdev = 0d;
@@ -264,27 +266,78 @@ public class InputStatEJB {
         double upper = mean + cutOff;
 
         //identify outliers        
-        int outliers = 0;
-        StringBuilder sb = new StringBuilder();
+        ArrayList<Float> outlierList = new ArrayList<>();
         for (InputRowDTO input : inputList) {
-            float value = input.getInputRow().get(dto.getColumnId());
+            Float value = input.getInputRow().get(dto.getColumnId());
             if (value < lower || value > upper) {
-                outliers++;
-                sb.append(value).append(";");
+                outlierList.add(value);
             }
         }
 
-        dto.setMean((float) mean);
+        dto.setMeanStd((float) mean);
         dto.setStd((float) stdev);
-        dto.setCutOff((float) cutOff);
-        dto.setLower((float) lower);
-        dto.setUpper((float) upper);
-        dto.setOutliers(sb.toString());
-        
-        if (outliers>0){
-            dto.getResultList().add("Identified outliers");
+        dto.setCutOffStd((float) cutOff);
+        dto.setLowerStd((float) lower);
+        dto.setUpperStd((float) upper);
+        dto.setOutliersStd(outlierList);
+
+        if (!outlierList.isEmpty()) {
+            dto.getResultList().add("Identified outliers (std:" + outlierList.size() + ")");
         }
         configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);
+    }
+
+    /**
+     * Calculate percentile
+     *
+     * @param latencies
+     * @param percentile
+     * @return
+     */
+    private Float calcPercentile(List<Float> latencies, double percentile) {
+        int index = (int) Math.ceil(percentile / 100.0 * latencies.size());
+        return latencies.get(index - 1);
+    }
+
+    /**
+     * Looking for outliners - Interquartile Range Method
+     *
+     * @param dto
+     */
+    private void calcOutlinersIrm(InputStatDTO dto) {
+
+        ArrayList<Float> valueList = inputRowEjb.getInputRowElementBy(dto.getLearnName(), dto.getInputType(), dto.getColumnId());
+        Collections.sort(valueList);
+
+        Float q25 = this.calcPercentile(valueList, 25);
+        Float q75 = this.calcPercentile(valueList, 75);
+
+        Float iqr = q75 - q25;
+        Float cutOff = iqr * 1.5f;
+        Float lower = q25 - cutOff;
+        Float upper = q75 + cutOff;
+
+        //identify outliers        
+        ArrayList<Float> outlierList = new ArrayList<>();
+        for (Float f : valueList) {
+            if (f < lower || f > upper) {
+                outlierList.add(f);
+            }
+        }
+
+        dto.setQ25Iqr(q25);
+        dto.setQ75Iqr(q75);
+        dto.setIrqIqr(iqr);
+        dto.setCutOffIqr(cutOff);
+        dto.setLowerIqr(lower);
+        dto.setUpperIqr(upper);
+        dto.setOutliersIqr(outlierList);
+
+        if (!outlierList.isEmpty()) {
+            dto.getResultList().add("Identified outliers (iqr:" + outlierList.size() + ")");
+        }
+        configEjb.getInputStatColl().replaceOne(eq("_id", dto.getId()), dto);
+
     }
 
     /**
@@ -298,7 +351,8 @@ public class InputStatEJB {
         for (InputStatDTO dto : colList) {
             this.calcUniqueColumn(dto);
             this.calcVariance(dto);
-            this.calcOutliners(dto);
+            this.calcOutlinersStd(dto);
+            this.calcOutlinersIrm(dto);
 
         }
     }

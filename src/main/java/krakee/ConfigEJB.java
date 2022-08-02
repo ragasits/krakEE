@@ -85,7 +85,7 @@ public class ConfigEJB {
     private MongoCollection<InputRowDTO> inputRowColl;
     private MongoCollection<InputStatDTO> inputStatColl;
     private MongoCollection<OilSpillDTO> oilSpillColl;
-    private MongoCollection<InputStatHeadDTO> InputStatHeadColl;
+    private MongoCollection<InputStatHeadDTO> inputStatHeadColl;
 
     /**
      * Initiate: - Set proxy - MongoDB Create collections and missing indexes
@@ -159,7 +159,7 @@ public class ConfigEJB {
         }
 
         this.oilSpillColl = this.database.getCollection("oil-spill", OilSpillDTO.class);
-        this.InputStatHeadColl = this.database.getCollection("inputStatHead", InputStatHeadDTO.class);
+        this.inputStatHeadColl = this.database.getCollection("inputStatHead", InputStatHeadDTO.class);
     }
 
     /**
@@ -227,7 +227,7 @@ public class ConfigEJB {
     }
 
     public MongoCollection<InputStatHeadDTO> getInputStatHeadColl() {
-        return InputStatHeadColl;
+        return inputStatHeadColl;
     }
 
     public String getKrakenURL() {

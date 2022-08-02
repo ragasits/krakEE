@@ -72,7 +72,7 @@ public class InputStatHeadEJB {
      * @param inputType
      * @param row
      */
-    public void DeleteDuplicateRow(String learnName, String inputType, InputRowDTO row) {
+    public void deleteDuplicateRow(String learnName, String inputType, InputRowDTO row) {
         InputStatHeadDTO head = this.get(learnName, inputType);
         head.getInputRows().remove(row);
         configEjb.getInputStatHeadColl().replaceOne(eq("_id", head.getId()), head);

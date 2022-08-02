@@ -38,7 +38,7 @@ public class DeepDTO {
     private String deepName;
     private String learnName;
     private String inputType;
-    
+
     private boolean deleteDuplications = false;
     //Add limits
     private boolean inputLimits = false;
@@ -143,11 +143,10 @@ public class DeepDTO {
      * @return
      */
     private Float getMetrics(EvaluationMetrics em, String key) {
-        try {
-            return em.get(key);
-        } catch (NullPointerException e) {
+        if (em == null) {
             return null;
         }
+        return em.get(key);
     }
 
     /**
@@ -192,7 +191,7 @@ public class DeepDTO {
     public ActivationType[] getOutputActivationTypes() {
         return ActivationType.values();
     }
-    
+
     public ObjectId getId() {
         return id;
     }

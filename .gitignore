@@ -8,3 +8,7 @@
 /logs
 /micro/logs/*.log
 /github.token
+/micro/.root/
+/micro/docker/
+/micro/payara-micro-5.2022.2.jar
+/micro/logs/

@@ -74,10 +74,8 @@ public class RsiEJB {
             if (prev == null) {
                 this.saveRsi(candle);
                 continue;
-            }
-
-            //Set change
-            if (prev != null) {
+            } else {
+                //Set change
                 rsi.setChange(candle.getClose().subtract(prev.getClose()));
             }
 
