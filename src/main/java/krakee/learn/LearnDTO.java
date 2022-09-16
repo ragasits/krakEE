@@ -28,6 +28,7 @@ public class LearnDTO {
     private String name;
     private Date startDate;
     private String trade;
+    private String chkMessage;
 
     public LearnDTO() {  
     }
@@ -63,7 +64,14 @@ public class LearnDTO {
     public void setStartDate(Date startDate) {
         this.startDate = (Date)startDate.clone();
     }
-    
-    
-    
+
+    public String getChkMessage() {
+        return chkMessage;
+    }
+
+    public void setChkMessage(String chkMessage) {
+        this.chkMessage = chkMessage;
+    }
+
+
 }

@@ -34,7 +34,7 @@ public class LearnBean implements Serializable {
 
     @Inject
     private CandleDetailBean candleBean;
-    
+
     /**
      * Get all Learn
      *
@@ -55,19 +55,30 @@ public class LearnBean implements Serializable {
 
     /**
      * Link to candleDetail
+     *
      * @param learn
-     * @return 
+     * @return
      */
     public String showDetail(LearnDTO learn) {
 
         if (learn != null) {
             candleBean.setSelectedDate(learn.getStartDate());
-            
+
             CandleDTO dto = candle.get(learn.getStartDate());
             candleBean.setSelectedIdHexa(dto.getIdHexa());
-            
+
             return "candleDetail?faces-redirect=true";
         }
         return null;
+    }
+
+    //Check1
+    public void chkLearnPeaks() {
+        learn.chkLearnPeaks();
+    }
+
+    //Check2
+    public void chkLearnPairs() {
+        learn.chkLearnPairs();
     }
 }

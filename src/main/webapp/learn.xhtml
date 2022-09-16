@@ -18,6 +18,17 @@
             </h:form>
 
             <h:form id="form1">
+
+                <p:blockUI block="form1" trigger="chkBtn1,chkBtn2">
+                    <p:graphicImage value="/resources/ajax-loader.gif" />
+                </p:blockUI>   
+                
+                <p:panelGrid columns="5">
+                    <p:commandButton value="Check1" action="#{learnBean.chkLearnPeaks()}"
+                                     id="chkBtn1" update="tbl" title="Looking for peaks and valleys"/>
+                    <p:commandButton value="Check2" action="#{learnBean.chkLearnPairs()}"
+                                     id="chkBtn2" update="tbl" title="Looking for buy and sell pairs"/>                    
+                </p:panelGrid>
                 <p:panel>    
                     <p:dataTable value="#{learnBean.learnList}" var="item" tableStyle="width:auto" id="tbl">
                         <p:column headerText="name">
@@ -31,6 +42,10 @@
                         <p:column headerText="trade">
                             <p:outputLabel value="#{item.trade}"/>
                         </p:column>
+
+                        <p:column headerText="check">
+                            <p:outputLabel value="#{item.chkMessage}"/>
+                        </p:column>                        
                     </p:dataTable>
                 </p:panel>                    
             </h:form>

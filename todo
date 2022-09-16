@@ -1,4 +1,5 @@
-+ Looking for Outliers - Interquartile Range Method
++ Learn: Looking for peaks and valleys, the best learn positions
++ Learn: Looking for buy and sell pairs, Wrong pair: BuyBuy, SellSell
 
 
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values
