@@ -1,5 +1,4 @@
-+ Learn: Looking for peaks and valleys, the best learn positions
-+ Learn: Looking for buy and sell pairs, Wrong pair: BuyBuy, SellSell
++ Export candle+learn to CSV file
 
 
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values

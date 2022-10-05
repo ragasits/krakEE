@@ -5,16 +5,28 @@
  */
 package krakee.web;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
+import krakee.learn.ExportEJB;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  * JSF bean for one Candle
@@ -25,15 +37,28 @@ import krakee.learn.LearnEJB;
 @Named(value = "learnBean")
 public class LearnBean implements Serializable {
 
+    private static final String FILENAME = "candleLearn.csv";
     private static final long serialVersionUID = 1L;
+    private StreamedContent file;
 
     @EJB
-    private LearnEJB learn;
+    private LearnEJB learnEjb;
     @EJB
-    private CandleEJB candle;
+    private ExportEJB exportEjb;
+    @EJB
+    private CandleEJB candleEjb;
 
     @Inject
     private CandleDetailBean candleBean;
+
+    /**
+     * Show messages
+     *
+     * @param msg
+     */
+    private void addMsg(String msg) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
+    }
 
     /**
      * Get all Learn
@@ -41,7 +66,7 @@ public class LearnBean implements Serializable {
      * @return
      */
     public List<LearnDTO> getLearnList() {
-        return learn.get();
+        return learnEjb.get();
     }
 
     /**
@@ -50,7 +75,7 @@ public class LearnBean implements Serializable {
      * @return
      */
     public List<String> getLearnNameList() {
-        return learn.getNames();
+        return learnEjb.getNames();
     }
 
     /**
@@ -64,7 +89,7 @@ public class LearnBean implements Serializable {
         if (learn != null) {
             candleBean.setSelectedDate(learn.getStartDate());
 
-            CandleDTO dto = candle.get(learn.getStartDate());
+            CandleDTO dto = candleEjb.get(learn.getStartDate());
             candleBean.setSelectedIdHexa(dto.getIdHexa());
 
             return "candleDetail?faces-redirect=true";
@@ -74,11 +99,51 @@ public class LearnBean implements Serializable {
 
     //Check1
     public void chkLearnPeaks() {
-        learn.chkLearnPeaks();
+        learnEjb.chkLearnPeaks();
     }
 
     //Check2
     public void chkLearnPairs() {
-        learn.chkLearnPairs();
+        learnEjb.chkLearnPairs();
     }
+
+    /**
+     * Create, download CSV file
+     */
+    public void onCSV() {
+        ArrayList<String> csvList = (ArrayList<String>) exportEjb.candleToCSV("Első");
+
+        ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        String realPath = ctx.getRealPath("/WEB-INF/").concat("/" + FILENAME);
+
+        //Save to file
+        try {
+            OutputStream fout = new FileOutputStream(realPath);
+            OutputStream bout = new BufferedOutputStream(fout);
+            try ( OutputStreamWriter out = new OutputStreamWriter(bout, "ISO-8859-2")) {
+                for (String s : csvList) {
+                    out.write(s + "\n");
+                }
+            }
+        } catch (IOException ex) {
+            this.addMsg("Error: " + ex.getMessage());
+            return;
+        }
+
+        this.file = DefaultStreamedContent.builder()
+                .name(FILENAME)
+                .contentType("application/csv")
+                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/" + FILENAME))
+                .build();
+
+    }
+
+    public StreamedContent getFile() {
+        return file;
+    }
+
+    public void setFile(StreamedContent file) {
+        this.file = file;
+    }
+
 }

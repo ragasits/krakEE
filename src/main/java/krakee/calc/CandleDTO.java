@@ -260,7 +260,7 @@ public class CandleDTO {
     public void setMacd(MacdDTO macd) {
         this.macd = macd;
     }
-    
+
     
 
 }

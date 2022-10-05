@@ -34,7 +34,7 @@ public class RsiDTO {
     private BigDecimal rsi = BigDecimal.ZERO;
     private boolean rsiBuy = false;
     private boolean rsiSell = false;
-    
+
 
     public boolean isCalcRsi() {
         return calcRsi;

@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -117,7 +118,7 @@ public class InputBean implements Serializable {
 
         //Header
         InputRowDTO dto = this.rowList.get(0);
-        ArrayList columns = dto.getColumnNames();
+        ArrayList<String> columns = dto.getColumnNames();
         for (Object column : columns) {
             if (sb.length() != 0) {
                 sb.append(";");
@@ -214,7 +215,7 @@ public class InputBean implements Serializable {
      *
      * @return
      */
-    public ArrayList<InputRowDTO> getDeepRows() {
+    public List<InputRowDTO> getDeepRows() {
         return this.rowList;
 
     }
@@ -233,7 +234,7 @@ public class InputBean implements Serializable {
      *
      * @return
      */
-    public ArrayList<String> getColumnNames() {
+    public List<String> getColumnNames() {
         InputRowDTO dto = deepRowEjb.getFirst(this.selectedLearnName, this.selectedInputType);
         if (dto != null) {
             return dto.getColumnNames();
