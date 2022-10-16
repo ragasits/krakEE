@@ -12,7 +12,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -38,8 +40,12 @@ import org.primefaces.model.StreamedContent;
 public class LearnBean implements Serializable {
 
     private static final String FILENAME = "candleLearn.csv";
+    private static final String LEARNNAME = "Első";
+    
     private static final long serialVersionUID = 1L;
     private StreamedContent file;
+    private long selectedBuyTime;
+    private long  selectedSellTime;
 
     @EJB
     private LearnEJB learnEjb;
@@ -58,6 +64,15 @@ public class LearnBean implements Serializable {
      */
     private void addMsg(String msg) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
+    }
+    
+    /**
+     * Default values
+     */
+    @PostConstruct
+    public void init(){
+        this.selectedBuyTime = learnEjb.getFirst(LEARNNAME).getStartDate().getTime();
+        this.selectedSellTime = learnEjb.getLast(LEARNNAME).getStartDate().getTime();
     }
 
     /**
@@ -111,7 +126,11 @@ public class LearnBean implements Serializable {
      * Create, download CSV file
      */
     public void onCSV() {
-        ArrayList<String> csvList = (ArrayList<String>) exportEjb.candleToCSV("Első");
+        Date buyDate = new Date(selectedBuyTime);
+        Date sellDate = new Date(selectedSellTime);
+        
+        ArrayList<String> csvList = (ArrayList<String>) exportEjb.candleToCSV(LEARNNAME,
+                buyDate, sellDate);
 
         ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         String realPath = ctx.getRealPath("/WEB-INF/").concat("/" + FILENAME);
@@ -146,4 +165,27 @@ public class LearnBean implements Serializable {
         this.file = file;
     }
 
+    public List<LearnDTO> getBuyList() {
+        return learnEjb.getBuy();
+    }
+
+    public List<LearnDTO> getSellList() {
+        return learnEjb.getSell();
+    }
+
+    public long getSelectedBuyTime() {
+        return selectedBuyTime;
+    }
+
+    public void setSelectedBuyTime(long selectedBuyTime) {
+        this.selectedBuyTime = selectedBuyTime;
+    }
+
+    public long getSelectedSellTime() {
+        return selectedSellTime;
+    }
+
+    public void setSelectedSellTime(long selectedSellTime) {
+        this.selectedSellTime = selectedSellTime;
+    }
 }

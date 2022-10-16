@@ -8,6 +8,7 @@ package krakee.profit;
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -29,7 +30,7 @@ public class ProfitEJB {
     static final Logger LOGGER = Logger.getLogger(ProfitEJB.class.getCanonicalName());
 
     @EJB
-    private ConfigEJB config;
+    private ConfigEJB configEjb;
     @EJB
     private LearnEJB learnEjb;
     @EJB
@@ -41,24 +42,24 @@ public class ProfitEJB {
      * @return
      */
     public List<ProfitDTO> get() {
-        return config.getProfitColl()
+        return configEjb.getProfitColl()
                 .find()
                 .sort(Sorts.descending("eur"))
                 .into(new ArrayList<>());
     }
-    
 
     /**
      * Get profit filter by learnName
+     *
      * @param learnName
-     * @return 
+     * @return
      */
     public List<ProfitDTO> get(String learnName) {
-        return config.getProfitColl()
+        return configEjb.getProfitColl()
                 .find(eq("learnName", learnName))
                 .sort(Sorts.descending("eur"))
                 .into(new ArrayList<>());
-    }    
+    }
 
     /**
      * Get profit filter by testNum
@@ -67,7 +68,7 @@ public class ProfitEJB {
      * @return
      */
     public ProfitDTO get(Long testNum) {
-        return config.getProfitColl()
+        return configEjb.getProfitColl()
                 .find(eq("testNum", testNum))
                 .first();
     }
@@ -78,7 +79,7 @@ public class ProfitEJB {
      * @return
      */
     public ProfitDTO getBest() {
-        return config.getProfitColl()
+        return configEjb.getProfitColl()
                 .find()
                 .sort(Sorts.descending("eur"))
                 .first();
@@ -86,11 +87,12 @@ public class ProfitEJB {
 
     /**
      * Get MAX testNum value
-     * @return 
+     *
+     * @return
      */
     public Long getMaxTestNum() {
         Long testNum = 0L;
-        ProfitDTO dto = this.config.getProfitColl()
+        ProfitDTO dto = this.configEjb.getProfitColl()
                 .find()
                 .sort(Sorts.descending("testNum"))
                 .first();
@@ -101,18 +103,28 @@ public class ProfitEJB {
     }
 
     /**
+     * Delete one profit
+     * @param dto 
+     */
+    public void delete(ProfitDTO dto) {
+        configEjb.getProfitColl().deleteOne(eq("_id", dto.getId()));
+    }
+
+    /**
      * Calculate one learn profit
      *
      * @param learnName
+     * @param buyDate
+     * @param sellDate
      */
-    public void calcProfit(String learnName) {
+    public void calcProfit(String learnName, Date buyDate, Date sellDate) {
         double eur = 1000;
         double btc = 0;
         double lastEur = 0;
         List<ProfitItemDTO> profitList = new ArrayList<>();
         Long testNum = 1L + this.getMaxTestNum();
 
-        List<LearnDTO> learnList = learnEjb.get(learnName);
+        List<LearnDTO> learnList = learnEjb.get(learnName, buyDate, sellDate);
         for (LearnDTO learn : learnList) {
             CandleDTO candle = this.candleEjb.get(learn.getStartDate());
             ProfitItemDTO dto = new ProfitItemDTO(candle, learn.getTrade(), testNum);
@@ -141,6 +153,6 @@ public class ProfitEJB {
         }
 
         //Store profit
-        config.getProfitColl().insertOne(new ProfitDTO(learnName, testNum, lastEur, profitList));
+        configEjb.getProfitColl().insertOne(new ProfitDTO(learnName, testNum, lastEur, profitList));
     }
 }

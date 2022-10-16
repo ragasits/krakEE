@@ -27,17 +27,32 @@
                     <p:autoUpdate />
                 </p:messages>   
 
-                <p:panelGrid columns="5">
+                <p:panelGrid columns="8">
                     <p:commandButton value="Check1" action="#{learnBean.chkLearnPeaks()}"
                                      id="chkBtn1" update="tbl" title="Looking for peaks and valleys"/>
                     <p:commandButton value="Check2" action="#{learnBean.chkLearnPairs()}"
                                      id="chkBtn2" update="tbl" title="Looking for buy and sell pairs"/> 
-                    <p:commandButton value="ToCsv" id="csvBtn" 
+                    
+                    <p:outputLabel value="Buy:"/>                  
+                    <p:selectOneMenu value="#{learnBean.selectedBuyTime}" id="buyList">
+                        <f:selectItems value="#{learnBean.buyList}" var="item" 
+                                       itemLabel="#{item.startDate}" itemValue="#{item.startDate.time}" />                          
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Sell:"/>     
+                    <p:selectOneMenu value="#{learnBean.selectedSellTime}" id="sellList">
+                        <f:selectItems value="#{learnBean.sellList}" var="item1" 
+                                       itemLabel="#{item1.startDate}" itemValue="#{item1.startDate.time}" />                          
+                    </p:selectOneMenu>                     
+
+                    <p:commandButton value="ToWEKA" id="csvBtn" 
                                      actionListener="#{learnBean.onCSV}"
                                      onclick="PrimeFaces.monitorDownload(start, stop);"
                                      ajax="false">
                         <p:fileDownload value="#{learnBean.file}" />
-                    </p:commandButton>
+                    </p:commandButton>                    
+
+
                 </p:panelGrid>
                 <p:panel>    
                     <p:dataTable value="#{learnBean.learnList}" var="item" tableStyle="width:auto" id="tbl">

@@ -17,6 +17,7 @@
 package krakee.learn;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -24,7 +25,8 @@ import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
 
 /**
- * Export Candle + Learn to CSV 
+ * Export Candle + Learn to CSV
+ *
  * @author rgt
  */
 @Stateless
@@ -41,17 +43,15 @@ public class ExportEJB {
      * Export candles to CSV
      *
      * @param learnName
+     * @param buyDate
+     * @param sellDate
      * @return
      */
-    public List<String> candleToCSV(String learnName) {
+    public List<String> candleToCSV(String learnName, Date buyDate, Date sellDate) {
         ArrayList<String> csvList = new ArrayList<>();
 
-        //Get Learning data
-        LearnDTO firstLearn = learnEjb.getFirst(learnName);
-        LearnDTO lastLearn = learnEjb.getLast(learnName);
-
         //Get Candles
-        List<CandleDTO> candleList = candleEjb.get(firstLearn.getStartDate(), lastLearn.getStartDate());
+        List<CandleDTO> candleList = candleEjb.get(buyDate, sellDate);
 
         boolean firstRow = true;
         String row;
@@ -78,8 +78,9 @@ public class ExportEJB {
 
     /**
      * Export candle headers
+     *
      * @param separator
-     * @return 
+     * @return
      */
     private String candleHeaderToCSV(String separator) {
         StringBuilder sb = new StringBuilder();
@@ -126,23 +127,24 @@ public class ExportEJB {
                 .append("rsi").append(separator)
                 .append("rsiBuy").append(separator)
                 .append("rsiSell").append(separator);
-        
+
         //MACD
         sb.append("macdLine").append(separator)
                 .append("signalLine").append(separator)
                 .append("macdHistogram").append(separator)
                 .append("bullMarket").append(separator)
                 .append("bearMarket").append(separator)
-                .append("crossover").append(separator);        
+                .append("crossover").append(separator);
 
         return sb.toString();
     }
 
     /**
      * Export one candle row
+     *
      * @param dto
      * @param separator
-     * @return 
+     * @return
      */
     private String candleRowToCSV(CandleDTO dto, String separator) {
         StringBuilder sb = new StringBuilder();
@@ -189,14 +191,14 @@ public class ExportEJB {
                 .append(dto.getRsi().getRsi()).append(separator)
                 .append(dto.getRsi().isRsiBuy()).append(separator)
                 .append(dto.getRsi().isRsiSell()).append(separator);
-        
+
         //MACD
         sb.append(dto.getMacd().getMacdLine()).append(separator)
                 .append(dto.getMacd().getSignalLine()).append(separator)
                 .append(dto.getMacd().getMacdHistogram()).append(separator)
                 .append(dto.getMacd().isBullMarket()).append(separator)
                 .append(dto.getMacd().isBearMarket()).append(separator)
-                .append(dto.getMacd().isCrossover()).append(separator);        
+                .append(dto.getMacd().isCrossover()).append(separator);
 
         return sb.toString();
     }

@@ -72,6 +72,4 @@ public class LearnDTO {
     public void setChkMessage(String chkMessage) {
         this.chkMessage = chkMessage;
     }
-
-
 }

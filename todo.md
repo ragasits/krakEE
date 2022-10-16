@@ -1,19 +1,24 @@
-+ Export candle+learn to CSV file
++ Export candle+learn: Add From(Buy) To(Sell) parameter
++ Profit calculation: Add Add From(Buy) To(Sell) parameter
+
+- BUG: Candle:Crossover field have only false value
+- Migrate to Primefaces 12
+- Export candle+learn: Delete one valued fields
 
 
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values
 - Try reinforcement learning 
 
-Future:
---------
-- Migrate to JakartaEE 9.1
+## Future:
+----------
+- Migrate to JakartaEE 9.1 (10)
 - Migrate to Eclipse Microprofile 5
 - Migrate to JDK17
 - Optimize mongodb
 - Candle1d (one day) + Simulation
 
-Optional:
----------
+## Optional:
+------------
 - Code review findbugs or sonar
 - EJB timeout exception - Move to Bath processing?
 - Metrics: Prometheus + Grafana

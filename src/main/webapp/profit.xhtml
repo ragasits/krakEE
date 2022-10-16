@@ -19,7 +19,7 @@
 
             <h:form id="form1">
                 <p:panel>
-                    <p:panelGrid columns="6">
+                    <p:panelGrid columns="10">
                         <p:outputLabel value="Learn:"/>  
                         <p:selectOneMenu value="#{profitBean.selectedName}" id="nameList">
                             <f:selectItem itemLabel="-" itemValue=""/>
@@ -27,6 +27,39 @@
                                            itemLabel="#{names}" itemValue="#{names}" />
                             <p:ajax event="itemSelect"  update="testList, profitPanel"/>
                         </p:selectOneMenu>
+
+                        <p:outputLabel value="Buy:"/>                  
+                        <p:selectOneMenu value="#{profitBean.selectedBuyTime}" id="buyList">
+                            <f:selectItems value="#{profitBean.buyList}" var="item" 
+                                           itemLabel="#{item.startDate}" itemValue="#{item.startDate.time}" />                          
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Sell:"/>     
+                        <p:selectOneMenu value="#{profitBean.selectedSellTime}" id="sellList">
+                            <f:selectItems value="#{profitBean.sellList}" var="item1" 
+                                           itemLabel="#{item1.startDate}" itemValue="#{item1.startDate.time}" />                          
+                        </p:selectOneMenu>          
+
+                        <p:commandButton value="Calculate"  id="calcBtn" 
+                                         action="#{profitBean.onCalc()}" 
+                                         update="testList, tbl, profitPanel" >
+                        </p:commandButton>   
+                    </p:panelGrid>
+                </p:panel>      
+
+                <p:blockUI block="form1" trigger="calcBtn, deleteBtn">
+                    <p:graphicImage value="/resources/ajax-loader.gif" />
+                </p:blockUI>    
+
+                <p:panel id="profitPanel">
+                    <p:panelGrid columns="7">
+                        <p:outputLabel value="TestNum:"/>  
+                        <p:outputLabel value="#{profitBean.profit.testNum}"/>  
+
+                        <p:outputLabel value="EUR:"/>  
+                        <p:outputLabel value="#{profitBean.profit.eur}">
+                            <f:convertNumber maxFractionDigits="2" groupingUsed="true" />
+                        </p:outputLabel>      
 
                         <p:outputLabel value="Best:"/>  
                         <p:selectOneMenu value="#{profitBean.selectedTest}" id="testList" >
@@ -36,26 +69,10 @@
                             <p:ajax event="itemSelect"  update="tbl, profitPanel"/>
                         </p:selectOneMenu>
 
-                        <p:commandButton value="Calculate"  id="calcBtn" 
-                                         action="#{profitBean.onCalc()}" 
+                        <p:commandButton value="Delete"  id="deleteBtn" 
+                                         action="#{profitBean.onDelete()}" 
                                          update="testList, tbl, profitPanel" >
                         </p:commandButton>   
-                    </p:panelGrid>
-                </p:panel>      
-
-                <p:blockUI block="form1" trigger="calcBtn">
-                    <p:graphicImage value="/resources/ajax-loader.gif" />
-                </p:blockUI>    
-
-                <p:panel id="profitPanel">
-                    <p:panelGrid columns="4">
-                        <p:outputLabel value="TestNum:"/>  
-                        <p:outputLabel value="#{profitBean.profit.testNum}"/>  
-
-                        <p:outputLabel value="EUR:"/>  
-                        <p:outputLabel value="#{profitBean.profit.eur}">
-                            <f:convertNumber maxFractionDigits="2" groupingUsed="true" />
-                        </p:outputLabel>                           
                     </p:panelGrid>
                 </p:panel>    
 
