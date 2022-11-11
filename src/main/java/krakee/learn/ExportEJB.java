@@ -136,6 +136,14 @@ public class ExportEJB {
                 .append("bearMarket").append(separator)
                 .append("crossover").append(separator);
 
+        //CCI
+        sb.append("typicalPrice").append(separator)
+                .append("sma20Typical").append(separator)
+                .append("mad20").append(separator)
+                .append("cci20").append(separator)
+                .append("overBought").append(separator)
+                .append("overSold").append(separator);
+
         return sb.toString();
     }
 
@@ -199,6 +207,14 @@ public class ExportEJB {
                 .append(dto.getMacd().isBullMarket()).append(separator)
                 .append(dto.getMacd().isBearMarket()).append(separator)
                 .append(dto.getMacd().isCrossover()).append(separator);
+
+        //MACD
+        sb.append(dto.getCci().getTypicalPrice()).append(separator)
+                .append(dto.getCci().getSma20Typical()).append(separator)
+                .append(dto.getCci().getMad20()).append(separator)
+                .append(dto.getCci().getCci20()).append(separator)
+                .append(dto.getCci().isOverBought()).append(separator)
+                .append(dto.getCci().isOverSold()).append(separator);
 
         return sb.toString();
     }

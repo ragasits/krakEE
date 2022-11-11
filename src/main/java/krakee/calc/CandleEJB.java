@@ -23,7 +23,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.MyException;
-import krakee.get.TradeEJB;
 import krakee.get.TradePairDTO;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -37,19 +36,21 @@ import org.bson.types.ObjectId;
 public class CandleEJB {
 
     static final Logger LOGGER = Logger.getLogger(CandleEJB.class.getCanonicalName());
+    private static final String STARTDATE = "startDate";
+    private static final String TIMEDATE = "timeDate";
 
     @EJB
     ConfigEJB configEjb;
     @EJB
     BollingerEJB bollingerEjb;
     @EJB
-    TradeEJB tradeEjb;
-    @EJB
     RsiEJB rsiEjb;
     @EJB
     MovingAverageEJB maEjb;
     @EJB
     MacdEJB macdEjb;
+    @EJB
+    CciEJB cciEjb;
 
     private int candleSize = 5000;
 
@@ -61,7 +62,7 @@ public class CandleEJB {
      */
     public CandleDTO get(Date startDate) {
         return this.configEjb.getCandleColl()
-                .find(eq("startDate", startDate))
+                .find(eq(STARTDATE, startDate))
                 .first();
     }
 
@@ -86,8 +87,8 @@ public class CandleEJB {
      */
     public List<CandleDTO> get(Date first, Date last) {
         return configEjb.getCandleColl()
-                .find(and(gte("startDate", first), lte("startDate", last)))
-                .sort(Sorts.ascending("startDate"))
+                .find(and(gte(STARTDATE, first), lte(STARTDATE, last)))
+                .sort(Sorts.ascending(STARTDATE))
                 .into(new ArrayList<>());
     }
 
@@ -100,7 +101,7 @@ public class CandleEJB {
     public List<CandleDTO> getLasts(int limit) {
         return configEjb.getCandleColl()
                 .find()
-                .sort(Sorts.descending("startDate"))
+                .sort(Sorts.descending(STARTDATE))
                 .limit(limit)
                 .into(new ArrayList<>());
     }
@@ -113,7 +114,7 @@ public class CandleEJB {
     public Date getLatesDate() {
         CandleDTO dto = configEjb.getCandleColl()
                 .find()
-                .sort(Sorts.descending("startDate"))
+                .sort(Sorts.descending(STARTDATE))
                 .first();
 
         if (dto == null) {
@@ -130,7 +131,7 @@ public class CandleEJB {
     public Date getFirstDate() {
         CandleDTO dto = configEjb.getCandleColl()
                 .find()
-                .sort(Sorts.ascending("startDate"))
+                .sort(Sorts.ascending(STARTDATE))
                 .first();
 
         if (dto == null) {
@@ -153,8 +154,8 @@ public class CandleEJB {
         Date stopDate = cal.getTime();
 
         return configEjb.getCandleColl()
-                .find(and(gte("startDate", startDate), lt("startDate", stopDate)))
-                .sort(Sorts.ascending("startDate"))
+                .find(and(gte(STARTDATE, startDate), lt(STARTDATE, stopDate)))
+                .sort(Sorts.ascending(STARTDATE))
                 .into(new ArrayList<>());
 
     }
@@ -173,6 +174,7 @@ public class CandleEJB {
         bollingerEjb.calculateBollinger();
         rsiEjb.calculateRsi();
         macdEjb.calculateMacd();
+        cciEjb.calculateCci();
         configEjb.setRunCandle(true);
     }
 
@@ -197,7 +199,7 @@ public class CandleEJB {
         //Get last startDate from Candle
         CandleDTO candle = configEjb.getCandleColl()
                 .find()
-                .sort(Sorts.descending("startDate"))
+                .sort(Sorts.descending(STARTDATE))
                 .first();
         if (candle == null || candle.getStartDate() == null) {
             return;
@@ -206,7 +208,7 @@ public class CandleEJB {
         //Get last date from TradePair
         TradePairDTO trade = configEjb.getTradePairColl()
                 .find()
-                .sort(Sorts.descending("timeDate"))
+                .sort(Sorts.descending(TIMEDATE))
                 .first();
         if (trade == null) {
             return;
@@ -228,20 +230,22 @@ public class CandleEJB {
      */
     private void calcCandle() {
         int i = 0;
+        Date lastDate;
 
         List<CandleDTO> candleList = configEjb.getCandleColl()
                 .find(eq("calcCandle", false))
-                .sort(Sorts.ascending("startDate"))
+                .sort(Sorts.ascending(STARTDATE))
                 .limit(5000)
                 .into(new ArrayList<>());
-
+        
         for (CandleDTO dto : candleList) {
             this.calcCandleItem(dto);
             i++;
         }
-
+        
+        lastDate = candleList.get(candleList.size()-1).getStartDate();        
         this.candleSize = i;
-        LOGGER.log(Level.INFO, "calcCandle:{0}", i);
+        LOGGER.log(Level.INFO, "calcCandle: {0} {1}", new Object[]{i, lastDate});
     }
 
     /**
@@ -253,8 +257,8 @@ public class CandleEJB {
         TradePairDTO trade;
 
         FindIterable<TradePairDTO> result = configEjb.getTradePairColl()
-                .find(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate())))
-                .sort(Sorts.ascending("timeDate"));
+                .find(and(gte(TIMEDATE, dto.getStartDate()), lt(TIMEDATE, dto.getStopDate())))
+                .sort(Sorts.ascending(TIMEDATE));
         MongoCursor<TradePairDTO> cursor = result.iterator();
 
         Integer count = 0;
@@ -267,12 +271,12 @@ public class CandleEJB {
         BigDecimal volumeBuy = BigDecimal.ZERO;
         BigDecimal volumeSell = BigDecimal.ZERO;
 
-        trade = result.sort(Sorts.ascending("timeDate")).first();
+        trade = result.sort(Sorts.ascending(TIMEDATE)).first();
         if (trade != null) {
             dto.setOpen(trade.getPrice());
         }
 
-        trade = result.sort(Sorts.descending("timeDate")).first();
+        trade = result.sort(Sorts.descending(TIMEDATE)).first();
         if (trade != null) {
             dto.setClose(trade.getPrice());
         }
@@ -334,7 +338,7 @@ public class CandleEJB {
 
         //Stopdate
         TradePairDTO dto = configEjb.getTradePairColl().find()
-                .sort(Sorts.descending("timeDate"))
+                .sort(Sorts.descending(TIMEDATE))
                 .first();
 
         if (dto == null) {
@@ -367,7 +371,7 @@ public class CandleEJB {
 
         if (configEjb.getCandleColl().countDocuments() > 0) {
             CandleDTO dto = configEjb.getCandleColl().find()
-                    .sort(Sorts.descending("startDate"))
+                    .sort(Sorts.descending(STARTDATE))
                     .first();
 
             if (dto == null) {
@@ -383,7 +387,7 @@ public class CandleEJB {
 
         } else {
             TradePairDTO dto = configEjb.getTradePairColl().find()
-                    .sort(Sorts.ascending("timeDate"))
+                    .sort(Sorts.ascending(TIMEDATE))
                     .first();
 
             if (dto == null) {
@@ -441,7 +445,7 @@ public class CandleEJB {
         //get first trade date
         dto = configEjb.getTradePairColl()
                 .find()
-                .sort(Sorts.ascending("timeDate"))
+                .sort(Sorts.ascending(TIMEDATE))
                 .first();
 
         if (dto == null) {
@@ -453,7 +457,7 @@ public class CandleEJB {
         //Get last trade date
         dto = configEjb.getTradePairColl()
                 .find()
-                .sort(Sorts.descending("timeDate"))
+                .sort(Sorts.descending(TIMEDATE))
                 .first();
 
         if (dto == null) {
@@ -467,7 +471,7 @@ public class CandleEJB {
             i++;
             //Seek date
             CandleDTO candle = configEjb.getCandleColl()
-                    .find(eq("startDate", firstDate))
+                    .find(eq(STARTDATE, firstDate))
                     .first();
             if (candle == null) {
                 list.add(firstDate.toString());
@@ -479,7 +483,7 @@ public class CandleEJB {
             firstDate = cal.getTime();
         }
 
-        System.out.println("chkCandleDates: " + i);
+        LOGGER.log(Level.INFO, "chkCandleDates: {0}", i);
         return list;
     }
 
@@ -499,7 +503,7 @@ public class CandleEJB {
             //Count trades    
             Document tradeDto = configEjb.getTradePairColl().aggregate(
                     Arrays.asList(
-                            Aggregates.match(and(gte("timeDate", dto.getStartDate()), lt("timeDate", dto.getStopDate()))),
+                            Aggregates.match(and(gte(TIMEDATE, dto.getStartDate()), lt(TIMEDATE, dto.getStopDate()))),
                             Aggregates.group("pair", Accumulators.sum("count", 1))
                     ), Document.class
             ).first();
@@ -530,7 +534,7 @@ public class CandleEJB {
 
         List<CandleDTO> candleList = configEjb.getCandleColl()
                 .find(eq("open", 0))
-                .sort(Sorts.ascending("timeDate"))
+                .sort(Sorts.ascending(TIMEDATE))
                 .into(new ArrayList<>());
 
         for (CandleDTO dto : candleList) {
@@ -538,16 +542,17 @@ public class CandleEJB {
             List<TradePairDTO> tradeList = configEjb.getTradePairColl()
                     .find(
                             and(
-                                    gte("timeDate", dto.getStartDate()),
-                                    lt("timeDate", dto.getStopDate())
+                                    gte(TIMEDATE, dto.getStartDate()),
+                                    lt(TIMEDATE, dto.getStopDate())
                             )
                     )
                     .into(new ArrayList<>());
 
             if (tradeList.isEmpty()) {
 
-                System.out.println("Missing trade: " + dto.getStartDate() + "-" + dto.getStopDate()
-                        + " " + dto.getStartDate().getTime() + "-" + dto.getStopDate().getTime());
+                LOGGER.log(Level.INFO, "Missing trade: {0}-{1} {2}-{3}", 
+                        new Object[]{dto.getStartDate(), dto.getStopDate(), 
+                            dto.getStartDate().getTime(), dto.getStopDate().getTime()});
 
                 list.add("Missing trade: " + dto.getStartDate() + "-" + dto.getStopDate()
                         + " " + dto.getStartDate().getTime() + "-" + dto.getStopDate().getTime());

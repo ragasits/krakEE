@@ -34,6 +34,7 @@ public class CandleDTO {
     private BollingerDTO bollinger;
     private RsiDTO rsi;
     private MacdDTO macd;
+    private CciDTO cci;
 
     public CandleDTO() {
     }
@@ -60,6 +61,7 @@ public class CandleDTO {
         this.rsi = new RsiDTO();
         this.movingAverage = new MovingAverageDTO();
         this.macd = new MacdDTO();
+        this.cci = new CciDTO();
     }
 
     /**
@@ -261,6 +263,11 @@ public class CandleDTO {
         this.macd = macd;
     }
 
-    
+    public CciDTO getCci() {
+        return cci;
+    }
 
+    public void setCci(CciDTO cci) {
+        this.cci = cci;
+    }
 }

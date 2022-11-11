@@ -1,9 +1,8 @@
-+ Export candle+learn: Add From(Buy) To(Sell) parameter
-+ Profit calculation: Add Add From(Buy) To(Sell) parameter
++ Calculate Commodity Channel Index (CCI)
++ Export candle+learn: Delete one valued fields
 
 - BUG: Candle:Crossover field have only false value
 - Migrate to Primefaces 12
-- Export candle+learn: Delete one valued fields
 
 
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values

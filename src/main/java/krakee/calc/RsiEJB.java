@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import krakee.ConfigEJB;
@@ -41,8 +40,8 @@ public class RsiEJB {
     static final BigDecimal RSIDAY = BigDecimal.valueOf(14);
     static final BigDecimal RSIUP = BigDecimal.valueOf(70);
     static final BigDecimal RSIDOWN = BigDecimal.valueOf(30);
+    static final String STARTDATE = "startDate"; 
 
-    static final Logger LOGGER = Logger.getLogger(RsiEJB.class.getCanonicalName());
 
     @EJB
     ConfigEJB config;
@@ -58,7 +57,7 @@ public class RsiEJB {
         //Get the candles
         candleList = config.getCandleColl()
                 .find(and(eq("calcCandle", true), eq("rsi.calcRsi", false)))
-                .sort(Sorts.ascending("startDate"))
+                .sort(Sorts.ascending(STARTDATE))
                 .into(new ArrayList<>());
 
         for (CandleDTO candle : candleList) {
@@ -66,8 +65,8 @@ public class RsiEJB {
 
             //Get the prev candle
             prev = config.getCandleColl()
-                    .find(lt("startDate", candle.getStartDate()))
-                    .sort(Sorts.descending("startDate"))
+                    .find(lt(STARTDATE, candle.getStartDate()))
+                    .sort(Sorts.descending(STARTDATE))
                     .first();
 
             //First element
@@ -104,8 +103,8 @@ public class RsiEJB {
                 );
             } else {
                 ArrayList<CandleDTO> avgList = config.getCandleColl()
-                        .find(lte("startDate", candle.getStartDate()))
-                        .sort(Sorts.descending("startDate"))
+                        .find(lte(STARTDATE, candle.getStartDate()))
+                        .sort(Sorts.descending(STARTDATE))
                         .limit(RSIDAY.intValue())
                         .into(new ArrayList<>());
 

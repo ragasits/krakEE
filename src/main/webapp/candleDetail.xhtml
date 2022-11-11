@@ -85,6 +85,9 @@
 
                         <p:outputLabel value="CalcMacd"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.macd.calcMacd}"/>  
+
+                        <p:outputLabel value="CalcCCI"/>
+                        <p:selectBooleanCheckbox value="#{candleDetailBean.detail.cci.calcCci}"/>  
                     </p:panelGrid>
 
                     <p:panelGrid columns="2" columnClasses="alignTop,alignTop">
@@ -158,6 +161,29 @@
 
                     </p:panelGrid>
 
+                    <p:panel header="Commodity Channel Index (CCI)">
+                        <p:panelGrid columns="18">
+                            <p:outputLabel value="Typical Price:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.cci.typicalPrice}"/>
+
+                            <p:outputLabel value="20-day SMA of Typical Price:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.cci.sma20Typical}"/>
+
+                            <p:outputLabel value="20-day Mean Deviation:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.cci.mad20}"/>
+
+                            <p:outputLabel value="20-day CCI:" style="font-weight: bold"/>
+                            <p:outputLabel value="#{candleDetailBean.detail.cci.cci20}"/>
+
+                            <p:outputLabel value="Over Bought:" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.cci.overBought}"/>  
+
+                            <p:outputLabel value="Over Sold:" style="font-weight: bold"/>
+                            <p:selectBooleanCheckbox value="#{candleDetailBean.detail.cci.overSold}"/>  
+                        </p:panelGrid>
+
+                    </p:panel>
+
                     <p:panel header="MACD 12 26 close 9 EMA EMA">
                         <p:panelGrid columns="18">
                             <p:outputLabel value="MACD Line:" style="font-weight: bold"/>
@@ -172,7 +198,7 @@
                             <p:outputLabel value="Bear market:" style="font-weight: bold"/>
                             <p:selectBooleanCheckbox value="#{candleDetailBean.detail.macd.bearMarket}"/>  
 
-                            <p:outputLabel value="Bull marker" style="font-weight: bold"/>
+                            <p:outputLabel value="Bull market" style="font-weight: bold"/>
                             <p:selectBooleanCheckbox value="#{candleDetailBean.detail.macd.bullMarket}"/> 
 
                             <p:outputLabel value="Crossover" style="font-weight: bold"/>
@@ -181,7 +207,7 @@
                     </p:panel>
 
                     <p:panel header="RSI - 14">
-                        <p:panelGrid columns="18">
+                        <p:panelGrid columns="14">
                             <p:outputLabel value="Change:" style="font-weight: bold"/>
                             <p:outputLabel value="#{candleDetailBean.detail.rsi.change}"/>
 
