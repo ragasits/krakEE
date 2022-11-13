@@ -18,14 +18,14 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.7.1</version>
+            <version>4.7.2</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>11.0.0</version>
+            <version>12.0.0</version>
         </dependency>
         
         <dependency>
@@ -49,21 +49,6 @@
         <failOnMissingWebXml>true</failOnMissingWebXml>
         <version.payara>5.2022.4</version.payara>
     </properties>
-    
-    <reporting>
-        <plugins>
-            <plugin>
-                <!-- Execute: com.github.spotbugs:spotbugs-maven-plugin:4.7.1.0:spotbugs -->
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.7.1.1</version>
-                <configuration>
-                    <xmlOutput>true</xmlOutput>
-                    <xmlOutputDirectory>target/site</xmlOutputDirectory>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>    
     
     <build>
         <plugins>

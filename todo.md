@@ -1,7 +1,6 @@
-+ BUG: Candle:Crossover field have only false value
-
-
-- Migrate to Primefaces 12
++ Migrate to Primefaces 12
++ Delete unused Candle page
++ Migrate SpotBugs to Sonarlint
 
 
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values
@@ -9,7 +8,7 @@
 
 ## Future:
 ----------
-- Migrate to JakartaEE 9.1 (10)
+- Migrate to JakartaEE 9.1 (10) - Missing Netbeans Support
 - Migrate to Eclipse Microprofile 5
 - Migrate to JDK17
 - Optimize mongodb
