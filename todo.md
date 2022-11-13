@@ -1,7 +1,6 @@
-+ Calculate Commodity Channel Index (CCI)
-+ Export candle+learn: Delete one valued fields
++ BUG: Candle:Crossover field have only false value
 
-- BUG: Candle:Crossover field have only false value
+
 - Migrate to Primefaces 12
 
 

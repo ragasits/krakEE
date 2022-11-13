@@ -36,12 +36,12 @@ import krakee.ConfigEJB;
 @Stateless
 public class MacdEJB {
 
-    static final Logger LOGGER = Logger.getLogger(MacdEJB.class.getCanonicalName());
-
     @EJB
     private ConfigEJB configEjb;
     @EJB
     private MovingAverageEJB maEjb;
+    @EJB
+    private CandleEJB candleEjb;
 
     /**
      * Calculate MACD
@@ -75,12 +75,21 @@ public class MacdEJB {
             //Flags
             macd.setBullMarket(macd.getMacdHistogram().compareTo(BigDecimal.ZERO) == 1);
             macd.setBearMarket(macd.getMacdHistogram().compareTo(BigDecimal.ZERO) == -1);
-            macd.setCrossover(macd.getMacdHistogram().compareTo(BigDecimal.ZERO) == 0);
+
+            //Crossover
+            CandleDTO prev = candleEjb.getPrev(candle.getStartDate());
+            if (prev != null) {
+                double hist1 = prev.getMacd().getMacdHistogram().doubleValue();
+                double hist2 = macd.getMacdHistogram().doubleValue();
+
+                if ((hist1 > 0d && hist2 < 0d) || (hist1 < 0d && hist2 > 0d) ){
+                    macd.setCrossover(true);
+                }
+            }
 
             //Save candle
             configEjb.getCandleColl().replaceOne(eq("_id", candle.getId()), candle);
         }
 
     }
-
 }
