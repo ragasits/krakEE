@@ -23,9 +23,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 import krakee.ConfigEJB;
 
 /**

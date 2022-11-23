@@ -18,9 +18,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.Asynchronous;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import jakarta.ejb.Asynchronous;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.MyException;
 import krakee.get.TradePairDTO;
@@ -311,11 +311,11 @@ public class CandleEJB {
             total = total.add(trade.getTotal());
             volume = volume.add(trade.getVolume());
             
-            if (String.valueOf("b").equals(trade.getBuySel())) {
+            if ("b".equals(trade.getBuySel())) {
                 countBuy++;
                 totalBuy = totalBuy.add(trade.getTotal());
                 volumeBuy = volumeBuy.add(trade.getVolume());
-            } else if (String.valueOf("s").equals(trade.getBuySel())) {
+            } else if ("s".equals(trade.getBuySel())) {
                 countSell++;
                 totalSell = totalSell.add(trade.getTotal());
                 volumeSell = volumeBuy.add(trade.getVolume());

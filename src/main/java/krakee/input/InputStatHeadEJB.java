@@ -19,8 +19,8 @@ package krakee.input;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import java.util.ArrayList;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 import krakee.ConfigEJB;
 
 /**

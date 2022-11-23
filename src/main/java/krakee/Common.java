@@ -41,7 +41,7 @@ public class Common {
      */
     public static BigDecimal sqrt(BigDecimal A, final int SCALE) {
         BigDecimal x0 = new BigDecimal("0");
-        BigDecimal x1 = new BigDecimal(Math.sqrt(A.doubleValue()));
+        BigDecimal x1 = BigDecimal.valueOf(Math.sqrt(A.doubleValue()));
         while (!x0.equals(x1)) {
             x0 = x1;
             x1 = A.divide(x0, SCALE, RoundingMode.HALF_UP);

@@ -1,6 +1,5 @@
-+ Migrate to Primefaces 12
-+ Delete unused Candle page
-+ Migrate SpotBugs to Sonarlint
++ Migrate to JakartaEE 10
++ Migrate to Eclipse Microprofile 5
 
 
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values
@@ -8,8 +7,7 @@
 
 ## Future:
 ----------
-- Migrate to JakartaEE 9.1 (10) - Missing Netbeans Support
-- Migrate to Eclipse Microprofile 5
+
 - Migrate to JDK17
 - Optimize mongodb
 - Candle1d (one day) + Simulation

@@ -5,10 +5,10 @@
  */
 package krakee.get;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 /**
@@ -20,5 +20,5 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface KrakenClient {
 
     @GET
-    public Response getTrade(@QueryParam("pair") String pair, @QueryParam("since") String since);
+    Response getTrade(@QueryParam("pair") String pair, @QueryParam("since") String since);
 }

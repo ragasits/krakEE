@@ -19,9 +19,9 @@ package krakee.input.type;
 import static com.mongodb.client.model.Filters.lte;
 import com.mongodb.client.model.Sorts;
 import java.util.ArrayList;
-import java.util.Arrays;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import java.util.List;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 import krakee.ConfigEJB;
 import krakee.calc.CandleDTO;
 import krakee.input.InputDTO;
@@ -100,6 +100,6 @@ public class TimeDiffInputEJB extends AbstractInput {
 
     @Override
     public ArrayList<String> outputColumnNameList() {
-        return new ArrayList<>(Arrays.asList("trade"));
+        return new ArrayList<>(List.of("trade"));
     }
 }

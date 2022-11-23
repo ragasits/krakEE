@@ -18,7 +18,7 @@ package krakee.input.type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.ejb.EJB;
+import jakarta.ejb.EJB;
 import krakee.input.InputDTO;
 import krakee.input.InputEJB;
 
