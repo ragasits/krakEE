@@ -1,5 +1,4 @@
-+ Migrate to JakartaEE 10
-+ Migrate to Eclipse Microprofile 5
++ Export: 10 days Candle History to CSV 
 
 
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values

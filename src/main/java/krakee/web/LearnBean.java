@@ -5,15 +5,6 @@
  */
 package krakee.web;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
@@ -24,11 +15,17 @@ import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
-import krakee.learn.ExportEJB;
+import krakee.learn.ExportType;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import krakee.learn.ExportEJB;
 
 /**
  * JSF bean for one Candle
@@ -46,6 +43,7 @@ public class LearnBean implements Serializable {
     private StreamedContent file;
     private long selectedBuyTime;
     private long  selectedSellTime;
+    private ExportType selectedExportType;
 
     @EJB
     private LearnEJB learnEjb;
@@ -73,6 +71,10 @@ public class LearnBean implements Serializable {
     public void init(){
         this.selectedBuyTime = learnEjb.getFirst(LEARNNAME).getStartDate().getTime();
         this.selectedSellTime = learnEjb.getLast(LEARNNAME).getStartDate().getTime();
+    }
+
+    public ExportType[] getExportTypes(){
+        return ExportType.values();
     }
 
     /**
@@ -130,7 +132,7 @@ public class LearnBean implements Serializable {
         Date sellDate = new Date(selectedSellTime);
         
         ArrayList<String> csvList = (ArrayList<String>) exportEjb.candleToCSV(LEARNNAME,
-                buyDate, sellDate);
+                buyDate, sellDate, this.getSelectedExportType());
 
         ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         String realPath = ctx.getRealPath("/WEB-INF/").concat("/" + FILENAME);
@@ -187,5 +189,13 @@ public class LearnBean implements Serializable {
 
     public void setSelectedSellTime(long selectedSellTime) {
         this.selectedSellTime = selectedSellTime;
+    }
+
+    public ExportType getSelectedExportType() {
+        return selectedExportType;
+    }
+
+    public void setSelectedExportType(ExportType selectedExportType) {
+        this.selectedExportType = selectedExportType;
     }
 }

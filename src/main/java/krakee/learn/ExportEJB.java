@@ -19,10 +19,15 @@ package krakee.learn;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.mongodb.client.model.Sorts;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+import krakee.ConfigEJB;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
+
+import static com.mongodb.client.model.Filters.lte;
 
 /**
  * Export Candle + Learn to CSV
@@ -31,27 +36,70 @@ import krakee.calc.CandleEJB;
  */
 @Stateless
 public class ExportEJB {
-
     private static final String SEPARATOR = ",";
+    private static final String STARTDATE = "startDate";
 
     @EJB
     private CandleEJB candleEjb;
     @EJB
     private LearnEJB learnEjb;
+    @EJB
+    private ConfigEJB configEjb;
+
+    public List<String> candleToCSV(String learnName, Date buyDate, Date sellDate, ExportType type) {
+        List<CandleDTO> candleList = candleEjb.get(buyDate, sellDate);
+
+        if (type == ExportType.OneCandle){
+            return oneCandleToCSV(learnName, candleList);
+        } else {
+            return histCandleToCSV(learnName, candleList);
+        }
+    }
+
+    /**
+     * Export 10 days history to CSV
+     *
+     * @param learnName
+     * @param candleList
+     * @return
+     */
+    public List<String> histCandleToCSV(String learnName, List<CandleDTO> candleList) {
+        ArrayList<String> csvList = new ArrayList<>();
+
+        boolean firstRow = true;
+        String row;
+
+        for (CandleDTO candleDTO : candleList) {
+            if (firstRow) {
+                row = this.candleHeadersToCSV() + "trade";
+                csvList.add(row);
+                firstRow = false;
+            }
+            row = this.candleHistRowToCSV(candleDTO, learnName);
+            csvList.add(row);
+        }
+        return csvList;
+    }
+
+    private String candleHeadersToCSV() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 10; i++) {
+            String separator = "_" + i + SEPARATOR;
+            sb.append(this.candleHeaderToCSV(separator));
+        }
+        return sb.toString();
+    }
+
 
     /**
      * Export candles to CSV
      *
      * @param learnName
-     * @param buyDate
-     * @param sellDate
+     * @param candleList
      * @return
      */
-    public List<String> candleToCSV(String learnName, Date buyDate, Date sellDate) {
+    private List<String> oneCandleToCSV(String learnName, List<CandleDTO> candleList) {
         ArrayList<String> csvList = new ArrayList<>();
-
-        //Get Candles
-        List<CandleDTO> candleList = candleEjb.get(buyDate, sellDate);
 
         boolean firstRow = true;
         String row;
@@ -86,7 +134,7 @@ public class ExportEJB {
 
         //Candle
 
-        String sb = "startDate" + separator +
+        return STARTDATE + separator +
                 "count" + separator +
                 "countBuy" + separator +
                 "countSell" + separator +
@@ -143,8 +191,33 @@ public class ExportEJB {
                 "cci20" + separator +
                 "overBought" + separator +
                 "overSold" + separator;
+    }
 
-        return sb;
+    private String candleHistRowToCSV(CandleDTO candle, String learnName) {
+        StringBuilder sb = new StringBuilder();
+
+        List<CandleDTO> candleList = configEjb.getCandleColl()
+                .find(
+                        lte(STARTDATE, candle.getStartDate())
+                )
+                .sort(Sorts.descending(STARTDATE))
+                .limit(10)
+                .into(new ArrayList<>());
+
+        for (int i = 0; i < 10; i++) {
+            CandleDTO dto = candleList.get(i);
+            sb.append(this.candleRowToCSV(dto, SEPARATOR));
+        }
+
+        LearnDTO learnDto = learnEjb.get(learnName, candle.getStartDate());
+
+        String trade = "none";
+        if (learnDto != null) {
+            trade = learnDto.getTrade();
+        }
+
+        sb.append(trade);
+        return sb.toString();
     }
 
     /**
@@ -216,5 +289,4 @@ public class ExportEJB {
                 dto.getCci().isOverBought() + separator +
                 dto.getCci().isOverSold() + separator;
     }
-
 }
