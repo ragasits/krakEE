@@ -1,5 +1,11 @@
-+ Export: 10 days Candle History to CSV 
++ Export: HistCCi
 
+- GUI Learn: Add name filter
+- GUI Learn: Export: Create page
+- Use weka model
+- Calculate the profit of the weka model
+- Delete deepNetts from the project
+- Delete deepNetts related Input analysing 
 
 - deepNetts BUG: AllFlag: After normalizing (MaxNormalizer, MinMaxNormalizer, Standartizer) macdCrossover_xx NaN values
 - Try reinforcement learning 

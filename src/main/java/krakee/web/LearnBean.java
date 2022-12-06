@@ -36,7 +36,6 @@ import krakee.learn.ExportEJB;
 @Named(value = "learnBean")
 public class LearnBean implements Serializable {
 
-    private static final String FILENAME = "candleLearn.csv";
     private static final String LEARNNAME = "Első";
     
     private static final long serialVersionUID = 1L;
@@ -130,12 +129,13 @@ public class LearnBean implements Serializable {
     public void onCSV() {
         Date buyDate = new Date(selectedBuyTime);
         Date sellDate = new Date(selectedSellTime);
+        String filename = this.getSelectedExportType().toString()+".csv";
         
         ArrayList<String> csvList = (ArrayList<String>) exportEjb.candleToCSV(LEARNNAME,
                 buyDate, sellDate, this.getSelectedExportType());
 
         ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-        String realPath = ctx.getRealPath("/WEB-INF/").concat("/" + FILENAME);
+        String realPath = ctx.getRealPath("/WEB-INF/").concat("/").concat(filename);
 
         //Save to file
         try {
@@ -152,9 +152,9 @@ public class LearnBean implements Serializable {
         }
 
         this.file = DefaultStreamedContent.builder()
-                .name(FILENAME)
+                .name(filename)
                 .contentType("application/csv")
-                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/" + FILENAME))
+                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/" + filename))
                 .build();
 
     }

@@ -37,7 +37,7 @@ import static com.mongodb.client.model.Filters.lte;
 @Stateless
 public class ExportEJB {
     private static final String SEPARATOR = ",";
-    private static final String STARTDATE = "startDate";
+    private static final String START_DATE = "startDate";
 
     @EJB
     private CandleEJB candleEjb;
@@ -52,7 +52,7 @@ public class ExportEJB {
         if (type == ExportType.OneCandle){
             return oneCandleToCSV(learnName, candleList);
         } else {
-            return histCandleToCSV(learnName, candleList);
+            return histCandleToCSV(learnName, candleList, type);
         }
     }
 
@@ -63,7 +63,7 @@ public class ExportEJB {
      * @param candleList
      * @return
      */
-    public List<String> histCandleToCSV(String learnName, List<CandleDTO> candleList) {
+    public List<String> histCandleToCSV(String learnName, List<CandleDTO> candleList, ExportType type) {
         ArrayList<String> csvList = new ArrayList<>();
 
         boolean firstRow = true;
@@ -71,21 +71,35 @@ public class ExportEJB {
 
         for (CandleDTO candleDTO : candleList) {
             if (firstRow) {
-                row = this.candleHeadersToCSV() + "trade";
+                    row = this.candleHeadersToCSV(type) + "trade";
+
                 csvList.add(row);
                 firstRow = false;
             }
-            row = this.candleHistRowToCSV(candleDTO, learnName);
+            row = this.candleHistRowToCSV(candleDTO, learnName, type);
             csvList.add(row);
         }
         return csvList;
     }
 
-    private String candleHeadersToCSV() {
+    /**
+     * Export Candle Headers to CSV
+     * @param type
+     * @return
+     */
+    private String candleHeadersToCSV(ExportType type) {
         StringBuilder sb = new StringBuilder();
+        boolean isFirstDate = true;
+
         for (int i = 0; i < 10; i++) {
             String separator = "_" + i + SEPARATOR;
-            sb.append(this.candleHeaderToCSV(separator));
+
+            if (type.equals(ExportType.HistCandle)){
+                sb.append(this.candleHeaderToCSV(separator));
+            } else {
+                sb.append(this.candleCCiHeaderToCSV(separator, isFirstDate));
+                isFirstDate = false;
+            }
         }
         return sb.toString();
     }
@@ -134,7 +148,7 @@ public class ExportEJB {
 
         //Candle
 
-        return STARTDATE + separator +
+        return START_DATE + separator +
                 "count" + separator +
                 "countBuy" + separator +
                 "countSell" + separator +
@@ -193,20 +207,53 @@ public class ExportEJB {
                 "overSold" + separator;
     }
 
-    private String candleHistRowToCSV(CandleDTO candle, String learnName) {
+    /**
+     * Export CCi header to CSV
+     * @param separator
+     * @return
+     */
+    private String candleCCiHeaderToCSV(String separator, boolean isFirstDate) {
+
+        StringBuilder sb = new StringBuilder();
+
+        if (isFirstDate){
+            sb.append(START_DATE).append(separator);
+        }
+
+        sb.append("cci20").append(separator);
+        return sb.toString();
+    }
+
+    /**
+     * Export  Candle Hist(10) to CSV
+     * @param candle
+     * @param learnName
+     * @param type
+     * @return
+     */
+    private String candleHistRowToCSV(CandleDTO candle, String learnName, ExportType type) {
         StringBuilder sb = new StringBuilder();
 
         List<CandleDTO> candleList = configEjb.getCandleColl()
                 .find(
-                        lte(STARTDATE, candle.getStartDate())
+                        lte(START_DATE, candle.getStartDate())
                 )
-                .sort(Sorts.descending(STARTDATE))
+                .sort(Sorts.descending(START_DATE))
                 .limit(10)
                 .into(new ArrayList<>());
 
+        boolean isFirstDate = true;
         for (int i = 0; i < 10; i++) {
             CandleDTO dto = candleList.get(i);
-            sb.append(this.candleRowToCSV(dto, SEPARATOR));
+
+            if (type.equals(ExportType.HistCandle)){
+                sb.append(this.candleRowToCSV(dto, SEPARATOR));
+            } else {
+                sb.append(this.candleRowCCiToCSV(dto, SEPARATOR, isFirstDate));
+                isFirstDate = false;
+            }
+
+
         }
 
         LearnDTO learnDto = learnEjb.get(learnName, candle.getStartDate());
@@ -288,5 +335,24 @@ public class ExportEJB {
                 dto.getCci().getCci20() + separator +
                 dto.getCci().isOverBought() + separator +
                 dto.getCci().isOverSold() + separator;
+    }
+
+    /**
+     * Export CCI hist
+     * @param dto
+     * @param separator
+     * @return
+     */
+    private String candleRowCCiToCSV(CandleDTO dto, String separator, boolean isFirstDate) {
+
+       StringBuilder sb = new StringBuilder();
+
+       if (isFirstDate){
+           sb.append(dto.getStartDate()).append(separator);
+       }
+
+       sb.append(dto.getCci().getCci20()).append(separator);
+
+       return  sb.toString();
     }
 }
