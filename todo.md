@@ -1,4 +1,6 @@
-+ Export: HistCCi
++ Add Payara Micro 6.2022.2
++ Adding a copyright license header for source files
++ Add LICENSE.txt
 
 - GUI Learn: Add name filter
 - GUI Learn: Export: Create page

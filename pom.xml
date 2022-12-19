@@ -48,7 +48,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>6.2022.1</version.payara>
+        <version.payara>6.2022.2</version.payara>
     </properties>
     
     <build>
