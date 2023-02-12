@@ -1,6 +1,7 @@
-+ Add Payara Micro 6.2022.2
-+ Adding a copyright license header for source files
-+ Add LICENSE.txt
++ Add model DTO, EJB GUI
++ Upload WEKA model file
+
+- Create data export for WEKA model
 
 - GUI Learn: Add name filter
 - GUI Learn: Export: Create page
