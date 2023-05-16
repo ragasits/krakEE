@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.8.2</version>
+            <version>4.9.1</version>
             <type>jar</type>
         </dependency>
         
@@ -48,7 +48,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>6.2023.1</version.payara>
+        <version.payara>6.2023.4</version.payara>
     </properties>
     
     <build>
@@ -56,7 +56,7 @@
             <plugin>
                 <groupId>fish.payara.maven.plugins</groupId>
                 <artifactId>payara-micro-maven-plugin</artifactId>
-                <version>1.4.0</version>
+                <version>2.0</version>
                 <configuration>
                     <payaraVersion>${version.payara}</payaraVersion>
                     <deployWar>false</deployWar>
@@ -79,7 +79,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.11.0</version>
                 <configuration>
                     <showDeprecation>true</showDeprecation>
                 </configuration>

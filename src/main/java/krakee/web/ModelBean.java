@@ -3,6 +3,7 @@ package krakee.web;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
+import krakee.learn.ExportType;
 import krakee.weka.ModelDTO;
 import krakee.weka.ModelEJB;
 import org.bson.types.Binary;
@@ -83,5 +84,44 @@ public class ModelBean implements Serializable {
 
     public ModelDTO getDetail() {
         return detail;
+    }
+
+    public ExportType getSelectedExportType() {
+        if (detail!=null && this.detail.getExportType()!=null){
+            return ExportType.valueOf(this.detail.getExportType());
+        }
+        return null;
+    }
+
+    public void setSelectedExportType(ExportType selectedExportType) {
+        if (detail!=null){
+            this.detail.setExportType(selectedExportType.toString());
+        }
+    }
+
+    public Long getSelectedBuyTime() {
+        if (detail!=null){
+            return detail.getBuyTime();
+        }
+        return null;
+    }
+
+    public void setSelectedBuyTime(Long selectedBuyTime) {
+        if (detail!=null){
+            this.detail.setBuyTime(selectedBuyTime);
+        }
+    }
+
+    public Long getSelectedSellTime() {
+        if (this.detail!=null){
+            return detail.getSellTime();
+        }
+        return null;
+    }
+
+    public void setSelectedSellTime(Long selectedSellTime) {
+        if (this.detail!=null){
+            this.detail.setSellTime(selectedSellTime);
+        }
     }
 }

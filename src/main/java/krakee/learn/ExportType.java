@@ -21,6 +21,8 @@ package krakee.learn;
  */
 public enum ExportType {
     OneCandle, //One Candle Row
+    OneCandleBin, //One candle for binary classification
+
     HistCandle, //10 Hist candle in one row
     HistCCi //10 Hist CCi in one row
 }

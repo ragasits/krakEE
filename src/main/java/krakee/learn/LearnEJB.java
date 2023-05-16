@@ -42,6 +42,7 @@ public class LearnEJB {
 
     private static final String STARTDATE = "startDate";
     private static final String LEARNNAME = "name";
+    private static final String TRADE = "trade";
 
     @EJB
     private ConfigEJB configEjb;
@@ -152,11 +153,27 @@ public class LearnEJB {
      */
     public List<LearnDTO> getBuy() {
         return configEjb.getLearnColl()
-                .find(eq("trade", "buy"))
+                .find(eq(TRADE, "buy"))
                 .sort(Sorts.ascending(STARTDATE))
                 .into(new ArrayList<>());
     }
 
+    /**
+     * Get Buys by learnName
+     * @param learnName
+     * @return 
+     */
+    public List<LearnDTO> getBuy(String learnName) {
+        return configEjb.getLearnColl()
+                .find(
+                        and(
+                            eq(TRADE, "buy"),
+                            eq("name", learnName)
+                        )
+                )
+                .sort(Sorts.ascending(STARTDATE))
+                .into(new ArrayList<>());
+    }
     /**
      * Get SELLs
      *
@@ -164,7 +181,25 @@ public class LearnEJB {
      */
     public List<LearnDTO> getSell() {
         return configEjb.getLearnColl()
-                .find(eq("trade", "sell"))
+                .find(eq(TRADE, "sell"))
+                .sort(Sorts.ascending(STARTDATE))
+                .into(new ArrayList<>());
+    }
+
+    /**
+     * Get Sell by learnName
+     * @param learnName
+     * @return 
+     */
+    public List<LearnDTO> getSell(String learnName) {
+        return configEjb.getLearnColl()
+                .find(
+                        and(
+                                eq(TRADE, "sell"),
+                                eq("name",learnName)
+                        )
+
+                )
                 .sort(Sorts.ascending(STARTDATE))
                 .into(new ArrayList<>());
     }
@@ -279,9 +314,9 @@ public class LearnEJB {
                 LearnDTO prev = learnList.get(i - 1);
 
                 if (learn.getTrade().equals("buy") && prev.getTrade().equals("buy")) {
-                    chkMessage.append("Wrong pairs");
+                    chkMessage.append("Wrong pairs - buy");
                 } else if (learn.getTrade().equals("sell") && prev.getTrade().equals("sell")) {
-                    chkMessage.append("Wrong pairs");
+                    chkMessage.append("Wrong pairs - sell");
                 }
             }
 

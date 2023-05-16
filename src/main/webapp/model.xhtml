@@ -33,7 +33,7 @@
                         <p:autoComplete value="#{modelBean.selectedName}"
                                         completeMethod="#{modelBean.complete}">
                             <p:ajax event="itemSelect" listener="#{modelBean.onSelectedName}"
-                                    update="fileName"/>
+                                    update="fileName, exportPanel"/>
                         </p:autoComplete>
 
                         <p:commandButton value="Save"  id="saveBtn"
@@ -46,6 +46,26 @@
                         <p:outputLabel value="#{modelBean.detail.modelFileName}" id="fileName"/>
 
                         <p:commandButton value="Upload" onclick="PF('dlg').show()"/>
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="10" id="exportPanel">
+                        <p:outputLabel value="Export:"/>
+                        <p:selectOneMenu value="#{modelBean.selectedExportType}" id="typeList">
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{learnBean.exportTypes}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Buy:"/>
+                        <p:selectOneMenu value="#{modelBean.selectedBuyTime}" id="buyList">
+                            <f:selectItems value="#{learnBean.buyList}" var="item"
+                                           itemLabel="#{item.startDate}" itemValue="#{item.startDate.time}" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Sell:"/>
+                        <p:selectOneMenu value="#{modelBean.selectedSellTime}" id="sellList">
+                            <f:selectItems value="#{learnBean.sellList}" var="item1"
+                                           itemLabel="#{item1.startDate}" itemValue="#{item1.startDate.time}" />
+                        </p:selectOneMenu>
                     </p:panelGrid>
                 </p:panel>
 

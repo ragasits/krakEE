@@ -12,6 +12,10 @@ public class ModelDTO {
 
     private String modelFileName;
 
+    private String exportType;
+    private Long buyTime;
+    private Long sellTime;
+
     public ModelDTO() {
     }
 
@@ -45,5 +49,29 @@ public class ModelDTO {
 
     public void setModelFileName(String modelFileName) {
         this.modelFileName = modelFileName;
+    }
+
+    public String getExportType() {
+        return exportType;
+    }
+
+    public void setExportType(String exportType) {
+        this.exportType = exportType;
+    }
+
+    public Long getBuyTime() {
+        return buyTime;
+    }
+
+    public void setBuyTime(Long buyTime) {
+        this.buyTime = buyTime;
+    }
+
+    public Long getSellTime() {
+        return sellTime;
+    }
+
+    public void setSellTime(Long sellTime) {
+        this.sellTime = sellTime;
     }
 }

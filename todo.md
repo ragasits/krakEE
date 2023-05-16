@@ -1,6 +1,8 @@
-+ Add model DTO, EJB GUI
-+ Upload WEKA model file
++ Add model.exportType, buyTime, sellTime to GUI
++ Create export for binary classification (OneCandleBin)
 
+
++ Shrink unused code (input, deep)
 - Create data export for WEKA model
 
 - GUI Learn: Add name filter

@@ -16,7 +16,6 @@
  */
 package krakee.web;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -26,6 +25,7 @@ import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
+import krakee.learn.ExportEJB;
 import krakee.learn.ExportType;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
@@ -34,9 +34,9 @@ import org.primefaces.model.StreamedContent;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import krakee.learn.ExportEJB;
 
 /**
  * JSF bean for one Candle
@@ -47,13 +47,12 @@ import krakee.learn.ExportEJB;
 @Named(value = "learnBean")
 public class LearnBean implements Serializable {
 
-    private static final String LEARNNAME = "Első";
-    
     private static final long serialVersionUID = 1L;
     private StreamedContent file;
     private long selectedBuyTime;
     private long  selectedSellTime;
     private ExportType selectedExportType;
+    private String selectedLearn;
 
     @EJB
     private LearnEJB learnEjb;
@@ -68,21 +67,16 @@ public class LearnBean implements Serializable {
     /**
      * Show messages
      *
-     * @param msg
      */
     private void addMsg(String msg) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
     }
-    
-    /**
-     * Default values
-     */
-    @PostConstruct
-    public void init(){
-        this.selectedBuyTime = learnEjb.getFirst(LEARNNAME).getStartDate().getTime();
-        this.selectedSellTime = learnEjb.getLast(LEARNNAME).getStartDate().getTime();
-    }
 
+    public void updateLists(){
+        this.selectedBuyTime = learnEjb.getFirst(this.selectedLearn).getStartDate().getTime();
+        this.selectedSellTime = learnEjb.getLast(this.selectedLearn).getStartDate().getTime();
+    }
+    
     public ExportType[] getExportTypes(){
         return ExportType.values();
     }
@@ -90,26 +84,33 @@ public class LearnBean implements Serializable {
     /**
      * Get all Learn
      *
-     * @return
      */
     public List<LearnDTO> getLearnList() {
-        return learnEjb.get();
-    }
+        if (this.selectedLearn!=null){
+            return learnEjb.get(this.selectedLearn);
+        }
+        return Collections.emptyList();
+            }
 
     /**
      * Get Names (Distinct)
      *
-     * @return
      */
     public List<String> getLearnNameList() {
         return learnEjb.getNames();
     }
 
+    public String getSelectedLearn() {
+        return selectedLearn;
+    }
+
+    public void setSelectedLearn(String selectedLearn) {
+        this.selectedLearn = selectedLearn;
+    }
+
     /**
      * Link to candleDetail
      *
-     * @param learn
-     * @return
      */
     public String showDetail(LearnDTO learn) {
 
@@ -142,7 +143,7 @@ public class LearnBean implements Serializable {
         Date sellDate = new Date(selectedSellTime);
         String filename = this.getSelectedExportType().toString()+".csv";
         
-        ArrayList<String> csvList = (ArrayList<String>) exportEjb.candleToCSV(LEARNNAME,
+        ArrayList<String> csvList = (ArrayList<String>) exportEjb.candleToCSV(this.selectedLearn,
                 buyDate, sellDate, this.getSelectedExportType());
 
         ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
@@ -179,11 +180,17 @@ public class LearnBean implements Serializable {
     }
 
     public List<LearnDTO> getBuyList() {
-        return learnEjb.getBuy();
+        if (this.selectedLearn!=null){
+            return learnEjb.getBuy(this.selectedLearn);
+        }
+        return Collections.emptyList();
     }
 
     public List<LearnDTO> getSellList() {
-        return learnEjb.getSell();
+        if (this.selectedLearn!=null){
+            return learnEjb.getSell(this.selectedLearn);
+        }
+        return Collections.emptyList();
     }
 
     public long getSelectedBuyTime() {

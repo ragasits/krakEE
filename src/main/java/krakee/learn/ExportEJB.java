@@ -38,6 +38,7 @@ import static com.mongodb.client.model.Filters.lte;
 public class ExportEJB {
     private static final String SEPARATOR = ",";
     private static final String START_DATE = "startDate";
+    private static final String TRADE = "trade";
 
     @EJB
     private CandleEJB candleEjb;
@@ -46,11 +47,19 @@ public class ExportEJB {
     @EJB
     private ConfigEJB configEjb;
 
+    /**
+     * Convert candle to CSV format
+     * @param learnName
+     * @param buyDate
+     * @param sellDate
+     * @param type
+     * @return 
+     */
     public List<String> candleToCSV(String learnName, Date buyDate, Date sellDate, ExportType type) {
         List<CandleDTO> candleList = candleEjb.get(buyDate, sellDate);
 
-        if (type == ExportType.OneCandle){
-            return oneCandleToCSV(learnName, candleList);
+        if (type.equals(ExportType.OneCandle) || type.equals(ExportType.OneCandleBin)){
+            return oneCandleToCSV(type, learnName, candleList);
         } else {
             return histCandleToCSV(learnName, candleList, type);
         }
@@ -71,7 +80,7 @@ public class ExportEJB {
 
         for (CandleDTO candleDTO : candleList) {
             if (firstRow) {
-                    row = this.candleHeadersToCSV(type) + "trade";
+                    row = this.candleHeadersToCSV(type) +TRADE;
 
                 csvList.add(row);
                 firstRow = false;
@@ -112,7 +121,7 @@ public class ExportEJB {
      * @param candleList
      * @return
      */
-    private List<String> oneCandleToCSV(String learnName, List<CandleDTO> candleList) {
+    private List<String> oneCandleToCSV(ExportType type, String learnName, List<CandleDTO> candleList) {
         ArrayList<String> csvList = new ArrayList<>();
 
         boolean firstRow = true;
@@ -120,7 +129,7 @@ public class ExportEJB {
 
         for (CandleDTO candleDTO : candleList) {
             if (firstRow) {
-                row = this.candleHeaderToCSV(SEPARATOR) + "trade";
+                row = this.candleHeaderToCSV(SEPARATOR) + TRADE;
                 csvList.add(row);
                 firstRow = false;
             }
@@ -130,7 +139,12 @@ public class ExportEJB {
             String trade = "none";
             if (learnDto != null) {
                 trade = learnDto.getTrade();
+
+                if (type.equals(ExportType.OneCandleBin) && !trade.equals("none")) {
+                    trade = TRADE;
+                }
             }
+
             row = this.candleRowToCSV(candleDTO, SEPARATOR) + trade;
             csvList.add(row);
 
@@ -278,7 +292,7 @@ public class ExportEJB {
 
         //Candle
 
-        return dto.getStartDate() + separator +
+        return dto.getFormatedStartDate() + separator +
                 dto.getCount() + separator +
                 dto.getCountBuy() + separator +
                 dto.getCountSell() + separator +

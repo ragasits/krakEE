@@ -17,6 +17,7 @@
 package krakee.calc;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
@@ -93,16 +94,6 @@ public class CandleDTO {
         return cal.getTime();
     }
 
-    /**
-     * Show OHLC values
-     *
-     * @return
-     */
-    @BsonIgnore
-    public String getOHLCtMsg() {
-        return "O:" + this.open + " H:" + this.high + " L:" + this.low + " C:" + this.close;
-    }
-
     @BsonIgnore
     public String getIdHexa() {
         if (this.id != null) {
@@ -116,6 +107,15 @@ public class CandleDTO {
             return (Date) startDate.clone();
         }
         return null;
+    }
+
+    /**
+     * Format startDate
+     * @return
+     */
+    public String getFormatedStartDate(){
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sd.format(this.startDate);
     }
 
     public Integer getCount() {
