@@ -36,19 +36,13 @@
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>com.deepnetts</groupId>
-            <artifactId>deepnetts-core</artifactId>
-            <version>1.13.2</version>
-        </dependency>
     </dependencies>
     
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>6.2023.4</version.payara>
+        <version.payara>6.2023.7</version.payara>
     </properties>
     
     <build>

@@ -19,7 +19,7 @@
 
             <h:form id="form1">
 
-                <p:blockUI block="form1" trigger="chkBtn1,chkBtn2,csvBtn">
+                <p:blockUI block="form1" trigger="chkBtn1,chkBtn2">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>  
 
@@ -51,25 +51,12 @@
                                        itemLabel="#{item1.startDate}" itemValue="#{item1.startDate.time}" />                          
                     </p:selectOneMenu>
 
-                    <p:outputLabel value="Type:" style="font-weight: bold"/>
-                    <p:selectOneMenu value="#{learnBean.selectedExportType}" id="typeList">
-                        <f:selectItems value="#{learnBean.exportTypes}"/>
-                    </p:selectOneMenu>
-
                     <p:commandButton value="Check1" action="#{learnBean.chkLearnPeaks()}"
                                      id="chkBtn1" update="tbl" title="Looking for peaks and valleys"/>
                     <p:commandButton value="Check2" action="#{learnBean.chkLearnPairs()}"
                                      id="chkBtn2" update="tbl" title="Looking for buy and sell pairs"/>
-
-                    <p:commandButton value="toWEKA" id="csvBtn" 
-                                     actionListener="#{learnBean.onCSV}"
-                                     onclick="PrimeFaces.monitorDownload(start, stop);"
-                                     ajax="false">
-                        <p:fileDownload value="#{learnBean.file}" />
-                    </p:commandButton>                    
-
-
                 </p:panelGrid>
+
                 <p:panel>    
                     <p:dataTable value="#{learnBean.learnList}" var="item" tableStyle="width:auto" id="tbl">
                         <p:column headerText="name">

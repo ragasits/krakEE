@@ -16,42 +16,49 @@
  */
 package krakee.web;
 
+import krakee.export.ExportOneCandleEJB;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import krakee.calc.CandleDTO;
-import krakee.calc.CandleEJB;
+import jakarta.servlet.ServletContext;
+import krakee.learn.ExportType;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
-import java.io.Serializable;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import krakee.calc.CandleDTO;
+import krakee.calc.CandleEJB;
 
 /**
- * JSF bean for one Candle
+ * JSF bean for Export
  *
  * @author rgt
  */
 @SessionScoped
-@Named(value = "learnBean")
-public class LearnBean implements Serializable {
+@Named(value = "exportBean")
+public class ExportBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private StreamedContent file;
     private long selectedBuyTime;
     private long  selectedSellTime;
+    private ExportType selectedExportType;
     private String selectedLearn;
 
     @EJB
     private LearnEJB learnEjb;
     @EJB
+    private ExportOneCandleEJB exportOneCandleEjb;
+    @EJB
     private CandleEJB candleEjb;
-
-    @Inject
-    private CandleDetailBean candleBean;
 
     /**
      * Show messages
@@ -65,21 +72,27 @@ public class LearnBean implements Serializable {
         this.selectedBuyTime = learnEjb.getFirst(this.selectedLearn).getStartDate().getTime();
         this.selectedSellTime = learnEjb.getLast(this.selectedLearn).getStartDate().getTime();
     }
+    
+    public ExportType[] getExportTypes(){
+        return ExportType.values();
+    }
 
     /**
      * Get all Learn
      *
+     * @return 
      */
     public List<LearnDTO> getLearnList() {
         if (this.selectedLearn!=null){
             return learnEjb.get(this.selectedLearn);
         }
         return Collections.emptyList();
-    }
+            }
 
     /**
      * Get Names (Distinct)
      *
+     * @return 
      */
     public List<String> getLearnNameList() {
         return learnEjb.getNames();
@@ -94,30 +107,52 @@ public class LearnBean implements Serializable {
     }
 
     /**
-     * Link to candleDetail
-     *
+     * Create, download CSV / ARFF file
+     * @param type
      */
-    public String showDetail(LearnDTO learn) {
+    public void onExport(String type) {
+        Date buyDate = new Date(selectedBuyTime);
+        Date sellDate = new Date(selectedSellTime);
+        String filename = this.getSelectedExportType().toString()+"."+type;
+        List<CandleDTO> candleList = candleEjb.get(buyDate, sellDate);
+        ArrayList<String> exportList;
 
-        if (learn != null) {
-            candleBean.setSelectedDate(learn.getStartDate());
-
-            CandleDTO dto = candleEjb.get(learn.getStartDate());
-            candleBean.setSelectedIdHexa(dto.getIdHexa());
-
-            return "candleDetail?faces-redirect=true";
+        if (type.equals("csv")){
+            exportList = (ArrayList<String>) exportOneCandleEjb.toCSV(selectedLearn, candleList);
+        } else {
+            exportList = (ArrayList<String>) exportOneCandleEjb.toArff(filename, candleList);
         }
-        return null;
+
+        ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        String realPath = ctx.getRealPath("/WEB-INF/").concat("/").concat(filename);
+
+        //Save to file
+        try {
+            OutputStream fout = new FileOutputStream(realPath);
+            OutputStream bout = new BufferedOutputStream(fout);
+            try ( OutputStreamWriter out = new OutputStreamWriter(bout, "ISO-8859-2")) {
+                for (String s : exportList) {
+                    out.write(s + "\n");
+                }
+            }
+        } catch (IOException ex) {
+            this.addMsg("Error: " + ex.getMessage());
+            return;
+        }
+
+        this.file = DefaultStreamedContent.builder()
+                .name(filename)
+                .contentType("application/csv")
+                .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/" + filename))
+                .build();
+    }
+    
+    public StreamedContent getFile() {
+        return file;
     }
 
-    //Check1
-    public void chkLearnPeaks() {
-        learnEjb.chkLearnPeaks();
-    }
-
-    //Check2
-    public void chkLearnPairs() {
-        learnEjb.chkLearnPairs();
+    public void setFile(StreamedContent file) {
+        this.file = file;
     }
 
     public List<LearnDTO> getBuyList() {
@@ -148,5 +183,13 @@ public class LearnBean implements Serializable {
 
     public void setSelectedSellTime(long selectedSellTime) {
         this.selectedSellTime = selectedSellTime;
+    }
+
+    public ExportType getSelectedExportType() {
+        return selectedExportType;
+    }
+
+    public void setSelectedExportType(ExportType selectedExportType) {
+        this.selectedExportType = selectedExportType;
     }
 }

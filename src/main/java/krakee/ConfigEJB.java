@@ -30,13 +30,7 @@ import jakarta.inject.Inject;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import krakee.calc.CandleDTO;
-import krakee.deep.DeepDTO;
-import krakee.input.InputDTO;
-import krakee.input.InputRowDTO;
-import krakee.input.InputStatDTO;
 import krakee.get.TradePairDTO;
-import krakee.input.InputStatHeadDTO;
-import krakee.input.type.OilSpillDTO;
 import krakee.learn.LearnDTO;
 import krakee.weka.ModelDTO;
 import krakee.profit.ProfitDTO;
@@ -56,53 +50,39 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @Startup
 public class ConfigEJB {
 
-    //private final String krakenURL = "https://api.kraken.com/0/public";
     @Inject
     @ConfigProperty(name = "krakEE.krakenURL", defaultValue = "")
     private String krakenURL;
 
-    //private final boolean proxyEnabled = false;
     @Inject
     @ConfigProperty(name = "krakEE.proxyEnabled", defaultValue = "false")
     private boolean proxyEnabled;
 
-    //private final String proxyHostname = "pac.mytrium.com";
     @Inject
     @ConfigProperty(name = "krakEE.proxyHostname", defaultValue = "")
     private String proxyHostname;
 
-    //private final Integer proxyPort = 8080;
     @Inject
     @ConfigProperty(name = "krakEE.proxyPort", defaultValue = "")
     private String proxyPort;
 
-    //private final int defaultTimerDuration = 10; //in sec
     @Inject
     @ConfigProperty(name = "krakEE.defaultTimerDuration", defaultValue = "10")
     private int defaultTimerDuration;
 
-    //private boolean runTrade = true;
     @Inject
     @ConfigProperty(name = "krakEE.runTrade", defaultValue = "false")
     private boolean runTrade;
 
-    //private boolean runCandle = false;
     @Inject
     @ConfigProperty(name = "krakEE.runCandle", defaultValue = "false")
     private boolean runCandle;
 
     private MongoClient client;
-    private MongoDatabase database;
     private MongoCollection<TradePairDTO> tradePairColl;
     private MongoCollection<CandleDTO> candleColl;
     private MongoCollection<ProfitDTO> profitColl;
     private MongoCollection<LearnDTO> learnColl;
-    private MongoCollection<DeepDTO> deepColl;
-    private MongoCollection<InputDTO> inputColl;
-    private MongoCollection<InputRowDTO> inputRowColl;
-    private MongoCollection<InputStatDTO> inputStatColl;
-    private MongoCollection<OilSpillDTO> oilSpillColl;
-    private MongoCollection<InputStatHeadDTO> inputStatHeadColl;
     private MongoCollection<ModelDTO> modelColl;
 
     /**
@@ -121,9 +101,9 @@ public class ConfigEJB {
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
         this.client = MongoClients.create();
-        this.database = this.client.getDatabase("krakEE").withCodecRegistry(pojoCodecRegistry);
+        MongoDatabase database = this.client.getDatabase("krakEE").withCodecRegistry(pojoCodecRegistry);
 
-        this.tradePairColl = this.database.getCollection("tradepair", TradePairDTO.class);
+        this.tradePairColl = database.getCollection("tradepair", TradePairDTO.class);
         if (!this.isIndex(tradePairColl, "last_-1")) {
             this.tradePairColl.createIndex(Indexes.descending("last"));
         }
@@ -131,7 +111,7 @@ public class ConfigEJB {
             this.tradePairColl.createIndex(Indexes.ascending("timeDate"));
         }
 
-        this.candleColl = this.database.getCollection("candle", CandleDTO.class);
+        this.candleColl = database.getCollection("candle", CandleDTO.class);
         if (!this.isIndex(candleColl, "startDate_1")) {
             this.candleColl.createIndex(Indexes.ascending("startDate"), new IndexOptions().unique(true));
         }
@@ -142,43 +122,13 @@ public class ConfigEJB {
             this.candleColl.createIndex(Indexes.ascending("calcCandle"));
         }
 
-        this.profitColl = this.database.getCollection("profit", ProfitDTO.class);
+        this.profitColl = database.getCollection("profit", ProfitDTO.class);
         if (!this.isIndex(profitColl, "testNum_1")) {
             this.profitColl.createIndex(Indexes.ascending("testNum"), new IndexOptions().unique(true));
         }
 
-        this.learnColl = this.database.getCollection("learn", LearnDTO.class);
-        this.deepColl = this.database.getCollection("deep", DeepDTO.class);
-
-        this.inputColl = this.database.getCollection("input", InputDTO.class);
-        if (!this.isIndex(inputColl, "deepName_1")) {
-            this.inputColl.createIndex(
-                    Indexes.compoundIndex(
-                            Indexes.ascending("deepName"),
-                            Indexes.ascending("candle.startDate")
-                    )
-            );
-        }
-        if (!this.isIndex(inputColl, "candle.startDate_1")) {
-            this.inputColl.createIndex(Indexes.ascending("candle.startDate"), new IndexOptions().unique(true));
-        }
-
-        this.inputRowColl = this.database.getCollection("inputRow", InputRowDTO.class);
-        
-
-        this.inputStatColl = this.database.getCollection("inputStat", InputStatDTO.class);
-        if (!this.isIndex(inputColl, "learnName_1_inputType_1")) {
-            this.inputStatColl.createIndex(
-                    Indexes.compoundIndex(
-                            Indexes.ascending("learnName"),
-                            Indexes.ascending("inputType")
-                    )
-            );
-        }
-
-        this.oilSpillColl = this.database.getCollection("oil-spill", OilSpillDTO.class);
-        this.inputStatHeadColl = this.database.getCollection("inputStatHead", InputStatHeadDTO.class);
-        this.modelColl = this.database.getCollection("model", ModelDTO.class);
+        this.learnColl = database.getCollection("learn", LearnDTO.class);
+        this.modelColl = database.getCollection("model", ModelDTO.class);
     }
 
     /**
@@ -223,30 +173,6 @@ public class ConfigEJB {
 
     public MongoCollection<LearnDTO> getLearnColl() {
         return learnColl;
-    }
-
-    public MongoCollection<DeepDTO> getDeepColl() {
-        return deepColl;
-    }
-
-    public MongoCollection<InputDTO> getInputColl() {
-        return inputColl;
-    }
-
-    public MongoCollection<InputRowDTO> getInputRowColl() {
-        return inputRowColl;
-    }
-
-    public MongoCollection<InputStatDTO> getInputStatColl() {
-        return inputStatColl;
-    }
-
-    public MongoCollection<OilSpillDTO> getOilSpillColl() {
-        return oilSpillColl;
-    }
-
-    public MongoCollection<InputStatHeadDTO> getInputStatHeadColl() {
-        return inputStatHeadColl;
     }
 
     public MongoCollection<ModelDTO> getModelColl() {
