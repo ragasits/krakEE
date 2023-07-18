@@ -120,7 +120,7 @@ public class ExportBean implements Serializable {
         if (type.equals("csv")){
             exportList = (ArrayList<String>) exportOneCandleEjb.toCSV(selectedLearn, candleList);
         } else {
-            exportList = (ArrayList<String>) exportOneCandleEjb.toArff(filename, candleList);
+            exportList = (ArrayList<String>) exportOneCandleEjb.toArff(selectedLearn, candleList);
         }
 
         ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();

@@ -1,4 +1,4 @@
-+ Create data export for WEKA model
++ BUG: Missing trade values from the ARFF file
 
 - GUI Learn: Add name filter
 - GUI Learn: Export: Create page
