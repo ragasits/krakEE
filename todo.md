@@ -1,4 +1,4 @@
-+ BUG: Missing trade values from the ARFF file
++ Migrate to Primefaces 13
 
 - GUI Learn: Add name filter
 - GUI Learn: Export: Create page

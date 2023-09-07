@@ -20,7 +20,7 @@
 
             <h:form id="form1">
                 <p:panel>
-                    <p:panelGrid columns="5">
+                    <p:panelGrid columns="5" layout="tabular">
                         <p:outputLabel value="StartDate:"/>
                         <p:calendar value="#{candleDetailBean.selectedDate}" mindate="#{candleDetailBean.minDate}" 
                                     maxdate="#{candleDetailBean.maxDate}" pages="3"  >
@@ -43,7 +43,7 @@
 
                 <p:dialog header="Learn" widgetVar="dlg" modal="true" id="learnDialog">
                     <p:panel>
-                        <p:panelGrid columns="2">
+                        <p:panelGrid columns="2" layout="tabular">
                             <p:outputLabel value="Name:"/>
                             <p:autoComplete value="#{candleDetailBean.learnDetail.name}" 
                                             completeMethod="#{candleDetailBean.complete}"/>
@@ -67,7 +67,7 @@
                 </p:dialog>
 
                 <p:panel id="detailPanel">                
-                    <p:panelGrid columns="12">
+                    <p:panelGrid columns="12" layout="tabular">
                         <p:outputLabel value="StartDate:"/>
                         <p:outputLabel value="#{candleDetailBean.detail.startDate}"/>
 
@@ -90,10 +90,10 @@
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.cci.calcCci}"/>  
                     </p:panelGrid>
 
-                    <p:panelGrid columns="2" columnClasses="alignTop,alignTop">
-                        <p:panel header="Trade">
-                            <h:panelGrid columns="2" columnClasses="alignTop,alignTop">
-                                <p:panelGrid columns="4">
+                    <p:panelGrid columns="2" columnClasses="alignTop,alignTop" layout="tabular">
+                        <p:panel header="Trade" >
+                            <p:panelGrid columns="2" columnClasses="alignTop,alignTop">
+                                <p:panelGrid columns="4" layout="tabular">
                                     <p:outputLabel value="Open" style="font-weight: bold"/>
                                     <p:outputLabel value="#{candleDetailBean.detail.open}"/> 
 
@@ -107,7 +107,7 @@
                                     <p:outputLabel value="#{candleDetailBean.detail.close}"/>
                                 </p:panelGrid>
 
-                                <p:panelGrid columns="4">
+                                <p:panelGrid columns="4" layout="tabular">
                                     <p:outputLabel value="" style="font-weight: bold"/>
                                     <p:outputLabel value="Total" style="font-weight: bold"/>
                                     <p:outputLabel value="Buy" style="font-weight: bold"/>
@@ -141,7 +141,7 @@
                                     </p:outputLabel>
                                 </p:panelGrid>
 
-                            </h:panelGrid>
+                            </p:panelGrid>
                         </p:panel>
 
                         <p:panel header="Learn" id="learnTab">
@@ -162,7 +162,7 @@
                     </p:panelGrid>
 
                     <p:panel header="Commodity Channel Index (CCI)">
-                        <p:panelGrid columns="18">
+                        <p:panelGrid columns="18" layout="tabular">
                             <p:outputLabel value="Typical Price:" style="font-weight: bold"/>
                             <p:outputLabel value="#{candleDetailBean.detail.cci.typicalPrice}"/>
 
@@ -185,7 +185,7 @@
                     </p:panel>
 
                     <p:panel header="MACD 12 26 close 9 EMA EMA">
-                        <p:panelGrid columns="18">
+                        <p:panelGrid columns="18" layout="tabular">
                             <p:outputLabel value="MACD Line:" style="font-weight: bold"/>
                             <p:outputLabel value="#{candleDetailBean.detail.macd.macdLine}"/>
 
@@ -207,7 +207,7 @@
                     </p:panel>
 
                     <p:panel header="RSI - 14">
-                        <p:panelGrid columns="14">
+                        <p:panelGrid columns="14" layout="tabular">
                             <p:outputLabel value="Change:" style="font-weight: bold"/>
                             <p:outputLabel value="#{candleDetailBean.detail.rsi.change}"/>
 
@@ -238,7 +238,7 @@
                     </p:panel>
 
                     <p:panel header="Bollinger - 20">
-                        <p:panelGrid columns="10">
+                        <p:panelGrid columns="10" layout="tabular">
                             <p:outputLabel value="Standard Deviation" style="font-weight: bold"/>
                             <p:outputLabel value="#{candleDetailBean.detail.bollinger.stDev}"/>
 
@@ -266,7 +266,7 @@
                     </p:panel>
 
                     <p:panel header="Moving averages">
-                        <p:panelGrid columns="10">
+                        <p:panelGrid columns="10" layout="tabular">
 
                             <p:outputLabel value="SMA 20" style="font-weight: bold"/>
                             <p:outputLabel value="#{candleDetailBean.detail.movingAverage.sma20}"/>

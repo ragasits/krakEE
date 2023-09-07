@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
-            <version>4.9.1</version>
+            <version>4.10.2</version>
             <type>jar</type>
         </dependency>
         
@@ -26,7 +26,7 @@
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
             <classifier>jakarta</classifier>
-            <version>12.0.0</version>
+            <version>13.0.0</version>
         </dependency>
         
         <dependency>
@@ -42,7 +42,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>6.2023.7</version.payara>
+        <version.payara>6.2023.8</version.payara>
     </properties>
     
     <build>

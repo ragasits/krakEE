@@ -28,7 +28,7 @@
                 </p:blockUI>
 
                 <p:panel>
-                    <p:panelGrid columns="10">
+                    <p:panelGrid columns="10" layout="tabular">
                         <p:outputLabel value="Model:"/>
                         <p:autoComplete value="#{modelBean.selectedName}"
                                         completeMethod="#{modelBean.complete}">
@@ -48,11 +48,11 @@
                         <p:commandButton value="Upload" onclick="PF('dlg').show()"/>
                     </p:panelGrid>
 
-                    <p:panelGrid columns="10" id="exportPanel">
+                    <p:panelGrid columns="10" id="exportPanel" layout="tabular">
                         <p:outputLabel value="Export:"/>
                         <p:selectOneMenu value="#{modelBean.selectedExportType}" id="typeList">
                             <f:selectItem itemLabel="-" itemValue=""/>
-                            <f:selectItems value="#{learnBean.exportTypes}"/>
+                            <f:selectItems value="#{exportBean.exportTypes}"/>
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Buy:"/>

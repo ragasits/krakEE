@@ -19,7 +19,7 @@
 
             <h:form id="form1">
                 <p:panel>
-                    <p:panelGrid columns="7">
+                    <p:panelGrid columns="7" layout="tabular">
                         <p:outputLabel value="Learn:"/>  
                         <p:selectOneMenu value="#{profitBean.selectedName}" id="nameList">
                             <f:selectItem itemLabel="-" itemValue=""/>
@@ -52,7 +52,7 @@
                 </p:blockUI>    
 
                 <p:panel id="profitPanel">
-                    <p:panelGrid columns="7">
+                    <p:panelGrid columns="7" layout="tabular">
                         <p:outputLabel value="TestNum:"/>  
                         <p:outputLabel value="#{profitBean.profit.testNum}"/>  
 
