@@ -21,18 +21,26 @@ import org.bson.types.ObjectId;
 
 /**
  * Store Learning data
+ *
  * @author rgt
  */
 public class LearnDTO {
+
     private ObjectId id;
     private String name;
     private Date startDate;
     private String trade;
     private String chkMessage;
 
-    public LearnDTO() {  
+    public LearnDTO() {
     }
-    
+
+    public LearnDTO(String name, Date startDate, String trade) {
+        this.name = name;
+        this.startDate = startDate;
+        this.trade = trade;
+    }
+
     public ObjectId getId() {
         return id;
     }
@@ -58,11 +66,11 @@ public class LearnDTO {
     }
 
     public Date getStartDate() {
-        return (Date)startDate.clone();
+        return (Date) startDate.clone();
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = (Date)startDate.clone();
+        this.startDate = (Date) startDate.clone();
     }
 
     public String getChkMessage() {

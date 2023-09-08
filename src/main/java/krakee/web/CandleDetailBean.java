@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
@@ -40,14 +42,15 @@ public class CandleDetailBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @EJB
-    LearnEJB learn;
+    LearnEJB learnEjb;
     @EJB
-    CandleEJB candle;
+    CandleEJB candleEjb;
 
     private String selectedIdHexa = null;
     private Date selectedDate;
     private LearnDTO learnDetail = new LearnDTO();
     private boolean insertLearn = false;
+    private String selectedLearn;
 
     /**
      * get one Candle
@@ -58,7 +61,7 @@ public class CandleDetailBean implements Serializable {
         if (this.selectedIdHexa == null || this.selectedIdHexa.isEmpty()) {
             return null;
         }
-        return candle.get(new ObjectId(selectedIdHexa));
+        return candleEjb.get(new ObjectId(selectedIdHexa));
     }
 
     public Date getSelectedDate() {
@@ -79,7 +82,7 @@ public class CandleDetailBean implements Serializable {
      */
     public List<CandleDTO> getCandleList() {
         if (selectedDate != null) {
-            return candle.getOneDay(selectedDate);
+            return candleEjb.getOneDay(selectedDate);
         }
         return null;
     }
@@ -91,7 +94,7 @@ public class CandleDetailBean implements Serializable {
      * @return
      */
     public List<String> complete(String query) {
-        return learn.getNames();
+        return learnEjb.getNames();
     }
 
     /**
@@ -110,13 +113,13 @@ public class CandleDetailBean implements Serializable {
      */
     public List<LearnDTO> getLearnList() {
         if (this.getDetail() != null) {
-            return learn.get(this.getDetail().getStartDate());
+            return learnEjb.get(this.getDetail().getStartDate());
         }
         return null;
     }
 
     public void showLearnDetail(LearnDTO dto) {
-        this.insertLearn= false;
+        this.insertLearn = false;
         this.learnDetail = dto;
     }
 
@@ -128,9 +131,31 @@ public class CandleDetailBean implements Serializable {
     public String onNewLearn() {
         this.insertLearn = true;
         this.learnDetail = new LearnDTO();
-        //this.learnDetail.setStartDate(selectedDate);
         this.learnDetail.setStartDate(this.getDetail().getStartDate());
         return null;
+    }
+
+    /**
+     * Add error message
+     *
+     * @param msg
+     */
+    private void addErrMsg(String msg) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
+    }
+
+    /**
+     * Add oneClick sell,buy learn line
+     * @param trade 
+     */
+    public void onNewLearn(String trade) {
+        if (this.selectedLearn == null || this.selectedLearn.isEmpty()) {
+            this.addErrMsg("Learn.Name: must not be null");
+            return;
+        }
+
+        this.learnDetail = new LearnDTO(this.selectedLearn, selectedDate, trade);
+        this.learnEjb.add(learnDetail);
     }
 
     /**
@@ -138,9 +163,9 @@ public class CandleDetailBean implements Serializable {
      */
     public void onSaveLearn() {
         if (this.insertLearn) {
-            learn.add(learnDetail);
+            learnEjb.add(learnDetail);
         } else {
-            learn.update(learnDetail);
+            learnEjb.update(learnDetail);
         }
     }
 
@@ -148,7 +173,7 @@ public class CandleDetailBean implements Serializable {
      * Delete a learn data
      */
     public void onDeleteLearn() {
-        learn.delete(learnDetail);
+        learnEjb.delete(learnDetail);
     }
 
     /**
@@ -157,7 +182,7 @@ public class CandleDetailBean implements Serializable {
      * @return
      */
     public Date getMinDate() {
-        return candle.getFirstDate();
+        return candleEjb.getFirstDate();
     }
 
     /**
@@ -166,7 +191,7 @@ public class CandleDetailBean implements Serializable {
      * @return
      */
     public Date getMaxDate() {
-        return candle.getLatesDate();
+        return candleEjb.getLatesDate();
     }
 
     public String getSelectedIdHexa() {
@@ -187,6 +212,14 @@ public class CandleDetailBean implements Serializable {
 
     public boolean isInsertLearn() {
         return insertLearn;
+    }
+
+    public String getSelectedLearn() {
+        return selectedLearn;
+    }
+
+    public void setSelectedLearn(String selectedLearn) {
+        this.selectedLearn = selectedLearn;
     }
 
 }

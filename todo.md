@@ -1,4 +1,6 @@
-+ Migrate to Primefaces 13
++ Add oneClick sell,buy learn line
+
+
 
 - GUI Learn: Add name filter
 - GUI Learn: Export: Create page

@@ -18,9 +18,13 @@
                 <ez:globalMenu/>
             </h:form>
 
+            <p:messages id="msgs" showDetail="false" >
+                <p:autoUpdate />
+            </p:messages>   
+
             <h:form id="form1">
                 <p:panel>
-                    <p:panelGrid columns="5" layout="tabular">
+                    <p:panelGrid columns="9" layout="tabular">
                         <p:outputLabel value="StartDate:"/>
                         <p:calendar value="#{candleDetailBean.selectedDate}" mindate="#{candleDetailBean.minDate}" 
                                     maxdate="#{candleDetailBean.maxDate}" pages="3"  >
@@ -32,12 +36,27 @@
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{candleDetailBean.candleList}" var="candle" 
                                            itemLabel="#{candle.startDate}" itemValue="#{candle.idHexa}" />
-                            <p:ajax event="itemSelect"  update="detailPanel, addBtn"/>
+                            <p:ajax event="itemSelect"  update="detailPanel, addBtn, addBuyBtn, addSellBtn"/>
                         </p:selectOneMenu>
 
                         <p:commandButton value="+Learn" action="#{candleDetailBean.onNewLearn()}"
                                          disabled="#{candleDetailBean.selectedCandle eq true}"
-                                         id="addBtn" oncomplete="PF('dlg').show();" update="learnDialog"/>
+                                         id="addBtn" oncomplete="PF('dlg').show();" update="learnDialog, nameList"/>
+
+                        <p:outputLabel value="Learn:" style="font-weight: bold"/>
+                        <p:selectOneMenu value="#{candleDetailBean.selectedLearn}" id="nameList">
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{learnBean.learnNameList}" var="names"
+                                           itemLabel="#{names}" itemValue="#{names}" />
+                        </p:selectOneMenu>
+
+                        <p:commandButton value="+Buy" action="#{candleDetailBean.onNewLearn('buy')}"
+                                         disabled="#{candleDetailBean.selectedCandle eq true}"
+                                         id="addBuyBtn" update="learnTab"/>
+
+                        <p:commandButton value="+Sell" action="#{candleDetailBean.onNewLearn('sell')}"
+                                         disabled="#{candleDetailBean.selectedCandle eq true}"
+                                         id="addSellBtn" update="learnTab"/>
                     </p:panelGrid>
                 </p:panel>   
 
@@ -68,9 +87,6 @@
 
                 <p:panel id="detailPanel">                
                     <p:panelGrid columns="12" layout="tabular">
-                        <p:outputLabel value="StartDate:"/>
-                        <p:outputLabel value="#{candleDetailBean.detail.startDate}"/>
-
                         <p:outputLabel value="CalcCandle:"/>
                         <p:selectBooleanCheckbox value="#{candleDetailBean.detail.calcCandle}"/>
 
