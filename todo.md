@@ -1,5 +1,5 @@
-+ Add oneClick sell,buy learn line
-
++ Use weka instances
++ Create CSV, ARFF file from weka instances
 
 
 - GUI Learn: Add name filter

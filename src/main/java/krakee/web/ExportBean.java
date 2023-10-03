@@ -30,12 +30,15 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
+import weka.core.Instances;
+import weka.core.converters.AbstractFileSaver;
+import weka.core.converters.ArffSaver;
+import weka.core.converters.CSVSaver;
 
 /**
  * JSF bean for Export
@@ -49,7 +52,7 @@ public class ExportBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private StreamedContent file;
     private long selectedBuyTime;
-    private long  selectedSellTime;
+    private long selectedSellTime;
     private ExportType selectedExportType;
     private String selectedLearn;
 
@@ -68,31 +71,31 @@ public class ExportBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
     }
 
-    public void updateLists(){
+    public void updateLists() {
         this.selectedBuyTime = learnEjb.getFirst(this.selectedLearn).getStartDate().getTime();
         this.selectedSellTime = learnEjb.getLast(this.selectedLearn).getStartDate().getTime();
     }
-    
-    public ExportType[] getExportTypes(){
+
+    public ExportType[] getExportTypes() {
         return ExportType.values();
     }
 
     /**
      * Get all Learn
      *
-     * @return 
+     * @return
      */
     public List<LearnDTO> getLearnList() {
-        if (this.selectedLearn!=null){
+        if (this.selectedLearn != null) {
             return learnEjb.get(this.selectedLearn);
         }
         return Collections.emptyList();
-            }
+    }
 
     /**
      * Get Names (Distinct)
      *
-     * @return 
+     * @return
      */
     public List<String> getLearnNameList() {
         return learnEjb.getNames();
@@ -107,36 +110,34 @@ public class ExportBean implements Serializable {
     }
 
     /**
-     * Create, download CSV / ARFF file
-     * @param type
+     * Export weka instance into ARFF, CSV file
+     * @param type 
      */
     public void onExport(String type) {
+
         Date buyDate = new Date(selectedBuyTime);
         Date sellDate = new Date(selectedSellTime);
-        String filename = this.getSelectedExportType().toString()+"."+type;
         List<CandleDTO> candleList = candleEjb.get(buyDate, sellDate);
-        ArrayList<String> exportList;
 
-        if (type.equals("csv")){
-            exportList = (ArrayList<String>) exportOneCandleEjb.toCSV(selectedLearn, candleList);
-        } else {
-            exportList = (ArrayList<String>) exportOneCandleEjb.toArff(selectedLearn, candleList);
-        }
-
+        Instances instances = exportOneCandleEjb.toInstances(selectedLearn, candleList);
+        String filename = this.getSelectedExportType().toString() + "." + type;
         ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         String realPath = ctx.getRealPath("/WEB-INF/").concat("/").concat(filename);
 
-        //Save to file
+        AbstractFileSaver saver;
+
         try {
-            OutputStream fout = new FileOutputStream(realPath);
-            OutputStream bout = new BufferedOutputStream(fout);
-            try ( OutputStreamWriter out = new OutputStreamWriter(bout, "ISO-8859-2")) {
-                for (String s : exportList) {
-                    out.write(s + "\n");
-                }
+            if (type.equals("arff")) {
+                saver = new ArffSaver();
+            } else {
+                saver = new CSVSaver();
             }
-        } catch (IOException ex) {
-            this.addMsg("Error: " + ex.getMessage());
+
+            saver.setInstances(instances);
+            saver.setFile(new File(realPath));
+            saver.writeBatch();
+        } catch (IOException iOException) {
+            this.addMsg("Error: " + iOException.getMessage());
             return;
         }
 
@@ -146,7 +147,7 @@ public class ExportBean implements Serializable {
                 .stream(() -> FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/WEB-INF/" + filename))
                 .build();
     }
-    
+
     public StreamedContent getFile() {
         return file;
     }
@@ -156,14 +157,14 @@ public class ExportBean implements Serializable {
     }
 
     public List<LearnDTO> getBuyList() {
-        if (this.selectedLearn!=null){
+        if (this.selectedLearn != null) {
             return learnEjb.getBuy(this.selectedLearn);
         }
         return Collections.emptyList();
     }
 
     public List<LearnDTO> getSellList() {
-        if (this.selectedLearn!=null){
+        if (this.selectedLearn != null) {
             return learnEjb.getSell(this.selectedLearn);
         }
         return Collections.emptyList();

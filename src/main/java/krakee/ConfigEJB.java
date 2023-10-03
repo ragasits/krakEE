@@ -32,7 +32,7 @@ import jakarta.annotation.PreDestroy;
 import krakee.calc.CandleDTO;
 import krakee.get.TradePairDTO;
 import krakee.learn.LearnDTO;
-import krakee.weka.ModelDTO;
+import krakee.model.ModelDTO;
 import krakee.profit.ProfitDTO;
 import org.bson.Document;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;

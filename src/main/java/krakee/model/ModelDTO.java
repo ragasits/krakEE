@@ -1,4 +1,4 @@
-package krakee.weka;
+package krakee.model;
 
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
@@ -15,9 +15,6 @@ public class ModelDTO {
     private String exportType;
     private Long buyTime;
     private Long sellTime;
-
-    public ModelDTO() {
-    }
 
     public ObjectId getId() {
         return id;

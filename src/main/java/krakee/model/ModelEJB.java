@@ -1,4 +1,4 @@
-package krakee.weka;
+package krakee.model;
 
 import com.mongodb.client.model.Sorts;
 import jakarta.ejb.EJB;
