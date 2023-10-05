@@ -154,7 +154,7 @@ public class CandleDetailBean implements Serializable {
             return;
         }
 
-        this.learnDetail = new LearnDTO(this.selectedLearn, selectedDate, trade);
+        this.learnDetail = new LearnDTO(this.selectedLearn, this.getDetail().getStartDate(), trade);
         this.learnEjb.add(learnDetail);
     }
 

@@ -1,5 +1,6 @@
-+ Use weka instances
-+ Create CSV, ARFF file from weka instances
++ FIX: Add oneClick sell,buy learn line -> Wrong startDate
++ Create WEKA @Relation text from the input parameters
+
 
 
 - GUI Learn: Add name filter
@@ -17,7 +18,6 @@
 
 ## Optional:
 ------------
-- Code review findbugs or sonar
 - EJB timeout exception - Move to Bath processing?
 - Metrics: Prometheus + Grafana
 - Use Primefaces icons (buttons)

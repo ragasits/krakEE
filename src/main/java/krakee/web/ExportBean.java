@@ -117,9 +117,9 @@ public class ExportBean implements Serializable {
 
         Date buyDate = new Date(selectedBuyTime);
         Date sellDate = new Date(selectedSellTime);
-        List<CandleDTO> candleList = candleEjb.get(buyDate, sellDate);
+        
 
-        Instances instances = exportOneCandleEjb.toInstances(selectedLearn, candleList);
+        Instances instances = exportOneCandleEjb.toInstances(selectedLearn, this.getSelectedExportType(),buyDate, sellDate);
         String filename = this.getSelectedExportType().toString() + "." + type;
         ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         String realPath = ctx.getRealPath("/WEB-INF/").concat("/").concat(filename);

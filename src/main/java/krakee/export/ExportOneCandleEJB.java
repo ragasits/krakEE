@@ -18,9 +18,13 @@ package krakee.export;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import krakee.calc.CandleDTO;
+import krakee.calc.CandleEJB;
+import krakee.learn.ExportType;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 import weka.core.Attribute;
@@ -37,8 +41,8 @@ public class ExportOneCandleEJB {
 
     @EJB
     private LearnEJB learnEjb;
-
-
+    @EJB
+    private CandleEJB candleEjb;
 
     /**
      * Add learning data
@@ -55,10 +59,10 @@ public class ExportOneCandleEJB {
         return trade;
     }
 
-
     /**
      * Create weka attributes
-     * @return 
+     *
+     * @return
      */
     private ArrayList<Attribute> getAttributes() {
         ArrayList<String> booleanValues = new ArrayList<>();
@@ -133,11 +137,12 @@ public class ExportOneCandleEJB {
 
     /**
      * Create weka values
+     *
      * @param dto
      * @param instances
-     * @return 
+     * @return
      */
-    private DenseInstance getValues(CandleDTO dto,  Instances instances) {
+    private DenseInstance getValues(CandleDTO dto, Instances instances) {
         DenseInstance instance = new DenseInstance(instances.numAttributes());
         instance.setDataset(instances);
 
@@ -199,15 +204,44 @@ public class ExportOneCandleEJB {
     }
 
     /**
-     * Create weka instance
+     * Create WEKA @Relation text from the input parameters
+     *
      * @param learnName
-     * @param candleList
-     * @return 
+     * @param exportType
+     * @param buyDate
+     * @param sellDate
+     * @return
      */
-    public Instances toInstances(String learnName, List<CandleDTO> candleList) {
+    private String getRelation(String learnName, ExportType exportType, Date buyDate, Date sellDate) {
+        StringBuilder sb = new StringBuilder();
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddkkmm");
 
+        return sb.append(exportType.toString())
+                .append("-")
+                .append(learnName)
+                .append("-")
+                .append(df.format(buyDate))
+                .append("-")
+                .append(df.format(sellDate))
+                .append("-")
+                .append(learnName)
+                .toString();
+    }
+
+    /**
+     * Create weka instance
+     *
+     * @param learnName
+     * @param exportType
+     * @param buyDate
+     * @param sellDate
+     * @return
+     */
+    public Instances toInstances(String learnName, ExportType exportType, Date buyDate, Date sellDate) {
+
+        List<CandleDTO> candleList = candleEjb.get(buyDate, sellDate);
         ArrayList<Attribute> attributes = this.getAttributes();
-        Instances instances = new Instances("name", attributes, 0);
+        Instances instances = new Instances(this.getRelation(learnName, exportType, buyDate, sellDate), attributes, 0);
 
         for (CandleDTO candle : candleList) {
             DenseInstance instance = this.getValues(candle, instances);
