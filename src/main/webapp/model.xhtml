@@ -29,11 +29,11 @@
 
                 <p:panel>
                     <p:panelGrid columns="10" layout="tabular">
-                        <p:outputLabel value="Model:"/>
+                        <p:outputLabel value="Model:" style="font-weight: bold"/>
                         <p:autoComplete value="#{modelBean.selectedName}"
                                         completeMethod="#{modelBean.complete}">
                             <p:ajax event="itemSelect" listener="#{modelBean.onSelectedName}"
-                                    update="fileName, exportPanel"/>
+                                    update="fileName, exportPanel, wekaPanel"/>
                         </p:autoComplete>
 
                         <p:commandButton value="Save"  id="saveBtn"
@@ -46,10 +46,11 @@
                         <p:outputLabel value="#{modelBean.detail.modelFileName}" id="fileName"/>
 
                         <p:commandButton value="Upload" onclick="PF('dlg').show()"/>
+
                     </p:panelGrid>
 
                     <p:panelGrid columns="10" id="exportPanel" layout="tabular">
-                        <p:outputLabel value="Export:"/>
+                        <p:outputLabel value="Export:" style="font-weight: bold"/>
                         <p:selectOneMenu value="#{modelBean.selectedExportType}" id="typeList">
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{exportBean.exportTypes}"/>
@@ -57,24 +58,38 @@
 
                         <p:outputLabel value="Buy:"/>
                         <p:selectOneMenu value="#{modelBean.selectedBuyTime}" id="buyList">
-                            <f:selectItems value="#{learnBean.buyList}" var="item"
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{modelBean.buyList}" var="item"
                                            itemLabel="#{item.startDate}" itemValue="#{item.startDate.time}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Sell:"/>
                         <p:selectOneMenu value="#{modelBean.selectedSellTime}" id="sellList">
-                            <f:selectItems value="#{learnBean.sellList}" var="item1"
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{modelBean.sellList}" var="item1"
                                            itemLabel="#{item1.startDate}" itemValue="#{item1.startDate.time}" />
                         </p:selectOneMenu>
                     </p:panelGrid>
-                </p:panel>
 
-                <p:dialog widgetVar="dlg" header="Upload model">
-                    <p:fileUpload mode="advanced" multiple="false"
-                                  listener="#{modelBean.onModelFileUpload}"
-                                  update="fileName" oncomplete="PF('dlg').hide()"
-                    />
-                </p:dialog>
+                    <p:dialog widgetVar="dlg" header="Upload model">
+                        <p:fileUpload mode="advanced" multiple="false"
+                                      listener="#{modelBean.onModelFileUpload}"
+                                      update="fileName" oncomplete="PF('dlg').hide()"
+                                      />
+                    </p:dialog>
+
+                    <p:panelGrid columns="10" id="wekaPanel" layout="tabular">
+
+                        <p:outputLabel value="Remove:" style="font-weight: bold"/>
+                        <p:outputLabel value="AttributeIndices:"/>
+                        <p:inputText value="#{modelBean.detail.removeAttributeIndices}"/>
+                        <p:outputLabel value="InvertSelection:"/>
+                        <p:selectBooleanCheckbox value="#{modelBean.detail.removeInvertSelection}"/>
+
+                        <p:commandButton value="Run WEKA prediction"  id="wekaBtn"
+                                         action="#{modelBean.onRunWeka()}" />
+                    </p:panelGrid>           
+                </p:panel>
             </h:form>
         </f:view>                
     </h:body>

@@ -53,16 +53,19 @@
 
                     <p:outputLabel value="Type:" style="font-weight: bold"/>
                     <p:selectOneMenu value="#{exportBean.selectedExportType}" id="typeList">
+                        <f:selectItem itemLabel="-" itemValue=""/>
                         <f:selectItems value="#{exportBean.exportTypes}"/>
                     </p:selectOneMenu>
-                    
+
+                    <p:outputLabel value="Export:" style="font-weight: bold"/>
+
                     <p:commandButton value="toCSV" id="csvBtn"
                                      actionListener="#{exportBean.onExport('csv')}"
                                      onclick="PrimeFaces.monitorDownload(start, stop);"
                                      ajax="false">
                         <p:fileDownload value="#{exportBean.file}" />
                     </p:commandButton>                    
-                    
+
                     <p:commandButton value="toARFF" id="arffBtn"
                                      actionListener="#{exportBean.onExport('arff')}"
                                      onclick="PrimeFaces.monitorDownload(start, stop);"

@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
-import krakee.learn.ExportType;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 import weka.core.Attribute;
@@ -58,7 +57,23 @@ public class ExportOneCandleEJB {
         }
         return trade;
     }
-
+    
+    /**
+     * Convert predicted trade value to nominal
+     * @param trade
+     * @return 
+     */
+    public String getTrade(double trade){
+        switch ((int)trade) {
+            case 1:
+                return "buy";
+            case 2:
+                return "none";
+            default:
+                return "sell";
+        }
+    }
+    
     /**
      * Create weka attributes
      *
@@ -223,8 +238,25 @@ public class ExportOneCandleEJB {
                 .append(df.format(buyDate))
                 .append("-")
                 .append(df.format(sellDate))
+                .toString();
+    }
+
+    /**
+     * Create ARFF relation message
+     * @param exportType
+     * @param buyDate
+     * @param sellDate
+     * @return 
+     */
+    private String getRelation(ExportType exportType, Date buyDate, Date sellDate) {
+        StringBuilder sb = new StringBuilder();
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddkkmm");
+
+        return sb.append(exportType.toString())
                 .append("-")
-                .append(learnName)
+                .append(df.format(buyDate))
+                .append("-")
+                .append(df.format(sellDate))
                 .toString();
     }
 
@@ -249,6 +281,31 @@ public class ExportOneCandleEJB {
             LearnDTO learnDto = learnEjb.get(learnName, candle.getStartDate());
             instance.setValue(instances.attribute("trade"), this.getTrade(learnDto));
 
+            instances.add(instance);
+        }
+
+        instances.setClassIndex(instances.attribute("trade").index());
+        return instances;
+    }
+
+    
+    /**
+     * Create weka instance - With empty LearnName and missing trade data
+     * @param exportType
+     * @param buyDate
+     * @param sellDate
+     * @return 
+     */
+    public Instances toInstances(ExportType exportType, Date buyDate, Date sellDate) {
+
+        List<CandleDTO> candleList = candleEjb.get(buyDate, sellDate);
+        ArrayList<Attribute> attributes = this.getAttributes();
+        Instances instances = new Instances(this.getRelation(exportType, buyDate, sellDate), attributes, 0);
+
+        for (CandleDTO candle : candleList) {
+            DenseInstance instance = this.getValues(candle, instances);
+            //Set empty trade
+            instance.setMissing(instances.attribute("trade"));
             instances.add(instance);
         }
 

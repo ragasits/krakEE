@@ -223,6 +223,17 @@ public class LearnEJB {
     public void add(LearnDTO dto) {
         configEjb.getLearnColl().insertOne(dto);
     }
+    
+    /**
+     * Add new learn data 
+     * @param learnName
+     * @param startDate
+     * @param trade 
+     */
+    public void add(String learnName, Date startDate, String trade){
+        LearnDTO dto = new LearnDTO(learnName, startDate, trade);
+        this.add(dto);    
+    }
 
     /**
      * Modify existing learning data
@@ -241,6 +252,17 @@ public class LearnEJB {
      */
     public void delete(LearnDTO dto) {
         configEjb.getLearnColl().deleteOne(eq("_id", dto.getId()));
+    }
+    
+    
+    /**
+     * Delete learning data
+     * @param learnName 
+     */
+    public void delete(String learnName){
+        configEjb.getLearnColl().deleteMany(
+                eq("name", learnName)
+        );
     }
 
     /**

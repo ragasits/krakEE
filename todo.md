@@ -1,11 +1,8 @@
-+ FIX: Add oneClick sell,buy learn line -> Wrong startDate
-+ Create WEKA @Relation text from the input parameters
++ Use WEKA model
++ Create WEKA prediction and save to learn 
 
-
-
-- GUI Learn: Add name filter
-- GUI Learn: Export: Create page
-- Use weka model
+- Add Candle.close to learn
+- Export Learn to CSV
 - Calculate the profit of the weka model
 
 ## Future:

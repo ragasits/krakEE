@@ -2,8 +2,10 @@ package krakee.web;
 
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
-import krakee.learn.ExportType;
+import krakee.export.ExportType;
 import krakee.model.ModelDTO;
 import krakee.model.ModelEJB;
 import org.bson.types.Binary;
@@ -13,15 +15,22 @@ import org.primefaces.model.file.UploadedFile;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import krakee.MyException;
+import krakee.learn.LearnDTO;
+import krakee.learn.LearnEJB;
 
 @SessionScoped
 @Named(value = "modelBean")
 public class ModelBean implements Serializable {
 
-    private ModelDTO detail  = new ModelDTO();
+    private ModelDTO detail = new ModelDTO();
 
     @EJB
     private ModelEJB modelEjb;
+    @EJB
+    private LearnEJB learnEjb;
 
     public List<String> complete(String query) {
         return modelEjb.getNames();
@@ -29,6 +38,26 @@ public class ModelBean implements Serializable {
 
     public void onSelectedName(SelectEvent<String> event) {
         this.detail = modelEjb.get(event.getObject());
+    }
+
+    public List<LearnDTO> getBuyList() {
+        return learnEjb.getBuy();
+    }
+
+    public List<LearnDTO> getSellList() {
+        return learnEjb.getSell();
+    }
+
+    /**
+     * Run WEKA prediction
+     */
+    public void onRunWeka() {
+        try {
+            modelEjb.runWeka(detail);
+        } catch (MyException ex) {
+            Logger.getLogger(ModelBean.class.getName()).log(Level.SEVERE, null, ex);
+            this.addErrMsg(ex.getMessage());
+        }
     }
 
     /**
@@ -60,7 +89,8 @@ public class ModelBean implements Serializable {
 
     /**
      * Upload model file
-     * @param event 
+     *
+     * @param event
      */
     public void onModelFileUpload(FileUploadEvent event) {
         UploadedFile file = event.getFile();
@@ -87,41 +117,50 @@ public class ModelBean implements Serializable {
     }
 
     public ExportType getSelectedExportType() {
-        if (detail!=null && this.detail.getExportType()!=null){
+        if (detail != null && this.detail.getExportType() != null) {
             return ExportType.valueOf(this.detail.getExportType());
         }
         return null;
     }
 
     public void setSelectedExportType(ExportType selectedExportType) {
-        if (detail!=null){
+        if (detail != null) {
             this.detail.setExportType(selectedExportType.toString());
         }
     }
 
     public Long getSelectedBuyTime() {
-        if (detail!=null){
+        if (detail != null) {
             return detail.getBuyTime();
         }
         return null;
     }
 
     public void setSelectedBuyTime(Long selectedBuyTime) {
-        if (detail!=null){
+        if (detail != null) {
             this.detail.setBuyTime(selectedBuyTime);
         }
     }
 
     public Long getSelectedSellTime() {
-        if (this.detail!=null){
+        if (this.detail != null) {
             return detail.getSellTime();
         }
         return null;
     }
 
     public void setSelectedSellTime(Long selectedSellTime) {
-        if (this.detail!=null){
+        if (this.detail != null) {
             this.detail.setSellTime(selectedSellTime);
         }
+    }
+
+    /**
+     * Add error message
+     *
+     * @param msg
+     */
+    private void addErrMsg(String msg) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
     }
 }

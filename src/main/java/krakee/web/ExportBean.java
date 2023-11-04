@@ -23,7 +23,7 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
-import krakee.learn.ExportType;
+import krakee.export.ExportType;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 import org.primefaces.model.DefaultStreamedContent;
@@ -33,8 +33,6 @@ import java.io.*;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import krakee.calc.CandleDTO;
-import krakee.calc.CandleEJB;
 import weka.core.Instances;
 import weka.core.converters.AbstractFileSaver;
 import weka.core.converters.ArffSaver;
@@ -60,8 +58,6 @@ public class ExportBean implements Serializable {
     private LearnEJB learnEjb;
     @EJB
     private ExportOneCandleEJB exportOneCandleEjb;
-    @EJB
-    private CandleEJB candleEjb;
 
     /**
      * Show messages
@@ -71,11 +67,18 @@ public class ExportBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
     }
 
+    /**
+     * Update Sell, Buy lists
+     */
     public void updateLists() {
         this.selectedBuyTime = learnEjb.getFirst(this.selectedLearn).getStartDate().getTime();
         this.selectedSellTime = learnEjb.getLast(this.selectedLearn).getStartDate().getTime();
     }
 
+    /**
+     * Get Export types lists
+     * @return 
+     */
     public ExportType[] getExportTypes() {
         return ExportType.values();
     }
@@ -111,15 +114,15 @@ public class ExportBean implements Serializable {
 
     /**
      * Export weka instance into ARFF, CSV file
-     * @param type 
+     *
+     * @param type
      */
     public void onExport(String type) {
 
         Date buyDate = new Date(selectedBuyTime);
         Date sellDate = new Date(selectedSellTime);
-        
 
-        Instances instances = exportOneCandleEjb.toInstances(selectedLearn, this.getSelectedExportType(),buyDate, sellDate);
+        Instances instances = exportOneCandleEjb.toInstances(selectedLearn, this.getSelectedExportType(), buyDate, sellDate);
         String filename = this.getSelectedExportType().toString() + "." + type;
         ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
         String realPath = ctx.getRealPath("/WEB-INF/").concat("/").concat(filename);
