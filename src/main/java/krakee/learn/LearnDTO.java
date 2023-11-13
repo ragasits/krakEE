@@ -16,6 +16,7 @@
  */
 package krakee.learn;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import org.bson.types.ObjectId;
 
@@ -30,16 +31,12 @@ public class LearnDTO {
     private String name;
     private Date startDate;
     private String trade;
+    private BigDecimal close;
     private String chkMessage;
 
     public LearnDTO() {
     }
 
-    public LearnDTO(String name, Date startDate, String trade) {
-        this.name = name;
-        this.startDate = startDate;
-        this.trade = trade;
-    }
 
     public ObjectId getId() {
         return id;
@@ -79,5 +76,13 @@ public class LearnDTO {
 
     public void setChkMessage(String chkMessage) {
         this.chkMessage = chkMessage;
+    }
+
+    public BigDecimal getClose() {
+        return close;
+    }
+
+    public void setClose(BigDecimal close) {
+        this.close = close;
     }
 }

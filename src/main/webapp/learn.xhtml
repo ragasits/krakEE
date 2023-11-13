@@ -27,7 +27,7 @@
                     <p:autoUpdate />
                 </p:messages>   
 
-                <p:panelGrid columns="8" layout="tabular">
+                <p:panelGrid columns="9" layout="tabular">
                     <p:outputLabel value="Learn:" style="font-weight: bold"/>
                     <p:selectOneMenu value="#{learnBean.selectedLearn}" id="nameList">
                         <f:selectItem itemLabel="-" itemValue=""/>
@@ -55,6 +55,10 @@
                                      id="chkBtn1" update="tbl" title="Looking for peaks and valleys"/>
                     <p:commandButton value="Check2" action="#{learnBean.chkLearnPairs()}"
                                      id="chkBtn2" update="tbl" title="Looking for buy and sell pairs"/>
+
+                    <p:commandButton value="toCSV" styleClass="mr-2 mb-2">
+                        <p:dataExporter type="csv" target="tbl" fileName="learn" />
+                    </p:commandButton>                    
                 </p:panelGrid>
 
                 <p:panel>    
@@ -66,6 +70,10 @@
                         <p:column headerText="startDate">
                             <p:commandLink value="#{item.startDate}" action="#{learnBean.showDetail(item)}"/>
                         </p:column>
+
+                        <p:column headerText="close">
+                            <p:outputLabel value="#{item.close}"/>
+                        </p:column>                        
 
                         <p:column headerText="trade">
                             <p:outputLabel value="#{item.trade}"/>

@@ -15,8 +15,10 @@ import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
 import krakee.export.ExportOneCandleEJB;
 import krakee.export.ExportType;
+import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
 import weka.classifiers.Classifier;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 import weka.filters.Filter;
@@ -102,14 +104,21 @@ public class ModelEJB {
 
     /**
      * Execute WEKA prediction
+     *
      * @param model
-     * @throws MyException 
+     * @throws MyException
      */
     public void runWeka(ModelDTO model) throws MyException {
+        //Delete old learn
+        learnEjb.delete(model.getModelName());
+
         //Create instance
         Date buyDate = new Date(model.getBuyTime());
         Date sellDate = new Date(model.getSellTime());
         Instances dataset = exportEjb.toInstances(ExportType.valueOf(model.getExportType()), buyDate, sellDate);
+
+        //Save new learn - we save only the trades (buy, sell)
+        List<CandleDTO> candleList = candleEJb.get(buyDate, sellDate);
 
         //Run remove
         if (!model.getRemoveAttributeIndices().isEmpty()) {
@@ -125,31 +134,32 @@ public class ModelEJB {
 
         }
         dataset.setClassIndex(dataset.numAttributes() - 1);
-        
+
         try {
             //Run model
             Classifier classifier = (Classifier) SerializationHelper.read(model.getModelFileStream());
             for (int i = 0; i < dataset.numInstances(); i++) {
-                double prediction = classifier.classifyInstance(dataset.instance(i));
-                dataset.instance(i).setClassValue(prediction);
+                Instance instance = dataset.instance(i);
+                double prediction = classifier.classifyInstance(instance);
+                instance.setClassValue(prediction);
+
+                String trade = instance.stringValue(instance.classIndex());
+
+                if (!trade.equals("none")) {
+                    //Add new learn
+                    CandleDTO candle = candleList.get(i);
+                    LearnDTO dto = new LearnDTO();
+                    dto.setName(model.getModelName());
+                    dto.setStartDate(candle.getStartDate());
+                    dto.setTrade(trade);
+                    dto.setClose(candle.getClose());
+                    dto.setChkMessage(instance.toString());
+                    learnEjb.add(dto);
+                }
             }
 
         } catch (Exception ex) {
             throw new MyException("Weka error", ex);
-        }
-
-        //Delete old learn
-        learnEjb.delete(model.getModelName());
-
-        //Save new learn - we save only the trades (buy, sell)
-        List<CandleDTO> candleList = candleEJb.get(buyDate, sellDate);
-
-        for (int i = 0; i < dataset.numInstances(); i++) {
-            Date startDate = candleList.get(i).getStartDate();
-            String trade = exportEjb.getTrade(dataset.instance(i).classValue());
-            
-            //Add new learn
-            learnEjb.add(model.getModelName(), startDate, trade);
         }
     }
 }

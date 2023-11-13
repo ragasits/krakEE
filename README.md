@@ -8,11 +8,12 @@ Main functions:
 - Add learning data
 - Simulate trades
 - Export datasets to WEKA
+- Use WEKA model and prediction
 
 Used tools:
 - Jakarta EE
 - Eclipse Microprofile
 - Payara Micro
 - Mongodb
-- Deep Netts
+- WEKA
 

@@ -225,17 +225,6 @@ public class LearnEJB {
     }
     
     /**
-     * Add new learn data 
-     * @param learnName
-     * @param startDate
-     * @param trade 
-     */
-    public void add(String learnName, Date startDate, String trade){
-        LearnDTO dto = new LearnDTO(learnName, startDate, trade);
-        this.add(dto);    
-    }
-
-    /**
      * Modify existing learning data
      *
      * @param dto

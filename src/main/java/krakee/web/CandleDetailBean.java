@@ -146,7 +146,8 @@ public class CandleDetailBean implements Serializable {
 
     /**
      * Add oneClick sell,buy learn line
-     * @param trade 
+     *
+     * @param trade
      */
     public void onNewLearn(String trade) {
         if (this.selectedLearn == null || this.selectedLearn.isEmpty()) {
@@ -154,7 +155,11 @@ public class CandleDetailBean implements Serializable {
             return;
         }
 
-        this.learnDetail = new LearnDTO(this.selectedLearn, this.getDetail().getStartDate(), trade);
+        this.learnDetail = new LearnDTO();
+        learnDetail.setName(this.selectedLearn);
+        learnDetail.setStartDate(this.getDetail().getStartDate());
+        learnDetail.setTrade(trade);
+        learnDetail.setClose(this.getDetail().getClose());
         this.learnEjb.add(learnDetail);
     }
 
@@ -165,6 +170,7 @@ public class CandleDetailBean implements Serializable {
         if (this.insertLearn) {
             learnEjb.add(learnDetail);
         } else {
+            learnDetail.setClose(this.getDetail().getClose());
             learnEjb.update(learnDetail);
         }
     }
