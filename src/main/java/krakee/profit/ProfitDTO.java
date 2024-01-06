@@ -18,6 +18,7 @@ package krakee.profit;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Date;
 import java.util.List;
 import org.bson.types.ObjectId;
 
@@ -31,7 +32,6 @@ public class ProfitDTO {
     static final String BUY = "buy";
     static final String SELL = "sell";
     static final String NONE = "none";
-    static final String[] OP = {BUY, SELL, NONE};
 
     private ObjectId id;
     private Long testNum;
@@ -39,21 +39,11 @@ public class ProfitDTO {
     private double eur;
     private List<ProfitItemDTO> items;
 
-    public ProfitDTO() {
-    }
+    private Date buyDate;
+    private Date sellDate;
 
-    public ProfitDTO(Long testNum, double eur, List<ProfitItemDTO> items) {
-        this.testNum = testNum;
-        this.eur = eur;
-        this.items = items;
-    }
-
-    public ProfitDTO(String learnName, Long testNum, double eur, List<ProfitItemDTO> items) {
-        this.testNum = testNum;
-        this.eur = eur;
-        this.items = items;
-        this.learnName = learnName;
-    }
+    private String strategy;
+    private Integer treshold;
 
     public ObjectId getId() {
         return id;
@@ -80,8 +70,9 @@ public class ProfitDTO {
     }
 
     /**
-     * Format large  EUR value to readable
-     * @return 
+     * Format large EUR value to readable
+     *
+     * @return
      */
     public String getEurFormat() {
         DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
@@ -106,4 +97,37 @@ public class ProfitDTO {
     public void setLearnName(String learnName) {
         this.learnName = learnName;
     }
+
+    public Date getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Date buyDate) {
+        this.buyDate = buyDate;
+    }
+
+    public Date getSellDate() {
+        return sellDate;
+    }
+
+    public void setSellDate(Date sellDate) {
+        this.sellDate = sellDate;
+    }
+
+    public String getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(String strategy) {
+        this.strategy = strategy;
+    }
+
+    public Integer getTreshold() {
+        return treshold;
+    }
+
+    public void setTreshold(Integer treshold) {
+        this.treshold = treshold;
+    }
+
 }

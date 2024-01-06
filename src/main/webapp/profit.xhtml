@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml"
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
       xmlns:f="jakarta.faces.core"
       xmlns:p="http://primefaces.org/ui"
@@ -18,16 +19,46 @@
             </h:form>
 
             <h:form id="form1">
-                <p:panel>
-                    <p:panelGrid columns="7" layout="tabular">
+                <p:panel id="headPanel">
+                    <p:panelGrid columns="8" layout="tabular">
+                        <p:outputLabel value="TestNum:"/>  
+                        <p:selectOneMenu value="#{profitBean.selectedTestNum}" id="testNumList">
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{profitBean.profitByTestnum}"  var="nums" 
+                                           itemLabel="#{nums.testNum}" itemValue="#{nums.testNum}"/>
+                            <p:ajax event="itemSelect" listener="#{profitBean.updateLists}"  
+                                    update="tbl, headPanel"/>
+                        </p:selectOneMenu>  
+
                         <p:outputLabel value="Learn:"/>  
-                        <p:selectOneMenu value="#{profitBean.selectedName}" id="nameList">
+                        <p:selectOneMenu value="#{profitBean.selectedLearnName}" id="nameList">
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{learnBean.learnNameList}" var="names" 
                                            itemLabel="#{names}" itemValue="#{names}" />
-                            <p:ajax event="itemSelect"  update="testList, profitPanel"/>
+                            <p:ajax event="itemSelect" listener="#{profitBean.updateLists}" 
+                                    update="headPanel, tbl"/>
                         </p:selectOneMenu>
 
+                        <p:outputLabel value="Eur:"/>  
+                        <p:selectOneMenu value="#{profitBean.selectedTestNum}" id="testList" >
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{profitBean.bestList}" var="best" 
+                                           itemLabel="#{best.eurFormat}" itemValue="#{best.testNum}" />
+                            <p:ajax event="itemSelect"  update="tbl"/>
+                        </p:selectOneMenu>
+
+                        <p:commandButton value="Calculate"  id="calcBtn" 
+                                         action="#{profitBean.onCalc()}" 
+                                         update="tbl, headPanel" >
+                        </p:commandButton>     
+
+                        <p:commandButton value="Delete"  id="deleteBtn" 
+                                         action="#{profitBean.onDelete()}" 
+                                         update="headPanel, tbl" >
+                        </p:commandButton>   
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="6" layout="tabular">
                         <p:outputLabel value="Buy:"/>                  
                         <p:selectOneMenu value="#{profitBean.selectedBuyTime}" id="buyList">
                             <f:selectItems value="#{profitBean.buyList}" var="item" 
@@ -39,42 +70,26 @@
                             <f:selectItems value="#{profitBean.sellList}" var="item1" 
                                            itemLabel="#{item1.startDate}" itemValue="#{item1.startDate.time}" />                          
                         </p:selectOneMenu>          
+                    </p:panelGrid>
 
-                        <p:commandButton value="Calculate"  id="calcBtn" 
-                                         action="#{profitBean.onCalc()}" 
-                                         update="testList, tbl, profitPanel" >
-                        </p:commandButton>   
+                    <p:panelGrid columns="6" layout="tabular">
+                        <p:outputLabel value="Strategy:"/>  
+                        <p:selectOneRadio value="#{profitBean.selectedStrategy}">
+                            <f:selectItems value="#{profitBean.strategyList}"/>
+                            <p:ajax update="tresholdInput"/>
+                        </p:selectOneRadio>
+
+                        <p:outputLabel value="Treshold%:"/>  
+                        <p:spinner value="#{profitBean.treshold}"
+                                   id="tresholdInput" min="1" 
+                                   disabled="#{profitBean.tresholdDisabled}"/>
+
                     </p:panelGrid>
                 </p:panel>      
 
                 <p:blockUI block="form1" trigger="calcBtn, deleteBtn">
                     <p:graphicImage value="/resources/ajax-loader.gif" />
                 </p:blockUI>    
-
-                <p:panel id="profitPanel">
-                    <p:panelGrid columns="7" layout="tabular">
-                        <p:outputLabel value="TestNum:"/>  
-                        <p:outputLabel value="#{profitBean.profit.testNum}"/>  
-
-                        <p:outputLabel value="EUR:"/>  
-                        <p:outputLabel value="#{profitBean.profit.eur}">
-                            <f:convertNumber maxFractionDigits="2" groupingUsed="true" />
-                        </p:outputLabel>      
-
-                        <p:outputLabel value="Best:"/>  
-                        <p:selectOneMenu value="#{profitBean.selectedTest}" id="testList" >
-                            <f:selectItem itemLabel="-" itemValue=""/>
-                            <f:selectItems value="#{profitBean.bestList}" var="best" 
-                                           itemLabel="#{best.eurFormat}" itemValue="#{best.testNum}" />
-                            <p:ajax event="itemSelect"  update="tbl, profitPanel"/>
-                        </p:selectOneMenu>
-
-                        <p:commandButton value="Delete"  id="deleteBtn" 
-                                         action="#{profitBean.onDelete()}" 
-                                         update="testList, tbl, profitPanel" >
-                        </p:commandButton>   
-                    </p:panelGrid>
-                </p:panel>    
 
                 <p:panel>    
                     <p:dataTable value="#{profitBean.profitList}" var="item" tableStyle="width:auto" id="tbl">

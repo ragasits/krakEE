@@ -18,6 +18,7 @@ package krakee.learn;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.ObjectId;
 
 /**
@@ -36,7 +37,6 @@ public class LearnDTO {
 
     public LearnDTO() {
     }
-
 
     public ObjectId getId() {
         return id;
@@ -84,5 +84,15 @@ public class LearnDTO {
 
     public void setClose(BigDecimal close) {
         this.close = close;
+    }
+
+    @BsonIgnore
+    public boolean isBuy() {
+        return this.getTrade().equals("buy");
+    }
+
+    @BsonIgnore
+    public boolean isSell() {
+        return this.getTrade().equals("sell");
     }
 }

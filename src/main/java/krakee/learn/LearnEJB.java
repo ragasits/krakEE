@@ -308,9 +308,9 @@ public class LearnEJB {
     /**
      * Looking for wrong learn pairs
      */
-    public void chkLearnPairs() {
+    public void chkLearnPairs(String learnName) {
 
-        ArrayList<LearnDTO> learnList = (ArrayList<LearnDTO>) this.get();
+        ArrayList<LearnDTO> learnList = (ArrayList<LearnDTO>) this.get(learnName);
         for (int i = 0; i < learnList.size(); i++) {
             StringBuilder chkMessage = new StringBuilder();
             LearnDTO learn = learnList.get(i);

@@ -1,8 +1,15 @@
-+ BUG: Wrong prediction
-+ Add Candle.close to learn
-+ Export Learn to CSV
++ BUG: Looking for buy and sell pairs (Add learnName)
++ Calculate the profit of the weka model
++ Use strategy: First Profit, Treshold
 
-- Calculate the profit of the weka model
+- Optimize profit calculations
+- Model: Add Buy, Sell days
+- BUG: Refresh errors
+
+- Add more learning data + new model
+- Create real time data collector
+- Create real time prediction, alarm
+
 
 ## Future:
 ----------
@@ -10,6 +17,7 @@
 - Optimize mongodb
 - Candle1d (one day) + Simulation
 - Try reinforcement learning 
+- Migrate to Quarkus + Docker
 
 ## Optional:
 ------------

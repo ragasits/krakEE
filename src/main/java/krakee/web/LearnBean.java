@@ -18,15 +18,12 @@ package krakee.web;
 
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import krakee.calc.CandleDTO;
 import krakee.calc.CandleEJB;
 import krakee.learn.LearnDTO;
 import krakee.learn.LearnEJB;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -53,13 +50,6 @@ public class LearnBean implements Serializable {
     @Inject
     private CandleDetailBean candleBean;
 
-    /**
-     * Show messages
-     *
-     */
-    private void addMsg(String msg) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
-    }
 
     public void updateLists(){
         this.selectedBuyTime = learnEjb.getFirst(this.selectedLearn).getStartDate().getTime();
@@ -84,7 +74,7 @@ public class LearnBean implements Serializable {
     public List<String> getLearnNameList() {
         return learnEjb.getNames();
     }
-
+    
     public String getSelectedLearn() {
         return selectedLearn;
     }
@@ -117,7 +107,7 @@ public class LearnBean implements Serializable {
 
     //Check2
     public void chkLearnPairs() {
-        learnEjb.chkLearnPairs();
+        learnEjb.chkLearnPairs(this.selectedLearn);
     }
 
     public List<LearnDTO> getBuyList() {
