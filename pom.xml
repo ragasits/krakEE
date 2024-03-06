@@ -26,7 +26,7 @@
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
             <classifier>jakarta</classifier>
-            <version>13.0.3</version>
+            <version>13.0.5</version>
         </dependency>
         
         <dependency>
@@ -48,7 +48,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <failOnMissingWebXml>true</failOnMissingWebXml>
-        <version.payara>6.2023.12</version.payara>
+        <version.payara>6.2024.2</version.payara>
     </properties>
     
     <build>
@@ -79,7 +79,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.12.1</version>
                 <configuration>
                     <showDeprecation>true</showDeprecation>
                 </configuration>

@@ -1,10 +1,10 @@
-+ BUG: Looking for buy and sell pairs (Add learnName)
-+ Calculate the profit of the weka model
-+ Use strategy: First Profit, Treshold
++ Add Profit.DeleteAll button
++ Add Profit.Calculate button
++ BUG: Proft, Strategy don't refresh
 
 - Optimize profit calculations
-- Model: Add Buy, Sell days
-- BUG: Refresh errors
+- Model: Add Buy, Sell in days (not timestamp)
+- Export candle
 
 - Add more learning data + new model
 - Create real time data collector

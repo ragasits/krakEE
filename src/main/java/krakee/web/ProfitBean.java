@@ -38,12 +38,7 @@ import krakee.profit.ProfitEJB;
 public class ProfitBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long selectedBuyTime;
-    private Long selectedSellTime;
-    private Long selectedTestNum;
-    private String selectedLearnName;
-    private String selectedStrategy;
-    private Integer treshold;
+    private ProfitDTO detail = new ProfitDTO();
 
     @EJB
     private ProfitEJB profitEjb;
@@ -51,49 +46,75 @@ public class ProfitBean implements Serializable {
     private LearnEJB learnEjb;
 
     /**
-     * Update profit GUI
+     * Update Buy, Sell date
      */
-    public void updateLists() {
-        if (this.selectedTestNum != null) {
-            ProfitDTO dto = profitEjb.get(selectedTestNum);
-            if (dto != null) {
-                this.selectedBuyTime = dto.getBuyDate().getTime();
-                this.selectedSellTime = dto.getSellDate().getTime();
-                this.selectedLearnName = dto.getLearnName();
-                this.selectedStrategy = dto.getStrategy();
-                this.treshold = dto.getTreshold();
-            }
-        } else if (this.selectedLearnName != null) {
-            this.selectedBuyTime = learnEjb.getFirst(selectedLearnName).getStartDate().getTime();
-            this.selectedSellTime = learnEjb.getLast(selectedLearnName).getStartDate().getTime();
+    public void updateLearn() {
+        detail.setBuyDate(learnEjb.getFirst(detail.getLearnName()).getStartDate());
+        detail.setSellDate(learnEjb.getLast(detail.getLearnName()).getStartDate());
+    }
+
+    /**
+     * Get tests by LearnName
+     * @return 
+     */
+    public List<ProfitDTO> getTestNumList() {
+        if (this.detail.getLearnName() != null) {
+            return profitEjb.get(detail.getLearnName());
         }
+        return null;
     }
 
     /**
      * Calculate profit
      */
     public void onCalc() {
-        ProfitDTO detail = new ProfitDTO();
-        detail.setLearnName(selectedLearnName);
-        detail.setBuyDate(new Date(this.selectedBuyTime));
-        detail.setSellDate(new Date(this.selectedSellTime));
-        detail.setStrategy(selectedStrategy);
-        detail.setTreshold(treshold);
-        
-        this.selectedTestNum = profitEjb.calcProfit(detail);     
+        this.detail = profitEjb.calcProfit(detail.clone());
     }
 
-    public void onDelete() {
-        if (this.selectedTestNum != null) {
-            ProfitDTO dto = profitEjb.get(selectedTestNum);
-            profitEjb.delete(dto);
-            
-            this.selectedLearnName = null;
+    /**
+     * Calculate profits with different strategies and Tresholds
+     */
+    public void onCalcAll() {
+        this.onDeleteAll();
+
+        //FirtSell
+        detail.setStrategy("FirtSell");
+        this.onCalc();
+
+        //FirstProfit
+        detail.setStrategy("FirstProfit");
+        this.onCalc();
+
+        //FirstTreshold
+        detail.setStrategy("FirstTreshold");
+
+        for (int i = 0; i < 10; i++) {
+            detail.setTreshold(i+1);
+            this.onCalc();
         }
     }
 
-    public List<ProfitDTO> getProfitByTestnum() {
-        return profitEjb.get();
+    /**
+     * Delete One profit
+     */
+    public void onDelete() {
+        if (this.detail.getTestNum() != null) {
+            ProfitDTO dto = profitEjb.get(this.detail.getTestNum());
+            profitEjb.delete(dto);
+        }
+    }
+
+    /**
+     * Delete the all profit by LearName
+     */
+    public void onDeleteAll() {
+        if (this.detail.getLearnName() != null) {
+            profitEjb.delete(this.detail.getLearnName());
+        }
+    }
+
+    public ProfitDTO getDetail() {
+        return detail;
     }
 
     /**
@@ -102,8 +123,8 @@ public class ProfitBean implements Serializable {
      * @return
      */
     public List<ProfitItemDTO> getProfitList() {
-        if (this.selectedTestNum != null) {
-            ProfitDTO dto = profitEjb.get(selectedTestNum);
+        if (this.detail.getTestNum() != null) {
+            ProfitDTO dto = profitEjb.get(this.detail.getTestNum());
             if (dto != null) {
                 return dto.getItems();
             }
@@ -112,52 +133,54 @@ public class ProfitBean implements Serializable {
     }
 
     public boolean isTresholdDisabled() {
-        if (selectedStrategy != null) {
-            return !"FirstTreshold".equals(this.selectedStrategy);
+        if (detail.getStrategy() != null) {
+            return !"FirstTreshold".equals(detail.getStrategy());
         }
         return false;
     }
 
-    /**
-     * Get best list
-     *
-     * @return
-     */
-    public List<ProfitDTO> getBestList() {
-        if (this.selectedLearnName != null) {
-            return profitEjb.get(this.selectedLearnName);
-        }
-        return null;
-    }
-
     public List<LearnDTO> getBuyList() {
-        if (this.selectedLearnName != null) {
-            return learnEjb.getBuy(this.selectedLearnName);
+        if (this.detail != null && this.detail.getLearnName() != null) {
+            return learnEjb.getBuy(this.detail.getLearnName());
         }
         return null;
     }
 
     public List<LearnDTO> getSellList() {
-        if (this.selectedLearnName != null) {
-            return learnEjb.getSell(this.selectedLearnName);
+        if (this.detail != null && this.detail.getLearnName() != null) {
+            return learnEjb.getSell(this.detail.getLearnName());
         }
         return null;
     }
 
     public Long getSelectedBuyTime() {
-        return selectedBuyTime;
+        if (detail.getBuyDate() != null) {
+            return detail.getBuyDate().getTime();
+        }
+        return null;
     }
 
     public void setSelectedBuyTime(Long selectedBuyTime) {
-        this.selectedBuyTime = selectedBuyTime;
+        if (selectedBuyTime != null) {
+            detail.setBuyDate(new Date(selectedBuyTime));
+        } else {
+            detail.setBuyDate(null);
+        }
     }
 
     public Long getSelectedSellTime() {
-        return selectedSellTime;
+        if (detail.getSellDate() != null) {
+            return detail.getSellDate().getTime();
+        }
+        return null;
     }
 
     public void setSelectedSellTime(Long selectedSellTime) {
-        this.selectedSellTime = selectedSellTime;
+        if (selectedSellTime != null) {
+            detail.setSellDate(new Date(selectedSellTime));
+        } else {
+            detail.setSellDate(null);
+        }
     }
 
     public List<String> getStrategyList() {
@@ -165,34 +188,58 @@ public class ProfitBean implements Serializable {
     }
 
     public Long getSelectedTestNum() {
-        return selectedTestNum;
+        if (detail != null) {
+            return detail.getTestNum();
+        }
+        return null;
     }
 
     public void setSelectedTestNum(Long selectedTestNum) {
-        this.selectedTestNum = selectedTestNum;
+        if (selectedTestNum != null) {
+            this.detail = profitEjb.get(selectedTestNum);
+        } else {
+            String learName = detail.getLearnName();
+            this.detail = new ProfitDTO();
+            detail.setLearnName(learName);
+        }
     }
 
     public String getSelectedLearnName() {
-        return selectedLearnName;
+        if (detail != null) {
+            return this.detail.getLearnName();
+        }
+        return null;
     }
 
     public void setSelectedLearnName(String selectedLearnName) {
-        this.selectedLearnName = selectedLearnName;
+        if (selectedLearnName != null) {
+            detail.setLearnName(selectedLearnName);
+        } else {
+            detail.setLearnName(null);
+        }
     }
 
     public String getSelectedStrategy() {
-        return selectedStrategy;
+        return detail.getStrategy();
     }
 
     public void setSelectedStrategy(String selectedStrategy) {
-        this.selectedStrategy = selectedStrategy;
+        if (selectedStrategy != null) {
+            detail.setStrategy(selectedStrategy);
+        } else {
+            detail.setStrategy(null);
+        }
     }
 
     public Integer getTreshold() {
-        return treshold;
+        return detail.getTreshold();
     }
 
     public void setTreshold(Integer treshold) {
-        this.treshold = treshold;
+        if (treshold != null) {
+            this.detail.setTreshold(treshold);
+        } else {
+            this.detail.setTreshold(null);
+        }
     }
 }

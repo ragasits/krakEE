@@ -20,35 +20,34 @@
 
             <h:form id="form1">
                 <p:panel id="headPanel">
-                    <p:panelGrid columns="8" layout="tabular">
-                        <p:outputLabel value="TestNum:"/>  
-                        <p:selectOneMenu value="#{profitBean.selectedTestNum}" id="testNumList">
-                            <f:selectItem itemLabel="-" itemValue=""/>
-                            <f:selectItems value="#{profitBean.profitByTestnum}"  var="nums" 
-                                           itemLabel="#{nums.testNum}" itemValue="#{nums.testNum}"/>
-                            <p:ajax event="itemSelect" listener="#{profitBean.updateLists}"  
-                                    update="tbl, headPanel"/>
-                        </p:selectOneMenu>  
-
+                    <p:panelGrid columns="10" layout="tabular">
                         <p:outputLabel value="Learn:"/>  
                         <p:selectOneMenu value="#{profitBean.selectedLearnName}" id="nameList">
                             <f:selectItem itemLabel="-" itemValue=""/>
                             <f:selectItems value="#{learnBean.learnNameList}" var="names" 
                                            itemLabel="#{names}" itemValue="#{names}" />
-                            <p:ajax event="itemSelect" listener="#{profitBean.updateLists}" 
+                            <p:ajax event="itemSelect" listener="#{profitBean.updateLearn()}"
                                     update="headPanel, tbl"/>
-                        </p:selectOneMenu>
+                        </p:selectOneMenu>                        
+                        
+                        <p:outputLabel value="TestNum:"/>  
+                        <p:selectOneMenu value="#{profitBean.selectedTestNum}" id="testNumList">
+                            <f:selectItem itemLabel="-" itemValue=""/>
+                            <f:selectItems value="#{profitBean.testNumList}"  var="nums" 
+                                           itemLabel="#{nums.testNum}" itemValue="#{nums.testNum}"/>
+                            <p:ajax event="itemSelect" update="tbl, headPanel"/>
+                        </p:selectOneMenu>  
 
                         <p:outputLabel value="Eur:"/>  
-                        <p:selectOneMenu value="#{profitBean.selectedTestNum}" id="testList" >
-                            <f:selectItem itemLabel="-" itemValue=""/>
-                            <f:selectItems value="#{profitBean.bestList}" var="best" 
-                                           itemLabel="#{best.eurFormat}" itemValue="#{best.testNum}" />
-                            <p:ajax event="itemSelect"  update="tbl"/>
-                        </p:selectOneMenu>
+                        <p:outputLabel value="#{profitBean.detail.eurFormat}" id="eurValue" />  
 
                         <p:commandButton value="Calculate"  id="calcBtn" 
                                          action="#{profitBean.onCalc()}" 
+                                         update="tbl, headPanel" >
+                        </p:commandButton>     
+                        
+                        <p:commandButton value="Calculate all"  id="calcAllBtn" 
+                                         action="#{profitBean.onCalcAll()}" 
                                          update="tbl, headPanel" >
                         </p:commandButton>     
 
@@ -56,6 +55,11 @@
                                          action="#{profitBean.onDelete()}" 
                                          update="headPanel, tbl" >
                         </p:commandButton>   
+                        
+                        <p:commandButton value="Delete all"  id="deleteAllBtn" 
+                                         action="#{profitBean.onDeleteAll()}" 
+                                         update="headPanel, tbl" >
+                        </p:commandButton>                           
                     </p:panelGrid>
 
                     <p:panelGrid columns="6" layout="tabular">

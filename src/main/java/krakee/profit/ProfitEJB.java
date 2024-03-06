@@ -39,8 +39,6 @@ import krakee.learn.LearnEJB;
 @Stateless
 public class ProfitEJB {
 
-    static final Logger LOGGER = Logger.getLogger(ProfitEJB.class.getCanonicalName());
-
     @EJB
     private ConfigEJB configEjb;
     @EJB
@@ -130,13 +128,25 @@ public class ProfitEJB {
     public void delete(ProfitDTO dto) {
         configEjb.getProfitColl().deleteOne(eq("_id", dto.getId()));
     }
+    
+    
+    /**
+     * Delete all profits by learName
+     * @param learnName 
+     */
+    public void delete(String learnName){
+        configEjb.getProfitColl().deleteMany(
+                eq("learnName",learnName)
+        );
+    }
 
     /**
      * Calculate profit, select strategy
+     *
      * @param profit
-     * @return 
+     * @return
      */
-    public Long calcProfit(ProfitDTO profit) {
+    public ProfitDTO calcProfit(ProfitDTO profit) {
         switch (profit.getStrategy()) {
             case "FirtSell":
                 return calcFirtSell(profit);
@@ -148,13 +158,13 @@ public class ProfitEJB {
         return null;
     }
 
-    
     /**
      * Calculate profit - strategy: Fisrt sell
+     *
      * @param profit
-     * @return 
+     * @return
      */
-    public Long calcFirtSell(ProfitDTO profit) {
+    public ProfitDTO calcFirtSell(ProfitDTO profit) {
         double eur = 1000;
         double btc = 0;
         double lastEur = 0;
@@ -196,15 +206,17 @@ public class ProfitEJB {
         profit.setItems(profitList);
         configEjb.getProfitColl().insertOne(profit);
 
-        return testNum;
+        return profit;
     }
 
-    /***
+    /**
+     * *
      * Calculate profit - strategy: Fisrt profit (buy<sell)
+     *
      * @param profit
-     * @return 
+     * @return
      */
-    public Long calcFirstProfit(ProfitDTO profit) {
+    public ProfitDTO calcFirstProfit(ProfitDTO profit) {
         double eur = 1000;
         double btc = 0;
         double lastEur = 0;
@@ -263,15 +275,16 @@ public class ProfitEJB {
         profit.setItems(profitList);
         configEjb.getProfitColl().insertOne(profit);
 
-        return 1L + this.getMaxTestNum();
+        return profit;
     }
 
     /**
      * Calculate profit - strategy: Treshold (sell-buy>treshold)
+     *
      * @param profit
-     * @return 
+     * @return
      */
-    public Long calcTresholdProfit(ProfitDTO profit) {
+    public ProfitDTO calcTresholdProfit(ProfitDTO profit) {
         double eur = 1000;
         double btc = 0;
         double lastEur = 0;
@@ -290,19 +303,8 @@ public class ProfitEJB {
             }
 
             //First Profit (sell>buy)
-            if (learnDto.isSell() && buyLearn != null && sellLearn == null) {
-
-                CandleDTO candle = this.candleEjb.get(buyLearn.getStartDate());
-                BigDecimal treshold = candle.getClose()
-                        .divide(BigDecimal.valueOf(100L), 0, RoundingMode.CEILING)
-                        .multiply(BigDecimal.valueOf(profit.getTreshold()));
-
-                BigDecimal diff = learnDto.getClose()
-                        .subtract(buyLearn.getClose());
-
-                if (diff.compareTo(BigDecimal.ZERO) == 1 && diff.compareTo(treshold) == 1) {
-                    sellLearn = learnDto;
-                }
+            if (learnDto.isSell() && this.sellCondition(buyLearn, sellLearn, learnDto, profit.getTreshold())) {
+                sellLearn = learnDto;
             }
 
             //Calculate profit
@@ -339,7 +341,33 @@ public class ProfitEJB {
         profit.setItems(profitList);
         configEjb.getProfitColl().insertOne(profit);
 
-        return 1L + this.getMaxTestNum();
+        return profit;
+    }
+
+    /**
+     * Calculate sell Condition (Treshold)
+     * @param buyLearn
+     * @param sellLearn
+     * @param learnDto
+     * @param treshold
+     * @return 
+     */
+    private boolean sellCondition(LearnDTO buyLearn, LearnDTO sellLearn, LearnDTO learnDto, Integer treshold) {
+        if (buyLearn != null && sellLearn == null) {
+
+            CandleDTO candle = this.candleEjb.get(buyLearn.getStartDate());
+            BigDecimal minProfit = candle.getClose()
+                    .divide(BigDecimal.valueOf(100L), 0, RoundingMode.CEILING)
+                    .multiply(BigDecimal.valueOf(treshold));
+
+            BigDecimal diff = learnDto.getClose()
+                    .subtract(buyLearn.getClose());
+
+            if (diff.signum() > 0 && diff.compareTo(minProfit) > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

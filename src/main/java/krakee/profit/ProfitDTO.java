@@ -129,5 +129,22 @@ public class ProfitDTO {
     public void setTreshold(Integer treshold) {
         this.treshold = treshold;
     }
+    
+    /**
+     * Clone Profit (except id)
+     * @return 
+     */
+    public ProfitDTO clone(){
+        ProfitDTO dto = new ProfitDTO();
+        dto.setLearnName(learnName);
+        dto.setTestNum(testNum);
+        dto.setBuyDate(buyDate);
+        dto.setSellDate(sellDate);
+        dto.setEur(eur);
+        dto.setStrategy(strategy);
+        dto.setTreshold(treshold);
+        dto.setItems(items);
+        return dto;
+    }
 
 }
