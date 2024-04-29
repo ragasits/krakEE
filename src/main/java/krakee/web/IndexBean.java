@@ -17,16 +17,16 @@
 package krakee.web;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
+import java.util.List;
 import krakee.ConfigEJB;
 import krakee.MyException;
-import krakee.TimerEjb;
+import krakee.TimerEJB;
 import krakee.calc.BollingerEJB;
 import krakee.calc.CandleEJB;
 import krakee.get.TradeEJB;
@@ -41,12 +41,12 @@ import krakee.get.TradeEJB;
 public class IndexBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private ArrayList<String> resultList;
+    private List<String> resultList;
 
     @EJB
     ConfigEJB config;
     @EJB
-    TimerEjb timer;
+    TimerEJB timer;
     @EJB
     TradeEJB trade;
     @EJB
@@ -135,7 +135,7 @@ public class IndexBean implements Serializable {
         return timer.getDuration();
     }
 
-    public ArrayList<String> getResultList() {
+    public List<String> getResultList() {
         return resultList;
     }
 

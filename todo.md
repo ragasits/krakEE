@@ -1,6 +1,4 @@
-+ Add Profit.DeleteAll button
-+ Add Profit.Calculate button
-+ BUG: Proft, Strategy don't refresh
++ Run production mode. Download trades, calculate candles in every 30 minutes 
 
 - Optimize profit calculations
 - Model: Add Buy, Sell in days (not timestamp)

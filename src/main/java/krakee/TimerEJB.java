@@ -37,9 +37,9 @@ import krakee.get.TradeEJB;
  */
 @Singleton
 @Startup
-public class TimerEjb {
+public class TimerEJB {
 
-    static final Logger LOGGER = Logger.getLogger(TradeEJB.class.getCanonicalName());
+    static final Logger LOGGER = Logger.getLogger(TimerEJB.class.getCanonicalName());
 
     @EJB
     ConfigEJB config;
@@ -58,11 +58,14 @@ public class TimerEjb {
      */
     @PostConstruct
     public void init() {
+        if (config.isRunProduction()){
+            return;
+        }
+        
         //If enabled the running
         if (config.isRunTrade() || config.isRunCandle()) {
             this.duration = config.getDefaultTimerDuration();
             
-            //timerService.createTimer(this.duration*1000, null);
             timerService.createSingleActionTimer(this.duration* 1000L, new TimerConfig(null, false));
         }
     }
@@ -90,13 +93,9 @@ public class TimerEjb {
                 this.duration = this.duration * 2;
             }
         }
-        //timerService.createTimer(this.duration*1000, null);
-         timerService.createSingleActionTimer(this.duration* 1000L, new TimerConfig(null, false));
+        timerService.createSingleActionTimer(this.duration* 1000L, new TimerConfig(null, false));
 
-        LOGGER.log(Level.INFO, "Schedule Fired .... "
-                + config.isRunTrade() + " "
-                + config.isRunCandle() + " "
-                + this.duration);
+        LOGGER.log(Level.INFO, "Schedule Fired .... {0} {1} {2}", new Object[]{config.isRunTrade(), config.isRunCandle(), this.duration});
     }
 
     public long getDuration() {

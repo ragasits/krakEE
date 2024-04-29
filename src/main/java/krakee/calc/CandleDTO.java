@@ -111,9 +111,11 @@ public class CandleDTO {
 
     /**
      * Format startDate
+     *
      * @return
      */
-    public String getFormatedStartDate(){
+    @BsonIgnore
+    public String getFormatedStartDate() {
         SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sd.format(this.startDate);
     }

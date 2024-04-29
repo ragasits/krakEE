@@ -82,7 +82,7 @@ public class MacdEJB {
                 double hist1 = prev.getMacd().getMacdHistogram().doubleValue();
                 double hist2 = macd.getMacdHistogram().doubleValue();
 
-                if ((hist1 > 0d && hist2 < 0d) || (hist1 < 0d && hist2 > 0d) ){
+                if ((hist1 > 0d && hist2 < 0d) || (hist1 < 0d && hist2 > 0d)) {
                     macd.setCrossover(true);
                 }
             }

@@ -33,6 +33,7 @@ import krakee.calc.CandleDTO;
 import krakee.get.TradePairDTO;
 import krakee.learn.LearnDTO;
 import krakee.model.ModelDTO;
+import krakee.prod.ProdLogDTO;
 import krakee.profit.ProfitDTO;
 import org.bson.Document;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -78,12 +79,17 @@ public class ConfigEJB {
     @ConfigProperty(name = "krakEE.runCandle", defaultValue = "false")
     private boolean runCandle;
 
+    @Inject
+    @ConfigProperty(name = "krakEE.runProduction", defaultValue = "false")
+    private boolean runProduction;
+
     private MongoClient client;
     private MongoCollection<TradePairDTO> tradePairColl;
     private MongoCollection<CandleDTO> candleColl;
     private MongoCollection<ProfitDTO> profitColl;
     private MongoCollection<LearnDTO> learnColl;
     private MongoCollection<ModelDTO> modelColl;
+    private MongoCollection<ProdLogDTO> prodLogColl;
 
     /**
      * Initiate: - Set proxy - MongoDB Create collections and missing indexes
@@ -129,6 +135,7 @@ public class ConfigEJB {
 
         this.learnColl = database.getCollection("learn", LearnDTO.class);
         this.modelColl = database.getCollection("model", ModelDTO.class);
+        this.prodLogColl = database.getCollection("prodlog", ProdLogDTO.class);
     }
 
     /**
@@ -179,6 +186,10 @@ public class ConfigEJB {
         return modelColl;
     }
 
+    public MongoCollection<ProdLogDTO> getProdLogColl() {
+        return prodLogColl;
+    }
+    
     public String getKrakenURL() {
         return krakenURL;
     }
@@ -197,6 +208,14 @@ public class ConfigEJB {
 
     public void setRunCandle(boolean runCandle) {
         this.runCandle = runCandle;
+    }
+
+    public boolean isRunProduction() {
+        return runProduction;
+    }
+
+    public void setRunProduction(boolean runProduction) {
+        this.runProduction = runProduction;
     }
 
     /**

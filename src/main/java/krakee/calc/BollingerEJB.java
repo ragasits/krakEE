@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import krakee.Common;
@@ -38,8 +37,6 @@ import krakee.ConfigEJB;
  */
 @Stateless
 public class BollingerEJB {
-
-    static final Logger LOGGER = Logger.getLogger(BollingerEJB.class.getCanonicalName());
 
     @EJB
     ConfigEJB configEjb;
@@ -85,7 +82,7 @@ public class BollingerEJB {
 
     //Calculate trade lower value
     private BigDecimal calcTradeLower(BigDecimal close, BigDecimal lower) {
-        if (close.compareTo(lower) == -1) {
+        if (close.compareTo(lower) < 0) {
             return lower.subtract(close);
         } else {
             return BigDecimal.ZERO;
@@ -94,7 +91,7 @@ public class BollingerEJB {
 
     // Calculate trade upper value
     private BigDecimal calcTradeUpper(BigDecimal close, BigDecimal upper) {
-        if (close.compareTo(upper) == 1) {
+        if (close.compareTo(upper) > 0) {
             return close.subtract(upper);
         } else {
             return BigDecimal.ZERO;
@@ -136,7 +133,7 @@ public class BollingerEJB {
      *
      * @return
      */
-    public ArrayList<String> chkBollinger() {
+    public List<String> chkBollinger() {
         ArrayList<String> list = new ArrayList<>();
         List<CandleDTO> candleList;
 
@@ -150,7 +147,7 @@ public class BollingerEJB {
                 )
                 .into(new ArrayList<>());
 
-        if (candleList.size() > 0) {
+        if (!candleList.isEmpty()) {
             list.add("tradeUpper + tradeLower");
         }
 

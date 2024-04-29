@@ -86,6 +86,60 @@ public class TradeEJB {
     }
 
     /**
+     * Get last Trade pair
+     *
+     * @return
+     */
+    private TradePairDTO getLast() {
+        return config.getTradePairColl().find()
+                .sort(Sorts.descending("last"))
+                .first();
+    }
+
+    /**
+     * Get last value
+     * @return 
+     */
+    public String getLastValue() {
+
+        //Get last value from Mongo
+        TradePairDTO dto = this.getLast();
+
+        if (dto != null) {
+            return dto.getLast();
+        } else {
+            return "0";
+        }
+
+    }
+
+    /**
+     * Call trades from Kraken Rest API
+     * @param last 
+     */
+    public void callKrakenTrade(String last) {
+
+        config.setRunTrade(false);
+
+        try {
+            JsonObject tradeJson = this.getRestTrade(last);
+            List<TradePairDTO> pairList = this.convertToDTO(tradeJson);
+
+            if (!pairList.isEmpty()) {
+                this.pairTradeSize = pairList.size();
+                config.getTradePairColl().insertMany(pairList);
+                LOGGER.log(Level.INFO, "Trade Fired .... {0} {1}", new Object[]{this.pairTradeSize, pairList.get(0).getLastDate()});
+            } else {
+                LOGGER.log(Level.INFO, "Trade Fired .... Error {0}",tradeJson.toString());
+            }
+
+            config.setRunTrade(true);
+        } catch (MyException ex) {
+            LOGGER.log(Level.SEVERE, ex.getMessage());
+        }
+    }
+
+    /**
      * Get, convert, store trades from Kraken
      *
      */
@@ -112,7 +166,7 @@ public class TradeEJB {
                 config.getTradePairColl().insertMany(pairList);
                 LOGGER.log(Level.INFO, "Trade Fired .... {0} {1}", new Object[]{this.pairTradeSize, pairList.get(0).getLastDate()});
             } else {
-                LOGGER.log(Level.INFO, "Trade Fired .... Error");
+                LOGGER.log(Level.INFO, "Trade Fired .... Error: {0}", tradeJson.toString());
             }
 
             config.setRunTrade(true);
@@ -178,7 +232,6 @@ public class TradeEJB {
     private JsonObject getRestTrade(String last) throws MyException {
         SSLContext sc;
         Response response = null;
-        //Client sslClient;
 
         TrustManager[] noopTrustManager = new TrustManager[]{
             new X509TrustManager() {
@@ -220,6 +273,10 @@ public class TradeEJB {
         if (response == null) {
             throw new MyException("getRestTrade: Failed : No response");
         }
+        
+        if (response.toString().contains("Too many requests")){
+            throw new MyException("EGeneral:Too many requests");
+        }
 
         if (response.getStatus() == 200) {
             InputStream inputStream = response.readEntity(InputStream.class);
@@ -237,7 +294,7 @@ public class TradeEJB {
      *
      * @return
      */
-    public ArrayList<String> chkTradePair() {
+    public List<String> chkTradePair() {
         //Chk last<>max(time)
         MongoCursor<Document> cursor = config.getTradePairColl().aggregate(
                 List.of(
@@ -261,10 +318,11 @@ public class TradeEJB {
 
     /**
      * Trade: Search for duplicates
-     * @return 
+     *
+     * @return
      */
-    public ArrayList<String> chkTradeDuplicates() {
-        ArrayList<String> list = new ArrayList();
+    public List<String> chkTradeDuplicates() {
+        ArrayList<String> list = new ArrayList() ;
 
         Map<String, Object> multiIdMap = new HashMap<>();
         multiIdMap.put("time", "$time");
@@ -292,7 +350,7 @@ public class TradeEJB {
             BigDecimal price = ((Decimal128) id.get("price")).bigDecimalValue();
             Integer count = doc.getInteger("count");
 
-            list.add("Time: " + time + " Volume: " + volume +" Price: "+ price + " Count: " + count);
+            list.add("Time: " + time + " Volume: " + volume + " Price: " + price + " Count: " + count);
         }
 
         return list;

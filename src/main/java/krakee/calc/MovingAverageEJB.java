@@ -26,7 +26,6 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import krakee.ConfigEJB;
@@ -38,8 +37,6 @@ import krakee.ConfigEJB;
  */
 @Stateless
 public class MovingAverageEJB {
-
-    static final Logger LOGGER = Logger.getLogger(MovingAverageEJB.class.getCanonicalName());
 
     @EJB
     private ConfigEJB configEjb;
@@ -83,7 +80,7 @@ public class MovingAverageEJB {
     private BigDecimal calcSMA(CandleDTO dto, int limit, boolean isClose) {
         BigDecimal sum = BigDecimal.ZERO;
         int i = 0;
-        
+
         //Get the candles
         List<CandleDTO> candleList = configEjb.getCandleColl()
                 .find(lte("startDate", dto.getStartDate()))
@@ -148,11 +145,12 @@ public class MovingAverageEJB {
 
     /**
      * Sub calculation from the Candle.Close
+     *
      * @param dto
      * @param prev
      * @param limit
      * @param isClose
-     * @return 
+     * @return
      */
     private BigDecimal calcEMAClose(CandleDTO dto, CandleDTO prev, int limit, boolean isClose) {
         if (prev.getMovingAverage().getEMA(limit).equals(BigDecimal.ZERO)) {
@@ -161,8 +159,8 @@ public class MovingAverageEJB {
         } else {
             //Next elements
             BigDecimal smooth = BigDecimal.valueOf(2).divide(
-                    BigDecimal.valueOf(limit).add(BigDecimal.ONE),  MathContext.DECIMAL128);
-            
+                    BigDecimal.valueOf(limit).add(BigDecimal.ONE), MathContext.DECIMAL128);
+
             BigDecimal prevEma = prev.getMovingAverage().getEMA(limit);
 
             return smooth.multiply(
@@ -176,7 +174,7 @@ public class MovingAverageEJB {
      * @param prev
      * @param limit
      * @param isClose
-     * @return 
+     * @return
      */
     private BigDecimal calcEMAMacd(CandleDTO dto, CandleDTO prev, int limit, boolean isClose) {
         if (prev.getMacd().getSignalLine().equals(BigDecimal.ZERO)) {

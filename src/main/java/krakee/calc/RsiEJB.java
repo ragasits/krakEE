@@ -40,8 +40,7 @@ public class RsiEJB {
     static final BigDecimal RSIDAY = BigDecimal.valueOf(14);
     static final BigDecimal RSIUP = BigDecimal.valueOf(70);
     static final BigDecimal RSIDOWN = BigDecimal.valueOf(30);
-    static final String STARTDATE = "startDate"; 
-
+    static final String STARTDATE = "startDate";
 
     @EJB
     ConfigEJB config;
@@ -87,7 +86,7 @@ public class RsiEJB {
                 }
             }
 
-            //Calc AVG Gain, Loss   
+            //Calc AVG Gain, Loss
             double d = prev.getRsi().getAvgGain().add(prev.getRsi().getAvgLoss()).doubleValue();
             if (d > 0) {
                 rsi.setAvgGain(prev.getRsi().getAvgGain()
