@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import krakee.MyException;
-import krakee.learn.LearnDTO;
-import krakee.learn.LearnEJB;
 
 @SessionScoped
 @Named(value = "modelBean")
@@ -29,8 +27,6 @@ public class ModelBean implements Serializable {
 
     @EJB
     private ModelEJB modelEjb;
-    @EJB
-    private LearnEJB learnEjb;
 
     public List<String> complete(String query) {
         return modelEjb.getNames();
@@ -38,14 +34,6 @@ public class ModelBean implements Serializable {
 
     public void onSelectedName(SelectEvent<String> event) {
         this.detail = modelEjb.get(event.getObject());
-    }
-
-    public List<LearnDTO> getBuyList() {
-        return learnEjb.getBuy();
-    }
-
-    public List<LearnDTO> getSellList() {
-        return learnEjb.getSell();
     }
 
     /**
@@ -65,7 +53,7 @@ public class ModelBean implements Serializable {
      */
     public void onSave() {
         ModelDTO dto = modelEjb.get(this.detail.getModelName());
-
+        
         if (dto == null) {
             this.detail.setId(null);
             modelEjb.add(this.detail);
@@ -126,32 +114,6 @@ public class ModelBean implements Serializable {
     public void setSelectedExportType(ExportType selectedExportType) {
         if (detail != null) {
             this.detail.setExportType(selectedExportType.toString());
-        }
-    }
-
-    public Long getSelectedBuyTime() {
-        if (detail != null) {
-            return detail.getBuyTime();
-        }
-        return null;
-    }
-
-    public void setSelectedBuyTime(Long selectedBuyTime) {
-        if (detail != null) {
-            this.detail.setBuyTime(selectedBuyTime);
-        }
-    }
-
-    public Long getSelectedSellTime() {
-        if (this.detail != null) {
-            return detail.getSellTime();
-        }
-        return null;
-    }
-
-    public void setSelectedSellTime(Long selectedSellTime) {
-        if (this.detail != null) {
-            this.detail.setSellTime(selectedSellTime);
         }
     }
 

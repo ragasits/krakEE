@@ -98,7 +98,8 @@ public class TradeEJB {
 
     /**
      * Get last value
-     * @return 
+     *
+     * @return
      */
     public String getLastValue() {
 
@@ -115,7 +116,8 @@ public class TradeEJB {
 
     /**
      * Call trades from Kraken Rest API
-     * @param last 
+     *
+     * @param last
      */
     public void callKrakenTrade(String last) {
 
@@ -130,12 +132,26 @@ public class TradeEJB {
                 config.getTradePairColl().insertMany(pairList);
                 LOGGER.log(Level.INFO, "Trade Fired .... {0} {1}", new Object[]{this.pairTradeSize, pairList.get(0).getLastDate()});
             } else {
-                LOGGER.log(Level.INFO, "Trade Fired .... Error {0}",tradeJson.toString());
+                this.logTradeInfo(tradeJson);
             }
 
             config.setRunTrade(true);
         } catch (MyException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
+        }
+    }
+
+    /**
+     * Logging tradeJson.toString()
+     * Solving Sona warningr: Conditionally executed code should be reachable:
+     * @param tradeJson 
+     */
+    private void logTradeInfo(JsonObject tradeJson) {
+        if (tradeJson == null) {
+            LOGGER.log(Level.WARNING, "Trade Fired....tradeJson is null");
+        } else {
+            String tradeJsonStr = tradeJson.toString();
+            LOGGER.log(Level.INFO, "Trade Fired.... Error {0}", tradeJsonStr);
         }
     }
 
@@ -273,8 +289,8 @@ public class TradeEJB {
         if (response == null) {
             throw new MyException("getRestTrade: Failed : No response");
         }
-        
-        if (response.toString().contains("Too many requests")){
+
+        if (response.toString().contains("Too many requests")) {
             throw new MyException("EGeneral:Too many requests");
         }
 
@@ -322,7 +338,7 @@ public class TradeEJB {
      * @return
      */
     public List<String> chkTradeDuplicates() {
-        ArrayList<String> list = new ArrayList() ;
+        ArrayList<String> list = new ArrayList();
 
         Map<String, Object> multiIdMap = new HashMap<>();
         multiIdMap.put("time", "$time");

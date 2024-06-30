@@ -1,7 +1,9 @@
-+ Run production mode. Download trades, calculate candles in every 30 minutes 
++ Migrate to Java17
++ Optimize profit calculations - Add RSI strategy
++ Model: Add Buy, Sell in days (not timestamp)
 
-- Optimize profit calculations
-- Model: Add Buy, Sell in days (not timestamp)
+
+- Profit: Missing last buy
 - Export candle
 
 - Add more learning data + new model
@@ -11,7 +13,6 @@
 
 ## Future:
 ----------
-- Migrate to JDK17
 - Optimize mongodb
 - Candle1d (one day) + Simulation
 - Try reinforcement learning 

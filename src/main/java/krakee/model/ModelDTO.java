@@ -2,6 +2,7 @@ package krakee.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Date;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
@@ -16,8 +17,9 @@ public class ModelDTO {
     private String modelFileName;
 
     private String exportType;
-    private Long buyTime;
-    private Long sellTime;
+
+    private Date firstBuyDate;
+    private Date lastSellDate;
 
     private String removeAttributeIndices;
     private Boolean removeInvertSelection;
@@ -67,22 +69,6 @@ public class ModelDTO {
         this.exportType = exportType;
     }
 
-    public Long getBuyTime() {
-        return buyTime;
-    }
-
-    public void setBuyTime(Long buyTime) {
-        this.buyTime = buyTime;
-    }
-
-    public Long getSellTime() {
-        return sellTime;
-    }
-
-    public void setSellTime(Long sellTime) {
-        this.sellTime = sellTime;
-    }
-
     public String getRemoveAttributeIndices() {
         return removeAttributeIndices;
     }
@@ -99,4 +85,19 @@ public class ModelDTO {
         this.removeInvertSelection = removeInvertSelection;
     }
 
+    public Date getFirstBuyDate() {
+        return firstBuyDate;
+    }
+
+    public void setFirstBuyDate(Date firstBuyDate) {
+        this.firstBuyDate = firstBuyDate;
+    }
+  
+    public Date getLastSellDate() {
+        return lastSellDate;
+    }
+
+    public void setLastSellDate(Date lastSellDate) {
+        this.lastSellDate = lastSellDate;
+    }
 }

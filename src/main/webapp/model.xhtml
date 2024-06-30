@@ -55,19 +55,14 @@
                             <f:selectItems value="#{exportBean.exportTypes}"/>
                         </p:selectOneMenu>
 
-                        <p:outputLabel value="Buy:"/>
-                        <p:selectOneMenu value="#{modelBean.selectedBuyTime}" id="buyList">
-                            <f:selectItem itemLabel="-" itemValue=""/>
-                            <f:selectItems value="#{modelBean.buyList}" var="item"
-                                           itemLabel="#{item.startDate}" itemValue="#{item.startDate.time}" />
-                        </p:selectOneMenu>
+                        <p:outputLabel value="FirstBuy:"/>
+                        <p:calendar value="#{modelBean.detail.firstBuyDate}" 
+                                    navigator="true"/>                  
 
-                        <p:outputLabel value="Sell:"/>
-                        <p:selectOneMenu value="#{modelBean.selectedSellTime}" id="sellList">
-                            <f:selectItem itemLabel="-" itemValue=""/>
-                            <f:selectItems value="#{modelBean.sellList}" var="item1"
-                                           itemLabel="#{item1.startDate}" itemValue="#{item1.startDate.time}" />
-                        </p:selectOneMenu>
+                        <p:outputLabel value="LastSell:"/>
+                        <p:calendar value="#{modelBean.detail.lastSellDate}" 
+                                    navigator="true"/>                  
+
                     </p:panelGrid>
 
                     <p:dialog widgetVar="dlg" header="Upload model">

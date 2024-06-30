@@ -113,8 +113,8 @@ public class ModelEJB {
         learnEjb.delete(model.getModelName());
 
         //Create instance
-        Date buyDate = new Date(model.getBuyTime());
-        Date sellDate = new Date(model.getSellTime());
+        Date buyDate = model.getFirstBuyDate();
+        Date sellDate = model.getLastSellDate();
         Instances dataset = exportEjb.toInstances(ExportType.valueOf(model.getExportType()), buyDate, sellDate);
 
         //Save new learn - we save only the trades (buy, sell)

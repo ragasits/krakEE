@@ -49,6 +49,7 @@ public class ProfitEJB {
         List<String> stratList = new ArrayList<>();
         stratList.add("FirtSell");
         stratList.add("FirstProfit");
+        stratList.add("RSI");
         stratList.add("FirstTreshold");
         return stratList;
     }
@@ -127,15 +128,15 @@ public class ProfitEJB {
     public void delete(ProfitDTO dto) {
         configEjb.getProfitColl().deleteOne(eq("_id", dto.getId()));
     }
-    
-    
+
     /**
      * Delete all profits by learName
-     * @param learnName 
+     *
+     * @param learnName
      */
-    public void delete(String learnName){
+    public void delete(String learnName) {
         configEjb.getProfitColl().deleteMany(
-                eq("learnName",learnName)
+                eq("learnName", learnName)
         );
     }
 
@@ -153,8 +154,60 @@ public class ProfitEJB {
                 return calcFirstProfit(profit);
             case "FirstTreshold":
                 return calcTresholdProfit(profit);
+            case "RSI":
+                return calcRSIBuySell(profit);
         }
         return null;
+    }
+
+    /**
+     * Calculate profit - strategy: RSI
+     * @param profit
+     * @return
+     */
+    public ProfitDTO calcRSIBuySell(ProfitDTO profit) {
+        double eur = 1000;
+        double btc = 0;
+        double lastEur = 0;
+        Long testNum = 1L + this.getMaxTestNum();
+
+        List<LearnDTO> learnList = learnEjb.get(profit.getLearnName(), profit.getBuyDate(), profit.getSellDate());
+        List<ProfitItemDTO> profitList = new ArrayList<>();
+
+        for (LearnDTO learn : learnList) {
+            CandleDTO candle = this.candleEjb.get(learn.getStartDate());
+            ProfitItemDTO dto = new ProfitItemDTO(candle, learn.getTrade(), testNum);
+
+            switch (learn.getTrade()) {
+                case ProfitDTO.BUY:
+                    if (eur > 0 && candle.getRsi().isRsiBuy()) {
+                        dto.buyBtc(eur);
+                        eur = dto.getEur();
+                        btc = dto.getBtc();
+                        profitList.add(dto);
+                    }
+                    break;
+                case ProfitDTO.SELL:
+                    if (btc > 0 && candle.getRsi().isRsiSell()) {
+                        dto.sellBtc(btc);
+                        eur = dto.getEur();
+                        lastEur = eur;
+                        btc = dto.getBtc();
+                        profitList.add(dto);
+                    }
+                    break;
+                case ProfitDTO.NONE:
+                    break;
+            }
+        }
+
+        //Store profit
+        profit.setTestNum(testNum);
+        profit.setEur(lastEur);
+        profit.setItems(profitList);
+        configEjb.getProfitColl().insertOne(profit);
+
+        return profit;
     }
 
     /**
@@ -345,11 +398,12 @@ public class ProfitEJB {
 
     /**
      * Calculate sell Condition (Treshold)
+     *
      * @param buyLearn
      * @param sellLearn
      * @param learnDto
      * @param treshold
-     * @return 
+     * @return
      */
     private boolean sellCondition(LearnDTO buyLearn, LearnDTO sellLearn, LearnDTO learnDto, Integer treshold) {
         if (buyLearn != null && sellLearn == null) {

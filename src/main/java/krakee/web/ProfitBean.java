@@ -84,6 +84,10 @@ public class ProfitBean implements Serializable {
         //FirstProfit
         detail.setStrategy("FirstProfit");
         this.onCalc();
+        
+        //RSI
+        detail.setStrategy("RSI");
+        this.onCalc();
 
         //FirstTreshold
         detail.setStrategy("FirstTreshold");
